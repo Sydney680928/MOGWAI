@@ -19,7 +19,7 @@ limitations under the License.
 ================================================================================
 
 Project Information:
-- Name: MOGWAI (Modern Object-oriented Gateway With Artificial Intelligence)
+- Name: MOGWAI
 - Version: 8.0
 - Author: Stéphane Sibué
 - Website: https://coding4phone.com
@@ -35,7 +35,7 @@ the elegance of RPN to modern .NET applications.
 History:
 Originally created in 2015 to simulate Bluetooth Low Energy devices for
 IoT testing, MOGWAI evolved over 10 years into a full-featured scripting
-language with 300+ built-in functions. The language has been battle-tested
+language with 200+ built-in functions. The language has been battle-tested
 in production environments for industrial automation and public lighting
 systems.
 
