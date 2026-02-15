@@ -1,4 +1,4 @@
-![MOGWAI](./Images/img01.png)
+![MOGWAI](./images/img01.png)
 
 # MOGWAI - The Scripting Engine for .NET  
 
@@ -27,14 +27,14 @@ A complete glossary of all language functions and keywords is also available.
 [MOGWAI CLI](https://github.com/Sydney680928/MOGWAI_CLI) is a console application that lets you use the MOGWAI language interactively.  
 Each line you type is executed immediately, and all language commands and functions are available.
 
-![MOGWAI CLI](./Images/img02.png)
+![MOGWAI CLI](./images/img02.png)
 
 ## MOGWAI STUDIO
 
 [MOGWAI STUDIO](https://github.com/Sydney680928/MOGWAI_STUDIO) is a development IDE dedicated to the **MOGWAI** runtime.  
 It allows you to connect to an application using the runtime and perform all necessary operations during development.
 
-![MOGWAI STUDIO](./Images/img04.png)
+![MOGWAI STUDIO](./images/img04.png)
 
 With **MOGWAI STUDIO**, development and debugging become much easier.
 
