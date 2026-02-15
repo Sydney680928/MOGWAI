@@ -1,6 +1,6 @@
 ![MOGWAI](./images/img01.png)
 
-# MOGWAI - The Scripting Engine for .NET  
+# MOGWAI - A modern RPN (Reverse Polish Notation) scripting language for industrial IoT automation and embedded systems. 
 
 ## Introduction
 
