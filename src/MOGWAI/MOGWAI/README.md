@@ -358,9 +358,9 @@ var engine = new MogwaiEngine("MyApp", useDefaultFolders: false);
 ```csharp
 var engine = new MogwaiEngine("MOGWAI CLI", keepAlive: true, useDefaultFolders: true);
 
-// Variables persist between executions
-await engine.RunAsync("42 -> 'x'", debugMode: false);
-await engine.RunAsync("x 2 * ?", debugMode: false);  // Prints: 84
+// Global variables persist between executions
+await engine.RunAsync("42 -> '$X'", debugMode: false);
+await engine.RunAsync("$X 2 * ?", debugMode: false);  // Prints: 84
 ```
 
 **Settings:**
@@ -627,9 +627,9 @@ The syntax is inspired by the legendary HP 28S and HP 48 calculators, bringing t
 
 ### Examples
 
-- **[WinForms Example](https://github.com/[username]/mogwai/tree/main/examples/WinFormsMogwai)** - Turtle graphics and more with MOGWAI
-- **[Console Example](https://github.com/[username]/mogwai/tree/main/examples/MOGWAI_CLI)** - Console integration (MOGWAI CLI source code)
-- **[IoT Example](https://github.com/[username]/mogwai/tree/main/examples/MOGWAI_RUNTIME)** - .NET MAUI program example
+  - **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinFormsMogwai)** - Turtle graphics and more with MOGWAI
+- **[Console Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MOGWAI_CLI)** - Console integration (MOGWAI CLI source code)
+- **[IoT Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MOGWAI_RUNTIME)** - .NET MAUI program example
 
 ---
 
