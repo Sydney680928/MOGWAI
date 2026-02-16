@@ -47,18 +47,10 @@
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 
 		<!-- Symbols pour le debugging local -->
-		<!-- <IncludeSymbols>true</IncludeSymbols> -->
-		<!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
-		<DebugType>embedded</DebugType>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+		<!--<DebugType>embedded</DebugType>-->
 		
 	</PropertyGroup>
-
-	<ItemGroup>
-	  <Compile Remove="Docs\**" />
-	  <EmbeddedResource Remove="Docs\**" />
-	  <None Remove="Docs\**" />
-	</ItemGroup>
-
-	<!-- Dossiers (conservé de ton original) -->
 
 </Project>
