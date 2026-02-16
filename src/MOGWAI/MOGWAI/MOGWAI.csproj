@@ -1,0 +1,61 @@
+﻿
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		
+		<!-- Configuration de base -->
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<OutputType>Library</OutputType>
+
+		<!-- Versioning -->
+		<Version>8.0.0</Version>
+		<FileVersion>8.0.0.0</FileVersion>
+		<AssemblyVersion>8.0.0.0</AssemblyVersion>
+
+		<!-- Métadonnées minimales pour le package local -->
+		<PackageId>MOGWAI</PackageId>
+		<Authors>Stéphane Sibué</Authors>
+		<Company>Stéphane Sibué</Company>
+		<Product>MOGWAI</Product>
+		<Description>MOGWAI - A modern RPN scripting language for industrial IoT automation.</Description>
+
+		<!-- Copyright -->
+		<Copyright>Copyright © 2015-2025 Stéphane Sibué</Copyright>
+
+		<!-- LICENCE (Expression SPDX) -->
+		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+		
+		 <!-- Copyright dans les métadonnées du package -->
+		<Copyright>Copyright © 2015-2025 Stéphane Sibué</Copyright>
+  
+		<!-- Liens projet -->
+		<PackageProjectUrl>https://github.com/Sysdney680928/mogwai</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Sydney680928/mogwai</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+
+		<!-- Tags pour recherche -->
+		<PackageTags>rpn;scripting;iot;automation;embedded;stack;forth;industrial</PackageTags>
+
+		<!-- README -->
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+
+		<!-- Pas de publication pour l'instant -->
+		<IsPackable>true</IsPackable>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+
+		<!-- Symbols pour le debugging local -->
+		<!-- <IncludeSymbols>true</IncludeSymbols> -->
+		<!-- <SymbolPackageFormat>snupkg</SymbolPackageFormat> -->
+		<DebugType>embedded</DebugType>
+		
+	</PropertyGroup>
+
+	<!-- Dossiers (conservé de ton original) -->
+	<ItemGroup>
+		<Folder Include="Docs\" />
+	</ItemGroup>
+
+</Project>

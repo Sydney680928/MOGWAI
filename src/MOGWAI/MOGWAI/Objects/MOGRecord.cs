@@ -1,0 +1,185 @@
+﻿// Copyright 2015-2026 Stéphane Sibué
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using MOGWAI.Engine;
+using MOGWAI.Exceptions;
+using System.Text;
+
+namespace MOGWAI.Objects
+{
+    public class MOGRecord : MOGObject
+    {
+        public Dictionary<string, MOGObject> Items { get; private set; } = new();
+
+        public MOGRecord(MogwaiEngine engine) : base(engine)
+        {
+            Type = engine.GetType(typeof(MOGRecord));
+        }
+
+        public MOGRecord(MogwaiEngine engine, string content, int originPosition, MogwaiExecutionContext? context) : this(engine)
+        {
+            var parser = new Parser();
+            parser.Parse(engine, content, originPosition, context);
+            CreateItems(parser.ParsedObjects);
+            Code = content;
+            StartPos = originPosition;
+            EndPos = originPosition + content.Length + 1;
+            ExecutionContext = context;
+        }
+
+        public MOGRecord(MogwaiEngine engine, List<MOGObject> items) : this(engine)
+        {
+            CreateItems(items);
+        }
+
+        public MOGRecord(MogwaiEngine engine, Dictionary<string, MOGObject> items) : this(engine)
+        {
+            foreach (var key in items.Keys)
+            {
+                Items[key] = items[key].Clone();
+            }
+        }
+
+        public void SetItem(string key, MOGObject value) => Items[key] = value;
+
+        public MOGObject? GetItem(string key)
+        {
+            if (Items.ContainsKey(key))
+                return Items[key];
+
+            return null;
+        }
+
+        public bool RemoveItem(string key) => Items.Remove(key);
+
+        private void CreateItems(List<MOGObject> items)
+        {
+            // Si le 1er item est le mot "!" AutoEval = true
+
+            if (items.Count > 0 && items[0] is MOGWord word && word.Value == "!")
+            {
+                AutoEval = true;
+                items.RemoveAt(0);
+            }
+
+            // On doit avoir un nombre pair d'éléments (clé/valeur)
+
+            if (items.Count % 2 != 0)
+                throw new MogwaiInvalidRecordException("Le nombre d'éléments dans un enregistrement doit être pair (clé/valeur).");
+
+            // On doit avoir 1 clé et une valuer et rien d'autre
+
+            var dic = new Dictionary<string, MOGObject>();
+
+            for (int i = 0; i < items.Count; i += 2)
+            {
+                if (items[i] is MOGKey key)
+                {
+                    dic[key.Value] = items[i + 1];
+                }
+                else
+                {
+                    throw new MogwaiInvalidRecordException("La clé n'a pas le bon type.");
+                }
+            }
+
+            Items = dic;
+        }
+
+        private async Task Eval()
+        {
+            foreach (var key in Items.Keys)
+            {
+                var item = Items[key];
+                var stackSize = Engine.StackSize;
+
+                var r = await item.EngineEval();
+
+                if (r != EvalResult.NoError)
+                    break;
+
+                if (Engine.StackSize > stackSize)
+                {
+                    var value = Engine.StackPop();
+                    Items[key] = value!;
+                }
+            }
+        }
+
+        public override MOGRecord Clone()
+        {
+            var obj = new MOGRecord(Engine, Items);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
+        public override async Task<EvalResult> EngineEval()
+        {
+            if (AutoEval)
+                await Eval();
+
+            return await base.EngineEval();
+        }
+
+        public override async Task<EvalResult> UserEval()
+        {
+            await Eval();
+            return await base.UserEval();
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            if (AutoEval)
+                sb.Append("!");
+
+            foreach (var key in Items.Keys)
+            {
+                if (sb.Length > 0)
+                    sb.Append(" ");
+
+                sb.Append(key);
+                sb.Append(": ");
+                sb.Append(Items[key]);
+            }
+
+            return $"[{sb}]";
+        }
+
+        public override string ToJson()
+        {
+            var sb = new StringBuilder();
+
+            sb.Append("{");
+
+            var items = new string[Items.Keys.Count];
+            int i = 0;
+
+            foreach (var key in Items.Keys)
+            {
+                var value = Items[key].ToJson();
+                var item = $"\"{key}\":{value}";
+                items[i++] = item;
+            }
+
+            var s = string.Join(',', items);
+            sb.Append(s);
+
+            sb.Append("}");
+
+            return sb.ToString();
+        }
+    }
+}
