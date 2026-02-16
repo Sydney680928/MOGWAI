@@ -1,0 +1,2492 @@
+# GLOSSARY
+
+## LANGUAGE FUNCTIONS
+
+### `mogwai.reset`
+
+Forces **MOGWAI** to perform a runtime reset.
+
+***
+
+### `mogwai.info`
+
+Returns a record containing various information about the runtime and the system it runs on.
+
+```
+mogwai.info ?d
+```
+
+Will display:
+
+```
+name:                "MOGWAI CLI"
+version:             "8.0.0.0"
+platform:            "WINDOWS"
+architecture:        "X64"
+OSdescription:       "Microsoft Windows 10.0.26200"
+framework:           ".NET 9.0.13"
+runtimeID:           "win-x64"
+prompt:              "MOGWAI RUNTIME 8.0.0.0...
+primitives:          ('+' '-' '*' '/' 'sin' 'cos' 'tan' 'asin' 'acos' '...
+externalKeywords:    ()
+hostKeywords:        ('?s' 'run' 'edit' 'file.edit' 'file.select')
+debug:               true
+keepAlive:           true
+isTask:              false
+```
+
+| Key                 | Meaning                                                                                 |
+| ------------------- | --------------------------------------------------------------------------------------- |
+| `name:`             | Runtime name.                                                                           |
+| `version:`          | Runtime version.                                                                        |
+| `platform:`         | Name of the platform on which the runtime runs.                                         |
+| `architecture:`     | Platform architecture.                                                                  |
+| `OSdescription:`    | Full platform description.                                                              |
+| `framework:`        | .NET runtime version                                                                    |
+| `runtimeID:`        | Platform runtime ID.                                                                    |
+| `prompt:`           | **MOGWAI** runtime prompt.                                                              |
+| `primitives:`       | List of available primitives.                                                           |
+| `externalKeywords:` | List of available external keywords (functions provided by extensions).                 |
+| `hostKeywords:`     | List of available host keywords (functions provided by the host).                       |
+| `debug:`            | true if the runtime is in debug mode.                                                   |
+| `extensions:`       | List of loaded extensions.                                                              |
+| `keepAlive:`        | true if the **MOGWAI** runtime keeps its execution context from one session to another. |
+| `isTask:`           | true if the **MOGWAI** runtime is a child task.                                         |
+
+***
+
+### `mogwai.exit`
+
+Forces the runtime to stop the current execution without raising an error.
+
+***
+
+### `mogwai.halt`
+
+Forces the runtime to stop the current execution and raises error MW.2 "halt encountered".
+
+***
+
+### `mogwai.cclear`
+
+Clears the cache of procedures included via the `include` command.
+<br>Ensures that the included code is the latest version.
+
+***
+
+### `mogwai.strict`
+
+If `true` is passed as parameter, all variables must be declared before being used.<br>
+Variables are declared with the `=>` function :
+
+```
+100 'A' => # Declares variable A as .number type and assigns it the value 100.
+```
+
+> By default `mogwai.strict` is disabled. 
+
+*** 
+
+### `mogwai.isTask`
+
+Returns `true` if the runtime is a child task (see task management).
+
+***
+
+### `mogwai.sendMessage`
+Sends a message to the host. The message is a record containing at least the `type:` key.
+```
+"MY_EVENT" 567 mogwai.sendMessage
+# Sends the following message to the host by the MessageReceivedFromRuntime delegate function.
+# The number 567 is passed as parameter to the host.
+# Task<EvalResult> MessageReceivedFromRuntime(Engine engine, string message, MOGObject parameter);
+```
+
+***
+
+### `env.machineName`
+
+Returns the name of the machine on which the runtime is running as a string. 
+
+*** 
+
+### `funcs`
+
+Returns the list of defined user functions.
+
+***
+
+### `->`
+
+Stores a value in a variable.
+
+```
+50 -> 'A'
+```
+
+***
+
+### `->+`
+
+Adds a value to a variable.
+
+```
+50 ->+ 'A'
+```
+
+***
+
+### `->-`
+
+Subtracts a value from a variable.
+
+```
+50 ->- 'A'
+```
+
+***
+
+### `->*`
+
+Multiplies a variable by a value:
+
+```
+50 ->* 'A'
+```
+
+***
+
+### `->/`
+
+Divides a variable by a value:
+
+```
+50 ->/ 'A'
+```
+
+***
+
+### `++`
+
+Increments a variable.
+
+```
+'A' ++
+```
+
+***
+
+### `--`
+
+Decrements a variable.
+
+```
+'A' --
+```
+
+***
+
+### `rcl`
+
+Pushes the value of a variable whose name is passed as parameter onto the stack.
+
+```
+100 -> '$A'
+'$A' rcl ?
+
+# Displays 100
+```
+
+***
+
+### `purge`
+
+Deletes a variable whose name is passed as parameter.
+
+```
+'$A' purge
+```
+
+***
+
+### `exists`
+
+Returns `true` if the variable whose name is passed as parameter exists.
+
+```
+'$A' exists
+```
+
+***
+
+### `eval`
+
+Evaluates an object on the stack.
+
+The behavior differs depending on the type of object evaluated:
+
+- Functions and code blocks are executed. 
+- Strings are updated with control characters and replacement blocks.
+- Dynamic elements of a list are replaced by their current value.
+- Dynamic elements of a record are replaced by their current value.
+
+```
+"Mr. X" -> 'name'
+"The name is {! Name}" eval ?
+
+# Displays "The name is Mr. X"
+
+[x: 50 name: name] eval
+
+# Pushes [x: 50 name: "Mr. X"] onto the stack
+```
+
+***
+
+### `include`
+
+Includes and immediately executes code from a file.
+
+```
+"my code.mog" include
+```
+
+***
+
+### `using`
+
+Imports an extension library in ***MOGWAI*** format.
+
+If the extension is in the `path.usings` directory, you can just specify its name (with a name object) without the path and extension.
+
+```
+'MOGWA_SERIAL' using
+```
+
+If the extension is not in the `path.usings` directory, you must specify its full name with path and extension (with a string object). 
+
+```
+"my extensions/MOGWA_SERIAL.dll" using
+```
+
+***
+
+### `usings`
+
+Lists the usings performed and available.
+
+***
+
+### `get`
+
+Returns the value of a key in a record, an element of a list or a data
+
+| Action                          | Result                 |
+| ------------------------------- | ---------------------- |
+| `(1 2 3 4) 1 get`               | will return 2          |
+| `[x: 10 y: 20] x: get`          | will return 10         |
+| `[x: 10 l: (1 2 3)] (l: 1) get` | will return 2          |
+| `D:FFEA10 1 get`                | will return 234 (0xEA) |
+
+***
+
+### `set`
+
+Modifies the value of a key in a record, list or data:
+
+| Action                     | Result                       |
+| -------------------------- | ---------------------------- |
+| `(1 2 3 4) 0 10 set`       | will return `(10 2 3 4)`     |
+| `[x: 10 y: 20] x: 100 set` | will return `[x: 100 y: 20]` |
+| `D:FFEA10 0 0xAA set`      | will return `D:AAEA10`       |
+
+***
+
+### `size`
+
+Returns the size of a record, list, data, binary or string.
+
+***
+
+### `keys`
+
+Returns a list composed of the keys of a record.
+
+```
+[x: 10 y: 50 z: 100] keys 
+
+# Will push (x: y: z:) onto the stack
+```
+
+***
+
+### `first`
+
+Returns the first element of a string, list or data.
+
+***
+
+### `last`
+
+Returns the last element of a string, list or data.
+
+***
+
+### `butfirst`
+
+Returns all elements except the first of a string, list or data.
+
+***
+
+### `butlast`
+
+Returns all elements except the last of a string, list or data.
+
+***
+
+### `contains`
+
+Returns `true` if an element is present in a string, record, list or data.
+
+| Action                         | Result              |
+| ------------------------------ | ------------------- |
+| `"TOTO" "T" contains`          | will return `true`. |
+| `[x: 50 y: 100] x: contains`   | will return `true`. |
+| `(10 "EEE" 20 50) 20 contains` | will return `true`. |
+| `D:FF00FFAB 0xFF contains`     | will return `true`. |
+
+***
+
+### `where`
+
+Returns a list of all locations of an element in a string, list or data.
+
+| Action                       | Result                    |
+| ---------------------------- | ------------------------- |
+| `"HELLO WORLD" "O" where`    | will return `(4 7)`       |
+| `(10 100 40 10 24) 10 where` | will return `(0 3)`       |
+| `D:45ED23FF0645DD 0x45`      | where will return `(0 5)` |
+
+***
+
+### `split`
+
+Returns a list composed of elements of a string separated by a string containing the separator (which can consist of multiple characters).
+
+| Action                  | Result                                |
+| ----------------------- | ------------------------------------- |
+| `"X1;X45;Z34;12" split` | will return `("X1" "X45" "Z34" "12")` |
+
+***
+
+### `join`
+
+Recomposes a string from elements of a list and a separator.
+
+> Inverse function of split.
+
+| Action                             | Result                        |
+| ---------------------------------- | ----------------------------- |
+| `("X1" "X45" "Z34" "12") ";" join` | will return `"X1;X45;Z34;12"` |
+
+### `like`
+
+Returns `true` if a string matches a particular pattern.
+
+```
+?           = Any single character
+*           = Zero or more characters
+#           = Any digit (0 to 9)
+[charlist]  = Any single character in charlist
+[!charlist] = Any single character not in charlist
+```
+
+```
+"MR SMITH 62" "M? SM*H ??" like
+
+# Pushes true onto the stack
+```
+
+***
+
+### `right`
+
+Returns the last n characters of a string or bytes of a data.
+
+```
+"Hello world!" 6 right
+
+# Pushes "world!" onto the stack
+
+D:56231245 3 right # Pushes D:231245 onto the stack
+```
+
+*** 
+
+### `left`
+
+Returns the first n characters of a string or bytes of a data.  
+
+```
+"Hello world!" 6 left
+
+# Pushes "Hello " onto the stack
+
+D:56231245 3 left # Pushes D:562312 onto the stack
+```
+
+***
+
+### `extract`
+
+Extracts multiple elements from a list or data by specifying which elements to extract in a list.
+
+```
+(10 20 30 40) (0 1 3) extract 
+
+# will return (10 20 40)
+
+D:FF45AB23 (0 1 3) extract
+
+# will return DATA:FF4523
+
+[x: 10 y: 20 z: 100] (x: z:) extract 
+
+# will return [x: 10 z: 100]
+```
+
+***
+
+### `wait`
+
+Suspends the runtime for a time expressed in milliseconds without blocking the processing of event and timer type messages.
+
+***
+
+### `rand`
+
+Returns a random number between 0 and 1.
+
+***
+
+### `sub`
+
+Extracts a part of a list, data or binary number by specifying the start and extent.
+
+```
+(10 20 30 40 50) 1 3 sub
+# Pushes (20 30 40) onto the stack
+
+D:05FFEDAB2312 2 3 sub 
+# Pushes DATA:EDAB23 onto the stack
+
+B:1001111001111 2 4 sub 
+# Pushes B:0011 onto the stack
+```
+
+***
+
+### `break`
+
+Forces exit from a for, while, foreach, forever and during loop.
+
+***
+
+### `return`
+
+Forces exit from a function.
+
+***
+
+### `flags`
+
+Returns the list of all active flags.
+
+***
+
+### `flag.set`
+
+Activates the flag whose name is passed as parameter.
+
+***
+
+### `flag.clear`
+
+Deactivates the flag whose name is passed as parameter.
+
+***
+
+### `flag.isSet`
+
+Returns true if the flag whose name is passed as parameter is active.
+
+***
+
+### `flag.isClear`
+
+Returns true if the flag whose name is passed as parameter is inactive.
+
+***
+
+### `unique`
+
+Returns a unique code as a string.
+<br>Ex: "DEC378AF69F246B6A1688799F70A987A"
+
+***
+
+### `guid`
+
+Returns a unique code in UUID (or GUID) format as a string.
+<br>Ex: "392BDA7A-9BEB-43B2-ACC7-05C8A06B0F44"
+
+***
+
+### `json->`
+
+Creates a list or record from a json formatted string.
+
+***
+
+### `->json`
+
+Creates a json formatted string from a list or record.
+
+***
+
+### `->escape`
+
+Escapes a string passed as parameter.
+
+Quotes are replaced by `\"`, line breaks by `\r` and/or `\n`, etc… 
+
+***
+
+### `->unescape`
+
+Unescapes a string passed as parameter (see ->escape).
+
+***
+
+### `error.last`
+
+Returns the code of the last raised error.
+
+***
+
+### `error.reset`
+
+Resets the code of the last raised error to "MW.0" (no error).
+
+***
+
+### `error.throw`
+
+Artificially raises the error whose code is passed as parameter.
+
+***
+
+### `+`
+
+Adds 2 objects together.
+
+Possible combinations are:
+
+- 2 numbers
+- 1 list and an object
+- 2 strings
+- 1 data and a byte
+- 2 data
+- 2 lists
+
+***
+
+### `-`
+
+Subtracts 2 numbers.
+
+***
+
+### `*`
+
+Multiplies 2 numbers.
+
+***
+
+### `/`
+
+Divides 2 numbers.
+
+***
+
+### `<`
+
+Returns `true` if the first parameter is less than the second.
+
+***
+
+### `>`
+
+Returns `true` if the first parameter is greater than the second.
+
+***
+
+### `<=`
+
+Returns `true` if the first parameter is less than or equal to the second.
+
+***
+
+### `>=`
+
+Returns `true` if the first parameter is greater than or equal to the second.
+
+***
+
+### `==`
+
+Returns `true` if the first parameter is equal to the second.
+
+***
+
+### `!=`
+
+Returns `true` if the first parameter is different from the second.
+
+***
+
+### `and`
+
+Performs the logical AND operation between the first and second parameter.
+
+***
+
+### `or`
+
+Performs the logical OR operation between the first and second parameter.
+
+***
+
+### `xor`
+
+Performs the logical XOR operation between the first and second parameter.
+
+***
+
+### `not`
+
+Performs the logical NOT operation between the first and second parameter.
+
+***
+
+### `isnull`
+
+Returns `true` if the object passed as parameter is `null`.
+
+***
+
+### `isEmpty`
+
+Returns `true` if the object on the stack is `empty`.
+
+### `drop`
+
+Removes the first element from the stack.
+
+***
+
+### `swap`
+
+Swaps the first 2 elements of the stack.
+
+***
+
+### `dup`
+
+Duplicates the first element of the stack.
+
+***
+
+### `depth`
+
+Returns the number of elements in the stack.
+
+***
+
+### `clear`
+
+Clears the stack.
+
+***
+
+### `sign`
+
+Returns a list containing the type of the n elements of the stack without modifying the stack.
+
+```
+# Place elements on the stack
+10 "EEE"
+
+# Request the type of these 2 elements
+2 sign
+
+# The list (.string .number) is pushed onto the stack
+```
+
+***
+
+### `->type`
+
+Returns the type of the object passed as parameter.
+
+***
+
+### `->compress`
+
+Returns a data that is the result of compressing a data passed as parameter.
+
+***
+
+### `->decompress`
+
+Returns a data that is the result of decompressing a data passed as parameter. The data passed as parameter is normally the result of the `compress` function.
+
+***
+
+### `->pack`
+Serializes an object passed as parameter and returns the result as a data.
+
+***
+
+### `->unpack`
+Deserializes a data passed as parameter and returns the result as an object. The data passed as parameter is normally the result of the `->pack` function.
+
+***
+
+### `vars`
+
+Returns the list of all existing global variables.
+
+***
+
+### `lvars`
+
+Returns the list of all existing local variables.
+
+***
+
+### `console.print` or `??`
+
+Displays a string on screen without a line break.
+
+```
+"Hello " console.print "world!" console.println
+
+# Will display:
+# Hello world!
+```
+
+***
+
+### `console.println` or `?`
+
+Displays a string on screen with a line break.
+
+***
+
+### `?d`
+
+Displays lists, records and data on screen in a "clearer" version.
+
+```
+(10 20 30 40 50) ?d
+```
+
+Will display:
+
+```
+0 : 10
+1 : 20
+2 : 30
+3 : 40
+4 : 50
+```
+
+```
+[x: 100 y: 50 z: "HELLO"] ?d
+```
+
+Will display:
+
+```
+x:  100
+y:  50
+z:  "HELLO"
+```
+
+```
+D:5612FFEA1789AD34C5FAFEFF01021020ABACA0 ?d
+```
+
+Will display:
+
+```
+00000000  56 12 FF EA 17 89 AD 34 C5 FA FE FF 01 02 10 20  | V.ÿê.?­4Åúþÿ...   |
+00000010  AB AC A0                                         | «¬               |
+```
+
+***
+
+### `console.clear`
+
+Clears the screen.
+
+***
+
+### `console.input`
+
+Waits for keyboard input (ending with validation by the `ENTER` key) and returns the corresponding string.
+
+***
+
+### `console.prompt`
+
+Like the `input` function but displays a prompt message passed as parameter.
+
+```
+"What is your first name? " console.prompt
+"Your first name is: " swap + ?
+```
+
+Will display the prompt, then you can enter (for example STEPHANE)
+
+```
+What is your first name? STEPHANE
+```
+
+Then once the input (STEPHANE) is validated:
+
+```
+Your first name is: STEPHANE
+```
+
+***
+
+### `console.show`
+
+Shows the output console (if managed by the host).
+
+> Has no effect in **MOGWAI CLI**.
+
+***
+
+### `console.hide`
+
+Hides the output console (if managed by the host).
+
+> Has no effect in **MOGWAI CLI**.
+
+***
+
+### `->list`
+
+Builds a list from elements present on the stack. You must pass the number of elements to take as parameter. An error is raised if the stack does not contain enough elements.
+
+```
+10 20 30 40 50 5 ->list ?
+
+# Pushes (10 20 30 40 50) onto the stack
+```
+
+***
+
+### `->int`
+
+Converts a number passed as parameter to an integer.
+
+***
+
+### `->str`
+
+Converts an object passed as parameter to a string.
+
+***
+
+### `->format`
+
+Converts a number to a string using a format.
+
+```
+50 "000" ->format ?
+# Will display 050
+
+50.8 "000.000" ->format ?
+# Will display 050.800
+```
+
+***
+
+### `->vars`
+
+Extracts values and assigns them to locally created variables.
+
+With a record, extracts the values of all keys and creates the corresponding local variables for the extracted keys:
+
+```
+[x: 10 y: 20 z: 50] ->vars 
+"x={! x}" eval ? 
+"y={! y}" eval ? 
+"z={! z}" eval ?
+```
+
+Will display:
+
+```
+x=10
+y=20
+z=50
+```
+
+***
+
+With the stack, extracts values and creates the corresponding local variables:
+
+```
+20 30 40 ('a' 'b' 'c') ->vars 
+"a={! a}" eval ? 
+"b={! b}" eval ? 
+"c={! c}" eval ?
+```
+
+Will display:
+
+```
+a=20
+b=30
+c=40
+```
+
+***
+
+### `->safeVars`
+
+Verifies that the values present on the stack are as expected. 
+You can check their number and type, and automatically assign local variables with stack values. An error is raised in case of non-compliance.
+
+```
+"EEE" 50 [x: .string y: .number] ->safeVars 
+"x={! x}" eval ? 
+"y={! y}" eval ?
+```
+
+Will display:
+
+```
+x=EEE
+y=50
+```
+
+***
+
+### `->params`
+
+Allows passing named parameters (key/value pairs in a record) and verifying that expected parameters are present and their types match. 
+If everything is correct, local variables corresponding to expected parameters are automatically created with their corresponding values.
+
+```
+[x: 100 y: "HELLO"] [x: .number y: .string] ->params 
+"x={! x}" eval ? 
+"y={! y}" eval ?
+```
+
+Will display:
+
+```
+x=100
+y=HELLO
+```
+
+***
+
+### `check`
+Verifies that the n first elements of the stack are of the expected type.
+```
+10 "EEE" 20 4 (.number .number .string .number) check
+# No error is raised because the 4 first elements of the stack are of the expected type.
+
+10 "EEE" 20 4 (.string .number .string .number) check
+# An error is raised :
+# stack corruption error (MW.24)
+# stack types expected (.string .number .string .number) but actually (.number .number .string .number)
+``` 
+
+***
+
+### `->num`
+
+Converts a string to a number when possible. 
+If impossible, an error is raised.
+
+***
+
+### `->char`
+Converts a number to a character according to the Unicode standard.
+
+***
+
+### `->name`
+
+Converts a string or key to a name.
+
+***
+
+### `->key`
+
+Converts a string or name to a key.
+
+***
+
+### `->data`
+
+Takes n elements from the stack and makes a data. 
+The number of elements to take is passed as parameter.
+
+```
+0xFF 0xAB 0x45 3 ->data
+
+# Pushes D:FFAB45 onto the stack
+```
+
+***
+
+### `->hex`
+
+Converts a number to a string in hexadecimal format.
+
+```
+255 ->hex 
+
+# Pushes "FF" onto the stack
+```
+
+***
+
+### `hex->`
+
+Converts a hexadecimal format string to a number.
+
+```
+"FF" hex->
+
+# Pushes the number 255 onto the stack
+```
+
+***
+
+### `->bin`
+
+Converts a number to a binary object.
+
+```
+278 ->bin
+
+# Pushes B:100010110 onto the stack
+```
+
+***
+
+### `->bin8`
+
+Converts a number to a binary object with 8 bits.
+
+```
+278 ->bin8 # Pushes B:100010110 onto the stack
+```
+
+***
+
+### `->bin16`
+
+Converts a number to a binary object with 16 bits.
+
+```
+278 ->bin16 # Pushes B:0000000100010110 onto the stack
+```
+
+*** 
+
+### `->bin32`
+
+Converts a number to a binary object with 32 bits.
+
+```
+278 ->bin32 # Pushes B:00000000000000000000000100010110 onto the stack
+```
+
+***
+
+### `->bin48`
+
+Converts a number to a binary object with 48 bits.
+
+```
+278 ->bin48 # Pushes B:000000000000000000000000000000000000000100010110 onto the stack
+```
+
+***
+
+### `->bin64`
+
+Converts a number to a binary object with 64 bits.
+
+```
+278 ->bin64 # Pushes B:0000000000000000000000000000000000000000000000000000000100010110 onto the stack
+```
+
+***
+
+### `->upper`
+
+Converts a string to uppercase.
+
+***
+
+### `->lower`
+
+Converts a string to lowercase.
+
+***
+
+### `->function`
+
+Converts a list or a string to a function.
+
+```
+( 2 2 + ) ->function
+# Pushes « 2 2 + » onto the stack
+
+" 2 2 + " ->function
+# Pushes « 2 2 + » onto the stack
+```
+
+***
+
+### `->primitive`
+
+Converts a string to a **MOGWAI** primitive.
+
+> Warning, the primitive is placed on the stack and is not automatically executed. To execute it, you must use the eval function.
+
+***
+
+### `->code`
+Converts a list or a string to a code block. The code block is not executed, it is just pushed onto the stack. To execute it, you must use the eval function.
+```
+( 2 2 + ) ->code
+# Pushes { 2 2 + } onto the stack
+
+" 2 2 + " ->code
+# Pushes { 2 2 + } onto the stack
+```
+
+***
+
+### `->u8`
+
+Converts a number to an unsigned 8-bit integer. 
+The result is returned as a data.
+
+***
+
+### `->i8`
+
+Converts a number to a signed 8-bit integer. 
+The result is returned as a data.
+
+***
+
+### `->u16`
+
+Converts a number to an unsigned 16-bit integer. 
+The result is returned as a data.
+
+***
+
+### `->i16`
+
+Converts a number to a signed 16-bit integer. 
+The result is returned as a data.
+
+***
+
+### `->u32`
+
+Converts a number to an unsigned 32-bit integer. 
+The result is returned as a data.
+
+***
+
+### `->i32`
+
+Converts a number to a signed 32-bit integer. 
+The result is returned as a data.
+
+***
+
+### `->u64`
+
+Converts a number to an unsigned 64-bit integer. 
+The result is returned as a data.
+
+***
+
+### `->i64`
+
+Converts a number to a signed 64-bit integer. 
+The result is returned as a data.
+
+***
+
+### `utf8->`
+
+Converts a data to a UTF-8 encoded string.
+
+***
+
+### `->utf8`
+
+Converts a string to a UTF-8 encoded data.
+
+***
+
+### `ascii7->`
+
+Converts a data to a 7-bit ASCII encoded string.
+
+***
+
+### `->ascii7`
+
+Converts a string to a 7-bit ASCII encoded data.
+
+***
+
+### `ascii->`
+
+Converts a data to a 8-bit ASCII encoded string.
+
+### `->ascii`
+
+Converts a string to an 8-bit ASCII encoded data.
+
+***
+
+### `->base64`
+
+Converts a data to a base 64 encoded string.
+
+***
+
+### `base64->`
+
+Converts a base 64 encoded string to a data.
+
+***
+
+### `->md5`
+
+Returns the md5 hash of a data. 
+The hash is provided as a data.
+
+***
+
+### `->sha1`
+
+Returns the sha1 hash of a data.
+The hash is provided as a data.
+
+***
+
+### `->sha256`
+
+Returns the sha256 hash of a data.
+The hash is provided as a data.
+
+***
+
+### `->sha512`
+
+Returns the sha512 hash of a data.
+The hash is provided as a data.
+
+***
+
+### `>>` and `<<'
+
+Performs a bit shift on a number or binary object. 
+The shift is passed as parameter. 
+`>>` shifts bits to the right, `<<` to the left.
+
+```
+500 2 >>
+# Pushes 125 onto the stack
+
+B:01101111 2 >>
+# Pushes B:00011011 onto the stack
+
+B:01101111 2 <<
+# Pushes B:10111100 onto the stack
+```
+
+***
+
+### `~`
+
+Inverts each bit of a number passed as parameter.
+
+***
+
+### `&`
+
+Binary AND between 2 numbers passed as parameters.
+
+***
+
+### `|`
+
+Binary OR between 2 numbers passed as parameters.
+
+***
+
+### `^`
+
+Binary XOR between 2 numbers passed as parameters.
+
+***
+
+### `up`
+
+Sets a particular bit of a binary object.
+
+```
+B:110001 2 up
+# Pushes BIN:110101 onto the stack
+```
+
+***
+
+### `down`
+
+Clears a particular bit of a binary object.
+
+```
+B:110101 2 down
+# Pushes BIN:110001 onto the stack
+```
+
+***
+
+### `sin`
+
+Returns the sine of an angle passed as parameter. The angle is in radians.
+
+***
+
+### `cos`
+
+Returns the cosine of an angle passed as parameter. The angle is in radians.
+
+***
+
+### `tan`
+
+Returns the tangent of an angle passed as parameter. The angle is in radians.
+
+***
+
+### `asin`
+
+Returns the angle in radians whose sine is passed as parameter.
+
+***
+
+### `acos`
+
+Returns the angle in radians whose cosine is passed as parameter.
+
+***
+
+### `atan`
+
+Returns the angle in radians whose tangent is passed as parameter.
+
+### `PI`
+
+Returns the number PI.
+
+***
+
+### `->deg`
+
+Returns the angle in degrees of an angle in radians passed as parameter.
+
+```
+PI 3 / ->deg
+# Pushes 60 onto the stack
+```
+
+***
+
+### `->rad`
+
+Returns the angle in radians of an angle in degrees passed as parameter.
+
+```
+60 ->rad
+# Pushes 1.0471975511965976 onto the stack
+```
+
+***
+
+### `abs`
+
+Returns the absolute value of the number passed as parameter.
+
+***
+
+### `sqrt`
+
+Returns the square root of the number passed as parameter.
+
+***
+
+### `floor`
+
+Returns the largest integral value less than or equal to the number passed as parameter.
+***
+
+### `ceil`
+
+Returns the smallest integral value greater than or equal to the number passed as parameter.
+
+***
+
+### `pow`
+
+Returns a number passed as parameter raised to the power passed as parameter.
+
+```
+50 3 pow
+# Pushes 125000 onto the stack
+```
+
+***
+
+### `mod`
+
+Returns the remainder of integer division of one number by another.
+
+```
+65 3 mod ?
+# Pushes 2 onto the stack
+```
+
+***
+
+### `min`
+
+Returns the smallest number present in a list. 
+
+> Only numbers are allowed.
+
+```
+(56 34 9 27) min
+# Pushes 9 onto the stack
+```
+
+***
+
+### `max`
+
+Returns the largest number present in a list. 
+
+> Only numbers are allowed.
+
+```
+(1 56 34 9 27) max
+# Pushes 56 onto the stack
+```
+
+***
+
+### `sum`
+
+Returns the sum of all numbers present in a list.
+
+> Only numbers are allowed.
+
+```
+(1 56 34 9 27) sum
+# Pushes 127 onto the stack
+```
+
+***
+
+### `average`
+
+Returns the average of all numbers present in a list.
+
+> Only numbers are allowed.
+
+```
+(1 56 34 9 27) average ?
+# Pushes 25.4 onto the stack
+```
+
+***
+
+### `console.locate`
+
+Requests the runtime host to position the cursor at the coordinates passed as parameter. 
+The host is not obligated to respond. 
+
+> MOGWAI CLI handles this function.
+
+```
+5 7 console.locate
+```
+
+***
+
+### `console.cursor`
+
+Returns the current cursor coordinates on the host screen. 
+If the host does not handle this information, coordinates 0 0 are returned. 
+
+> **MOGWAI CLI** handles this function.
+
+***
+
+### `console.setForgroundColor`
+
+Requests the host to change the character display color by passing the color name to use as parameter.
+
+Colors defined in **MOGWAI CLI** are:
+
+- 'black'
+- 'blue'
+- 'cyan'
+- 'gray'
+- 'green'
+- 'magenta'
+- 'red'
+- 'white'
+- 'yellow'
+
+```
+'red' console.setForegroundColor
+```
+
+***
+
+### `console.setBackgroundColor`
+
+Requests the host to change the screen background color.
+
+> In **MOGWAI CLI**, uses the same colors as for `console.setForegroundColor`.
+
+***
+
+### `console.getInputKey`
+
+Requests the host to provide the code of the currently pressed key. -1 if no key is currently pressed.
+
+***
+
+### `http.get`
+
+Performs an http get on a uri by specifying the necessary header values. 
+
+Parameters are passed via a record:
+
+```
+[
+    uri: "https://api.github.com/orgs/dotnet/repos" 
+    requestHeaders: [User-Agent: ".NET Foundation Repository Reporter" token: "XXXXX"]
+] http.get
+```
+
+The response is a record containing the following keys:
+
+| Key           | Usage                                                                                           |
+| ------------- | ----------------------------------------------------------------------------------------------- |
+| `state:`      | `true` if everything went well.                                                                 |
+| `statusCode:` | The status code actually returned (e.g. 200).                                                   |
+| `response:`   | A data containing the response.<br>If an error occurs, this key is not present in the response. |
+
+### `http.post`
+
+Performs an http post on a uri by specifying request headers, content headers and content.
+
+All parameters are defined in a record passed as parameter:
+
+```
+[
+    uri: "https://api.github.com/orgs/dotnet/repos" 
+    requestHeaders: [ ]
+    contentHeaders: [ ]
+    content: DATA
+]
+```
+
+The content is of type data.
+
+The response, a record, is formatted exactly like that of the `http.get` function.
+
+***
+
+### `->uri`
+
+Composes a uri from a record whose keys correspond to the different parts of a uri:
+
+```
+[
+    url: "https://www.google.com" 
+    path: "api/v0/login" 
+    query: [id: "50" name: "DOE"]
+] ->uri 
+
+# Pushes "https://www.google.com:443/api/v0/login?id=50&name=DOE" onto the stack
+```
+
+***
+
+### `->urlEncode`
+
+Encodes a URL string passed as parameter. 
+
+This function can be used to encode the entire URL, including query string values. 
+URL encoding converts characters that are not allowed in a URL to character-entity equivalents. 
+For example, when the characters < and > are embedded in a block of text to be transmitted in a URL, they are encoded as %3c and %3e.
+
+***
+
+### `process.start`
+
+Starts a process. 
+
+Process information is provided via a record composed of the following keys:
+
+| Key                 | Usage                                                               |
+| ------------------- | ------------------------------------------------------------------- |
+| `filename:`         | File to execute (e.g. notepad.exe)                                  |
+| `arguments:`        | Arguments to use to start the process.                              |
+| `workingDirectory:` | Sets the current directory for the process.                         |
+| `wait:`             | If `true`, waits for the end of process execution before returning. |
+
+> Only the `filename:` key is required.
+
+```
+[
+    filename: "toto.exe" 
+    arguments: "/u -K" 
+    workingDirectory: "C:\...." 
+    wait: true ] process.start
+```
+
+***
+
+## DEBUGGING FUNCTIONS (used with MOGWAI STUDIO)
+
+### `debug.write`
+
+Requests the host and **MOGWAI STUDIO** (if connected) to display a message in the debug console.
+
+```
+"Debug message" debug.write
+```
+
+***
+
+### `debug.clear`
+
+Requests the host and **MOGWAI STUDIO** (if connected) to clear the debug screen.
+
+***
+
+### `debug.halt` or `¤`
+
+Performs a pause. Corresponds to a breakpoint.
+
+The program must be started in debug mode for the breakpoint to be taken into account. 
+When execution reaches this instruction, the runtime pauses.
+It is then possible to step through if necessary.
+
+```
+1 10 for 'i' do
+{
+    i ?
+    100 wait
+
+    # Place a breakpoint here
+    debug.halt
+}
+```
+
+***
+
+### `debug.tron`
+
+Activates tracing. The duration between each instruction is defined as parameter in milliseconds. 
+If **MOGWAI STUDIO** is connected, it displays the currently executing instruction in real time.
+
+```
+250 debug.tron
+```
+
+***
+
+### `debug.troff`
+
+Deactivates tracing.
+
+***
+
+## TIME MANAGEMENT FUNCTIONS
+
+### `now`
+
+Returns the current date of your machine as a number representing the number of 100-nanosecond intervals that have elapsed since midnight, January 1, 0001.
+
+For example, the number 6.389664359647076E+17 corresponds to the date 21/10/2025 at 11:39:56
+
+***
+
+### `->date`
+
+Converts a numeric date to date and time components.
+
+This function returns a record composed of the following keys:
+
+| Key          | Usage                                                          |
+| ------------ | -------------------------------------------------------------- |
+| `day:`       | Day.                                                           |
+| `month:`     | Month.                                                         |
+| `year:`      | Year.                                                          |
+| `hour:`      | Hours.                                                         |
+| `minute:`    | Minutes.                                                       |
+| `second:`    | Seconds.                                                       |
+| `dayOfYear:` | Day number in the year.                                        |
+| `dayOfWeek:` | Day number in the week.<br>(Sunday=0, Monday=1, …, Saturday=6) |
+
+```
+now ->date
+
+# If today is 21/10/2025 at 11:51:29
+# Pushes [day: 21 month: 10 year: 2025 hour: 11 minute: 51 second: 29 dayOfYear: 294 dayOfWeek: 2] onto the stack
+```
+
+***
+
+### `date->`
+Converts date and time components to a numeric date. The record passed as parameter contains the same keys as the record returned by the `->date` function.
+
+```
+[day: 21 month: 10 year: 2025 hour: 11 minute: 51 second: 29] date->
+# Pushes 6.38966438969E+17 onto the stack
+```
+***
+
+### `->duration`
+
+Returns a duration as a record composed of the following keys:
+
+| Key             | Usage                           |
+| --------------- | ------------------------------- |
+| `days:`         | Number of days elapsed.         |
+| `hours:`        | Number of hours elapsed.        |
+| `minutes:`      | Number of minutes elapsed.      |
+| `seconds:`      | Number of seconds elapsed.      |
+| `ms:` | Number of milliseconds elapsed. |
+
+Typically, to calculate the time elapsed between 2 moments, you can store the `now` at the start, then at the end subtract the start `now` from the current `now`, then use the `->duration` function to get the time elapsed between these 2 moments.
+
+```
+now 2500 wait now - abs ->duration
+
+# For a total duration of 2 seconds and 507 milliseconds
+# Pushes [days: 0 hours: 0 minutes: 0 seconds: 2 ms: 507] onto the stack
+```
+
+***
+
+### `duration->`
+Converts a duration record (see `->duration`) to a number of milliseconds.
+```
+[days: 0 hours: 0 minutes: 0 seconds: 2 ms: 507] duration->
+# Pushes 25070000 onto the stack
+```
+
+***
+
+### `->durations`
+Converts a number of milliseconds to a list of durations in different units (ms, seconds, minutes, hours, days).
+```
+25070000 ->durations
+# Pushes [totalDays: 2.9016203703703704E-05 totalHours: 0.0006963888888888889 totalMinutes: 0.04178333333333333 totalSeconds: 2.507 totalMs: 2507]) onto the stack
+```
+
+***
+
+## TASK MANAGEMENT FUNCTIONS
+
+### `task.wait`
+
+Waits for the task whose name is passed as parameter for the end of its execution before returning.
+
+***
+
+### `task.isRunning`
+
+Returns true if the child task whose name is passed as parameter is currently running.
+
+***
+
+### `task.stop`
+
+Stops the task whose name is passed as parameter. The task is stopped as soon as possible, but it is not an immediate stop.
+
+***
+
+### `task.purge`
+
+Deletes the task whose name is passed as parameter.
+
+***
+
+### `task.list`
+
+Returns the list of names of all existing child tasks.
+
+***
+
+### `task.setResult`
+
+Allows a child task to store its result. This function can only be used from within a child task's code. The result can be of any type managed by **MOGWAI**.
+
+```
+"MyResult" task.setResult
+54 task.setResult
+```
+
+***
+
+### `task.result`
+
+Returns the result of the child task whose name is passed as parameter. By default, the result has value `null`.
+
+***
+
+### `task.name`
+
+Returns the name of the child task. 
+
+> This function can only be used from within a child task's code.
+
+***
+
+### `task.join`
+
+Waits for all tasks listed as parameter to finish before returning.
+
+```
+('T1' 'T2' 'T3') task.join
+```
+
+***
+
+### `task.publish`
+
+Allows a child task to publish (send) a value to its parent task. 
+The published value can be of any type managed by **MOGWAI**.
+
+> This function can only be used from within a child task's code. 
+
+```
+"MyValue" task.publish
+
+2345 task.publish
+```
+
+***
+
+## EVENT MANAGEMENT FUNCTIONS
+
+### `event.purge`
+
+Removes handling of an event whose name is passed as parameter.
+
+***
+
+### `event.list`
+
+Returns the list of all declared events being handled.
+
+***
+
+### `event.fire`
+
+Triggers an event towards the runtime. 
+Pass as parameters the event name, an object that accompanies the event and will be retrieved via the local variable `eventData` in the event code.
+
+```
+'MyEvent' "Hello" event.fire
+```
+
+***
+
+## TIMER MANAGEMENT FUNCTIONS
+
+### `timer.start`
+
+Starts the timer whose name is passed as parameter.
+
+***
+
+### `timer.stop`
+
+Stops the timer whose name is passed as parameter.
+
+***
+
+### `timer.purge`
+
+Deletes the timer whose name is passed as parameter.
+
+***
+
+#### `timer.state`
+
+Returns `true` if the timer is running.
+
+***
+
+### `timer.list`
+
+Returns the list of all declared timers regardless of their status (running or stopped).
+
+***
+
+### `DI`
+
+Suspends triggering of all timers and events. 
+
+> Warning, they are put on hold and will be executed when interrupts are enabled again.
+
+***
+
+### `EI`
+
+Allows triggering of timers and events.
+
+***
+
+## FILE MANAGEMENT FUNCTIONS
+
+**MOGWAI** version 8 introduces a completely redesigned file management system using a conventional path-based approach instead of the node-based system from previous versions.
+
+### Path Management
+
+### `path.programs`
+
+Returns the standard programs folder path.
+
+```
+path.programs ?
+# Returns: "C:\Users\Username\Documents\MOGWAI.8\Programs"
+```
+***
+
+### `path.files`
+
+Returns the standard files folder path.
+
+```
+path.files ?
+# Returns: "C:\Users\Username\Documents\MOGWAI.8\Files"
+```
+***
+
+### `path.usings`
+
+Returns the standard extension libraries folder path.
+
+```
+path.usings ?
+# Returns: "C:\Users\Username\Documents\MOGWAI.8\Usings"
+```
+***
+
+### `path.desktop`
+
+Returns the current user's desktop folder.
+***
+
+### `path.documents`
+
+Returns the current user's documents folder.
+***
+
+### `path.music`
+
+Returns the folder where the current user's music files are stored.
+***
+
+### `path.videos`
+
+Returns the folder where the current user's videos are stored.
+***
+
+### `path.pictures`
+
+Returns the folder where the current user's pictures are stored.
+***
+
+### `path.programData`
+
+Returns the system's 'ProgramData' folder.
+***
+
+### `path.tempDirectory`
+
+Returns the temporary files folder.
+***
+
+### `path.tempFilename`
+
+Returns a complete path to a new temporary file created by the system.
+***
+
+### `path.make`
+
+Generates a file or folder path from a list of segments. 
+
+Pass a list of path segments as parameter. The list can use auto-evaluation with the `!` character.
+
+```
+(! path.files "data.txt") path.make
+# Returns: "C:\Users\Username\Documents\MOGWAI.8\Files\data.txt"
+
+(path.files "MyFolder" "report.txt") eval path.make
+```
+***
+
+### `path.setPrograms`
+
+Customizes the default programs folder path.
+
+```
+"C:\MyPrograms" path.setPrograms
+```
+***
+
+### `path.setFiles`
+
+Customizes the default files folder path.
+
+```
+"D:\MyData" path.setFiles
+```
+***
+
+### `path.setUsings`
+
+Customizes the default extension libraries folder path.
+
+```
+"C:\MyLibraries" path.setUsings
+```
+***
+
+### Directory Management
+
+### `dir.exists`
+
+Returns `true` if the folder exists at the specified path.
+
+```
+"C:\Temp" dir.exists
+```
+***
+
+### `dir.create`
+
+Creates a new folder at the specified path. Creates parent directories recursively if needed.
+
+```
+"C:\Temp\MyFolder\SubFolder" dir.create
+```
+***
+
+### `dir.purge`
+
+Deletes a folder and all its contents at the specified path.
+
+```
+"C:\Temp\MyFolder" dir.purge
+```
+***
+
+### `dir.rename`
+
+Renames a folder. Pass old path and new path as parameters.
+
+```
+"C:\Temp\OldName" "C:\Temp\NewName" dir.rename
+```
+***
+
+### `dir.current`
+
+Returns the current working folder path.
+
+```
+dir.current ?
+# Returns: "C:\Projects"
+```
+***
+
+### `dir.setCurrent`
+
+Sets the current working folder.
+
+```
+"C:\Projects" dir.setCurrent
+```
+***
+
+### `dir.directories`
+
+Returns the list of subfolders in the specified folder path.
+
+```
+"C:\Temp" dir.directories
+# Returns: ("Folder1" "Folder2" "Folder3")
+
+path.files dir.directories
+```
+***
+
+### `dir.files`
+
+Returns the list of files in the specified folder path.
+
+```
+"C:\Temp" dir.files
+# Returns: ("file1.txt" "file2.dat" "report.pdf")
+
+path.files dir.files
+```
+***
+
+### File Management - Complete Read/Write
+
+### `file.data.read`
+
+Reads all binary content of a file at once and returns it as DATA.
+
+Pass the complete file path as parameter.
+
+```
+"C:\data.bin" file.data.read
+(! path.files "image.png") path.make file.data.read
+```
+***
+
+### `file.data.write`
+
+Writes complete binary data to a file.
+
+Pass the complete file path and the DATA as parameters.
+
+```
+"C:\MyFile.bin" DATA:FF45ABEA23 file.data.write
+# Writes bytes 0xFF, 0x45, 0xAB, 0xEA and 0x23 to the file.
+
+imageData (! path.files "copy.png") path.make file.data.write
+```
+***
+
+### File Management - Sequential Operations with Handles
+
+**A handle is a string** representing the unique hexadecimal identifier of the opened file stream (e.g., "A3F5B2C8"). This handle must be kept for all subsequent operations on the file.
+
+### `file.open`
+
+Opens a file for reading and returns a handle.
+
+```
+"data.txt" file.open -> 'handle'
+(! path.files "report.txt") path.make file.open -> 'h'
+```
+***
+
+### `file.create`
+
+Opens a file for writing (clears the file if it exists) and returns a handle.
+
+```
+"report.txt" file.create -> 'handle'
+(! path.files "output.txt") path.make file.create -> 'h'
+```
+***
+
+### `file.append`
+
+Opens a file for writing at the end (preserves existing content) and returns a handle.
+
+Used for log files or adding content to existing files.
+
+```
+"log.txt" file.append -> 'handle'
+(! path.files "debug.log") path.make file.append -> 'h'
+```
+***
+
+### `file.read`
+
+Reads up to `size` bytes from an open file and returns a DATA.
+
+Pass the handle and size as parameters.
+
+```
+handle 1024 file.read
+# Reads up to 1024 bytes from the file
+```
+***
+
+### `file.readLine`
+
+Reads a complete line (terminated by `\n` or `\r\n`) from an open file and returns a DATA.
+
+Pass the handle as parameter.
+
+```
+handle file.readLine
+# Returns the line as DATA (must be converted to string with utf8->, ascii->, etc.)
+
+handle file.readLine utf8-> -> 'line'
+```
+***
+
+### `file.write`
+
+Writes data to an open file. **Does not** automatically add a line break.
+
+Pass the DATA and handle as parameters. To write lines, manually add line break bytes (`D:0D0A` for Windows, `D:0A` for Unix/Linux).
+
+```
+"Hello" ->utf8 D:0D0A + handle file.write
+# Writes "Hello" with a Windows line break
+
+"Line without break" ->utf8 handle file.write
+```
+***
+
+### `file.size`
+
+Returns the total size (in bytes) of a file opened for reading.
+
+Pass the handle as parameter.
+
+```
+handle file.size -> 'fileSize'
+"File size: {! fileSize} bytes" eval ?
+```
+***
+
+### `file.eof`
+
+Returns `true` if the end of the file opened for reading is reached.
+
+Pass the handle as parameter. Used in loops to read files sequentially.
+
+```
+while (handle file.eof not) do
+{
+    handle file.readLine utf8-> ?
+}
+```
+***
+
+### `file.close`
+
+Closes an open file. **Always close files after use!**
+
+Pass the handle as parameter.
+
+```
+handle file.close
+```
+***
+
+### File Manipulation
+
+### `file.exists`
+
+Returns `true` if the file exists at the specified path, `false` otherwise.
+
+```
+"data.txt" file.exists
+(! path.files "config.txt") path.make file.exists
+```
+***
+
+### `file.info`
+
+Returns a record containing all file metadata.
+
+Pass the file path as parameter.
+
+The record contains the following keys:
+
+| Key | Type | Description |
+|-----|------|-------------|
+| `name:` | String | File name with extension |
+| `fullName:` | String | Full absolute file path |
+| `directoryName:` | String | Path of the folder containing the file |
+| `extension:` | String | File extension |
+| `modifiedTime:` | Number | Last modification date (.NET ticks) |
+| `lastAccessTime:` | Number | Last access date (.NET ticks) |
+| `length:` | Number | File size in bytes |
+| `isReadOnly:` | Boolean | Read-only file |
+| `isArchive:` | Boolean | Archive attribute (Windows) |
+| `isHidden:` | Boolean | Hidden file |
+| `isSystem:` | Boolean | System file |
+
+```
+"data.txt" file.info -> 'info'
+info length: get -> 'size'
+"File size: {! size} bytes" eval ?
+
+# Convert timestamp to readable date
+info modifiedTime: get ->date -> 'dateModif'
+```
+
+**Note**: Timestamps are in .NET ticks (number of 100-nanosecond intervals since 01/01/0001). Use the `->date` function to convert to a date record with `day:`, `month:`, `year:`, etc.
+
+**Important**: If the file does not exist, `file.info` raises an error. Use `file.exists` to check existence before calling `file.info`.
+***
+
+### `file.copy`
+
+Copies a file. Pass source path and destination path as parameters.
+
+```
+"source.txt" "dest.txt" file.copy
+(! path.files "original.txt") path.make 
+(! path.files "copy.txt") path.make 
+file.copy
+```
+***
+
+### `file.rename`
+
+Renames a file. Pass old path and new path as parameters.
+
+```
+"old.txt" "new.txt" file.rename
+(! path.files "temp.txt") path.make
+(! path.files "backup.txt") path.make
+file.rename
+```
+***
+
+### `file.purge`
+
+Deletes a file at the specified path.
+
+```
+"temp.txt" file.purge
+(! path.files "old_data.bin") path.make file.purge
+```
+***
+
+### Data Conversion Functions
+
+Text file reading functions (`file.readLine`, `file.read`) return DATA (byte arrays) that must be converted to strings according to the file's encoding. Similarly, to write text to a file, strings must first be converted to DATA.
+
+### `utf8->`
+
+Converts a DATA to a string with UTF-8 encoding.
+
+```
+data utf8->
+handle file.readLine utf8-> -> 'line'
+```
+***
+
+### `ascii->`
+
+Converts a DATA to a string with ASCII encoding.
+
+```
+data ascii->
+handle file.readLine ascii-> -> 'line'
+```
+***
+
+### `ascii7->`
+
+Converts a DATA to a string with ASCII 7-bit encoding.
+
+```
+data ascii7->
+```
+***
+
+### `->utf8`
+
+Converts a string to DATA with UTF-8 encoding.
+
+Used before writing text to a file.
+
+```
+"Hello" ->utf8
+"Français: éèêë" ->utf8 D:0D0A + handle file.write
+```
+***
+
+### `->ascii`
+
+Converts a string to DATA with ASCII encoding.
+
+```
+"Hello" ->ascii
+"English: Hello" ->ascii D:0D0A + handle file.write
+```
+***
+
+### `->ascii7`
+
+Converts a string to DATA with ASCII 7-bit encoding.
+
+```
+"Basic" ->ascii7
+"ABC123" ->ascii7 D:0D0A + handle file.write
+```
+***
+
+### Line Break Constants
+
+When writing text files, line breaks must be added manually:
+
+- `D:0D0A` - Windows line break (CR LF: Carriage Return + Line Feed)
+- `D:0A` - Unix/Linux/Mac line break (LF: Line Feed only)
+
+```
+"My line" ->utf8 D:0D0A + handle file.write
+```
+
+The `+` operator concatenates DATA to create a single byte array.
+***
