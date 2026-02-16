@@ -178,17 +178,20 @@ public MogwaiEngine(string name, bool keepAlive, bool useDefaultFolders)
 ### Parameter Details
 
 #### `name` (string)
+
 - **Purpose:** Identifies the engine, displayed in MOGWAI STUDIO
 - **Example:** "MyApp", "MOGWAI CLI", "WinForms Debug"
 - **Required:** Yes
 
 #### `keepAlive` (bool)
+
 - **Purpose:** Controls state persistence between `RunAsync()` calls
 - **Default:** `false`
 - **When `false`:** Engine resets completely after each execution (variables, functions, stack cleared)
 - **When `true`:** State persists (useful for REPL, interactive sessions)
 
 **Example:**
+
 ```csharp
 var engine = new MogwaiEngine("CLI", keepAlive: true, useDefaultFolders: true);
 
@@ -198,12 +201,14 @@ await engine.RunAsync("x 2 * ?", debugMode: false);  // Prints: 84
 ```
 
 #### `useDefaultFolders` (bool)
+
 - **Purpose:** Creates standard folder structure in user's Documents
 - **Default:** `true`
 - **When `false`:** No folders created, application manages its own paths
 - **When `true`:** Creates `Documents/MOGWAI/Programs/`, `Files/`, `Usings/`
 
 **Folder structure:**
+
 ```
 Documents/
 └── MOGWAI/
@@ -213,6 +218,7 @@ Documents/
 ```
 
 **Access paths:**
+
 ```csharp
 string programsDir = engine.ProgramsDirectory;
 string filesDir = engine.FilesDirectory;
@@ -247,6 +253,7 @@ var engine = new MogwaiEngine("WinFormsApp", useDefaultFolders: false);
 ✅ Clean state each execution  
 
 **Example - Embedded resources:**
+
 ```csharp
 var script = GetEmbeddedResource("Scripts.Sample1.mog");
 await engine.RunAsync(script, debugMode: false);
@@ -264,7 +271,7 @@ while (true)
     Console.Write("> ");
     string? line = Console.ReadLine();
     if (line == "exit") break;
-    
+
     await engine.RunAsync(line, debugMode: false);
 }
 ```
@@ -362,7 +369,7 @@ public async Task ProgramEnd(MogwaiEngine engine, EvalResult result)
         Console.WriteLine($"Script failed: {result.Error.Message}");
     else
         Console.WriteLine($"Script completed in {result.Duration.TotalMilliseconds}ms");
-    
+
     await Task.CompletedTask;
 }
 
@@ -484,6 +491,7 @@ public async Task<(EvalResult result, int key)> ConsoleGetInputKey(
 ```
 
 **In MOGWAI:**
+
 ```mogwai
 # Basic I/O
 "Enter your name: " console.prompt -> 'name'
@@ -522,16 +530,16 @@ public async Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string wo
     {
         case "double":
             return ExecuteDouble(engine);
-        
+
         case "greet":
             return ExecuteGreet(engine);
-        
+
         case "turtle.move":
             return await ExecuteTurtleMove(engine);
-        
+
         case "turtle.turn":
             return await ExecuteTurtleTurn(engine);
-        
+
         default:
             return EvalResult.NoExternalFunction;
     }
@@ -549,15 +557,15 @@ private EvalResult ExecuteDouble(MogwaiEngine engine)
     var signature = engine.StackSign(1);
     if (signature.Count == 0)
         return EvalResult.Failure(engine, Error.TooFewArgumentsError, "double");
-    
+
     // Check type is number
     if (signature[0] != typeof(MOGNumber))
         return EvalResult.Failure(engine, Error.BadArgumentTypeError, "double");
-    
+
     // Pop, process, push
     var num = engine.StackPopNumber();
     engine.StackPush(new MOGNumber(num.Value * 2));
-    
+
     return EvalResult.NoError;
 }
 ```
@@ -571,13 +579,13 @@ private async Task<EvalResult> ExecuteTurtleMove(MogwaiEngine engine)
     var signature = engine.StackSign(1);
     if (signature.Count == 0)
         return EvalResult.Failure(engine, Error.TooFewArgumentsError, "turtle.move");
-    
+
     if (signature[0] != typeof(MOGNumber))
         return EvalResult.Failure(engine, Error.BadArgumentTypeError, "turtle.move");
-    
+
     // Pop parameter
     MOGNumber distance = engine.StackPopNumber();
-    
+
     // Execute (with thread safety for UI)
     await Task.Run(() =>
     {
@@ -587,7 +595,7 @@ private async Task<EvalResult> ExecuteTurtleMove(MogwaiEngine engine)
             MoveTurtle(distance.Value);
         });
     });
-    
+
     return EvalResult.NoError;
 }
 ```
@@ -604,6 +612,7 @@ private EvalResult ExecuteGreet(MogwaiEngine engine)
 ```
 
 **In MOGWAI:**
+
 ```mogwai
 greet ?  # Prints: Hello from custom function!
 ```
@@ -755,11 +764,13 @@ await engine.StartNetworkCommunication(
 ### Discovery Protocol
 
 **STUDIO broadcasts** (UDP port 1968):
+
 ```json
 {"Source": "MOGWAI STUDIO", "Function": "WHO IS HERE"}
 ```
 
 **Runtime responds:**
+
 ```json
 {
   "Source": "MOGWAI RUNTIME",
@@ -839,6 +850,7 @@ public async Task<EvalResult> DebugClear(MogwaiEngine engine)
 ```
 
 **In MOGWAI:**
+
 ```mogwai
 # Send debug message
 "Debug information here" console.debug
@@ -850,6 +862,7 @@ public async Task<EvalResult> DebugClear(MogwaiEngine engine)
 ### STUDIO Features
 
 Once connected, STUDIO provides:
+
 - ✅ Set breakpoints by line number
 - ✅ Step over / step into / step out
 - ✅ View stack state
@@ -862,6 +875,7 @@ Once connected, STUDIO provides:
 ⚠️ **Important:** STUDIO connection allows full script control.
 
 **Best practices:**
+
 - Only enable on trusted networks (localhost, private LAN)
 - Disable in production builds
 - Add firewall rules if exposing to network
@@ -875,6 +889,7 @@ Once connected, STUDIO provides:
 ### Firewall Configuration
 
 Allow incoming connections:
+
 - **UDP port 1968** (discovery)
 - **TCP ports 63000-65000** (debug session)
 
@@ -955,25 +970,25 @@ await Task.WhenAll(task1, task2, task3);
 private async Task<EvalResult> ExecuteTurtleMove(MogwaiEngine engine)
 {
     var distance = engine.StackPopNumber();
-    
+
     // WinForms
     Invoke(() =>
     {
         MoveTurtle(distance.Value);
     });
-    
+
     // WPF
     Dispatcher.Invoke(() =>
     {
         MoveTurtle(distance.Value);
     });
-    
+
     // MAUI
     MainThread.BeginInvokeOnMainThread(() =>
     {
         MoveTurtle(distance.Value);
     });
-    
+
     return EvalResult.NoError;
 }
 ```
@@ -989,10 +1004,10 @@ if (result.IsError)
 {
     // Log error
     Logger.Error($"MOGWAI Error: {result.Error.Code}");
-    
+
     // Show to user
     MessageBox.Show($"Script error: {result.Error.Message}");
-    
+
     // Don't continue
     return;
 }
@@ -1033,7 +1048,7 @@ public string GetEmbeddedScript(string name)
 {
     var assembly = Assembly.GetExecutingAssembly();
     var resourceName = $"MyApp.Scripts.{name}";
-    
+
     using var stream = assembly.GetManifestResourceStream(resourceName);
     using var reader = new StreamReader(stream);
     return reader.ReadToEnd();
@@ -1101,7 +1116,7 @@ public partial class FormMain : Form, IDelegate
     public FormMain()
     {
         InitializeComponent();
-        
+
         // Create engine (no default folders for embedded app)
         _engine = new MogwaiEngine("WinForms App", useDefaultFolders: false);
         _engine.Delegate = this;
@@ -1111,7 +1126,7 @@ public partial class FormMain : Form, IDelegate
     {
         // Execute code from TextBox
         var result = await _engine.RunAsync(CodeTextBox.Text, debugMode: false);
-        
+
         if (result.IsError)
         {
             MessageBox.Show(
@@ -1130,7 +1145,7 @@ public partial class FormMain : Form, IDelegate
         {
             await _engine.StartNetworkCommunication(address: "127.0.0.1");
         });
-        
+
         StatusLabel.Text = "Waiting for STUDIO connection...";
     }
 
@@ -1169,14 +1184,14 @@ public partial class FormMain : Form, IDelegate
         MogwaiEngine engine, string message)
     {
         string? result = null;
-        
+
         Invoke(() =>
         {
             using var inputDialog = new InputDialog(message);
             if (inputDialog.ShowDialog() == DialogResult.OK)
                 result = inputDialog.InputValue;
         });
-        
+
         return (EvalResult.NoError, result);
     }
 
@@ -1207,7 +1222,7 @@ public partial class FormMain : Form, IDelegate
             case "turtle.color":
                 return ExecuteTurtleColor(engine);
         }
-        
+
         return EvalResult.NoExternalFunction;
     }
 
@@ -1272,16 +1287,16 @@ public partial class FormMain : Form, IDelegate
         var sig = engine.StackSign(1);
         if (sig.Count == 0 || sig[0] != typeof(MOGNumber))
             return EvalResult.Failure(engine, Error.BadArgumentTypeError, "turtle.move");
-        
+
         var distance = engine.StackPopNumber();
-        
+
         Invoke(() =>
         {
             // Move turtle on UI
             MoveTurtle((int)distance.Value);
             TurtleCanvas.Refresh();
         });
-        
+
         return EvalResult.NoError;
     }
 
@@ -1304,12 +1319,12 @@ public partial class FormMain : Form, IDelegate
 
 ### Next Steps
 
-- Read [MOGWAI Language Guide](MOGWAI_EN.md) for language syntax
-- Read [Function Reference](MOGWAI_FUNCTIONS_EN.md) for built-in functions
+- Read [MOGWAI Language Guide](../docs/EN/MOGWAI_EN.md) for language syntax
+- Read [Function Reference](../docs/EN/MOGWAI_FUNCTIONS_EN.md) for built-in functions
 - Explore [Examples](../examples/) for real-world integrations
 
 ---
 
 **Happy integrating!** 🚀
 
-*For questions or issues, visit: [https://github.com/[username]/mogwai/issues](https://github.com/[username]/mogwai/issues)*
+*For questions or issues, visit: [https://github.com/[Sydney680928/mogwai/issues](https://github.com/[username]/mogwai/issues)*
