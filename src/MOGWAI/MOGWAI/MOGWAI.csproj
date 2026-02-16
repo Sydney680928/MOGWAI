@@ -53,9 +53,12 @@
 		
 	</PropertyGroup>
 
-	<!-- Dossiers (conservé de ton original) -->
 	<ItemGroup>
-		<Folder Include="Docs\" />
+	  <Compile Remove="Docs\**" />
+	  <EmbeddedResource Remove="Docs\**" />
+	  <None Remove="Docs\**" />
 	</ItemGroup>
+
+	<!-- Dossiers (conservé de ton original) -->
 
 </Project>
