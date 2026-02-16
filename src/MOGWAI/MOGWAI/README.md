@@ -621,15 +621,15 @@ The syntax is inspired by the legendary HP 28S and HP 48 calculators, bringing t
 
 ### Complete Guides
 
-- **[Integration Guide](https://github.com/[username]/mogwai/blob/main/docs/MOGWAI_Integration_Guide_FR.md)** - How to integrate MOGWAI in your .NET application
-- **[Language Reference](https://github.com/[username]/mogwai/blob/main/docs/MOGWAI_EN.md)** - Complete MOGWAI language guide
-- **[Function Reference](https://github.com/[username]/mogwai/blob/main/docs/MOGWAI_FUNCTIONS_EN.md)** - All 200+ built-in functions documented
+- **[Integration Guide](https://github.com/Sydney680928/mogwai/blob/main/docs/EN/MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI in your .NET application
+- **[Language Reference](https://github.com/Sydney680928/mogwai/blob/main/docs/EN/MOGWAI_EN.md)** - Complete MOGWAI language guide
+- **[Function Reference](https://github.com/Sydney680928/mogwai/blob/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 200+ built-in functions documented
 
 ### Examples
 
-- **[WinForms Example](https://github.com/[username]/mogwai/tree/main/examples/WinForms)** - Turtle graphics with MOGWAI
-- **[Console Example](https://github.com/[username]/mogwai/tree/main/examples/Console)** - Basic console integration
-- **[IoT Example](https://github.com/[username]/mogwai/tree/main/examples/IoT)** - BLE and sensor integration
+- **[WinForms Example](https://github.com/[username]/mogwai/tree/main/examples/WinFormsMogwai)** - Turtle graphics and more with MOGWAI
+- **[Console Example](https://github.com/[username]/mogwai/tree/main/examples/MOGWAI_CLI)** - Console integration (MOGWAI CLI source code)
+- **[IoT Example](https://github.com/[username]/mogwai/tree/main/examples/MOGWAI_RUNTIME)** - .NET MAUI program example
 
 ---
 
@@ -646,10 +646,10 @@ The syntax is inspired by the legendary HP 28S and HP 48 calculators, bringing t
 
 ## 🤝 Support & Community
 
-- **GitHub**: [https://github.com/[username]/mogwai](https://github.com/[username]/mogwai)
-- **Issues**: [https://github.com/[username]/mogwai/issues](https://github.com/[username]/mogwai/issues)
-- **Website**: [coding4phone.com](https://coding4phone.com)
-- **Author**: Stéphane Sibué
+- **GitHub**: [https://github.com/Sydney680928/mogwai](https://github.com/Sydney680928/mogwai)
+- **Issues**: [https://github.com/Sydney680928/mogwai/issues](https://github.com/Sydney680928/mogwai/issues)
+- **Website**: [MOGWAI](https://www.mogwai.eu.com)
+- **Author**: [Stéphane Sibué](https://www.coding4phone.com)
 
 ---
 
@@ -657,7 +657,7 @@ The syntax is inspired by the legendary HP 28S and HP 48 calculators, bringing t
 
 **Apache License 2.0**
 
-MOGWAI is free and open source software. See [LICENSE](https://github.com/[username]/mogwai/blob/main/LICENSE) for details.
+MOGWAI is free and open source software. See [LICENSE](https://github.com/Sydney680928/mogwai/blob/main/LICENSE) for details.
 
 ```
 Copyright 2015-2026 Stéphane Sibué
