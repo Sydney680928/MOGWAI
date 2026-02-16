@@ -42,6 +42,12 @@
 		<!-- README -->
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 
+		<!-- Icone du package -->
+		<PackageIcon>icon.png</PackageIcon>
+
+		<!-- Notes de version -->
+		<PackageReleaseNotes>Initial release of MOGWAI - A modern RPN scripting language for industrial IoT automation.</PackageReleaseNotes>
+
 		<!-- Pas de publication pour l'instant -->
 		<IsPackable>true</IsPackable>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -53,4 +59,9 @@
 		
 	</PropertyGroup>
 
-</Project>
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Include="icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	</Project>
