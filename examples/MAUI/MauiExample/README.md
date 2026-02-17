@@ -76,7 +76,7 @@ Or open the solution in Visual Studio 2022 and select your target platform.
 
 ---
 
-## 📱 Supported Platforms
+## Supported Platforms
 
 | Platform | Version | Status |
 |----------|---------|--------|

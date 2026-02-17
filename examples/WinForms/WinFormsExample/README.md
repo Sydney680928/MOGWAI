@@ -14,19 +14,19 @@ File: /images/examples/winforms-turtle.png
 
 ---
 
-## ✨ Features
+## Features
 
-- 🐢 **Turtle Graphics** - Logo-style drawing with MOGWAI scripts
-- 🎨 **Visual Output** - Real-time rendering of turtle movements
-- 📝 **Code Editor** - Built-in editor with syntax highlighting
-- ▶️ **Run/Stop Controls** - Execute scripts with visual feedback
-- 🐛 **STUDIO Integration** - Connect to MOGWAI STUDIO for debugging
-- 🎯 **Custom Functions** - Turtle-specific MOGWAI commands
-- 💾 **Save/Load Scripts** - Manage your turtle graphics programs
+- **Turtle Graphics** - Logo-style drawing with MOGWAI scripts
+- **Visual Output** - Real-time rendering of turtle movements
+- **Code Editor** - Built-in editor with syntax highlighting
+- ▶**Run/Stop Controls** - Execute scripts with visual feedback
+- **STUDIO Integration** - Connect to MOGWAI STUDIO for debugging
+- **Custom Functions** - Turtle-specific MOGWAI commands
+- **Save/Load Scripts** - Manage your turtle graphics programs
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -55,7 +55,7 @@ Or open the solution in Visual Studio 2022 and press F5.
 
 ---
 
-## 🎨 Turtle Graphics Commands
+## Turtle Graphics Commands
 
 MOGWAI is extended with custom turtle graphics functions:
 
@@ -95,7 +95,7 @@ turtle.clear             # Clear drawing canvas
 
 ---
 
-## 📝 Example Scripts
+## Example Scripts
 
 ### Draw a Square
 
@@ -104,7 +104,7 @@ turtle.clear             # Clear drawing canvas
 turtle.clear
 turtle.penDown
 
-4 1 for 'i' do
+4 repeat
 {
     100 turtle.forward
     90 turtle.right
@@ -124,38 +124,13 @@ File: /images/examples/turtle-square.png
 
 ```mogwai
 # Five-pointed star
-turtle.clear
-"Yellow" turtle.color
-2 turtle.width
 
-5 1 for 'i' do
+clg
+
+5 repeat
 {
-    100 turtle.forward
-    144 turtle.right
-}
-```
-
-### Spiral Pattern
-
-```mogwai
-# Colorful spiral
-turtle.clear
-
-36 1 for 'i' do
-{
-    i 10 * turtle.forward
-    10 turtle.right
-    
-    # Change color every 6 steps
-    if (i 6 mod 0 ==) then
-    {
-        "Red" turtle.color
-    }
-    
-    if (i 6 mod 3 ==) then
-    {
-        "Blue" turtle.color
-    }
+    500 turtle.move
+    144 turtle.turn
 }
 ```
 
@@ -163,27 +138,28 @@ turtle.clear
 
 ```mogwai
 # Draw a flower
-turtle.clear
-"Purple" turtle.color
-1 turtle.width
 
-12 1 for 'i' do
-{
-    # Draw petal
-    6 1 for 'j' do
-    {
-        30 turtle.forward
-        30 turtle.right
-    }
+clg
+
+1 12 for 'i' do 
+{ 
+	# Draw petal
     
-    # Rotate to next petal
-    30 turtle.right
+	1 6 for 'j' do
+	{       
+		100 turtle.move
+		30 turtle.turn
+	}
+   
+	# Rotate to next petal
+   
+	30 turtle.turn
 }
-```
 
+```
 ---
 
-## 🔧 Implementation Details
+## Implementation Details
 
 ### Engine Configuration
 
@@ -206,35 +182,50 @@ The application extends MOGWAI with turtle graphics functions via `IDelegate`:
 ```csharp
 public string[] HostFunctions(MogwaiEngine engine)
 {
-    return new[] 
-    {
-        "turtle.forward",
-        "turtle.backward",
-        "turtle.right",
-        "turtle.left",
-        "turtle.penUp",
+    return [
+        "clg",
+        "refresh",
         "turtle.penDown",
-        "turtle.color",
-        "turtle.width",
-        "turtle.clear",
-        "turtle.home",
-        "turtle.goto"
-    };
+        "turtle.penUp",
+        "turtle.show",
+        "turtle.hide",
+        "turtle.move",
+        "turtle.turn"
+        ];
 }
 
 public async Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string word)
 {
+    // Called when MOGWAI encounters a keyword it doesn't know.
+    // In this case, it asks the host if it can respond.
+
     switch (word)
     {
-        case "turtle.forward":
-            return ExecuteTurtleForward(engine);
-        
-        case "turtle.right":
-            return ExecuteTurtleTurn(engine, clockwise: true);
-        
-        // ... other functions
+        case "clg":
+            return await ClgExtension(engine, word);
+
+        case "refresh":
+            return await RefreshExtension(engine, word);
+
+        case "turtle.penDown":
+            return await PenDownExtension(engine, word);
+
+        case "turtle.penUp":
+            return await PenUpExtension(engine, word);
+
+        case "turtle.show":
+            return await ShowTurtleExtension(engine, word);
+
+        case "turtle.hide":
+            return await HideTurtleExtension(engine, word);
+
+        case "turtle.move":
+            return await MoveExtension(engine, word);
+
+        case "turtle.turn":
+            return await TurnExtension(engine, word);
     }
-    
+
     return EvalResult.NoExternalFunction;
 }
 ```
@@ -244,53 +235,42 @@ public async Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string wo
 All turtle graphics operations use `Invoke` for thread safety:
 
 ```csharp
-private EvalResult ExecuteTurtleForward(MogwaiEngine engine)
+public void TurtleForward(int distance)
 {
-    var sig = engine.StackSign(1);
-    if (sig.Count == 0 || sig[0] != typeof(MOGNumber))
-        return EvalResult.Failure(engine, Error.BadArgumentTypeError, "turtle.forward");
-    
-    var distance = engine.StackPopNumber();
-    
-    // UI thread invocation
-    Invoke(() =>
+    if (InvokeRequired)
     {
-        MoveTurtle(distance.Value);
-        TurtleCanvas.Refresh();
-    });
-    
-    return EvalResult.NoError;
+        Invoke(() => { TurtleForward(distance); });
+    }
+    else
+    {
+        double a = DegToRad(180 - _turtleAngle);
+        double x = _turtleX + distance * Math.Sin(a);
+        double y = _turtleY + distance * Math.Cos(a);
+
+        if (_penIsDown)
+        {
+            TurtleDrawLine(_turtleX, _turtleY, x, y);
+        }
+
+        _turtleX = x;
+        _turtleY = y;
+
+        if (_turtleIsVisible)
+        {
+            DrawTurtlePictureBox.Invalidate();
+        }
+    }
 }
 ```
 
 ---
 
-## 🐛 Debugging with MOGWAI STUDIO
-
-### Enable STUDIO Connection
-
-1. Click **"Enable STUDIO"** button in the toolbar
-2. Launch MOGWAI STUDIO
-3. STUDIO will auto-discover the WinForms runtime
-4. Set breakpoints in your turtle graphics scripts
-5. Step through code and watch the turtle move!
-
-### Debug Mode
-
-Run scripts with `debugMode: true` to enable breakpoints:
-
-```csharp
-var result = await engine.RunAsync(scriptText, debugMode: true);
-```
-
----
-
-## 🎓 Learning Path
+## Learning Path
 
 ### Beginner Scripts
 
-1. **Simple Line:** `100 turtle.forward`
-2. **Simple Turn:** `100 turtle.forward 90 turtle.right 100 turtle.forward`
+1. **Simple Line:** `100 turtle.move`
+2. **Simple Turn:** `100 turtle.move 90 turtle.turn 100 turtle.move`
 3. **Square** (see example above)
 4. **Triangle:** Similar to square but with 3 sides and 120° turns
 
@@ -301,38 +281,30 @@ var result = await engine.RunAsync(scriptText, debugMode: true);
 3. **Spiral** (see example above)
 4. **Multiple Shapes:** Draw several shapes in different positions
 
-### Advanced Scripts
 
-1. **Fractals:** Koch snowflake, Sierpinski triangle
-2. **Recursive Patterns:** Tree structures, branching
-3. **Parametric Designs:** User-input driven patterns
-4. **Animations:** Use timers to animate drawings
-
----
-
-## 🎨 Advanced Example: Fractal Tree
+## Advanced Example: Fractal Tree
 
 ```mogwai
 # Recursive fractal tree
+
 to 'tree' with [length: .number] do
 {
     if (length 5 >) then
     {
-        length turtle.forward
-        30 turtle.right
+        length turtle.move
+        30 turtle.turn
         length 0.7 * tree
-        60 turtle.left
+        -60 turtle.turn
         length 0.7 * tree
-        30 turtle.right
-        length turtle.backward
+        30 turtle.turn
+        length -1 * turtle.move
     }
 }
 
 # Clear and draw
-turtle.clear
-"Brown" turtle.color
-2 turtle.width
-90 turtle.left
+
+clg
+90 turtle.turn
 100 tree
 ```
 
@@ -347,86 +319,22 @@ File: /images/examples/turtle-fractal-tree.png
 
 ---
 
-## 💡 Tips and Tricks
+## Documentation
 
-### Performance
-
-- Use `turtle.penUp` when repositioning without drawing
-- Minimize `Refresh()` calls for complex drawings
-- Consider batch rendering for animations
-
-### Colors
-
-Supported color formats:
-- Named colors: `"Red"`, `"Blue"`, `"Green"`, etc.
-- Hex colors: `"#FF5733"`, `"#00FF00"`
-- RGB via custom function (if implemented)
-
-### Canvas Size
-
-The canvas is typically 800x600 pixels:
-- Center: (0, 0)
-- X range: -400 to +400
-- Y range: -300 to +300
+- **[Language Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_EN.md)** - Complete MOGWAI language guide
+- **[Function Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 240+ built-in functions
+- **[Integration Guide](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI in your .NET apps
 
 ---
 
-## 🔧 Customization
+## Related Examples
 
-### Add Your Own Functions
-
-Extend the turtle graphics with custom functions:
-
-```csharp
-public string[] HostFunctions(MogwaiEngine engine)
-{
-    return new[] 
-    {
-        // ... existing turtle functions
-        "turtle.circle",
-        "turtle.stamp",
-        "turtle.fill"
-    };
-}
-```
-
-### Change Canvas Background
-
-```csharp
-TurtleCanvas.BackColor = Color.Black;  // Dark mode
-```
-
-### Export Drawings
-
-Add a "Save Image" button:
-
-```csharp
-private void SaveImageButton_Click(object sender, EventArgs e)
-{
-    using var bitmap = new Bitmap(TurtleCanvas.Width, TurtleCanvas.Height);
-    TurtleCanvas.DrawToBitmap(bitmap, TurtleCanvas.ClientRectangle);
-    bitmap.Save("turtle_output.png");
-}
-```
+- **[MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/Console)** - Command-line interface and REPL
+- **[MAUI Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MAUI)** - Cross-platform mobile app
 
 ---
 
-## 📚 Documentation
-
-- **[MOGWAI Language Guide](../../docs/EN/MOGWAI_EN.md)** - Complete language reference
-- **[Function Reference](../../docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 200+ built-in functions
-- **[Integration Guide](../../docs/EN/MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI
-
----
-
-## 🔗 Related Examples
-
-- **[MOGWAI CLI](../MOGWAI_CLI/)** - Command-line interface and REPL
-- **[MAUI Example](../MOGWAI_RUNTIME/)** - Cross-platform mobile app
-
----
-
-## 🎯 Use Cases
+## Use Cases
 
 Turtle graphics with MOGWAI is perfect for:
 
@@ -437,15 +345,15 @@ Turtle graphics with MOGWAI is perfect for:
 
 ---
 
-## 📄 License
+## License
 
 Apache License 2.0
 
-See [LICENSE](../../LICENSE) for details.
+See [LICENSE](https://github.com/Sydney680928/mogwai/tree/main/LICENSE) and [NOTICE](https://github.com/Sydney680928/mogwai/tree/main/NOTICE) for details.
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Ideas for new turtle graphics features?
 
@@ -461,6 +369,6 @@ Suggestions:
 
 ---
 
-**Happy turtle graphics with MOGWAI!** 🐢🎨
+**Happy turtle graphics with MOGWAI!**
 
 *For more information, visit [mogwai.eu.com](https://www.mogwai.eu.com)*

@@ -20,12 +20,12 @@ File: /images/examples/cli-screenshot.png
 - **STUDIO Integration** - Connect to MOGWAI STUDIO for debugging
 - **Persistent Variables** - Variables persist between commands
 - **Default Folders** - Uses `Documents/MOGWAI/` for scripts and files
-- ⌨**Command History** - Navigate previous commands (Up/Down arrows)
+- **Command History** - Navigate previous commands (Up/Down arrows)
 - **Ctrl+C Handling** - Gracefully halt script execution
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -50,7 +50,7 @@ dotnet run
 
 ---
 
-## 💻 Usage
+## Usage
 
 ### Interactive Mode (REPL)
 
@@ -101,7 +101,7 @@ Once connected, you can:
 
 ---
 
-## 📝 Example Scripts
+## Example Scripts
 
 ### Basic Math
 
