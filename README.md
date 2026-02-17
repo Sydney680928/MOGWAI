@@ -53,7 +53,7 @@ The core scripting engine, available as a NuGet package. Embed MOGWAI in your .N
 Command-line interface for running MOGWAI scripts and interactive REPL sessions.
 
 - **License:** Apache 2.0
-- **Repository:** [MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/Console)
+- **Repository:** [MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/Console/ConsoleExample)
 - **Status:** Functional
 
 ### MOGWAI STUDIO (Coming Soon)
