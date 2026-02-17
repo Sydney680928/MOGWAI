@@ -6,7 +6,7 @@ A powerful stack-based RPN (Reverse Polish Notation) scripting language for indu
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 
@@ -41,21 +41,21 @@ if (result.IsError)
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-- ✅ **Stack-Based RPN Syntax** - Inspired by HP calculators (HP 28S, HP 48)
-- ✅ **200+ Built-in Functions** - Math, strings, lists, dates, HTTP, file I/O, and more
-- ✅ **Async/Await Support** - Modern asynchronous execution
-- ✅ **IoT & BLE Functions** - Bluetooth Low Energy, serial communication
-- ✅ **Industrial Automation** - Designed for embedded systems and real-time control
-- ✅ **Extensible** - Add your own custom functions easily
-- ✅ **Cross-Platform** - Runs on Windows, Linux, macOS (.NET 9.0+)
-- ✅ **Thread-Safe** - Built-in task management
-- ✅ **MOGWAI STUDIO Integration** - Visual debugging with breakpoints
+- **Stack-Based RPN Syntax** - Inspired by HP calculators (HP 28S, HP 48)
+- **200+ Built-in Functions** - Math, strings, lists, dates, HTTP, file I/O, and more
+- **Async/Await Support** - Modern asynchronous execution
+- **IoT & BLE Functions** - Bluetooth Low Energy, serial communication
+- **Industrial Automation** - Designed for embedded systems and real-time control
+- **Extensible** - Add your own custom functions easily
+- **Cross-Platform** - Runs on Windows, Linux, macOS (.NET 9.0+)
+- **Thread-Safe** - Built-in task management
+- **MOGWAI STUDIO Integration** - Visual debugging with breakpoints
 
 ---
 
-## 📚 MOGWAI Language Overview
+## MOGWAI Language Overview
 
 ### Stack-Based Programming
 
@@ -133,7 +133,7 @@ else
 
 ---
 
-## 🔌 Integration in Your .NET Application
+## Integration in Your .NET Application
 
 ### 1. Implement IDelegate
 
@@ -321,7 +321,7 @@ greet ?        # Prints: Hello from custom function!
 
 ---
 
-## 🎯 Constructor Options
+## Constructor Options
 
 ### Basic Usage (Default)
 
@@ -384,7 +384,7 @@ var engine = new MogwaiEngine(
 
 ---
 
-## 📁 Default Folder Structure
+## Default Folder Structure
 
 When `useDefaultFolders: true`, MOGWAI creates:
 
@@ -406,7 +406,7 @@ string usingsPath = engine.UsingsDirectory;
 
 ---
 
-## 🐛 MOGWAI STUDIO Integration
+## MOGWAI STUDIO Integration
 
 ### Enabling Remote Debugging
 
@@ -462,11 +462,11 @@ Waiting for MOGWAI STUDIO connection...
 
 Once connected, STUDIO provides:
 
-- ✅ Visual breakpoints
-- ✅ Step-by-step execution (step over, step into, step out)
-- ✅ Variable inspection
-- ✅ Stack visualization
-- ✅ Expression evaluation
+- Visual breakpoints
+- Step-by-step execution (step over, step into, step out)
+- Variable inspection
+- Stack visualization
+- Expression evaluation
 
 ### Network Ports
 
@@ -487,7 +487,7 @@ Only enable on trusted networks (localhost, private LAN).
 
 ---
 
-## 🎯 Use Cases
+## Use Cases
 
 ### Industrial IoT Automation
 
@@ -502,21 +502,6 @@ if (temp 25 >) then
     "fan" gpio.on
     "Temperature too high: {temp}°C" eval ?
 }
-```
-
-### Data Processing
-
-```mogwai
-# Load and process CSV
-"data.csv" file.read csv.parse -> 'data'
-
-# Filter and transform
-data 
-    [ where: {row row->age 18 >=} ]
-    [ select: {row row->name} ]
-    -> 'adults'
-
-adults ?
 ```
 
 ### HTTP API Calls
@@ -534,7 +519,7 @@ if (response->state) then
 
 ---
 
-## 🛠️ Advanced Features
+## Advanced Features
 
 ### Asynchronous Execution
 
@@ -592,7 +577,7 @@ if (result.IsError)
 
 ---
 
-## 🌟 Why MOGWAI?
+## Why MOGWAI?
 
 ### Born from Real Needs
 
@@ -604,9 +589,9 @@ The syntax is inspired by the legendary HP 28S and HP 48 calculators, bringing t
 
 ### Battle-Tested
 
-- ✅ **3 years in production** in industrial environments
-- ✅ **Real-world IoT applications** (astronomical clocks, public lighting)
-- ✅ **Thousands of scripts** executed in field deployments
+- **3 years in production** in industrial environments
+- **Real-world IoT applications** (astronomical clocks, public lighting)
+- **Thousands of scripts** executed in field deployments
 
 ### Unique Features
 
@@ -617,7 +602,7 @@ The syntax is inspired by the legendary HP 28S and HP 48 calculators, bringing t
 
 ---
 
-## 📖 Documentation
+## Documentation
 
 ### Complete Guides
 
@@ -633,18 +618,18 @@ The syntax is inspired by the legendary HP 28S and HP 48 calculators, bringing t
 
 ---
 
-## 📦 What's Included
+## What's Included
 
-- ✅ **MOGWAI.dll** - The complete runtime (.NET 9.0+)
-- ✅ **200+ Functions** - Math, strings, lists, I/O, HTTP, BLE, dates, and more
-- ✅ **Type System** - Numbers, strings, booleans, lists, records, data, code
-- ✅ **Async Support** - Modern task-based execution
-- ✅ **Thread-Safe** - Built-in concurrency management
-- ✅ **STUDIO Protocol** - Network debugging support
+- **MOGWAI.dll** - The complete runtime (.NET 9.0+)
+- **200+ Functions** - Math, strings, lists, I/O, HTTP, BLE, dates, and more
+- **Type System** - Numbers, strings, booleans, lists, records, data, code
+- **Async Support** - Modern task-based execution
+- **Thread-Safe** - Built-in concurrency management
+- **STUDIO Protocol** - Network debugging support
 
 ---
 
-## 🤝 Support & Community
+## Support & Community
 
 - **GitHub**: [https://github.com/Sydney680928/mogwai](https://github.com/Sydney680928/mogwai)
 - **Issues**: [https://github.com/Sydney680928/mogwai/issues](https://github.com/Sydney680928/mogwai/issues)
@@ -653,7 +638,7 @@ The syntax is inspired by the legendary HP 28S and HP 48 calculators, bringing t
 
 ---
 
-## 📄 License
+## License
 
 **Apache License 2.0**
 
@@ -672,7 +657,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 
 ---
 
-## 🚀 Get Started Now
+## Get Started Now
 
 ```bash
 dotnet add package MOGWAI
