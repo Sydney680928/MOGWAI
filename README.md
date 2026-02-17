@@ -1,8 +1,6 @@
-# MOGWAI
-
 ![MOGWAI](./images/img01.png)
 
- # **A powerful stack-based RPN scripting language for industrial IoT automation, embedded systems, and .NET applications.**
+ # MOGWAI - A powerful stack-based RPN scripting language for industrial IoT automation, embedded systems, and .NET applications.
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
