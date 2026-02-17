@@ -1,6 +1,6 @@
 # MOGWAI
 
-![MOGWAI](./Images/img01.png)
+![MOGWAI](./images/img01.png)
 
 **A powerful stack-based RPN scripting language for industrial IoT automation, embedded systems, and .NET applications.**
 
