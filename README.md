@@ -87,7 +87,7 @@ var engine = new MogwaiEngine("MyApp");
 engine.Delegate = this; // Your class implementing IDelegate
 
 var result = await engine.RunAsync(@"
-    'Hello from MOGWAI!' ?
+    \"Hello from MOGWAI!\" ?
     2 3 + ?
 ", debugMode: false);
 ```
@@ -105,8 +105,8 @@ File: /images/quickstart-console.png
 
 ```mogwai
 # Variables
-42 -> 'answer'
-"Hello World" -> 'greeting'
+42 -> '$answer'
+"Hello World" -> '$greeting'
 
 # Functions
 to 'square' with [n: .number] do
@@ -115,9 +115,9 @@ to 'square' with [n: .number] do
 }
 
 # Lists
-( ) -> 'result'
-(1 2 3 4 5) foreach 'n' do { result n square + -> 'result' } -> 'squares'
-result ? # Outputs the list of squares
+( ) -> '$result'
+(1 2 3 4 5) foreach 'n' do { result n square + -> '$result' }
+$result ? # Outputs the list of squares
 
 # Records
 [name: "MOGWAI", version: "8.0"] -> 'info'
@@ -187,9 +187,9 @@ mogwai/
 
 ### Complete Guides
 
-- **[Language Reference](docs/EN/MOGWAI_EN.md)** - Complete MOGWAI language guide
-- **[Function Reference](docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 240+ built-in functions
-- **[Integration Guide](docs/EN/MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI in your .NET apps
+- **[Language Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_EN.md)** - Complete MOGWAI language guide
+- **[Function Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 240+ built-in functions
+- **[Integration Guide](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI in your .NET apps
 
 ### Examples
 
