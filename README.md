@@ -115,10 +115,12 @@ to 'square' with [n: .number] do
 }
 
 # Lists
-(1 2 3 4 5) foreach 'n' do { n square } -> 'squares'
+( ) -> 'result'
+(1 2 3 4 5) foreach 'n' do { result n square + -> 'result' } -> 'squares'
+result ? # Outputs the list of squares
 
 # Records
-[name: "MOGWAI", version: 8.0] -> 'info'
+[name: "MOGWAI", version: "8.0"] -> 'info'
 
 # Conditionals
 if (answer 40 >) then
@@ -191,11 +193,11 @@ mogwai/
 
 ### Examples
 
-Examples are available in separate repositories:
+Examples are available :
 
-- **[MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/MOGWAI_CLI)** - Command-line interface and REPL
-- **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinFormsMogwai)** - Turtle graphics with MOGWAI
-- **[MAUI Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MOGWAI_RUNTIME)** - Cross-platform mobile app
+- **[MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/Console)** - Command-line interface and REPL
+- **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinForms)** - Turtle graphics with MOGWAI
+- **[MAUI Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MAUI)** - Cross-platform mobile app
 
 ---
 
