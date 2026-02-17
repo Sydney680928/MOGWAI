@@ -2,15 +2,7 @@
 
 A simple cross-platform MOGWAI script editor for mobile and desktop platforms.
 
-<!-- 
-═══════════════════════════════════════════════════════════════════════
-📸 SCREENSHOT PLACEHOLDER
-═══════════════════════════════════════════════════════════════════════
-Replace with: Screenshot of MAUI app running on multiple platforms
-Example: Side-by-side Windows/Android/iOS screenshots showing the code editor
-File: /images/examples/maui-multiplatform.png
-═══════════════════════════════════════════════════════════════════════
--->
+![MAUI Runtime Screenshot](../../../images/img03.png)]
 
 ---
 

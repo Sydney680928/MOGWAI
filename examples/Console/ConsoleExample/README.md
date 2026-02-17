@@ -2,14 +2,7 @@
 
 A command-line interface and REPL (Read-Eval-Print-Loop) for interactive MOGWAI scripting.
 
-<!-- 
-═══════════════════════════════════════════════════════════════════════
-📸 SCREENSHOT PLACEHOLDER
-═══════════════════════════════════════════════════════════════════════
-Replace with: Screenshot of MOGWAI CLI in action showing REPL session
-File: /images/examples/cli-screenshot.png
-═══════════════════════════════════════════════════════════════════════
--->
+![MOGWAI](../../../images/img02.png)
 
 ---
 

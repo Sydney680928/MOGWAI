@@ -2,15 +2,7 @@
 
 A Windows Forms application demonstrating MOGWAI integration with turtle graphics and visual scripting.
 
-<!-- 
-═══════════════════════════════════════════════════════════════════════
-📸 SCREENSHOT PLACEHOLDER
-═══════════════════════════════════════════════════════════════════════
-Replace with: Screenshot of WinForms app showing turtle graphics output
-Example: Turtle drawing geometric patterns or fractals
-File: /images/examples/winforms-turtle.png
-═══════════════════════════════════════════════════════════════════════
--->
+![WinForms MOGWAI Turtle Graphics](../../../images/img05.png)
 
 ---
 
@@ -19,7 +11,7 @@ File: /images/examples/winforms-turtle.png
 - **Turtle Graphics** - Logo-style drawing with MOGWAI scripts
 - **Visual Output** - Real-time rendering of turtle movements
 - **Code Editor** - Built-in editor with syntax highlighting
-- ▶**Run/Stop Controls** - Execute scripts with visual feedback
+- **Run/Stop Controls** - Execute scripts with visual feedback
 - **STUDIO Integration** - Connect to MOGWAI STUDIO for debugging
 - **Custom Functions** - Turtle-specific MOGWAI commands
 - **Save/Load Scripts** - Manage your turtle graphics programs

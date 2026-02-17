@@ -1,15 +1,6 @@
 # MOGWAI
 
-<!-- 
-═══════════════════════════════════════════════════════════════════════
-📸 BANNER IMAGE PLACEHOLDER
-═══════════════════════════════════════════════════════════════════════
-Replace with: Logo + tagline banner
-Suggested: MOGWAI logo with "Stack-Based RPN Scripting for .NET"
-Size: 1200x300px recommended
-File: /images/banner.png
-═══════════════════════════════════════════════════════════════════════
--->
+![MOGWAI](./Images/img01.png)
 
 **A powerful stack-based RPN scripting language for industrial IoT automation, embedded systems, and .NET applications.**
 
@@ -92,14 +83,7 @@ var result = await engine.RunAsync(@"
 ", debugMode: false);
 ```
 
-<!-- 
-═══════════════════════════════════════════════════════════════════════
-📸 SCREENSHOT PLACEHOLDER
-═══════════════════════════════════════════════════════════════════════
-Replace with: Screenshot of console output showing "Hello from MOGWAI!" and "5"
-File: /images/quickstart-console.png
-═══════════════════════════════════════════════════════════════════════
--->
+![MOGWAI](./Images/img02.png)
 
 ### MOGWAI Language Example
 
@@ -203,15 +187,7 @@ Examples are available :
 
 ## MOGWAI STUDIO (Coming Soon)
 
-<!-- 
-═══════════════════════════════════════════════════════════════════════
-📸 SCREENSHOT PLACEHOLDER
-═══════════════════════════════════════════════════════════════════════
-Replace with: Screenshot of MOGWAI STUDIO IDE interface
-Showing: Code editor, debugger, variable inspector, stack visualization
-File: /images/studio-screenshot.png
-═══════════════════════════════════════════════════════════════════════
--->
+![MOGWAI](./Images/img04.png)
 
 MOGWAI STUDIO is a visual IDE for MOGWAI development currently in active development.
 
@@ -252,15 +228,7 @@ if (temp 25 >) then
 }
 ```
 
-<!-- 
-═══════════════════════════════════════════════════════════════════════
-📸 SCREENSHOT PLACEHOLDER
-═══════════════════════════════════════════════════════════════════════
-Replace with: Diagram or photo of MOGWAI controlling IoT devices
-Example: COMETA astronomical clocks, BLE sensors, etc.
-File: /images/iot-usecase.png
-═══════════════════════════════════════════════════════════════════════
--->
+![MOGWAI](./Images/img07.png)
 
 ### Embedded Applications
 
@@ -272,14 +240,7 @@ File: /images/iot-usecase.png
 "Square complete!" ?
 ```
 
-<!-- 
-═══════════════════════════════════════════════════════════════════════
-📸 SCREENSHOT PLACEHOLDER
-═══════════════════════════════════════════════════════════════════════
-Replace with: Screenshot of WinForms turtle graphics example
-File: /images/turtle-graphics.png
-═══════════════════════════════════════════════════════════════════════
--->
+![MOGWAI](./Images/img05.png)
 
 ---
 
