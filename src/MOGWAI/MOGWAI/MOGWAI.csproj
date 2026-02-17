@@ -11,7 +11,7 @@
 		<OutputType>Library</OutputType>
 
 		<!-- Versioning -->
-		<Version>8.0.0</Version>
+		<Version>8.0.1</Version>
 		<FileVersion>8.0.0.0</FileVersion>
 		<AssemblyVersion>8.0.0.0</AssemblyVersion>
 
@@ -32,7 +32,7 @@
 		<Copyright>Copyright © 2015-2025 Stéphane Sibué</Copyright>
   
 		<!-- Liens projet -->
-		<PackageProjectUrl>https://github.com/Sysdney680928/mogwai</PackageProjectUrl>
+		<PackageProjectUrl>https://github.com/Sydney680928/mogwai</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Sydney680928/mogwai</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 
@@ -45,8 +45,9 @@
 		<!-- Icone du package -->
 		<PackageIcon>icon.png</PackageIcon>
 
-		<!-- Notes de version -->
-		<PackageReleaseNotes>Initial release of MOGWAI - A modern RPN scripting language for industrial IoT automation.</PackageReleaseNotes>
+		<!-- Release notes -->
+		<PackageReleaseNotes>v8.0.1 - Fixed GitHub repository URL in package metadata (no code changes)</PackageReleaseNotes>
+
 
 		<!-- Pas de publication pour l'instant -->
 		<IsPackable>true</IsPackable>
