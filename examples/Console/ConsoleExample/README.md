@@ -289,16 +289,16 @@ Greater!
 
 ## Documentation
 
-- **[MOGWAI Language Guide](../../docs/EN/MOGWAI_EN.md)** - Complete language reference
-- **[Function Reference](../../docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 200+ built-in functions
-- **[Integration Guide](../../docs/EN/MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI
+- **[MOGWAI Language Guide](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_EN.md)** - Complete language reference
+- **[Function Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 200+ built-in functions
+- **[Integration Guide](https://github.com/Sydney680928/mogwai/tree/main/docs/EN//MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI
 
 ---
 
 ## Related Examples
 
-- **[WinForms Example](../WinFormsMogwai/)** - Turtle graphics with MOGWAI
-- **[MAUI Example](../MOGWAI_RUNTIME/)** - Cross-platform mobile app
+- **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinForms/WinFormsExample/)** - Turtle graphics with MOGWAI
+  - **[MAUI Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MAUI/MauiExample)** - Cross-platform mobile app
 
 ---
 
