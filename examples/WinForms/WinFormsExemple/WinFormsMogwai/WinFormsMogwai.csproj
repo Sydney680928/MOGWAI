@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net9.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="CodeExample\Sample1.mog" />
+    <None Remove="CodeExample\Sample2.mog" />
+    <None Remove="CodeExample\Sample3.mog" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="CodeExample\Sample1.mog" />
+    <EmbeddedResource Include="CodeExample\Sample2.mog" />
+    <EmbeddedResource Include="CodeExample\Sample3.mog" />
+    <EmbeddedResource Include="CodeExample\Sample4.mog" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MOGWAI" Version="8.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+</Project>

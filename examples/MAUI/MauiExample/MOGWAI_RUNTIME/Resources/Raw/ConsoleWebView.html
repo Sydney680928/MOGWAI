@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+
+    <style>
+        body {
+            height: 100%;
+            overflow: auto;
+            scroll-behavior: smooth;
+            max-width: 100%;
+            overflow-x: hidden;
+            line-height: 1;
+        }
+
+        a {
+            color: blue;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+
+    <style type='text/css'>
+        body {
+            font-family: monospace, monospace;
+            font-size: 8pt;
+            text-align: left;
+            color: white;
+            background: #28425D;
+            word-wrap: anywhere;
+        }
+    </style>
+
+    <style type='text/css'>
+        input {
+            font-family: monospace, monospace;
+            font-size: 8pt;
+            text-align: left;
+            color: white;
+            background: #28425D;
+            outline: none;
+            border: none;
+        }
+    </style>
+
+    <script>
+
+        var textControl;
+        var inputControl;
+
+        var inputModeInProgress = false;
+        var lastInputValue = "";
+
+        document.addEventListener("DOMContentLoaded", function () {
+            textControl = document.getElementById("textControl");
+            inputControl = document.getElementById("inputControl");      
+
+            inputControl.remove();
+
+            inputControl.addEventListener('input', function (event) {
+
+                var size = inputControl.value.length;
+
+                if (size < 5) {
+                    size = 5;
+                } else if (size > 15) {
+                    size = 15;
+                }
+
+                inputControl.setAttribute('size', size);
+            });
+
+            inputControl.addEventListener('focusout', function (event) {
+                if (inputModeInProgress) {
+                    inputControl.focus();
+                }
+            });
+
+            inputControl.addEventListener("keydown", function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    exitInputMode();
+                }
+            }); 
+        });
+
+        function exitInputMode() {
+            if (inputModeInProgress) {
+                inputControl.remove();
+                lastInputValue = inputControl.value;
+                consoleWriteLine(lastInputValue);
+                inputModeInProgress = false;
+            }
+        }
+
+        function startInputMode() {
+            inputModeInProgress = true;
+
+            textControl.append(inputControl);
+            inputControl.value = "";
+            inputControl.size = 5;
+            inputControl.focus();
+        }
+
+        function consoleWrite(message) {
+            if (textControl != null && message != null) {
+                textControl.append(message);
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        }
+
+        function consoleWriteLine(message) {
+            if (textControl != null && message != null) {
+                textControl.append(message);
+                textControl.innerHTML += "<br>";
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        }
+
+        function consoleClearScreen() {
+            if (textControl != null) {
+                textControl.innerHTML = "<br>";
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function setSize(size) {
+            document.body.style.fontSize = size + "pt";
+            if (inputControl != null) {
+                inputControl.style.fontSize = size + "pt";
+            }
+        }
+
+    </script>
+
+</head>
+
+    <body>
+
+        <label id="textControl" for="inputControl" />
+
+        <input id="inputControl" size="5" style="width: auto; padding: 2px; margin: 2px" />
+
+    </body>
+
+</html>

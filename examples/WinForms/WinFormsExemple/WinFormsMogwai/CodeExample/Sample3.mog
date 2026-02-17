@@ -1,0 +1,137 @@
+﻿console.clear mogwai.reset
+
+to 'shutdown' do 
+{
+	" " ?
+	"SHUTDOWN..." ?
+
+	task.list foreach 't' do 
+	{
+		" " ?
+		"PURGE TASK {! t}" eval ?
+		
+		t task.purge
+	}
+}
+
+to 'MOGWAI.onStop' do 
+{
+	shutdown 
+}
+
+to 'MOGWAI.onError' do 
+{
+	shutdown 
+}
+
+onEvent 'TASK_DID_START' do 
+{
+	DI
+	" " ?
+ 	"TASK DID START : {! eventData}" eval ?
+	EI
+}
+
+onEvent 'TASK_DID_END' do 
+{ 
+	EI
+	" " ?
+	"TASK DID END : {! eventData}" eval ?
+	DI
+}
+
+onEvent 'TASK_DID_FAIL' do 
+{
+	DI
+	" " ?
+	"TASK DID FAIL : {! eventData}" eval ?
+	EI
+}
+
+onEvent 'TASK_DID_PUBLISH' do 
+{ 
+	DI
+	" " ?
+	"TASK DID PUBLISH : {! eventData}" eval ?
+	EI
+}
+
+( 
+	[
+		name: 'T1' 
+		url: "https://www.google.fr" 
+		file: "google.dat"
+	]
+	
+	[
+		name: 'T2' 
+		url: "https://www.coding4phone.com" 
+		file: "c4p.dat"
+	]
+	
+	[
+		name: 'T3' 
+		url: "https://www.youtube.com" 
+		file: "youtube.dat"
+	]
+	
+	[
+		name: 'T4' 
+		url: "https://www.credit-agricole.fr/ca-des-savoie/particulier.html" 
+		file: "crca.dat"
+	]
+	
+	[
+		name: 'T5' 
+		url: "https://github.com/" 
+		file: "github.dat"
+	]
+)
+
+foreach 'item' do
+{
+	item ->vars
+
+	(! path.files file) path.make -> 'file'
+
+	[! file: file url: url] -> 'parameter'
+
+	task name do
+	{
+		->vars
+
+		onEvent 'TASK_DID_RECEIVE' do 
+		{
+			" " ?
+			"TASK DID RECEIVE : {! eventData}" eval ?
+		}
+				
+		trap { file file.purge }
+			
+		[! http.get uri: url] -> 'r'
+			
+		if (r->state) then
+		{
+			file r->response file.data.write
+			true task.setResult
+		}
+		else
+		{
+			false task.setResult
+		}	
+	}
+
+	task name start with parameter
+}
+
+task.list task.join
+
+" " ?
+"ALL TASKS ARE COMPLETE." ?
+
+" " ?
+"You can go to the root folder and check that the downloads are there." ?
+	
+
+
+

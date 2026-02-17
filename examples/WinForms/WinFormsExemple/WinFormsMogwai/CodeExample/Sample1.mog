@@ -1,0 +1,10 @@
+﻿mogwai.reset
+
+console.clear	
+
+[http.get uri: "https://www.google.fr"] -> 'r'
+
+if (r->state) then
+{
+	r->response 0 300 sub ?d
+}
