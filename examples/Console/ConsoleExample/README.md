@@ -306,7 +306,7 @@ Greater!
 
 Apache License 2.0
 
-See [LICENSE](../../LICENSE) for details.
+See [LICENSE](https://github.com/Sydney680928/mogwai/tree/main/LICENSE) for details.
 
 ---
 
