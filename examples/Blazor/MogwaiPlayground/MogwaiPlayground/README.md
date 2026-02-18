@@ -47,4 +47,4 @@ MogwaiPlayground/
 
 ## License
 
-Apache 2.0 — see [LICENSE](LICENSE)
+Apache 2.0 — see [LICENSE](https://github.com/Sydney680928/mogwai/tree/main/LICENSE)
