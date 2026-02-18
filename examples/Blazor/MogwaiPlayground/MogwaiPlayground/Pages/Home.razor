@@ -1,0 +1,286 @@
+@page "/"
+@using MOGWAI.Engine
+@using MOGWAI.Interfaces
+@implements IDisposable
+@inject IJSRuntime JS
+
+<PageTitle>MOGWAI Playground</PageTitle>
+
+<div class="terminal-wrapper">
+
+    <!-- ── En-tête ── -->
+    <header class="terminal-header">
+        <div class="header-left">
+            <span class="logo-bracket">[</span>
+            <span class="logo-text">MOGWAI</span>
+            <span class="logo-bracket">]</span>
+            <span class="logo-sub">Playground</span>
+        </div>
+        <div class="header-right">
+            <a href="https://github.com/Sydney680928/mogwai" target="_blank" class="header-link">GitHub</a>
+            <a href="https://www.nuget.org/packages/MOGWAI/" target="_blank" class="header-link">NuGet</a>
+        </div>
+    </header>
+
+    <!-- ── Corps du terminal ── -->
+    <div class="terminal-body" @ref="_terminalBody">
+        @foreach (var line in _lines)
+        {
+            @switch (line.Kind)
+            {
+                case LineKind.Input:
+                    <div class="line line-input"><span class="prompt-sign">❯</span> @line.Text</div>
+                    break;
+                case LineKind.Error:
+                    <div class="line line-error">@line.Text</div>
+                    break;
+                case LineKind.System:
+                    <div class="line line-system">@line.Text</div>
+                    break;
+                default:
+                    <div class="line line-output">@line.Text</div>
+                    break;
+            }
+        }
+
+        @if (_isRunning)
+        {
+            <div class="line line-system">
+                <span class="spinner">⠋</span> Exécution...
+            </div>
+        }
+    </div>
+
+    <!-- ── Barre d'input ── -->
+    <div class="terminal-input-bar">
+        <span class="prompt-sign">❯</span>
+        <input @ref="_inputRef"
+               @bind="_currentInput"
+               @bind:event="oninput"
+               @onkeydown="OnKeyDown"
+               class="terminal-input"
+               placeholder="Type MOGWAI code here..."
+               spellcheck="false"
+               autocomplete="off"
+               autocorrect="off"
+               autocapitalize="off"
+               disabled="@_isRunning" />
+    </div>
+
+    <!-- ── Exemples cliquables ── -->
+    <div class="examples-bar">
+        <span class="examples-label">Examples :</span>
+        @foreach (var ex in _examples)
+        {
+            <button class="example-btn" @onclick="() => RunExample(ex.Code)" title="@ex.Description">
+                @ex.Label
+            </button>
+        }
+        <button class="example-btn example-btn-clear" @onclick="ClearTerminal">⌫ Clear</button>
+    </div>
+
+</div>
+
+@code {
+
+    // ── DOM References ──────────────────────────────────────
+
+    private ElementReference _terminalBody;
+    private ElementReference _inputRef;
+
+    // ── State ───────────────────────────────────────────────
+
+    private List<TerminalLine> _lines = new();
+    private string _currentInput = string.Empty;
+    private bool _isRunning = false;
+
+    // ── Command history ─────────────────────────────────────
+
+    private List<string> _history = new();
+    private int _historyIndex = -1;
+
+    // ── MOGWAI engine ───────────────────────────────────────
+
+    private MogwaiEngine? _engine;
+    private MogwaiDelegate? _delegate;
+
+    // ── Examples ────────────────────────────────────────────
+
+    private readonly (string Label, string Description, string Code)[] _examples =
+    [
+    ("Hello World",  "Display a message",                      "\"Hello, MOGWAI!\" ?"),
+    ("Arithmetic",   "RPN calculation: (2 + 3) × 4",           "2 3 + 4 * ?"),
+    ("Variable",     "Store and reuse a value",                "42 -> 'x'  x 2 * ?"),
+    ("Loop",         "Print 1 to 5",                           "1 5 for 'i'do { i ? }"),
+    ("Fibonacci",    "Recursive Fibonacci",                    "to 'fib' do { dup if (2 <) then { return } dup 1 - fib swap 2 - fib + }\n0 fib ?\n1 fib ?\n5 fib ?\n10 fib ?"),
+    ("Stack",        "Stack manipulations",                    "1 2 3  depth ? swap ? drop"),
+    ("Strings",      "String operations",                      "\"mogwai\" dup size ? ->upper ?"),
+    ("List",         "Create and iterate a list",              "(10 20 30 40 50) -> '$lst'\n$lst size ?\n$lst 2 get ?"),
+];
+
+    // ── Lifecycle ────────────────────────────────────────────────────────────
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.CompletedTask;
+
+        _delegate = new MogwaiDelegate();
+        _delegate.OnOutput += OnEngineOutput;
+        _delegate.PromptHandler = HandlePrompt;
+
+        // keepAlive=true : variables persist between commands (REPL)
+        // useDefaultFolders=false : no file system access in WASM
+
+        _engine = new MogwaiEngine("MOGWAI Playground", keepAlive: true, useDefaultFolders: false);
+        _engine.Delegate = _delegate;
+
+        // Welcome message
+
+        PrintWelcome();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await FocusInput();
+        }
+        await ScrollToBottom();
+    }
+
+    public void Dispose()
+    {
+        if (_delegate is not null)
+            _delegate.OnOutput -= OnEngineOutput;
+    }
+
+    // ── Error outputs  ────────────────────────────────────────────
+
+    private void OnEngineOutput(TerminalLine line)
+    {
+        if (line.Kind == LineKind.Clear)
+        {
+            _lines.Clear();
+        }
+        else
+        {
+            _lines.Add(line);
+        }
+        InvokeAsync(StateHasChanged);
+    }
+
+    // ── input ────────────────────────────────────────────────────
+
+    private async Task OnKeyDown(KeyboardEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case "Enter":
+                await ExecuteCurrentInput();
+                break;
+
+            case "ArrowUp":
+                NavigateHistory(-1);
+                break;
+
+            case "ArrowDown":
+                NavigateHistory(+1);
+                break;
+        }
+    }
+
+    private async Task ExecuteCurrentInput()
+    {
+        var code = _currentInput.Trim();
+        if (string.IsNullOrEmpty(code) || _engine is null) return;
+
+        _history.Insert(0, code);
+        _historyIndex = -1;
+
+        _lines.Add(new TerminalLine(code, LineKind.Input));
+        _currentInput = string.Empty;
+
+        _isRunning = true;
+        StateHasChanged();
+
+        try
+        {
+            var result = await _engine.RunAsync(code, debugMode: false);
+            if (result.IsError)
+            {
+                _lines.Add(new TerminalLine($"⚠ {result}", LineKind.Error));
+            }
+        }
+        catch (Exception ex)
+        {
+            _lines.Add(new TerminalLine($"⚠ Exception : {ex.Message}", LineKind.Error));
+        }
+        finally
+        {
+            _isRunning = false;
+            StateHasChanged();
+            await FocusInput();
+        }
+    }
+
+    private void NavigateHistory(int direction)
+    {
+        if (_history.Count == 0) return;
+
+        _historyIndex = Math.Clamp(_historyIndex + direction, -1, _history.Count - 1);
+        _currentInput = _historyIndex >= 0 ? _history[_historyIndex] : string.Empty;
+        StateHasChanged();
+    }
+
+    private async Task RunExample(string code)
+    {
+        foreach (var line in code.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+        {
+            _currentInput = line.Trim();
+            await ExecuteCurrentInput();
+        }
+    }
+
+    private void ClearTerminal()
+    {
+        _lines.Clear();
+        StateHasChanged();
+    }
+
+    // ── Prompt (INPUT MOGWAI) ────────────────────────────────────
+
+    private async Task<string?> HandlePrompt(string message)
+    {
+        return await JS.InvokeAsync<string?>("prompt", message);
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    private void PrintWelcome()
+    {
+        var lines = new[]
+        {
+            "╔══════════════════════════════════════════════════════╗",
+            "║        MOGWAI PLAYGROUND            •  v8.0          ║",
+            "║  Stack-based scripting for .NET     •  Apache 2.0    ║",
+            "╚══════════════════════════════════════════════════════╝",
+            "",
+            "  Type MOGWAI code and press Enter.",
+            "  Use ↑ ↓ to navigate through history.",
+            "  Click an example to run it.",
+            "",
+        };
+        foreach (var l in lines)
+            _lines.Add(new TerminalLine(l, LineKind.System));
+    }
+
+    private async Task ScrollToBottom()
+    {
+        await JS.InvokeVoidAsync("mogwaiTerminal.scrollToBottom", _terminalBody);
+    }
+
+    private async Task FocusInput()
+    {
+        await _inputRef.FocusAsync();
+    }
+}

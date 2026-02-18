@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MOGWAI Playground</title>
+    <base href="/" />
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+    <!-- Google Fonts : JetBrains Mono (terminal) + Syne (logo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <div id="app">
+        <div class="loading-screen">
+            <div class="loading-logo">[MOGWAI]</div>
+            <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+            <div class="loading-text">Loading MOGWAI engine...</div>
+        </div>
+    </div>
+
+    <script>
+        // Helper JS for the Blazor terminal
+        window.mogwaiTerminal = {
+            scrollToBottom: function (element) {
+                if (element) {
+                    element.scrollTop = element.scrollHeight;
+                }
+            }
+        };
+    </script>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+</html>
