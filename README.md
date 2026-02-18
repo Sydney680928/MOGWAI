@@ -180,6 +180,7 @@ Examples are available :
 - **[MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/Console)** - Command-line interface and REPL
 - **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinForms)** - Turtle graphics with MOGWAI
 - **[MAUI Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MAUI)** - Cross-platform mobile app
+- **[Blazor Example](https://github.com/Sydney680928/mogwai/tree/main/examples/Blazor)** - Blazor WASM app
 
 ---
 
@@ -240,6 +241,11 @@ if (temp 25 >) then
 
 ![MOGWAI](./images/img05.png)
 
+### Blazor WASM Applications
+
+![MOGWAI](./images/img08.png)
+
+You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
 ---
 
 ## Roadmap

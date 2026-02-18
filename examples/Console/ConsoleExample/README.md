@@ -291,8 +291,8 @@ Greater!
 ## Related Examples
 
 - **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinForms/WinFormsExample/)** - Turtle graphics with MOGWAI
-  - **[MAUI Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MAUI/MauiExample)** - Cross-platform mobile app
-
+- **[MAUI Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MAUI/MauiExample)** - Cross-platform mobile app
+- **[Blazor Example](https://github.com/Sydney680928/mogwai/tree/main/examples/Blazor)** - Blazor WASM app
 ---
 
 ## License

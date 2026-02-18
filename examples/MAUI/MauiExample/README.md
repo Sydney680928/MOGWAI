@@ -628,7 +628,7 @@ Customize the editor appearance:
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 - **[Language Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_EN.md)** - Complete MOGWAI language guide
 - **[Function Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 240+ built-in functions
@@ -637,14 +637,14 @@ Customize the editor appearance:
 
 ---
 
-## 🔗 Related Examples
+## Related Examples
 
 - **[MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/Console)** - Command-line interface and REPL
 - **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinForms)** - Turtle graphics with MOGWAI
-
+- **[Blazor Example](https://github.com/Sydney680928/mogwai/tree/main/examples/Blazor)** - Blazor WASM app
 ---
 
-## 🎯 Use Cases
+## Use Cases
 
 MOGWAI Runtime on MAUI is perfect for:
 
