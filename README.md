@@ -226,7 +226,7 @@ if (temp 25 >) then
 }
 ```
 
-![MOGWAI](./Images/img07.png)
+![MOGWAI](./images/img07.png)
 
 ### Embedded Applications
 
