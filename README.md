@@ -81,7 +81,7 @@ var result = await engine.RunAsync(@"
 ", debugMode: false);
 ```
 
-![MOGWAI](./Images/img02.png)
+![MOGWAI](./images/img02.png)
 
 ### MOGWAI Language Example
 
@@ -185,7 +185,7 @@ Examples are available :
 
 ## MOGWAI STUDIO (Coming Soon)
 
-![MOGWAI](./Images/img04.png)
+![MOGWAI](./images/img04.png)
 
 MOGWAI STUDIO is a visual IDE for MOGWAI development currently in active development.
 
@@ -238,7 +238,7 @@ if (temp 25 >) then
 "Square complete!" ?
 ```
 
-![MOGWAI](./Images/img05.png)
+![MOGWAI](./images/img05.png)
 
 ---
 
