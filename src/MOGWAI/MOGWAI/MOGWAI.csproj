@@ -23,7 +23,7 @@
 		<Description>MOGWAI - A modern RPN scripting language for industrial IoT automation.</Description>
 
 		<!-- Copyright -->
-		<Copyright>Copyright © 2015-2025 Stéphane Sibué</Copyright>
+		<Copyright>Copyright © 2015-2026 Stéphane Sibué</Copyright>
 
 		<!-- LICENCE (Expression SPDX) -->
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
