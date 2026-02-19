@@ -44,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Math operations (arithmetic, trigonometry, statistics)
   - String manipulation (search, replace, format, encoding)
   - Record types (structured data)
-  - List opérations
+  - List opÃ©rations
   - Control flow (if/then/else, loops, functions)
   - File I/O (read, write, CSV parsing)
   - HTTP client (GET, POST, headers, JSON)
@@ -72,7 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Major namespace reorganization for clarity:
   - `MOGWAI.Engine`: Core execution engine and runtime
   - `MOGWAI.Objects`: Type system (MOGNumber, MOGString, MOGList, etc.)
-  - `MOGWAI.Interfaces`: Extension points (IDelegate, IPrimitive)
+  - `MOGWAI.Interfaces`: Extension points (IDelegate, IPlugin)
   - `MOGWAI.Primitives`: Built-in function implementations
   - `MOGWAI.Exceptions`: Error handling and custom exceptions
 
