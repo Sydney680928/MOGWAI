@@ -182,6 +182,12 @@ Examples are available :
 - **[MAUI Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MAUI)** - Cross-platform mobile app
 - **[Blazor Example](https://github.com/Sydney680928/mogwai/tree/main/examples/Blazor)** - Blazor WASM app
 
+### Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
+
+**Latest Release:** [v8.0.1](https://github.com/Sydney680928/mogwai/releases/tag/v8.0.1) - 2026-02-17
+
 ---
 
 ## MOGWAI STUDIO (Coming Soon)
