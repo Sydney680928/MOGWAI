@@ -132,6 +132,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveMathSubstract(this, "-"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathMultiply(this, "*"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathDevide(this, "/"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathNegate(this, "+/-"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathSin(this, "sin"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathCos(this, "cos"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathTan(this, "tan"), MOGPrimitive.CATEGORY_MATHS);
