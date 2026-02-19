@@ -10,12 +10,9 @@ A Windows Forms application demonstrating MOGWAI integration with turtle graphic
 
 - **Turtle Graphics** - Logo-style drawing with MOGWAI scripts
 - **Visual Output** - Real-time rendering of turtle movements
-- **Code Editor** - Built-in editor with syntax highlighting
+- **Code Editor** - Built-in editor
 - **Run/Stop Controls** - Execute scripts with visual feedback
-- **STUDIO Integration** - Connect to MOGWAI STUDIO for debugging
 - **Custom Functions** - Turtle-specific MOGWAI commands
-- **Save/Load Scripts** - Manage your turtle graphics programs
-
 ---
 
 ## Quick Start
