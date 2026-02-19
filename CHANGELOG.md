@@ -20,16 +20,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `AddBoolean(bool value)` - Add MOGBool
   - `AddNull()` - Add MOGNull
   - `AddEmpty()` - Add MOGEmpty
-  These methods simplify object creation by not requiring explicit Engine reference
+
+   These methods simplify object creation by not requiring explicit Engine reference
  - Added convenience methods to MOGRecord for adding typed objects:
-  - `SetString(string key, string value)` - Add MOGString
-  - `SetNumber(string key, double value)` - Add MOGNumber 
-  - `SetName(string key, string value)` - Add MOGName
-  - `SetKey(string key, string value)` - Add MOGKey
-  - `SetWord(string key, string value)` - Add MOGWord
-  - `SetBoolean(string key, bool value)` - Add MOGBool
-  - `SetNull(string key)` - Add MOGNull
-  - `SetEmpty(string key)` - Add MOGEmpty
+   - `SetString(string key, string value)` - Add MOGString
+   - `SetNumber(string key, double value)` - Add MOGNumber 
+   - `SetName(string key, string value)` - Add MOGName
+   - `SetKey(string key, string value)` - Add MOGKey
+   - `SetWord(string key, string value)` - Add MOGWord
+   - `SetBoolean(string key, bool value)` - Add MOGBool
+   - `SetNull(string key)` - Add MOGNull
+   - `SetEmpty(string key)` - Add MOGEmpty
+  
   These methods simplify object creation by not requiring explicit Engine reference
 
 ### Changed
