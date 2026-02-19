@@ -95,7 +95,14 @@ clg
 }
 ```
 
-![Square drawn by turtle](../../../images/img10.png)
+<!-- 
+═══════════════════════════════════════════════════════════════════════
+📸 SCREENSHOT PLACEHOLDER
+═══════════════════════════════════════════════════════════════════════
+Replace with: Square drawn by turtle
+File: /images/examples/turtle-square.png
+═══════════════════════════════════════════════════════════════════════
+-->
 
 ### Draw a Star
 
@@ -285,7 +292,14 @@ clg
 100 tree
 ```
 
-![Recursive fractal tree](../../../images/img09.png)
+<!-- 
+═══════════════════════════════════════════════════════════════════════
+📸 SCREENSHOT PLACEHOLDER
+═══════════════════════════════════════════════════════════════════════
+Replace with: Fractal tree drawn by turtle
+File: /images/examples/turtle-fractal-tree.png
+═══════════════════════════════════════════════════════════════════════
+-->
 
 ---
 

@@ -68,8 +68,7 @@ namespace WinFormsMogwai
 
             SendMessage(CodeTextBox.Handle, EM_SETTABSTOPS, 1, [15]);
         }
-
-
+    
         #region Private functions
 
         private void LoadCode(int index)
@@ -420,7 +419,6 @@ namespace WinFormsMogwai
         }
 
         #endregion
-
 
         #region Functions related to the output console
 
@@ -789,7 +787,5 @@ namespace WinFormsMogwai
         }
 
         #endregion
-
-
     }
 }

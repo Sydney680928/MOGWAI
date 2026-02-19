@@ -1,4 +1,6 @@
-﻿console.clear mogwai.reset
+﻿mogwai.reset
+
+console.clear
 
 to 'shutdown' do 
 {

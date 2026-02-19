@@ -12,6 +12,8 @@
     <None Remove="CodeExample\Sample1.mog" />
     <None Remove="CodeExample\Sample2.mog" />
     <None Remove="CodeExample\Sample3.mog" />
+    <None Remove="CodeExample\Sample5.mog" />
+    <None Remove="CodeExample\Sample6.mog" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +21,8 @@
     <EmbeddedResource Include="CodeExample\Sample2.mog" />
     <EmbeddedResource Include="CodeExample\Sample3.mog" />
     <EmbeddedResource Include="CodeExample\Sample4.mog" />
+    <EmbeddedResource Include="CodeExample\Sample5.mog" />
+    <EmbeddedResource Include="CodeExample\Sample6.mog" />
   </ItemGroup>
 
   <ItemGroup>
