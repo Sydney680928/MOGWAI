@@ -63,10 +63,7 @@ namespace MOGWAI.Objects
             return EvalResult.NoError;
         }
 
-        public void AddItem(MOGObject item)
-        {
-            Items.Add(item);
-        }
+        public void AddItem(MOGObject item) => Items.Add(item);
 
         public EvalResult RemoveItem(int index)
         {
@@ -85,5 +82,21 @@ namespace MOGWAI.Objects
             Items.Insert(index, item);
             return EvalResult.NoError;
         }
+
+        public void AddNumber(double number) => Items.Add(new MOGNumber(Engine, number));
+
+        public void AddString(string str) => Items.Add(new MOGString(Engine, str)); 
+
+        public void AddBoolean(bool value) => Items.Add(new MOGBoolean(Engine, value)); 
+
+        public void AddNull() => Items.Add(new MOGNull(Engine));    
+
+        public void AddName(string name) => Items.Add(new MOGName(Engine, name));   
+
+        public void AddWord(string word) => Items.Add(new MOGWord(Engine, word));   
+
+        public void AddKey(string key) => Items.Add(new MOGKey(Engine, key));   
+
+        public void AddEmpty() => Items.Add(new MOGEmpty(Engine));  
     }
 }

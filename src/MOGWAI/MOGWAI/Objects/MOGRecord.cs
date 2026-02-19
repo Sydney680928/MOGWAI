@@ -53,6 +53,22 @@ namespace MOGWAI.Objects
 
         public void SetItem(string key, MOGObject value) => Items[key] = value;
 
+        public void SetString(string key, string value) => Items[key] = new MOGString(Engine, value);  
+        
+        public void SetName(string key, string value) => Items[key] = new MOGName(Engine, value);   
+
+        public void SetWord(string key, string value) => Items[key] = new MOGWord(Engine, value);   
+
+        public void SetNumber(string key, double value) => Items[key] = new MOGNumber(Engine, value);   
+
+        public void SetBoolean(string key, bool value) => Items[key] = new MOGBoolean(Engine, value);
+
+        public void SetNull(string key) => Items[key] = new MOGNull(Engine);    
+
+        public void SetEmpty(string key) => Items[key] = new MOGEmpty(Engine);  
+
+        public void SetKey(string key, string value) => Items[key] = new MOGKey(Engine, value); 
+
         public MOGObject? GetItem(string key)
         {
             if (Items.ContainsKey(key))
