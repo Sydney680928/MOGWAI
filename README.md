@@ -323,7 +323,7 @@ While we don't have formal unit tests, please ensure:
 
 ### Born from Real Needs
 
-Created in 2015 to simulate Bluetooth Low Energy devices for IoT testing at COMETA SAS. Over 10 years, MOGWAI evolved into a full-featured scripting language used in industrial automation.
+Created in 2015 to simulate Bluetooth Low Energy devices for IoT testing. Over 10 years, MOGWAI evolved into a full-featured scripting language used in industrial automation.
 
 ### Battle-Tested
 
