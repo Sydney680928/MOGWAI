@@ -38,7 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
   - Changed `get` primitive on MOGRecord to return MOGNull instead of throwing error when key is not found
-  - Changed keys named after reserved words (primitives, host functions, extended functions) are allowed.
+  - Changed keys named after reserved words (primitives, host functions, extended functions) are allowed
 
 ### Fixed
 
