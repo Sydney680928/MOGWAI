@@ -448,6 +448,7 @@ namespace MOGWAI.Engine
             RegisterPrivatePrimitive(new PrimitiveIF(this, "IF"), "if");
             RegisterPrivatePrimitive(new PrimitiveIFELSE(this, "IFELSE"), "if...else");
             RegisterPrivatePrimitive(new PrimitiveFOREACH(this, "FOREACH"), "foreach");
+            RegisterPrivatePrimitive(new PrimitiveFOREACHTRANSFORM(this, "FOREACHTRANSFORM"), "foreach");
             RegisterPrivatePrimitive(new PrimitiveFOR(this, "FOR"), "for");
             RegisterPrivatePrimitive(new PrimitiveFORSTEP(this, "FORSTEP"), "for");
             RegisterPrivatePrimitive(new PrimitiveREPEAT(this, "REPEAT"), "repeat");

@@ -35,6 +35,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   
    These methods simplify object creation by not requiring explicit Engine reference
 
+ - Added new `foreach` usage that allows transforming items while iterating:
+   - `(1 2 3 4) foreach 'item' transform { item 2 * }` returns `(2 4 6 8)`
+   - `(1 2 3 4) foreach 'item' transform { item 2 * ->str }` returns `("2" "4" "6" "8")`
+
 ### Changed
 
   - Changed `get` primitive on MOGRecord to return MOGNull instead of throwing error when key is not found

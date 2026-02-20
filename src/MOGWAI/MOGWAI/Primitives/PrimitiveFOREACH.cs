@@ -44,7 +44,7 @@ namespace MOGWAI.Primitives
             var s = Engine.StackSign(3);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, this);
 
             // 0 code
             // 1 variable
@@ -132,7 +132,7 @@ namespace MOGWAI.Primitives
                 }
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, this);
         }
     }
 }

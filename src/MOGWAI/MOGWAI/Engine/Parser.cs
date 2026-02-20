@@ -1809,45 +1809,76 @@ namespace MOGWAI.Engine
 
             try
             {
-                if (_parsedObjects.Count - index >= 4 && index > 0)
+                if (engine.CheckCodeFootprint(_parsedObjects, index, "foreach", null, "do", null))
                 {
                     var name = _parsedObjects[index + 1] as MOGName;
 
                     if (name != null)
                     {
-                        var doWord = _parsedObjects[index + 2] as MOGWord;
+                        var code = _parsedObjects[index + 3] as MOGCode;
 
-                        if (doWord != null && doWord.Value == "do")
+                        if (code != null)
                         {
-                            var code = _parsedObjects[index + 3] as MOGCode;
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveFOREACH));
 
-                            if (code != null)
+                            if (primitive != null)
                             {
-                                var primitive = engine.GetPrimitive(typeof(PrimitiveFOREACH));
+                                primitive.StartPos = _parsedObjects[index].StartPos;
+                                primitive.EndPos = _parsedObjects[index].EndPos;
+                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                if (primitive != null)
-                                {
-                                    primitive.StartPos = _parsedObjects[index].StartPos;
-                                    primitive.EndPos = _parsedObjects[index].EndPos;
-                                    primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                for (int i = 0; i < 4; i++)
+                                    _parsedObjects.RemoveAt(index);
 
-                                    for (int i = 0; i < 4; i++)
-                                        _parsedObjects.RemoveAt(index);
+                                // On crée le vrai FOREACH
+                                // 0 items
+                                // 1 name
+                                // 2 code
+                                // 3 FOREACH
 
-                                    // On crée le vrai FOREACH
-                                    // 0 items
-                                    // 1 name
-                                    // 2 code
-                                    // 3 FOREACH
+                                _parsedObjects.Insert(index, primitive);
+                                _parsedObjects.Insert(index, code);
+                                _parsedObjects.Insert(index, name);
 
-                                    _parsedObjects.Insert(index, primitive);
-                                    _parsedObjects.Insert(index, code);
-                                    _parsedObjects.Insert(index, name);
-
-                                    return true;
-                                }
+                                return true;
                             }
+                        }
 
+                    }
+                }
+                else if (engine.CheckCodeFootprint(_parsedObjects, index, "foreach", null, "transform", null))
+                {
+                    var name = _parsedObjects[index + 1] as MOGName;
+
+                    if (name != null)
+                    {
+                        var code = _parsedObjects[index + 3] as MOGCode;
+
+                        if (code != null)
+                        {
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveFOREACHTRANSFORM));
+
+                            if (primitive != null)
+                            {
+                                primitive.StartPos = _parsedObjects[index].StartPos;
+                                primitive.EndPos = _parsedObjects[index].EndPos;
+                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+
+                                for (int i = 0; i < 4; i++)
+                                    _parsedObjects.RemoveAt(index);
+
+                                // On crée le vrai FOREACHTRANSFORM
+                                // 0 items
+                                // 1 name
+                                // 2 code
+                                // 3 FOREACHTRANSFORM
+
+                                _parsedObjects.Insert(index, primitive);
+                                _parsedObjects.Insert(index, code);
+                                _parsedObjects.Insert(index, name);
+
+                                return true;
+                            }
                         }
                     }
                 }

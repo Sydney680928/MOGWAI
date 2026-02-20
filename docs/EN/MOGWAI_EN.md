@@ -603,9 +603,9 @@ To use an automatically managed loop counter, you must use `for`.
 }
 ```
 
-## `foreach` loop
+## `foreach...do` loop
 
-To iterate each element of a list or a data, you must use `foreach`.
+To iterate each element of a list or a data, you must use `foreach...do`.
 
 ```
 # We display each element of the list
@@ -615,6 +615,20 @@ To iterate each element of a list or a data, you must use `foreach`.
 # We display each element of the data
 
 D:01020304 foreach 'item' do {item ?} 
+```
+
+## `foreach...transform` loop
+
+To transform each element of a list, you must use `foreach...transform`.
+
+```
+# We transform each element of the list
+
+("L1" "L2" "L3" "L4" "L5" "L6" "L7") foreach 'item' transform {"-" item +} 
+# Returns the list ("-L1" "-L2" "-L3" "-L4" "-L5" "-L6" "-L7")
+
+(1 2 3 4 5) foreach 'item' transform {item 2 *} 
+# Returns the list (2 4 6 8 10)
 ```
  
 ## `forever` loop
