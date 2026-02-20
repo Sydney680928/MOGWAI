@@ -2,9 +2,10 @@
 
 # MOGWAI - A powerful stack-based RPN scripting language for industrial IoT automation, embedded systems, and .NET applications.
 
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
-[![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
-[![NuGet](https://img.shields.io/nuget/v/MOGWAI.svg)](https://www.nuget.org/packages/MOGWAI/)
+![GitHub Stars](https://img.shields.io/github/stars/Sydney680928/mogwai?style=social)
+![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
+![NuGet](https://img.shields.io/nuget/v/MOGWAI.svg)](https://www.nuget.org/packages/MOGWAI/)
 
 **10 years of development** • **240+ built-in functions** • **Battle-tested in production** • **Open Source**
 
