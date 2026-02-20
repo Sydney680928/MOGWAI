@@ -52,6 +52,7 @@ namespace MOGWAI.Primitives
                 if (s[0] == typeof(MOGKey))
                 {
                     // record key get
+                    // return null if key does not exists in the record
 
                     var key = Engine.StackPopKey();
                     var record = Engine.StackPopRecord();
@@ -59,9 +60,14 @@ namespace MOGWAI.Primitives
                     var value = record.GetItem(key.Value);
 
                     if (value == null)
-                        return EvalResult.Failure(Engine, Error.UnknownKeyError, Name, key.ToString());
+                    {
+                        Engine.StackPushNull();
+                    }
+                    else
+                    {
+                        Engine.StackPush(value);
+                    }
 
-                    Engine.StackPush(value);
                     return EvalResult.NoError;
                 }
                 else if (s[0] == typeof(MOGList))

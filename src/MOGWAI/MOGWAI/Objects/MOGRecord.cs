@@ -120,7 +120,7 @@ namespace MOGWAI.Objects
                 var item = Items[key];
                 var stackSize = Engine.StackSize;
 
-                var r = await item.EngineEval();
+                var r = await item.UserEval();
 
                 if (r != EvalResult.NoError)
                     break;

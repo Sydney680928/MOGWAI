@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `AddEmpty()` - Add MOGEmpty
 
    These methods simplify object creation by not requiring explicit Engine reference
+
  - Added convenience methods to MOGRecord for adding typed objects:
    - `SetString(string key, string value)` - Add MOGString
    - `SetNumber(string key, double value)` - Add MOGNumber 
@@ -32,15 +33,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    - `SetNull(string key)` - Add MOGNull
    - `SetEmpty(string key)` - Add MOGEmpty
   
-  These methods simplify object creation by not requiring explicit Engine reference
+   These methods simplify object creation by not requiring explicit Engine reference
 
 ### Changed
 
-- Work in progress changes will appear here
+  - Changed `get` primitive on MOGRecord to return MOGNull instead of throwing error when key is not found
 
 ### Fixed
 
-- Work in progress fixes will appear here
+- Fixed bug with MOGRecord AutoEval capability
 
 ## [8.0.1] - 2026-02-17
 
