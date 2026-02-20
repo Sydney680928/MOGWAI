@@ -92,7 +92,7 @@ namespace MOGWAI.Objects
             // On doit avoir un nombre pair d'éléments (clé/valeur)
 
             if (items.Count % 2 != 0)
-                throw new MogwaiInvalidRecordException("Le nombre d'éléments dans un enregistrement doit être pair (clé/valeur).");
+                throw new MogwaiInvalidRecordException("the number of items in a record must be even, as they are interpreted as key/value pairs");
 
             // On doit avoir 1 clé et une valuer et rien d'autre
 
@@ -106,7 +106,7 @@ namespace MOGWAI.Objects
                 }
                 else
                 {
-                    throw new MogwaiInvalidRecordException("La clé n'a pas le bon type.");
+                    throw new MogwaiInvalidRecordException("the key has the wrong type");
                 }
             }
 

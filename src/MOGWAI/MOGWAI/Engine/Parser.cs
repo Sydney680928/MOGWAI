@@ -130,6 +130,7 @@ namespace MOGWAI.Engine
                     var items = parser.ParsedObjects;
 
                     MOGObject? item0 = null;
+                    MOGObject? autoEval = null;
 
                     if (items.Count > 0)
                     {
@@ -141,7 +142,10 @@ namespace MOGWAI.Engine
                                 break;
 
                             if (item0 is MOGWord word && word.Value == "!")
+                            {
+                                autoEval = word;
                                 continue;
+                            }
 
                             break;
                         }
@@ -157,12 +161,16 @@ namespace MOGWAI.Engine
                         {
                             item0 = null;
                         }
+
+                        if (autoEval != null)
+                            items.Remove(autoEval);                        
                     }
 
                     var r = new MOGRecord(engine, items);
                     r.StartPos = Pos;
                     r.EndPos = Pos + _currentItem.Length + 1;
                     r.ExecutionContext = context;
+                    r.AutoEval = autoEval != null;
 
                     _parsedObjects.Add(r);
 
@@ -371,27 +379,16 @@ namespace MOGWAI.Engine
                             throw new MogwaiParseErrorException("empty type name not allowed");
                         }
                     }
-                    else if (item.EndsWith(":"))
+                    else if (item.EndsWith(":") && item.Length > 1)
                     {
                         // KEY
 
-                        if (item.Length > 1)
-                        {
+                        var name = item[..^1];
 
-                            var name = item[..^1];
+                        var k = new MOGKey(engine, name, offsetPosition);
+                        k.ExecutionContext = context;
 
-                            if (name.Length == 0 || !engine.IsValidName(name))
-                                throw new MogwaiParseErrorException($"invalid key name {name}:");
-
-                            var k = new MOGKey(engine, name, offsetPosition);
-                            k.ExecutionContext = context;
-
-                            return [k];
-                        }
-                        else
-                        {
-                            throw new MogwaiParseErrorException("empty key name not allowed");
-                        }
+                        return [k];
                     }
                     else if (item.Contains("->") && !item.StartsWith("->") && !item.EndsWith("->"))
                     {
