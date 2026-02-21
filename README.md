@@ -98,9 +98,8 @@ to 'square' with [n: .number] do
 }
 
 # Lists
-( ) -> '$result'
-(1 2 3 4 5) foreach 'n' do { result n square + -> '$result' }
-$result ? # Outputs the list of squares
+(1 2 3 4 5) foreach 'n' transform { n square } -> '$result'
+$result ? # Outputs the list of squares (1 4 9 16 25)
 
 # Records
 [name: "MOGWAI", version: "8.0"] -> 'info'
