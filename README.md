@@ -1,6 +1,6 @@
 <img src="./images/img01.png" title="" alt="MOGWAI" data-align="center">
 
-# MOGWAI - A powerful stack-based RPN scripting language for industrial IoT automation, embedded systems, and .NET applications.
+# [MOGWAI](https://www.mogwai.eu.com) - A powerful stack-based RPN scripting language for industrial IoT automation, embedded systems, and .NET applications.
 
 ![GitHub Stars](https://img.shields.io/github/stars/Sydney680928/mogwai?style=social)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
@@ -8,9 +8,7 @@
 [![NuGet](https://img.shields.io/nuget/v/MOGWAI.svg)](https://www.nuget.org/packages/MOGWAI/)
 
 **10 years of development** • **240+ built-in functions** • **Battle-tested in production** • **Open Source**
-
 ---
-
 ## What is MOGWAI?
 
 MOGWAI is a modern implementation of RPN (Reverse Polish Notation) designed for industrial automation, IoT applications, and embedded systems. Inspired by the legendary HP calculators (HP 28S, HP 48), MOGWAI brings the elegance and power of stack-based programming to the .NET ecosystem.
