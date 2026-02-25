@@ -11,9 +11,9 @@
 		<OutputType>Library</OutputType>
 
 		<!-- Versioning -->
-		<Version>8.0.1</Version>
-		<FileVersion>8.0.0.0</FileVersion>
-		<AssemblyVersion>8.0.0.0</AssemblyVersion>
+		<Version>8.1.0</Version>
+		<FileVersion>8.1.0.0</FileVersion>
+		<AssemblyVersion>8.1.0.0</AssemblyVersion>
 
 		<!-- Métadonnées minimales pour le package local -->
 		<PackageId>MOGWAI</PackageId>
@@ -28,9 +28,6 @@
 		<!-- LICENCE (Expression SPDX) -->
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		
-		 <!-- Copyright dans les métadonnées du package -->
-		<Copyright>Copyright © 2015-2025 Stéphane Sibué</Copyright>
-  
 		<!-- Liens projet -->
 		<PackageProjectUrl>https://github.com/Sydney680928/mogwai</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/Sydney680928/mogwai</RepositoryUrl>
@@ -46,9 +43,24 @@
 		<PackageIcon>icon.png</PackageIcon>
 
 		<!-- Release notes -->
-		<PackageReleaseNotes>v8.0.1 - Fixed GitHub repository URL in package metadata (no code changes)</PackageReleaseNotes>
+		<PackageReleaseNotes>
+			8.1.0
 
+			New primitive: +/- to negate a number (e.g. 5 +/- ==> -5)
+			New error: OperationNotSupportedError (MW.7)
 
+			foreach now supports a transform mode:
+			(1 2 3 4) foreach 'item' transform { item 2 * }       ==> (2 4 6 8)
+			(1 2 3 4) foreach 'item' transform { item 2 * ->str } ==> ("2" "4" "6" "8")
+
+			MOGBaseItems and MOGRecord now expose typed helper methods (AddString, AddNumber, AddName... / SetString, SetNumber, SetName...) that simplify object creation without requiring an explicit Engine reference.
+
+			Changed: get on MOGRecord now returns MOGNull instead of throwing when key is not found.
+			Changed: keys named after reserved words are now allowed.
+
+			Fixed: bug with MOGRecord AutoEval capability.
+		</PackageReleaseNotes>
+			
 		<!-- Pas de publication pour l'instant -->
 		<IsPackable>true</IsPackable>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
