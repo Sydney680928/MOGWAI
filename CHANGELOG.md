@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.1.0] - 2026-02-25
+
+### Added
+
 - Primitive '+/-' to negate a number (e.g. 5 +/- ==> -5)
 - Added new error : OperationNotSupportedError (MW.7)
 - Added convenience methods to MOGBaseItems for adding typed objects:
@@ -204,6 +212,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.0.1...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.1.0...HEAD
+[8.1.0]: https://github.com/Sydney680928/mogwai/compare/v8.0.1...v8.1.0
 [8.0.1]: https://github.com/Sydney680928/mogwai/compare/v8.0.0...v8.0.1
 [8.0.0]: https://github.com/Sydney680928/mogwai/releases/tag/v8.0.0
