@@ -15,6 +15,7 @@
 using MOGWAI.Interfaces;
 using MOGWAI.Objects;
 using MOGWAI.Primitives;
+using System.Collections.Frozen;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
@@ -29,7 +30,10 @@ namespace MOGWAI.Engine
         private string _name;
         private int _debugPort;
         private List<Stack<MOGObject>> _stacks = [];
-        private Dictionary<string, MOGPrimitive> _primitives = [];
+
+        private FrozenDictionary<string, MOGPrimitive> _primitives;
+        private Dictionary<string, MOGPrimitive> _initializingPrimitives = [];
+
         private Parser _parser = new();
         private readonly List<VarContext> _varsContext = [];
         private List<bool> _breakRequested = new();
@@ -466,6 +470,7 @@ namespace MOGWAI.Engine
             RegisterPrivatePrimitive(new PrimitiveSWITCH(this, "SWITCH"), "switch");
             RegisterPrivatePrimitive(new PrimitiveDECLARE(this, "DECLARE"), "=>");
 
+            _primitives = _initializingPrimitives.ToFrozenDictionary();
 
             #endregion
 
@@ -688,14 +693,14 @@ namespace MOGWAI.Engine
             primitive.IsPrivate = false;
             primitive.Category = category;
 
-            _primitives[primitive.Name] = primitive;
+            _initializingPrimitives[primitive.Name] = primitive;
         }
 
         private void RegisterPrivatePrimitive(MOGPrimitive primitive, string friendlyName)
         {
             primitive.IsPrivate = true;
             primitive.FriendlyName = friendlyName;
-            _primitives[primitive.Name] = primitive;
+            _initializingPrimitives[primitive.Name] = primitive;
         }
 
         private void RegisterType(Type type, string name)
