@@ -705,6 +705,8 @@ namespace MOGWAI.Engine
             _typesByName[name] = tp;
         }
 
+        internal bool TypeExists(string name) => _typesByName.ContainsKey(name);
+        
         internal async Task<EvalResult> ExecuteAsync(string code, bool debugMode)
         {
             try

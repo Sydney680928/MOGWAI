@@ -85,7 +85,11 @@ namespace MOGWAI.Engine
                     // LIST
 
                     if (_currentItem.Length > 0)
+                    {
+                        LastStartErrorPosition = Pos;
+                        LastEndErrorPosition = Pos;
                         throw new MogwaiParseErrorException("unexpected character '('");
+                    }
 
                     GetEnclosedItem('(', ')');
                     var l = new MOGList(engine, _currentItem.ToString(), Pos + 1, context);
@@ -97,7 +101,11 @@ namespace MOGWAI.Engine
                     // CODE
 
                     if (_currentItem.Length > 0)
+                    {
+                        LastStartErrorPosition = Pos;
+                        LastEndErrorPosition = Pos;
                         throw new MogwaiParseErrorException("unexpected character '{'");
+                    }
 
                     GetEnclosedItem('{', '}');
                     var c = new MOGCode(engine, _currentItem.ToString(), Pos + 1, context);
@@ -109,7 +117,11 @@ namespace MOGWAI.Engine
                     // FUNCTION
 
                     if (_currentItem.Length > 0)
+                    {
+                        LastStartErrorPosition = Pos;
+                        LastEndErrorPosition = Pos;
                         throw new MogwaiParseErrorException("unexpected character '«'");
+                    }
 
                     GetEnclosedItem('«', '»');
                     var f = new MOGFunction(engine, _currentItem.ToString(), Pos + 1, context);
@@ -121,7 +133,11 @@ namespace MOGWAI.Engine
                     // RECORD
 
                     if (_currentItem.Length > 0)
+                    {
+                        LastStartErrorPosition = Pos;
+                        LastEndErrorPosition = Pos; 
                         throw new MogwaiParseErrorException("unexpected character '['");
+                    }
 
                     GetEnclosedItem('[', ']');
 
@@ -184,7 +200,11 @@ namespace MOGWAI.Engine
                     // STRING
 
                     if (_currentItem.Length > 0)
+                    {
+                        LastStartErrorPosition = Pos;
+                        LastEndErrorPosition = Pos;
                         throw new MogwaiParseErrorException("unexpected character '\"'");
+                    }
 
                     GetEnclosedItem('"', '"');
                     var s = new MOGString(engine, _currentItem.ToString(), Pos);
@@ -197,13 +217,21 @@ namespace MOGWAI.Engine
                     // NAME
 
                     if (_currentItem.Length > 0)
+                    {
+                        LastStartErrorPosition = Pos;
+                        LastEndErrorPosition = Pos;
                         throw new MogwaiParseErrorException("unexpected character '");
+                    }
 
                     GetEnclosedItem('\'', '\'');
                     var name = _currentItem.ToString();
 
                     if (name.Length == 0 || !engine.IsValidName(name))
+                    {
+                        LastStartErrorPosition = Pos;
+                        LastEndErrorPosition = Pos + _currentItem.Length + 1;
                         throw new MogwaiParseErrorException($"invalid name '{name}'");
+                    }
 
                     var n = new MOGName(engine, name, Pos);
                     n.ExecutionContext = context;
@@ -265,6 +293,8 @@ namespace MOGWAI.Engine
                     }
                     else
                     {
+                        LastStartErrorPosition = offsetPosition;
+                        LastEndErrorPosition = offsetPosition + item.Length - 1;
                         throw new MogwaiParseErrorException("invalid conversion operation");
                     }
                 }
@@ -283,11 +313,15 @@ namespace MOGWAI.Engine
                         }
                         catch
                         {
+                            LastStartErrorPosition = offsetPosition;
+                            LastEndErrorPosition = offsetPosition + item.Length - 1;
                             throw new MogwaiParseErrorException("invalid conversion operation");
                         }
                     }
                     else
                     {
+                        LastStartErrorPosition = offsetPosition;
+                        LastEndErrorPosition = offsetPosition + item.Length - 1;
                         throw new MogwaiParseErrorException("invalid conversion operation");
                     }
                 }
@@ -315,33 +349,69 @@ namespace MOGWAI.Engine
 
                     if (content.Length > 0)
                     {
-                        return [new MOGBinaryNumber(engine, content, offsetPosition)];
+                        try
+                        {
+                            return [new MOGBinaryNumber(engine, content, offsetPosition)];
+                        }
+                        catch
+                        {
+                            LastStartErrorPosition = offsetPosition;
+                            LastEndErrorPosition = offsetPosition + item.Length - 1;
+                            throw;
+                        }
                     }
                     else
                     {
+                        LastStartErrorPosition = offsetPosition;
+                        LastEndErrorPosition = offsetPosition + item.Length - 1;
                         throw new MogwaiParseErrorException("empty binary not allowed");
                     }
                 }
                 else if (item == "null")
                 {
-                    var n = new MOGNull(engine, offsetPosition);
-                    n.ExecutionContext = context;
-
-                    return [n];
+                    try
+                    {
+                        var n = new MOGNull(engine, offsetPosition);
+                        n.ExecutionContext = context;
+                        return [n];
+                    }
+                    catch
+                    {
+                        LastStartErrorPosition = offsetPosition;
+                        LastEndErrorPosition = offsetPosition + item.Length - 1;
+                        throw;
+                    }
                 }
                 else if (item == "empty")
                 {
-                    var n = new MOGEmpty(engine, offsetPosition);
-                    n.ExecutionContext = context;
-
-                    return [n];
+                    try
+                    {
+                        var n = new MOGEmpty(engine, offsetPosition);
+                        n.ExecutionContext = context;
+                        return [n];
+                    }
+                    catch
+                    {
+                        LastStartErrorPosition = offsetPosition;
+                        LastEndErrorPosition = offsetPosition + item.Length - 1;
+                        throw;
+                    }
                 }
                 else if (item == "true" || item == "false")
                 {
-                    var b = new MOGBoolean(engine, item == "true", offsetPosition);
-                    b.ExecutionContext = context;
+                    try
+                    {
+                        var b = new MOGBoolean(engine, item == "true", offsetPosition);
+                        b.ExecutionContext = context;
+                        return [b];
+                    }
+                    catch
+                    {
+                        LastStartErrorPosition = offsetPosition;
+                        LastEndErrorPosition = offsetPosition + item.Length - 1;
+                        throw;
+                    }
 
-                    return [b];
                 }
                 else
                 {
@@ -350,7 +420,11 @@ namespace MOGWAI.Engine
                     if (p != null)
                     {
                         if (p.IsPrivate && !engine.AllowPrivatePrimitives)
+                        {
+                            LastStartErrorPosition = Pos;
+                            LastEndErrorPosition = Pos + item.Length;   
                             throw new MogwaiParseErrorException("private primitive not allowed");
+                        }
 
                         p.ExecutionContext = context;
                         p.StartPos = offsetPosition;
@@ -366,16 +440,30 @@ namespace MOGWAI.Engine
                         {
                             var name = item.Substring(1);
 
-                            if (name.Length == 0 || !engine.IsValidName(name))
-                                throw new MogwaiParseErrorException($"invalid type name .{name}");
+                            if (name.Length == 0 || !engine.TypeExists(name))
+                            {
+                                LastStartErrorPosition = offsetPosition;
+                                LastEndErrorPosition = offsetPosition + item.Length - 1;
+                                throw new MogwaiParseErrorException($"unknown type .{name}");
+                            }
 
-                            var t = new MOGType(engine, name, offsetPosition);
-                            t.ExecutionContext = context;
-
-                            return [t];
+                            try
+                            {
+                                var t = new MOGType(engine, name, offsetPosition);
+                                t.ExecutionContext = context;
+                                return [t];
+                            }
+                            catch
+                            {
+                                LastStartErrorPosition = offsetPosition;
+                                LastEndErrorPosition = offsetPosition + item.Length - 1;
+                                throw;
+                            }
                         }
                         else
                         {
+                            LastStartErrorPosition = offsetPosition;
+                            LastEndErrorPosition = offsetPosition + item.Length - 1;
                             throw new MogwaiParseErrorException("empty type name not allowed");
                         }
                     }
@@ -395,10 +483,18 @@ namespace MOGWAI.Engine
                         var fields = item.Split("->");
 
                         if (fields.Length != 2)
+                        {
+                            LastStartErrorPosition = Pos - item.Length + 1;
+                            LastEndErrorPosition = Pos;
                             throw new MogwaiParseErrorException("illegale record->key notation");
+                        }
 
                         if (!engine.IsValidName(fields[1]))
+                        {
+                            LastStartErrorPosition = Pos - item.Length + 1;
+                            LastEndErrorPosition = Pos;
                             throw new MogwaiParseErrorException("invalid name for key in record->key notation");
+                        }
 
                         var item1 = new MOGWord(engine, fields[0], offsetPosition);
                         item1.ExecutionContext = context;
@@ -409,7 +505,11 @@ namespace MOGWAI.Engine
                         var primitive = engine.GetPrimitive(typeof(PrimitiveGet));
 
                         if (primitive == null)
+                        {
+                            LastStartErrorPosition = Pos - item.Length + 1;
+                            LastEndErrorPosition = Pos;
                             throw new MogwaiParseErrorException("internal error with get primitive in record->key notation");
+                        }
 
                         primitive.ExecutionContext = context;
 
@@ -420,10 +520,18 @@ namespace MOGWAI.Engine
                         var fields = item.Split("<-");
 
                         if (fields.Length != 2)
+                        {
+                            LastStartErrorPosition = Pos - item.Length + 1;
+                            LastEndErrorPosition = Pos;
                             throw new MogwaiParseErrorException("illegale record<-key notation");
+                        }
 
                         if (!engine.IsValidName(fields[1]))
+                        {
+                            LastStartErrorPosition = Pos - item.Length + 1;
+                            LastEndErrorPosition = Pos;
                             throw new MogwaiParseErrorException("invalid name for key in record<-key notation");
+                        }
 
                         var item1 = new MOGWord(engine, fields[0], offsetPosition);
                         item1.ExecutionContext = context;
@@ -434,7 +542,11 @@ namespace MOGWAI.Engine
                         var primitive = engine.GetPrimitive(typeof(PrimitiveSet));
 
                         if (primitive == null)
+                        {
+                            LastStartErrorPosition = Pos - item.Length + 1;
+                            LastEndErrorPosition = Pos;
                             throw new MogwaiParseErrorException("internal error with set primitive in record<-key notation");
+                        }
 
                         primitive.ExecutionContext = context;
 
@@ -447,6 +559,8 @@ namespace MOGWAI.Engine
                         }
                         else
                         {
+                            LastStartErrorPosition = Pos - item.Length + 1;
+                            LastEndErrorPosition = Pos;
                             throw new MogwaiParseErrorException("missing value for record<-key notation");
                         }
                     }
@@ -490,7 +604,11 @@ namespace MOGWAI.Engine
             }
 
             if (currentChar != lastChar)
+            {
+                LastStartErrorPosition = Pos;
+                LastEndErrorPosition = Pos + _currentItem.Length;
                 throw new MogwaiParseErrorException($"missing closing character '{lastChar}'");
+            }
         }
 
         private void UpdateForSugarItems(MogwaiEngine engine)
