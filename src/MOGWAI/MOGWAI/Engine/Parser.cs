@@ -486,7 +486,7 @@ namespace MOGWAI.Engine
                         {
                             LastStartErrorPosition = Pos - item.Length + 1;
                             LastEndErrorPosition = Pos;
-                            throw new MogwaiParseErrorException("illegale record->key notation");
+                            throw new MogwaiParseErrorException("invalid record->key notation");
                         }
 
                         if (!engine.IsValidName(fields[1]))
@@ -523,7 +523,7 @@ namespace MOGWAI.Engine
                         {
                             LastStartErrorPosition = Pos - item.Length + 1;
                             LastEndErrorPosition = Pos;
-                            throw new MogwaiParseErrorException("illegale record<-key notation");
+                            throw new MogwaiParseErrorException("invalid record<-key notation");
                         }
 
                         if (!engine.IsValidName(fields[1]))
