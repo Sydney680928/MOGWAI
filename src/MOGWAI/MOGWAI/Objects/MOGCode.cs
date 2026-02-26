@@ -45,11 +45,15 @@ namespace MOGWAI.Objects
 
         public virtual async Task<EvalResult> Execute()
         {
+            var isBrowser = OperatingSystem.IsBrowser();    
+
             EvalResult result = EvalResult.NoError;
             var ExecutionContextAllowDebugMode = true;
 
             if (Items.Count > 0)
             {
+                var counter = 0;
+
                 foreach (var item in Items)
                 {
                     if (item.ExecutionContext != null)
@@ -140,12 +144,23 @@ namespace MOGWAI.Objects
 
                     if (result != EvalResult.NoError)
                         break;
+
+                    counter++;
+
+                    if (isBrowser && counter % 100 == 0)
+                        await Task.Delay(1);
                 }
+
+                if (isBrowser && counter % 100 != 0)
+                    await Task.Delay(1);
 
                 return result;
             }
             else
             {
+                if (isBrowser)
+                    await Task.Delay(1);
+
                 return await Engine.ExecuteWaitingFireObjects();
             }
         }
