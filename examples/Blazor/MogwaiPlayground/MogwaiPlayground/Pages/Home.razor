@@ -46,7 +46,7 @@
         @if (_isRunning)
         {
             <div class="line line-system">
-                <span class="spinner">⠋</span> Exécution...
+                <span class="spinner">⠋</span> Running...
             </div>
         }
     </div>
@@ -82,6 +82,8 @@
 </div>
 
 @code {
+
+
 
     // ── DOM References ──────────────────────────────────────
 
@@ -206,6 +208,7 @@
         try
         {
             var result = await _engine.RunAsync(code, debugMode: false);
+
             if (result.IsError)
             {
                 _lines.Add(new TerminalLine($"⚠ {result}", LineKind.Error));
