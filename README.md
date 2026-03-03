@@ -397,6 +397,19 @@ MOGWAI STUDIO is not open source and will be distributed under a proprietary lic
 
 ---
 
+## Have Questions or Feedback?
+
+We'd love to hear from you!
+
+- **Found a bug?** [Open an issue](https://github.com/Sydney680928/mogwai/issues/new)
+- **Have an idea?** [Start a discussion](https://github.com/Sydney680928/mogwai/discussions/new)
+- **Like MOGWAI?** Star the repo to show your support!
+- **Using MOGWAI in production?** We'd love to hear your story!
+
+Even a simple "I tried it and it works!" is valuable feedback!
+
+---
+
 **Made with ❤️ by [Stéphane Sibué](https://www.coding4phone.com)**
 
 *MOGWAI - Where stack-based elegance meets modern .NET power* ✨
