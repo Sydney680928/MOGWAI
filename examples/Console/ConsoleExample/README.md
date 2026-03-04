@@ -119,8 +119,7 @@ to 'factorial' with [n: .number] do
 
 ```mogwai
 # Create a list of squares
-() -> 'result'
-(1 2 3 4 5) foreach 'n' do { result n n * + -> 'result' }
+(1 2 3 4 5) foreach 'n' transform { n n * } -> 'result'
 result ?  # Prints: (1 4 9 16 25)
 ```
 
