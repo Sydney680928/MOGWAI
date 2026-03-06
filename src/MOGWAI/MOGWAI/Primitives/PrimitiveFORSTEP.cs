@@ -51,14 +51,19 @@ namespace MOGWAI.Primitives
 
                 var direction = Math.Sign(end.Value - start.Value);
 
+                // If start and end are equal, execute the code once by forcing direction to 1
+
+                if (direction == 0)
+                    direction = 1;
+
                 step.Value = Math.Abs(step.Value) * direction;
 
                 EvalResult result = EvalResult.NoError;
 
                 if (!Engine.VarExists(name.Value) && Engine.StrictMode)
                 {
-                    // On doit déclarer la variable avant de l'utiliser
-                    // De type .any
+                    // We must declare the variable before using it
+                    // Of type .any
 
                     var r = Engine.VarDeclareForType(name.Value, Engine.GetType("any")!);
 
