@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed UI freeze in Blazor WebAssembly playground when using `forever` loops
 - Added cooperative yielding to prevent blocking the single-threaded event loop
 - Timers and events now work correctly alongside long-running scripts in the browser
+- `for` loop infinite loop when start equals end
 
 ## [8.1.0] - 2026-02-25
 
