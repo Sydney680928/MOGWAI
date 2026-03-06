@@ -132,11 +132,26 @@ namespace MOGWAI.Engine
                 {
                     // RECORD
 
+                    MOGObject? prefix = null;
+
                     if (_currentItem.Length > 0)
                     {
-                        LastStartErrorPosition = Pos;
-                        LastEndErrorPosition = Pos; 
-                        throw new MogwaiParseErrorException("unexpected character '['");
+                        // Cas de figure où un mot est suivi d'un record sans espace.
+                        // On peut traduire ça par une application du mot au record, ce qui est un cas fréquent notamment pour les messages à la Objective C (ex: myObject doSomethingWith: arg1 and: arg2)
+                        // Dans ce cas on ajoute le mot comme 1er item du record, ce qui permet de faire le lien entre le mot et le record et d'avoir un code plus naturel à écrire et à lire.
+
+                        var p = new Parser();  
+                        p.Parse(engine, _currentItem.ToString(), Pos - _currentItem.Length, context);
+
+                        if (p.ParsedObjects.Count != 1)
+                        {
+                            LastStartErrorPosition = Pos - _currentItem.Length;
+                            LastEndErrorPosition = Pos; 
+                            throw new MogwaiParseErrorException("unexpected character '['");
+                        }
+
+                        prefix = p.ParsedObjects[0];
+                        _currentItem.Clear();  
                     }
 
                     GetEnclosedItem('[', ']');
@@ -170,6 +185,14 @@ namespace MOGWAI.Engine
                         {
                             // Le 1er item (sauf !) n'est pas une clé
                             // Il faut le sortir du record et le placer après (cas de l'appel style message Objective C)
+                            // Si un prefix est déjà présent on est en face d'une erreur de syntaxe
+
+                            if (prefix != null)
+                            {
+                                LastStartErrorPosition = Pos;
+                                LastEndErrorPosition = Pos;
+                                throw new MogwaiParseErrorException("unabled to define the function to call 2 times");
+                            }
 
                             items.Remove(item0);
                         }
@@ -194,6 +217,9 @@ namespace MOGWAI.Engine
 
                     if (item0 != null)
                         _parsedObjects.Add(item0);
+
+                    if (prefix != null)
+                        _parsedObjects.Add(prefix);
                 }
                 else if (_currentChar == '"')
                 {
