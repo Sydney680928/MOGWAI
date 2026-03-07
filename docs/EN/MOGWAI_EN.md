@@ -1896,6 +1896,10 @@ to 'carre' do { dup * }
 5 carre
 
 # Places the value 25 (the square of 5) on the stack
+
+# You can also use a more traditional notation by passing parameters as a list attached directly to the function name.
+
+carre(5)
 ```` 
 
 A function, in addition to using all those provided by **MOGWAI**, can use those you define. For example to create the 'cube' function which will calculate the cube of a number we will use the 'carre' function that we defined above:
@@ -1911,6 +1915,8 @@ to 'cube' do { dup carre * }
 # To use it:
 
 5 cube
+
+# or cube(5)
 
 # Places the value 125 (the cube of 5) on the stack
 ```
