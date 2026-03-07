@@ -84,16 +84,42 @@ namespace MOGWAI.Engine
                 {
                     // LIST
 
+                    MOGObject? prefix = null;
+
                     if (_currentItem.Length > 0)
                     {
-                        LastStartErrorPosition = Pos;
-                        LastEndErrorPosition = Pos;
-                        throw new MogwaiParseErrorException("unexpected character '('");
+                        // Cas de figure où un mot est suivi d'une liste sans espace.
+                        // On peut traduire ça par une application du mot à tous les éléments de la liste.
+
+                        var p = new Parser();
+                        p.Parse(engine, _currentItem.ToString(), Pos - _currentItem.Length, context);
+
+                        if (p.ParsedObjects.Count != 1 || (p.ParsedObjects[0] is not MOGWord && p._parsedObjects[0] is not MOGPrimitive))
+                        {
+                            LastStartErrorPosition = Pos - _currentItem.Length;
+                            LastEndErrorPosition = Pos;
+                            throw new MogwaiParseErrorException("unexpected character '('");
+                        }
+
+                        prefix = p.ParsedObjects[0];
+                        _currentItem.Clear();
                     }
 
                     GetEnclosedItem('(', ')');
-                    var l = new MOGList(engine, _currentItem.ToString(), Pos + 1, context);
-                    _parsedObjects.Add(l);
+                    var l = new MOGList(engine, _currentItem.ToString(), Pos + 1, context);                                   
+
+                    if (prefix != null)
+                    {
+                        foreach (var item in l.Items)
+                            _parsedObjects.Add(item);
+
+                        _parsedObjects.Add(prefix);
+                    }
+                    else
+                    {
+                        _parsedObjects.Add(l);
+                    }
+
                     _currentItem.Clear();
                 }
                 else if (_currentChar == '{')
