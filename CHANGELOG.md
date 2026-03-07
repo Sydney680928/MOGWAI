@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added a new classic-style syntax for calling functions and primitives with named parameters: `foo[x: 50 y: 20]`, as an alternative to the existing RPN style `[x: 50 y: 20] foo` and Objective-C style `[foo x: 50 y: 20]`.
+- Added a new classic-style syntax for calling functions and primitives with list of parameters: `foo(2 3 4)`, as an alternative to the existing RPN style `2 3 4 foo`.
 
 ### Changed
 
