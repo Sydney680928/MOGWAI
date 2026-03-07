@@ -2031,6 +2031,21 @@ to 'fx' params [a: .number b: .number x: .number] do { a x * b + }
 # Which will place 5*156+9 or 789 on the stack
 ```
 
+It is also possible to call this type of function in another, less RPN way, by including the function name just before the parameters record, without a space between the function name and the parameters record:
+
+```
+# We create a function that calculates a point on a line with the formula
+# y=a*x+b which is in RPN a x * b +
+
+to 'fx' params [a: .number b: .number x: .number] do { a x * b + }
+
+# For the values y=5x+9 with x=156 we call
+
+fx[a: 5 b: 9 x: 156]
+
+# Which will place 5*156+9 or 789 on the stack
+```
+
 To declare default values, simply stipulate the type and the default value in a list. Thus, if the parameter is not provided, the default value will be used:
 
 ```
