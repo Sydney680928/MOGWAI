@@ -613,17 +613,28 @@ namespace MOGWAI.Engine
             while (_currentIndex < _code.Length)
             {
                 currentChar = _code[_currentIndex++];
-
+                
                 if (currentChar == lastChar)
                 {
-                    if (level == 0 || --level < 0)
+                    if (_currentIndex > 1 && _code[_currentIndex - 2] == '\\')
+                    {
+                        // Caractère d'échappement, on n'augmente pas le niveau
+                    }
+                    else if (level == 0 || --level < 0)
                     {
                         return;
                     }
                 }
                 else if (currentChar == firstChar)
                 {
-                    level++;
+                    if (_currentIndex > 1 && _code[_currentIndex - 2] == '\\')
+                    {
+                        // Caractère d'échappement, on n'augmente pas le niveau
+                    }
+                    else
+                    {
+                        level++;
+                    }
                 }
 
                 _currentItem.Append(currentChar);
