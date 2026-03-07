@@ -143,7 +143,7 @@ namespace MOGWAI.Engine
                         var p = new Parser();  
                         p.Parse(engine, _currentItem.ToString(), Pos - _currentItem.Length, context);
 
-                        if (p.ParsedObjects.Count != 1)
+                        if (p.ParsedObjects.Count != 1 || (p.ParsedObjects[0] is not MOGWord && p._parsedObjects[0] is not MOGPrimitive))
                         {
                             LastStartErrorPosition = Pos - _currentItem.Length;
                             LastEndErrorPosition = Pos; 
