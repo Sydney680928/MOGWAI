@@ -11,9 +11,9 @@
 		<OutputType>Library</OutputType>
 
 		<!-- Versioning -->
-		<Version>8.1.0</Version>
-		<FileVersion>8.1.0.0</FileVersion>
-		<AssemblyVersion>8.1.0.0</AssemblyVersion>
+		<Version>8.2.0</Version>
+		<FileVersion>8.2.0.0</FileVersion>
+		<AssemblyVersion>8.2.0.0</AssemblyVersion>
 
 		<!-- Métadonnées minimales pour le package local -->
 		<PackageId>MOGWAI</PackageId>
@@ -44,21 +44,21 @@
 
 		<!-- Release notes -->
 		<PackageReleaseNotes>
-			8.1.0
+			8.2.0
 
-			New primitive: +/- to negate a number (e.g. 5 +/- ==> -5)
-			New error: OperationNotSupportedError (MW.7)
+			Added
+			- Added a new classic-style syntax for calling functions and primitives with named parameters: foo[x: 50 y: 20], as an alternative to the existing RPN style [x: 50 y: 20] foo and Objective-C style [foo x: 50 y: 20].
+			- Added a new classic-style syntax for calling functions and primitives with list of parameters: foo(2 3 4), as an alternative to the existing RPN style 2 3 4 foo.
 
-			foreach now supports a transform mode:
-			(1 2 3 4) foreach 'item' transform { item 2 * }       ==> (2 4 6 8)
-			(1 2 3 4) foreach 'item' transform { item 2 * ->str } ==> ("2" "4" "6" "8")
+			Changed
+			- On error, the parser returns the position in the source code (used by MOGWAI STUDIO).
 
-			MOGBaseItems and MOGRecord now expose typed helper methods (AddString, AddNumber, AddName... / SetString, SetNumber, SetName...) that simplify object creation without requiring an explicit Engine reference.
-
-			Changed: get on MOGRecord now returns MOGNull instead of throwing when key is not found.
-			Changed: keys named after reserved words are now allowed.
-
-			Fixed: bug with MOGRecord AutoEval capability.
+			Fixed
+			- Fixed UI freeze in Blazor WebAssembly playground when using forever loops.
+			- Added cooperative yielding to prevent blocking the single-threaded event loop.
+			- Timers and events now work correctly alongside long-running scripts in the browser.
+			- for loop infinite loop when start equals end.
+			- ->unescape does not handle \" escape sequence.
 		</PackageReleaseNotes>
 			
 		<!-- Pas de publication pour l'instant -->

@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+
+## [8.2.0] - 2026-03-09
+
+### Added
+
 - Added a new classic-style syntax for calling functions and primitives with named parameters: `foo[x: 50 y: 20]`, as an alternative to the existing RPN style `[x: 50 y: 20] foo` and Objective-C style `[foo x: 50 y: 20]`.
 - Added a new classic-style syntax for calling functions and primitives with list of parameters: `foo(2 3 4)`, as an alternative to the existing RPN style `2 3 4 foo`.
 
@@ -223,7 +232,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.1.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.2.0...HEAD
+[8.2.0]: https://github.com/Sydney680928/mogwai/compare/v8.1.0...v8.2.0
 [8.1.0]: https://github.com/Sydney680928/mogwai/compare/v8.0.1...v8.1.0
 [8.0.1]: https://github.com/Sydney680928/mogwai/compare/v8.0.0...v8.0.1
 [8.0.0]: https://github.com/Sydney680928/mogwai/releases/tag/v8.0.0
