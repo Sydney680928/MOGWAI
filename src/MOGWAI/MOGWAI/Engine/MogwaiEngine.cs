@@ -62,7 +62,7 @@ namespace MOGWAI.Engine
         private Dictionary<string, FileStream> _openinFiles = [];
         private Dictionary<string, FileStream> _openoutFiles = [];
         private Dictionary<int, MogwaiExecutionContext> _includes = [];
-        private Dictionary<string, PluginInformations> _plugins = [];
+        private Dictionary<string, PluginInformations> _plugins = [];       
 
         // MOX Signature = [STX][M ][O ][G ][W ][A ][I ][28][09][19][68][ETX]
         //               = 00   01  02  03  04  05  06  07  08  09  10  11
@@ -126,6 +126,7 @@ namespace MOGWAI.Engine
             RegisterType(typeof(MOGEmpty), "any");
             RegisterType(typeof(MOGType), "type");
             RegisterType(typeof(MOGRef), "ref");
+            RegisterType(typeof(MOGHostFunction), "hfunc");
 
             #endregion
 
@@ -684,6 +685,7 @@ namespace MOGWAI.Engine
 
         public bool IsSocketServerRunning => _socketServerService != null && _socketServerService.IsRunning;
 
+        internal string[] HostFunctions => Delegate?.HostFunctions(this) ?? [];
 
         #endregion
 

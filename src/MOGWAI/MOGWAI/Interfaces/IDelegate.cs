@@ -35,6 +35,7 @@ namespace MOGWAI.Interfaces
         Task<EvalResult> ConsoleHide(MogwaiEngine engine);
 
         Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y);
+        
         Task<(EvalResult result, int x, int y)> ConsoleGetCursorPosition(MogwaiEngine engine);
 
         Task<EvalResult> ConsoleSetForegroundColor(MogwaiEngine engine, string color);
@@ -44,6 +45,7 @@ namespace MOGWAI.Interfaces
         Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine);
 
         Task<(EvalResult result, string? value)> Prompt(MogwaiEngine engine, string message);
+        
         string[] HostFunctions(MogwaiEngine engine);
 
         Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string word);
@@ -53,6 +55,7 @@ namespace MOGWAI.Interfaces
         Task<EvalResult> DebugMessage(MogwaiEngine engine, string message);
 
         Task<EvalResult> DebugClear(MogwaiEngine engine);
+        
         Task<EvalResult> EngineDidPause(MogwaiEngine engine);
 
         Task<EvalResult> EngineDidResume(MogwaiEngine engine);

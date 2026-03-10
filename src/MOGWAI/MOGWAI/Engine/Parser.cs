@@ -328,6 +328,8 @@ namespace MOGWAI.Engine
         {
             if (item.Length > 0)
             {
+                var hostFunctions = engine.HostFunctions;
+
                 if (double.TryParse(item, CultureInfo.InvariantCulture, out double n1))
                 {
                     var number = new MOGNumber(engine, n1, offsetPosition);
@@ -653,6 +655,13 @@ namespace MOGWAI.Engine
                     }
                     else
                     {
+                        if (hostFunctions.Contains(item))
+                        {
+                            var hfunc = new MOGHostFunction(engine, item, offsetPosition);
+                            hfunc.ExecutionContext = context;
+                            return [hfunc];
+                        }
+
                         var w = new MOGWord(engine, item, offsetPosition);
                         w.ExecutionContext = context;
 

@@ -16,14 +16,14 @@ using MOGWAI.Engine;
 
 namespace MOGWAI.Objects
 {
-    public class MOGWord : MOGBaseString
+    public class MOGHostFunction : MOGBaseString
     {
-        public MOGWord(MogwaiEngine engine, string value) : base(engine, value)
+        public MOGHostFunction(MogwaiEngine engine, string value) : base(engine, value)
         {
-            Type = engine.GetType(typeof(MOGWord));
+            Type = engine.GetType(typeof(MOGHostFunction));
         }
 
-        public MOGWord(MogwaiEngine engine, string value, int originPosition) : this(engine, value)
+        public MOGHostFunction(MogwaiEngine engine, string value, int originPosition) : this(engine, value)
         {
             StartPos = originPosition;
             EndPos = originPosition + Value.Length - 1;
@@ -31,37 +31,15 @@ namespace MOGWAI.Objects
 
         public override async Task<EvalResult> EngineEval()
         {
-            // This word is a plugin function ?
+            if (Engine.Delegate != null)
+                return await Engine.Delegate.ExecuteHostFunction(Engine, Value);
 
-            var result = await Engine.ExecutePluginKeyword(Value);
-
-            if (result != EvalResult.NoPluginFunction)
-                return result;
-
-            // This word is a function ?
-
-            var func = Engine.GetFunction(Value);
-
-            if (func != null)
-                return await func.Execute();
-
-            // This word is a var ?
-
-            var value = Engine.VarRead(Value);
-
-            if (value == null)
-                return EvalResult.Failure(Engine, Error.UnknownWordError, Value);
-
-            // This word is just a word
-
-            Engine.StackPush(value);
-
-            return EvalResult.NoError;
+            return EvalResult.Failure(Engine, Error.FatalError, Value, $"delegate is null");
         }
 
-        public override MOGWord Clone()
+        public override MOGHostFunction Clone()
         {
-            var obj = new MOGWord(Engine, Value);
+            var obj = new MOGHostFunction(Engine, Value);
             obj.UpdateFromOther(this);
             return obj;
         }
