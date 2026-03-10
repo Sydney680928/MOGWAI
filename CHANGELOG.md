@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added variable reference support with `&varname` notation. It is now possible to mutate variable content without pushing a copy onto the stack. The performance gain is significant with large lists, records, data, and strings.
 Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `last`, `first`, `sub` and, `size`.
 
+- Added host function detection by the parser to avoid delegate calls at runtime, improving execution performance.
+
 ### Changed
 
 ### Fixed
