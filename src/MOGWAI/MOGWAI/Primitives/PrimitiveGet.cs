@@ -226,6 +226,31 @@ namespace MOGWAI.Primitives
                     return EvalResult.Failure(Engine, Error.BadArgumentValueError);
                 }
             }
+            else if (s[1] == typeof(MOGRef))
+            {
+                var n0 = Engine.StackPop();
+
+                var reference = Engine.StackPopRef();
+                var value = Engine.VarRead(reference.Value, false);
+
+                if (value == null)
+                    return EvalResult.Failure(Engine, Error.UnknownNameError, Name, reference.ToString());
+
+                // Le contenu de la variable doit être de type
+                // list, record ou data pour pouvoir être utilisée avec get 
+
+                if (value is MOGList || value is MOGRecord || value is MOGData)
+                {
+                    Engine.StackPush(value);
+                    Engine.StackPush(n0!);
+
+                    return await EngineEval();                  
+                }
+                else
+                {
+                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, reference.ToString(), $"var type .{value.Type.Value} not allowed");
+                }
+            }
 
             return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
         }

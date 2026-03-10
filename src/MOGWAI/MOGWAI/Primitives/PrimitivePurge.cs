@@ -70,6 +70,39 @@ namespace MOGWAI.Primitives
 
                     return EvalResult.Failure(Engine, Error.UnknownKeyError, Name, key.Value);
                 }
+                else if (s[1] == typeof(MOGRef))
+                {
+                    var n0 = Engine.StackPop();
+
+                    var reference = Engine.StackPopRef();
+                    var value = Engine.VarRead(reference.Value, false);
+
+                    if (value == null)
+                        return EvalResult.Failure(Engine, Error.UnknownNameError, Name, reference.ToString());
+
+                    // Le contenu de la variable doit être de type record
+
+                    if (value is MOGRecord)
+                    {
+                        Engine.StackPush(value);
+                        Engine.StackPush(n0!);
+
+                        var r = await EngineEval();
+
+                        if (r.IsError)
+                            return r;
+
+                        // On enlève la valeur modifiée de la stack qui ne sert à rien
+
+                        Engine.StackDrop();
+
+                        return EvalResult.NoError;
+                    }
+                    else
+                    {
+                        return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, reference.ToString(), $"var type .{value.Type.Value} not allowed");
+                    }
+                }
             }
             else if (s[0] == typeof(MOGNumber))
             {
@@ -102,7 +135,40 @@ namespace MOGWAI.Primitives
 
                     return result;
                 }
-            }
+                else if (s[1] == typeof(MOGRef))
+                {
+                    var n0 = Engine.StackPop();
+
+                    var reference = Engine.StackPopRef();
+                    var value = Engine.VarRead(reference.Value, false);
+
+                    if (value == null)
+                        return EvalResult.Failure(Engine, Error.UnknownNameError, Name, reference.ToString());
+
+                    // Le contenu de la variable doit être de type list ou data
+
+                    if (value is MOGList || value is MOGData)
+                    {
+                        Engine.StackPush(value);
+                        Engine.StackPush(n0!);
+
+                        var r = await EngineEval();
+
+                        if (r.IsError)
+                            return r;
+
+                        // On enlève la valeur modifiée de la stack qui ne sert à rien
+
+                        Engine.StackDrop();
+
+                        return EvalResult.NoError;
+                    }
+                    else
+                    {
+                        return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, reference.ToString(), $"var type .{value.Type.Value} not allowed");
+                    }
+                }
+            }         
 
             return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
         }

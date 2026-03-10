@@ -49,7 +49,7 @@ namespace MOGWAI.Primitives
             if (sign.Count == 0)
                 return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
 
-            if (sign[0] != typeof(MOGNumber) || sign[1] != typeof(MOGNumber) || (sign[2] != typeof(MOGString) && sign[2] != typeof(MOGList) && sign[2] != typeof(MOGData) && sign[2] != typeof(MOGBinaryNumber)))
+            if (sign[0] != typeof(MOGNumber) || sign[1] != typeof(MOGNumber) || (sign[2] != typeof(MOGString) && sign[2] != typeof(MOGList) && sign[2] != typeof(MOGData) && sign[2] != typeof(MOGBinaryNumber) && sign[2] != typeof(MOGRef)))
                 return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
 
             var n0 = Engine.StackPopNumber();
@@ -136,6 +136,19 @@ namespace MOGWAI.Primitives
 
                 Engine.StackPush(d2);
                 return EvalResult.NoError;
+            }
+            else if (n2 is MOGRef r)
+            {
+                var value = Engine.VarRead(r.Value, false);
+
+                if (value == null)
+                    return EvalResult.Failure(Engine, Error.UnknownNameError, Name, r.ToString());
+
+                Engine.StackPush(value);
+                Engine.StackPush(n1);
+                Engine.StackPush(n0);   
+
+                return await EngineEval();
             }
 
             return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);

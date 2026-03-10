@@ -73,6 +73,21 @@ namespace MOGWAI.Primitives
                 Engine.StackPushNumber(data.Items.Last());
                 return EvalResult.NoError;
             }
+            else if (s[0] == typeof(MOGRef))
+            {
+                var n0 = Engine.StackPop();
+
+                var reference = Engine.StackPopRef();
+                var value = Engine.VarRead(reference.Value, false);
+
+                if (value == null)
+                    return EvalResult.Failure(Engine, Error.UnknownNameError, Name, reference.ToString());
+
+                Engine.StackPush(value);
+                Engine.StackPush(n0!);
+
+                return await EngineEval();
+            }
 
             return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
 

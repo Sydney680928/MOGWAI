@@ -67,7 +67,7 @@ namespace MOGWAI.Primitives
                 n2!.AddItem(n1!);
                 Engine.StackPush(n2);
             }
-            else if (s[0] == typeof(MOGString) || s[1] == typeof(MOGString))
+            else if (s[0] == typeof(MOGString) && s[1] == typeof(MOGString))
             {
                 // string string  +
 
@@ -75,6 +75,15 @@ namespace MOGWAI.Primitives
                 var n2 = Engine.StackPopString();
 
                 Engine.StackPushString(n2.Value + n1.Value);
+            }
+            else if (s[1] == typeof(MOGString))
+            {
+                // string ? +
+
+                var n1 = Engine.StackPop();
+                var n2 = Engine.StackPopString();
+
+                Engine.StackPushString(n2.Value + n1!.ToString());
             }
             else if (s[1] == typeof(MOGData))
             {
@@ -84,7 +93,7 @@ namespace MOGWAI.Primitives
 
                     var number = Engine.StackPopNumber();
                     var data = Engine.StackPopData();
-                    
+
                     var b = (byte)number.IntValue;
                     data.Items.Add(b);
 
@@ -110,10 +119,34 @@ namespace MOGWAI.Primitives
                 var bin0 = Engine.StackPopBinaryNumber();
                 var bin1 = Engine.StackPopBinaryNumber();
 
-                for (int i = bin0.Items.Count - 1; i >= 0; i--)                   
+                for (int i = bin0.Items.Count - 1; i >= 0; i--)
                     bin1.Items.Insert(0, bin0.Items[i]);
 
                 Engine.StackPush(bin1);
+                return EvalResult.NoError;
+            }
+            else if (s[1] == typeof(MOGRef))
+            {
+                var n0 = Engine.StackPop();
+
+                var reference = Engine.StackPopRef();
+                var value = Engine.VarRead(reference.Value, false);
+
+                if (value == null)
+                    return EvalResult.Failure(Engine, Error.UnknownNameError, Name, reference.ToString());
+                
+                Engine.StackPush(value);
+                Engine.StackPush(n0!);
+
+                var r = await EngineEval();
+
+                if (r.IsError)
+                    return r;
+
+                // On enlève la valeur modifiée de la stack qui ne sert à rien
+
+                Engine.StackDrop();
+
                 return EvalResult.NoError;
             }
             else

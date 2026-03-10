@@ -125,6 +125,7 @@ namespace MOGWAI.Engine
             RegisterType(typeof(MOGObject), "any");
             RegisterType(typeof(MOGEmpty), "any");
             RegisterType(typeof(MOGType), "type");
+            RegisterType(typeof(MOGRef), "ref");
 
             #endregion
 
@@ -1200,6 +1201,8 @@ namespace MOGWAI.Engine
         public MOGBoolean StackPopBoolean() => (StackPop() as MOGBoolean)!;
 
         public MOGData StackPopData() => (StackPop() as MOGData)!;
+
+        public MOGRef StackPopRef() => (StackPop() as MOGRef)!;
 
         public MOGBinaryNumber StackPopBinaryNumber() => (StackPop() as MOGBinaryNumber)!;
 

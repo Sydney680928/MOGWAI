@@ -46,7 +46,19 @@ namespace MOGWAI.Primitives
             if (s.Count == 0)
                 return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
 
-            if (s[0].IsSubclassOf(typeof(MOGBaseString)))
+            if (s[0] == typeof(MOGRef))
+            {
+                var reference = Engine.StackPopRef();
+                var value = Engine.VarRead(reference.Value, false);
+
+                if (value == null)
+                    return EvalResult.Failure(Engine, Error.UnknownNameError, Name, reference.ToString());
+
+                Engine.StackPush(value);
+
+                return await EngineEval();            
+            }
+            else if (s[0].IsSubclassOf(typeof(MOGBaseString)))
             {
                 var o = Engine.StackPopString();
                 Engine.StackPushNumber(o.Value.Length);

@@ -14,6 +14,7 @@
 
 using MOGWAI.Engine;
 using MOGWAI.Objects;
+using System.Xml.Linq;
 
 namespace MOGWAI.Primitives
 {
@@ -73,6 +74,8 @@ namespace MOGWAI.Primitives
             }
             else if (s[2] == typeof(MOGData) && s[1] == typeof(MOGNumber))
             {
+                // Data
+
                 if (s[0] == typeof(MOGNumber))
                 {
                     // data number number set
@@ -112,6 +115,42 @@ namespace MOGWAI.Primitives
                     {
                         return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
                     }
+                }
+            }
+            else if (s[2] == typeof(MOGRef))
+            {
+                var n0 = Engine.StackPop();
+                var n1 = Engine.StackPop();
+
+                var reference = Engine.StackPopRef();   
+                var value = Engine.VarRead(reference.Value, false);
+
+                if (value == null)
+                    return EvalResult.Failure(Engine, Error.UnknownNameError, Name, reference.ToString());
+
+                // Le contenu de la variable doit être de type
+                // list, record ou data pour pouvoir être modifié avec set
+
+                if (value is MOGList || value is MOGRecord || value is MOGData)
+                {
+                    Engine.StackPush(value);
+                    Engine.StackPush(n1!);
+                    Engine.StackPush(n0!);
+
+                    var r = await EngineEval();
+
+                    if (r.IsError)
+                        return r;
+
+                    // On enlève la valeur modifiée de la stack qui ne sert à rien
+
+                    Engine.StackDrop();
+
+                    return EvalResult.NoError;
+                }
+                else
+                {
+                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, reference.ToString(), $"var type .{value.Type.Value} not allowed");
                 }
             }
 

@@ -72,6 +72,37 @@ namespace MOGWAI.Primitives
 
                 return EvalResult.NoError;
             }
+            else if (s[0] == typeof(MOGRef))
+            {
+                var reference = Engine.StackPopRef();
+                var value = Engine.VarRead(reference.Value, false);
+
+                if (value == null)
+                    return EvalResult.Failure(Engine, Error.UnknownNameError, Name, reference.ToString());
+
+                // Le contenu de la variable doit être de type
+                // list, string ou data pour pouvoir être modifié avec butfirst 
+
+                if (value is MOGList || value is MOGString || value is MOGData)
+                {
+                    Engine.StackPush(value);
+  
+                    var r = await EngineEval();
+
+                    if (r.IsError)
+                        return r;
+
+                    // On enlève la valeur modifiée de la stack qui ne sert à rien
+
+                    Engine.StackDrop();
+
+                    return EvalResult.NoError;
+                }
+                else
+                {
+                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, reference.ToString(), $"var type .{value.Type.Value} not allowed");
+                }
+            }
 
             return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
         }
