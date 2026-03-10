@@ -1,0 +1,25 @@
+# Array built-in functions
+
+mogwai.reset
+console.clear
+
+(1 2 3) -> 'items'
+
+# Get length
+items size -> 'len'
+"Length:" ?
+len ?
+
+# Add an element (+ returns a new list)
+items 4 + -> 'new_items'
+"After push:" ?
+new_items ?
+
+# Original unchanged
+"Original:" ?
+items ?
+
+# Chained additions
+items 4 + 5 + 6 + -> 'more_items'
+"Chained push:" ?
+more_items ?

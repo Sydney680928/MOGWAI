@@ -1,0 +1,19 @@
+# Arrays with mixed types
+mogwai.reset
+console.clear
+(1 "hello" true 3.14) -> 'mixed'
+mixed ?
+
+mixed 0 get ?
+mixed 1 get ?
+mixed 2 get ?
+mixed 3 get ?
+# List of lists
+((1 2) (3 4) (5 6)) -> 'nested'
+nested ?
+nested 0 get -> 'first_row'
+first_row ?
+# Access nested element: nested[1][0]
+# Compact path notation: (1 0) get traverses nested[1] then [0]
+nested (1 0) get -> 'value'
+value ?

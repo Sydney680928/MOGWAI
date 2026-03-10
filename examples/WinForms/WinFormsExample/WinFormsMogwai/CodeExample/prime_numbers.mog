@@ -1,0 +1,42 @@
+# Prime number generator
+
+mogwai.reset
+console.clear
+
+to 'is_prime' with [n: .number] do
+{
+    if (n 2 <)  then { false return }
+    if (n 2 ==) then { true  return }
+
+    false -> 'divisible'
+	
+    2 n 1 - for 'i' do
+    {
+        if (divisible not n i mod 0 == and) then
+        {
+            true -> 'divisible'
+        }
+    }
+	
+    divisible not
+}
+
+to 'find_primes' with [maximum: .number] do
+{
+    () -> 'primes'
+	
+    2 maximum 1 - for 'num' do
+    {
+        if (num is_prime) then { primes num + -> 'primes' }
+    }
+	
+    primes
+}
+
+"Prime numbers up to 30:" ?
+30 find_primes -> 'result'
+result ?
+
+"" ?
+"Count of primes:" ?
+result size ?

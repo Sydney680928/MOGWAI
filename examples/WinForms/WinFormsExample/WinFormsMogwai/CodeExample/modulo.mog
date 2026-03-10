@@ -1,0 +1,28 @@
+# Modulo operator — examples
+
+mogwai.reset
+console.clear
+
+10 3  mod ?   # 1
+15 5  mod ?   # 0
+7  2  mod ?   # 1
+100 7 mod ?   # 2
+
+to 'is_even' with [n: .number] do { n 2 mod 0 == }
+
+# range(1, 9) → 1 to 8 inclusive
+
+1 8 for 'i' do
+{
+    if (i is_even) then { i ? }
+}
+
+"" ?
+"Multiples of 3:" ?
+
+# range(1, 21) → 1 to 20 inclusive
+
+1 20 for 'n' do
+{
+    if (n 3 mod 0 ==) then { n ? }
+}

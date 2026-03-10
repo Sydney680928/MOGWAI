@@ -1,0 +1,12 @@
+# Basic function example
+
+mogwai.reset
+console.clear
+
+to 'greet' with [name: .any] do
+{
+    "Hello, {! name}!" eval ?
+}
+
+"World"   greet
+"MOGWAI" greet

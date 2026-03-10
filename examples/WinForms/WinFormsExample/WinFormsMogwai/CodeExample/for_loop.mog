@@ -1,0 +1,19 @@
+# For loop examples
+
+mogwai.reset
+console.clear
+
+# Basic for loop over a list
+
+(1 2 3 4 5) foreach 'num' do { num ? }
+
+# For loop with strings
+
+("Alice" "Bob" "Charlie") foreach 'name' do
+{
+    "Hello, {! name}" eval ?
+}
+
+# For loop with range — range(0, 10) → 0 to 9 inclusive
+
+0 9 for 'i' do { i ? }

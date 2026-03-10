@@ -1,0 +1,12 @@
+# This is a comment
+# Comments start with # and continue to the end of the line
+
+mogwai.reset
+console.clear
+
+42 -> 'x'  # You can also put comments after code
+
+# Comments are ignored by the interpreter
+# They're useful for documentation and explanations
+
+x ?  # Output: 42

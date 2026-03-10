@@ -142,7 +142,6 @@
             SamplesComboBox.DropDownStyle = ComboBoxStyle.DropDownList;
             SamplesComboBox.Font = new Font("Consolas", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             SamplesComboBox.FormattingEnabled = true;
-            SamplesComboBox.Items.AddRange(new object[] { "Downloading resources (http.get)", "Additional functions (turtle)", "Using tasks", "The mystery number", "Draw a flower", "Recursive fractal tree" });
             SamplesComboBox.Location = new Point(11, 33);
             SamplesComboBox.Name = "SamplesComboBox";
             SamplesComboBox.Size = new Size(836, 30);
@@ -164,7 +163,6 @@
             CodeTextBox.ScrollBars = ScrollBars.Both;
             CodeTextBox.Size = new Size(836, 829);
             CodeTextBox.TabIndex = 4;
-            CodeTextBox.WordWrap = false;
             // 
             // splitContainer2
             // 
@@ -246,6 +244,7 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "MOGWAI WinForms integration";
             WindowState = FormWindowState.Maximized;
+            Load += FormMain_Load;
             SizeChanged += FormMain_SizeChanged;
             splitContainer1.Panel1.ResumeLayout(false);
             splitContainer1.Panel1.PerformLayout();

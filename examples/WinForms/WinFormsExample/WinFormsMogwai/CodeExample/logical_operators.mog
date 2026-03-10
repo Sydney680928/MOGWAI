@@ -1,0 +1,22 @@
+# Logical operators: and, or, not
+
+mogwai.reset
+console.clear
+
+10 -> 'x'
+20 -> 'y'
+
+if (x 5 > y 15 > and) then { "Both conditions are true" ? }
+
+if (x 100 > y 15 > or) then { "At least one condition is true" ? }
+
+false -> 'is_false'
+if (is_false not) then { "Negation works!" ? }
+
+true  -> 'a'
+false -> 'b'
+
+if (a b not and) then { "a is true AND b is false" ? }
+
+25 -> 'temperature'
+if (temperature 20 > temperature 30 < and) then { "Perfect temperature!" ? }

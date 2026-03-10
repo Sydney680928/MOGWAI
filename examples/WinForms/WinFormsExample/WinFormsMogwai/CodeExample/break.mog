@@ -1,0 +1,14 @@
+# Break examples
+
+mogwai.reset
+console.clear
+
+"=== Break Example ===" ?
+
+# range(1, 20) → 1 to 19 inclusive
+
+1 19 for 'num' do
+{
+    if (num 10 >) then { break }
+    num ?
+}

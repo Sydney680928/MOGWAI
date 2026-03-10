@@ -1,0 +1,12 @@
+# Iterating over an array
+
+mogwai.reset
+console.clear
+
+(10 20 30 40 50) -> 'numbers'
+
+"Array elements:" ?
+numbers foreach 'n' do
+{
+    n ?
+}

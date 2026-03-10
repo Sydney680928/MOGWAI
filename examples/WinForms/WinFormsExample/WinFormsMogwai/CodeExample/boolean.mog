@@ -1,0 +1,13 @@
+# Boolean values
+
+mogwai.reset
+console.clear
+
+true  -> 'is_true'
+false -> 'is_false'
+
+is_true  ?
+is_false ?
+
+true -> 'valid'
+valid ?

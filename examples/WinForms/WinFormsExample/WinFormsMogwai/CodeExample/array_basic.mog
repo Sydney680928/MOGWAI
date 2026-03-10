@@ -1,0 +1,17 @@
+# Basic array operations
+
+mogwai.reset
+console.clear
+
+(1 2 3 4 5) -> 'numbers'
+numbers ?
+
+numbers 0 get -> 'f'
+f ?
+
+numbers 4 get -> 'l'
+l ?
+
+# Element assignment — set returns a new list, we store it back
+numbers 2 10 set -> 'numbers'
+numbers ?

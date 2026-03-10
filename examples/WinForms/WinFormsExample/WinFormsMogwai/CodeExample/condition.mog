@@ -1,0 +1,37 @@
+# Conditional execution with if/else
+
+mogwai.reset
+console.clear
+
+18 -> 'temperature'
+
+if (temperature 20 >) then
+{
+    "It's warm" ?
+}
+else
+{
+    "It's cool" ?
+}
+
+# Nested conditions — switch is cleaner than cascading if/else in MOGWAI
+
+85 -> 'score'
+
+switch
+{
+    (score 90 >=) then { "Grade: A" ? }
+    (score 80 >=) then { "Grade: B" ? }
+    (true)        then { "Grade: C" ? }
+}
+
+false -> 'is_raining'
+
+if (is_raining) then
+{
+    "Take an umbrella" ?
+}
+else
+{
+    "Enjoy the sunshine" ?
+}

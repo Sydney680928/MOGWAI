@@ -1,0 +1,37 @@
+# Nested dictionaries via functions
+
+mogwai.reset
+console.clear
+
+[host: "localhost" port: 8080 debug: true] -> 'config'
+
+config host: get ?
+config port: get ?
+config debug: get ?
+
+to 'make_user' with [name: .any age: .any city: .any] do
+{
+    [! name: name age: age city: city]
+}
+
+to 'greet' with [user: .record] do
+{
+    "Hello {! user name: get} from {! user city: get}!" eval
+}
+
+"Sydney" 73 "Les Marches" make_user -> 'sydney'
+"Sophie" 30 "Paris" make_user -> 'sophie'
+
+sydney greet ?
+sophie greet ?
+
+"" ?
+"Sydney's profile:" ?
+
+# k is a .key object (e.g. name:)
+# k ->str butlast strips the trailing colon for display
+
+sydney keys foreach 'k' do
+{
+    "{! k ->str butlast} = {! sydney k get}" eval ?
+}

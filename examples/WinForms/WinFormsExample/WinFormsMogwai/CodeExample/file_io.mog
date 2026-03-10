@@ -1,0 +1,31 @@
+# File I/O example
+# MOGWAI uses path.files as the standard data folder
+
+mogwai.reset
+console.clear
+
+# Write to file — convert string to UTF-8 bytes, then write
+
+"Hello from Whispem 1.0!" -> 'message'
+(! path.files "hello.txt") path.make message ->utf8 file.data.write
+
+"File written successfully!" ?
+
+# Read from file — read all bytes, convert back to string
+
+(! path.files "hello.txt") path.make file.data.read utf8-> -> 'content'
+"File contents:" ?
+content ?
+
+# Write multiple lines
+
+(! path.files "lines.txt") path.make
+"Line 1\r\n" ->unescape ->utf8 
+"Line 2\r\n" ->unescape ->utf8 +
+"Line 3" ->utf8 +
+ file.data.write
+
+(! path.files "lines.txt") path.make file.data.read utf8-> -> 'read_lines'
+
+"Lines file:" ?
+read_lines ?

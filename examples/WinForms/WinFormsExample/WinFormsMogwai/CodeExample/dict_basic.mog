@@ -1,0 +1,37 @@
+# Dictionaries — basic operations
+
+mogwai.reset
+console.clear
+
+# Helper: returns a list of all values in a record (no native primitive)
+
+to 'record.values' with [rec: .record] do
+{
+    rec keys foreach 'k' do { rec k get }
+    rec size ->list
+}
+
+[name: "Sydney" age: 26 city: "Chambéry"] -> 'person'
+
+# Access
+person name: get ?
+person age: get ?
+
+# Update
+person city: "Les Marches" set -> 'person'
+person city: get ?
+
+# Add a new key
+person job: "developer" set -> 'person'
+person job: get ?
+
+# has_key → contains
+person name: contains ?   # true
+person phone: contains ?  # false
+
+# keys and values
+person keys ?
+person record.values ?
+
+# length
+person size ?

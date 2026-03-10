@@ -1,0 +1,18 @@
+# String values
+
+mogwai.reset
+console.clear
+
+"Hello"                	-> 'greeting'
+"World"                	-> 'name'
+"MOGWAI is cool" 		-> 'message'
+
+greeting ?
+name     ?
+message  ?
+
+"Line one\nLine two" ->unescape -> 'multiline'
+multiline ?
+
+"She said \"Hello\"" ->unescape -> 'quoted'
+quoted ?

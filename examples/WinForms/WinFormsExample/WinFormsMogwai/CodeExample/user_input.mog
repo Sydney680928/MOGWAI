@@ -1,0 +1,16 @@
+# User input example
+
+mogwai.reset
+console.clear
+
+"What's your name? "
+console.prompt -> 'name'
+"Hello, {! name}!" eval ?
+
+"How old are you? "
+console.prompt -> 'age'
+"You are {! age} years old." eval ?
+
+"What's your favorite color? " 
+console.prompt -> 'favorite'
+"Nice! {! favorite} is a great color!" eval ?

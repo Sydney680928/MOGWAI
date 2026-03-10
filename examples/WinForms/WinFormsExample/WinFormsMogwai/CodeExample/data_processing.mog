@@ -1,0 +1,36 @@
+# Data Processing Example
+
+mogwai.reset
+console.clear
+
+to 'filter_positive' with [numbers: .list] do
+{
+    () -> 'result'
+	
+    numbers foreach 'n' do
+    {
+        if (n 0 >) then { result n + -> 'result' }
+    }
+	
+    result
+}
+
+(-5 3 -2 8 0 12 -1 7) -> 'data'
+
+"Original data:" ?
+data ?
+
+data filter_positive -> 'positive'
+"Positive numbers:" ?
+positive ?
+
+positive sum -> 'sum_pos'
+"Sum of positive: " ??
+sum_pos ?
+
+positive average -> 'avg_val'
+"Average of positive: " ??
+avg_val ?
+
+"Maximum: " ??
+positive max ?

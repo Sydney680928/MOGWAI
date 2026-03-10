@@ -1,0 +1,14 @@
+# Recursive factorial function
+
+mogwai.reset
+console.clear
+
+to 'factorial' with [n: .number] do
+{
+    if (n 1 <=) then { 1 return }
+    n 1 - factorial n *
+}
+
+5  factorial ?
+6  factorial ?
+10 factorial ?

@@ -1,0 +1,52 @@
+# Simple Task Manager
+
+mogwai.reset
+console.clear
+
+to 'add_task' with [tasks: .list tsk: .any] do { tasks tsk + }
+
+to 'show_tasks' with [tasks: .list] do
+{
+    if (tasks size 0 ==) then { "No tasks yet!" ? return }
+
+    "Your Tasks:" ?
+	
+    0 -> 'i'
+    
+	tasks foreach 'tsk' do
+    {
+        'i' ++
+        "{! i}. {! tsk}" eval ?
+    }
+}
+
+to 'remove_last_task' with [tasks: .list] do
+{
+    if (tasks size 0 >) then
+    {
+        "Removed: {! tasks last}" eval ?
+        tasks butlast
+    }
+    else
+    {
+        tasks
+    }
+}
+
+"=== Task Manager ===" ?
+"" ?
+
+() -> 'my_tasks'
+
+my_tasks "Learn MOGWAI" add_task 			-> 'my_tasks'
+my_tasks "Write code" add_task 				-> 'my_tasks'
+my_tasks "Build something cool" add_task 	-> 'my_tasks'
+
+my_tasks show_tasks
+
+"" ?
+"Removing last task..." ?
+my_tasks remove_last_task -> 'my_tasks'
+
+"" ?
+my_tasks show_tasks

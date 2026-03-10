@@ -1,0 +1,6 @@
+# Hello World — First MOGWAI program
+
+mogwai.reset
+console.clear
+
+"Hello, MOGWAI!" ?

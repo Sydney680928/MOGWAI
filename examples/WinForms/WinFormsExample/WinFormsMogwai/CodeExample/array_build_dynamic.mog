@@ -1,0 +1,26 @@
+# Building arrays dynamically
+
+mogwai.reset
+console.clear
+
+# Builds a list [start .. end-1], exclusive end
+to 'make_range' with [start: .number end: .number] do
+{
+    start end 1 - for 'i' do { i }
+    end start - ->list
+}
+
+# Builds a list of the first n perfect squares
+to 'make_squares' with [n: .number] do
+{
+    1 n for 'i' do { i i * }
+    n ->list
+}
+
+0 5 make_range -> 'nums'
+"Range 0-5:" ?
+nums ?
+
+5 make_squares -> 'squares'
+"First 5 squares:" ?
+squares ?

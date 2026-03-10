@@ -1,0 +1,64 @@
+# Types and print
+
+mogwai.reset
+console.clear
+
+42      -> 'x'
+"hello" -> 's'
+true    -> 'b'
+
+x ?
+s ?
+b ?
+
+# Arithmetic
+
+2 3 +  ?
+10 4 / ?
+10 3 mod ?
+
+# String concat
+
+"foo" "bar" + ?
+
+# Condition
+
+if (x 10 >) then { "big" ? } else { "small" ? }
+
+# While
+
+0 -> 'i'
+while (i 3 <) do { i ? 'i' ++ }
+
+# For + range
+
+0 4 for 'n' do { n ? }
+
+# Function
+
+to 'double' with [n: .number] do { n 2 * }
+7 double ?
+
+# Recursion
+
+to 'factorial' with [n: .number] do
+{
+    if (n 1 <=) then { 1 return }
+    n 1 - factorial n *
+}
+
+5 factorial ?
+
+# List + index assignment
+
+(10 20 30) -> 'arr'
+arr 1 99 set -> 'arr'
+arr 0 get ?
+arr 1 get ?
+arr 2 get ?
+
+# Record (dict)
+
+[a: 1 b: 2] -> 'd'
+d a: contains ?   # true
+d z: contains ?   # false

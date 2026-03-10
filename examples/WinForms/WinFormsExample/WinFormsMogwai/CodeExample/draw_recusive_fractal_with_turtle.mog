@@ -1,0 +1,20 @@
+# Recursive fractal tree
+mogwai.reset
+console.clear
+to 'tree' with [length: .number] do
+{
+    if (length 5 >) then
+    {
+        length turtle.move
+        30 turtle.turn
+        length 0.7 * tree
+        -60 turtle.turn
+        length 0.7 * tree
+        30 turtle.turn
+        length -1 * turtle.move
+    }
+}
+# Clear and draw
+clg
+90 turtle.turn
+100 tree

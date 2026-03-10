@@ -1,0 +1,42 @@
+# Word frequency counter using a dictionary
+
+mogwai.reset
+console.clear
+
+to 'count_words' with [words: .list] do
+{
+    [] -> 'counts'
+	
+    words foreach 'word' do
+    {
+        if (counts word ->key contains) then
+        {
+            counts word ->key get 1 + -> 'current'
+            counts word ->key current set -> 'counts'
+        }
+        else
+        {
+            counts word ->key 1 set -> 'counts'
+        }
+    }
+	
+    counts
+}
+
+to 'show_counts' with [counts: .record] do
+{
+    counts keys foreach 'k' do
+    {
+        "{! k ->str butlast}: {! counts k get}" eval ?
+    }
+}
+
+("rust" "MOGWAI" "rust" "language" "MOGWAI" "rust" "code") -> 'word_list'
+
+"=== Word frequencies ===" ?
+word_list count_words -> 'freq'
+freq show_counts
+
+"" ?
+"Occurrences of 'rust':" ?
+freq rust: get ?

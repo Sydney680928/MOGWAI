@@ -1,0 +1,21 @@
+# Download from web
+
+mogwai.reset
+console.clear	
+
+"Please wait..." ?
+[http.get uri: "https://www.google.fr"] -> 'r'
+
+" " ?
+
+if (r->state) then
+{
+	"Download OK" ?
+	" " ?
+	
+	r->response 0 300 sub ?d
+}
+else
+{
+	"Donwload KO !" ?
+}

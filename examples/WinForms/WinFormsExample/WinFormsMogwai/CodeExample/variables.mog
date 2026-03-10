@@ -1,0 +1,12 @@
+# Variables and assignments
+
+mogwai.reset
+console.clear
+
+10 -> 'x'
+20 -> 'y'
+"MOGWAI" -> 'name'
+
+x    ?
+y    ?
+name ?

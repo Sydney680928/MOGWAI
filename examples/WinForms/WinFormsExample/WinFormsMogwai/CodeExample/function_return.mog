@@ -1,0 +1,16 @@
+# Function with return value
+
+mogwai.reset
+
+to 'add'      with [a: .number b: .number] do { a b + }
+to 'multiply' with [x: .number y: .number] do { x y * }
+
+5 3 add -> 's'
+4 7 multiply -> 'product'
+
+s     	?
+product ?
+
+# add(10, multiply(2, 5)) = add(10, 10) = 20
+2 5 multiply -> 'tmp'
+10 tmp add ?

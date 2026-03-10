@@ -1,0 +1,9 @@
+# Arrays with functions
+mogwai.resetconsole.clear
+(5 2 9 1 7 3) -> 'nums'
+nums sum -> 'total'
+"Sum:" ?
+total ?
+nums max -> 'maximum'
+"Max:" ?
+maximum ?

@@ -1,0 +1,64 @@
+mogwai.reset
+
+forever do
+{
+	console.clear
+	
+	"*** FIND THE NUMBER BETWEEN 1 AND 100 ***" ?
+	" " ?
+	
+	rand 100 * ->int 1 + -> 'number'
+	0 -> 'counter' 
+	forever do
+	{
+		forever do
+		{
+			"Your number: " console.prompt -> 'r'
+			" " ?
+			
+			guard
+			{
+				r ->num -> 'r'
+				if (r 0 > r 101 < and) then
+				{
+					'counter' ++
+					break
+				}
+				else
+				{
+					"The number must be between 1 and 100, please try again." ?
+					" " ?
+				}
+			}
+			else
+			{
+				"Incorrect entry, please try again." ?
+				" " ?
+			}	
+		}
+		switch
+		{
+			(r number >) then
+			{
+				"{! r} is too big." eval ?
+			}
+			(r number <) then
+			{
+				"{! r} is too small." eval ?
+			}
+			(true) then
+			{
+				"Well done, you found it in {! counter} tries!" eval ?
+				break
+			}
+		}
+		" " ?
+	}
+	" " ?
+	"Do you want to play again? (Y/N): " console.prompt ->upper -> 'r'
+	if (("N" "NO") r contains) then 
+	{ 
+		break 
+	}
+}
+

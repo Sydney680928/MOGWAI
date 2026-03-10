@@ -1,0 +1,27 @@
+# Arithmetic expressions
+
+mogwai.reset
+console.clear
+
+10 -> 'a'
+5  -> 'b'
+
+# Basic operations
+a b + -> 's'
+a b - -> 'd'
+a b * -> 'p'
+a b / -> 'q'
+
+s  ?
+d ?
+p ?
+q ?
+
+# Operator precedence: 10 + 5 * 2 = 20
+# In RPN there is no implicit precedence — we write the order explicitly
+10 5 2 * + -> 'result'
+result ?
+
+# (10 + 5) * 2 = 30
+10 5 + 2 * -> 'result2'
+result2 ?

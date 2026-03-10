@@ -1,0 +1,47 @@
+# Phone book — practical dictionary example
+# Keys are dynamic strings → use ->key to convert at runtime
+
+mogwai.reset
+console.clear
+
+to 'add_contact' with [book: .record name: .any phone: .any] do
+{
+    book name ->key phone set
+}
+
+to 'lookup' with [book: .record name: .any] do
+{
+    if (book name ->key contains) then
+    {
+        book name ->key get
+    }
+    else
+    {
+        "Contact not found"
+    }
+}
+
+to 'show_all' with [book: .record] do
+{
+    "=== Contacts ===" ?
+	
+    book keys foreach 'k' do
+    {
+        "{! k ->str butlast}: {! book k get}" eval ?
+    }
+}
+
+[] -> 'phonebook'
+
+phonebook "Jo" "06 .. .. .. 05" add_contact -> 'phonebook'
+phonebook "Martin" "07 .. .. .. 23" add_contact -> 'phonebook'
+phonebook "Sophie" "06 00 00 00 00" add_contact -> 'phonebook'
+
+phonebook show_all
+
+"" ?
+"Looking up Alice:" ?
+phonebook "Alice" lookup ?
+
+"Looking up Charlie:" ?
+phonebook "Charlie" lookup ?

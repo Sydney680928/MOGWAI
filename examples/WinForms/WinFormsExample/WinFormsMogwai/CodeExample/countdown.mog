@@ -1,0 +1,16 @@
+# Countdown example with while
+
+mogwai.reset
+console.clear
+
+5 -> 'countdown'
+
+"Countdown starts:" ?
+
+while (countdown 0 >) do
+{
+    countdown ?
+    'countdown' --
+}
+
+"Liftoff!" ?

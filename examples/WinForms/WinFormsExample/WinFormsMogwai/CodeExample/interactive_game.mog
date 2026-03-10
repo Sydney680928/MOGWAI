@@ -1,0 +1,30 @@
+# Simple number guessing game
+
+mogwai.reset
+console.clear
+
+7     -> 'secret'
+0     -> 'guesses'
+false -> 'found'
+
+"=== Number Guessing Game ===" ?
+"I'm thinking of a number between 1 and 10" ?
+
+while (found not) do
+{
+    "Enter your guess: " console.prompt ->num -> 'guess'
+    1 ->+ 'guesses'
+
+    if (guess secret ==) then
+    {
+        "Congratulations! You found it!" ?
+        true -> 'found'
+    }
+    else
+    {
+        if (guess secret <) then { "Too low! Try again."  ? }
+        else                     { "Too high! Try again." ? }
+    }
+}
+
+"You won in {! guesses} guesses!" eval ?

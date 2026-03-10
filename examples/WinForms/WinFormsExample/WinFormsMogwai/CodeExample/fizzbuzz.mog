@@ -1,0 +1,19 @@
+# FizzBuzz — using explicit equality checks (faithful to original)
+
+mogwai.reset
+console.clear
+
+1 -> 'n'
+
+while (n 15 <=) do
+{
+    switch
+    {
+        (n 3 == n 6 == or n 9 == or n 12 == or) 	then { "Fizz" ? }
+        (n 5 == n 10 == or)                      	then { "Buzz" ? }
+        (n 15 ==)                                	then { "FizzBuzz" ? }
+        (true)                                   	then { n ? }
+    }
+	
+    'n' ++
+}

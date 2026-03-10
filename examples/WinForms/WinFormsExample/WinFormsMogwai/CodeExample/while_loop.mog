@@ -1,0 +1,14 @@
+# While loop example
+
+mogwai.reset
+console.clear
+
+0 -> 'counter'
+
+while (counter 5 <) do
+{
+    counter ?
+    'counter' ++
+}
+
+"Done!" ?

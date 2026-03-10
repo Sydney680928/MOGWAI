@@ -1,0 +1,16 @@
+# Draw a flower
+mogwai.reset
+console.clear
+clg
+1 12 for 'i' do 
+{ 
+	# Draw petal
+	1 6 for 'j' do
+	{       
+		100 turtle.move
+		30 turtle.turn
+	}
+	# Rotate to next petal
+	
+	30 turtle.turn
+}

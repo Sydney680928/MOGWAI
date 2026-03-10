@@ -15,9 +15,12 @@
 using MOGWAI.Engine;
 using MOGWAI.Interfaces;
 using MOGWAI.Objects;
+using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace WinFormsMogwai
 {
@@ -36,6 +39,7 @@ namespace WinFormsMogwai
         private double _turtleAngle;
         private Color _turtleColor = Color.Yellow;
         private bool _turtleIsVisible = true;
+        private string? _rootFolder;
 
         private const int EM_SETTABSTOPS = 0x00CB;
 
@@ -48,7 +52,7 @@ namespace WinFormsMogwai
 
             // Creating the scripting engine.
 
-            _engine = new MogwaiEngine("MOGWAI WinForms", false, true);
+            _engine = new MogwaiEngine("MOGWAI WinForms", true, true);
 
             // Add his delegate (this window) to the engine.
             // The delegate is the link between the engine and its host (this window).
@@ -67,41 +71,58 @@ namespace WinFormsMogwai
             // We set the tab offset size in the code
 
             SendMessage(CodeTextBox.Handle, EM_SETTABSTOPS, 1, [15]);
-        }
-    
-        #region Private functions
 
-        private void LoadCode(int index)
-        {
-            var code = GetStringFromResource($"Sample{index}.mog");
-            CodeTextBox.Text = code ?? string.Empty;
-        }
+            // Load samples in the combo box
 
-        private string? GetStringFromResource(string resource)
-        {
+            _rootFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
             try
             {
-                using Stream? stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"WinFormsMogwai.CodeExample.{resource}");
+                if (_rootFolder != null)
+                {
+                    var examplesFolder = Path.Combine(_rootFolder, "CodeExample");
+                    var examples = Directory.GetFiles(examplesFolder, "*.mog");
 
-                if (stream != null)
-                {
-                    var reader = new StreamReader(stream);
-                    return reader.ReadToEnd();
-                }
-                else
-                {
-                    return null;
+                    foreach (var example in examples)
+                    {
+                        var name = Path.GetFileNameWithoutExtension(example);
+                        SamplesComboBox.Items.Add(name);
+                    }
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                return null;
+                MessageBox.Show("Unable to load code examples from CodeExample folder.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        #region Private functions
+
+        private void LoadCode(string filename)
+        {
+            if (_rootFolder != null)
+            {
+                try
+                {
+                    var path = Path.Combine(_rootFolder, "CodeExample", $"{filename}.mog");
+                    var code = File.ReadAllText(path);
+                    CodeTextBox.Text = code;
+                }
+                catch
+                {
+                    MessageBox.Show($"Unable to load code example {filename}.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
         #endregion
 
         #region UI
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+
+        }
 
         private async void ExecuteButton_Click(object sender, EventArgs e)
         {
@@ -127,7 +148,8 @@ namespace WinFormsMogwai
 
         private void SamplesComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            LoadCode(SamplesComboBox.SelectedIndex + 1);
+            if (SamplesComboBox.SelectedItem is string filename)
+                LoadCode(filename);
         }
 
         private void DrawTurtlePictureBox_Paint(object sender, PaintEventArgs e)

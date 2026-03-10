@@ -1,0 +1,14 @@
+# Function without parameters
+
+mogwai.reset
+console.clear
+
+to 'say_hello' do { "Hello from a function!" ? }
+
+to 'get_pi' do { 3.14159 }
+
+say_hello
+get_pi -> 'pi'
+pi ?
+
+# MOGWAI has PI native function

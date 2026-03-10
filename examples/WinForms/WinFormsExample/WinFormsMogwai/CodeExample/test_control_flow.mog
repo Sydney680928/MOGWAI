@@ -1,0 +1,23 @@
+# Test control flow
+
+mogwai.reset
+console.clear
+
+10 -> 'x'
+20 -> 'y'
+
+if (x y <) then
+{
+    "x is smaller" ?
+    x ?
+}
+else
+{
+    "x is bigger or equal" ?
+    x ?
+}
+
+if (x 10 ==) then { true ? }
+
+true -> 'is_valid'
+if (is_valid) then { "Valid!" ? }

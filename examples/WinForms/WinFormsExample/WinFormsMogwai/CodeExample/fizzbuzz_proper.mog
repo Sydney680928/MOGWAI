@@ -1,0 +1,16 @@
+# FizzBuzz — proper implementation with modulo
+# switch replaces the cascading if/else cleanly
+
+mogwai.reset
+console.clear
+
+1 100 for 'n' do
+{
+    switch
+    {
+        (n 15 mod 0 ==) then { "FizzBuzz" ? }
+        (n 3  mod 0 ==) then { "Fizz" ?     }
+        (n 5  mod 0 ==) then { "Buzz" ?     }
+        (true)          then { n ?          }
+    }
+}
