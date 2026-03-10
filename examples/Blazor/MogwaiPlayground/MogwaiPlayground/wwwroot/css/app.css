@@ -300,6 +300,19 @@ body::after {
     box-shadow: 0 0 8px rgba(255, 85, 85, 0.15);
 }
 
+.example-btn-halt {
+    border-color: #2a0000;
+    color: #884444;
+    margin-left: auto;
+}
+
+    .example-btn-halt:hover {
+        background: #1a0000;
+        border-color: var(--red-err);
+        color: var(--red-err);
+        box-shadow: 0 0 8px rgba(255, 85, 85, 0.15);
+    }
+
 /* ── Spinner ──────────────────────────────────────── */
 
 @keyframes spin {

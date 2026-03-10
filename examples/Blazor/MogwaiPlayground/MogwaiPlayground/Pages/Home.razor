@@ -76,6 +76,7 @@
                 @ex.Label
             </button>
         }
+        <button class="example-btn example-btn-halt" @onclick="Halt">HALT</button>
         <button class="example-btn example-btn-clear" @onclick="ClearTerminal">⌫ Clear</button>
     </div>
 
@@ -247,6 +248,12 @@
     private void ClearTerminal()
     {
         _lines.Clear();
+        StateHasChanged();
+    }
+
+    private void Halt()
+    {
+        _engine?.Halt();
         StateHasChanged();
     }
 
