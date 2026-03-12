@@ -79,11 +79,13 @@ namespace MOGWAI.Primitives
                             break;
 
                         result = Engine.VarWrite(name.Value, item);
-                        if (result != EvalResult.NoError)
+                        
+                        if (result.IsError)
                             break;
 
                         result = await code.Execute();
-                        if (result != EvalResult.NoError)
+                        
+                        if (result.IsError)
                             break;
                     }
 

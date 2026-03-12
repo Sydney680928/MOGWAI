@@ -65,7 +65,7 @@ namespace MOGWAI.Primitives
                     }
                     else
                     {
-                        Engine.StackPush(value);
+                       return  await value.EngineEval();
                     }
 
                     return EvalResult.NoError;
@@ -127,8 +127,7 @@ namespace MOGWAI.Primitives
                         }
                     }
 
-                    Engine.StackPush(currentValue.Clone());
-                    return EvalResult.NoError;
+                    return await currentValue.Clone().EngineEval();
                 }
             }
             else if (s[1] == typeof(MOGList))
@@ -145,8 +144,7 @@ namespace MOGWAI.Primitives
                     if (value == null)
                         return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "index out of range");
 
-                    Engine.StackPush(value);
-                    return EvalResult.NoError;
+                    return await value.Clone().EngineEval();
                 }
                 else if (s[0] == typeof(MOGList))
                 {
@@ -205,8 +203,7 @@ namespace MOGWAI.Primitives
                         }
                     }
 
-                    Engine.StackPush(currentValue.Clone());
-                    return EvalResult.NoError;
+                    return await currentValue.Clone().EngineEval();
                 }
             }
             else if (s[1] == typeof(MOGData) && s[0] == typeof(MOGNumber))
