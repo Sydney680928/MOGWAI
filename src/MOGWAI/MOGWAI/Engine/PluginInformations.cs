@@ -34,8 +34,8 @@ namespace MOGWAI.Engine
 
         public Func<MogwaiEngine, string, Task<EvalResult>>? GetKeyword(string keyword)
         {
-            if (Plugin.Keywords.ContainsKey(keyword))
-                return Plugin.Keywords[keyword];
+            if (Plugin.Keywords.TryGetValue(keyword, out var keywordFunc))
+                return keywordFunc;
 
             return null;
         }

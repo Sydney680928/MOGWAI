@@ -564,8 +564,8 @@ namespace MOGWAI.Engine
 
         public MOGPrimitive? GetPrimitive(string name)
         {
-            if (_primitives.ContainsKey(name))
-                return _primitives[name].Clone() as MOGPrimitive;
+            if (_primitives.TryGetValue(name, out var primitive))
+                return primitive.Clone() as MOGPrimitive;
 
             return null;
         }
@@ -795,23 +795,21 @@ namespace MOGWAI.Engine
 
                 if (result != EvalResult.NoError)
                 {
-                    if (_functions.ContainsKey("MOGWAI.onError"))
+                    if (_functions.TryGetValue("MOGWAI.onError", out var onErrorFunction))
                     {
-                        var onErrorFunction = _functions["MOGWAI.onError"];
                         result2 = await onErrorFunction.Execute();
 
-                        if (result2 != EvalResult.NoError)
+                        if (result2.IsError)
                             result = result2;
                     }
                 }
                 else
                 {
-                    if (_functions.ContainsKey("MOGWAI.onStop"))
+                    if (_functions.TryGetValue("MOGWAI.onStop", out var onStopFunction))
                     {
-                        var onStopFunction = _functions["MOGWAI.onStop"];
                         result2 = await onStopFunction.Execute();
 
-                        if (result2 != EvalResult.NoError)
+                        if (result2.IsError)
                             result = result2;
                     }
                 }
@@ -1056,11 +1054,7 @@ namespace MOGWAI.Engine
 
         public void FlagSet(string name) => _flags[name] = true;
 
-        public void FlagClear(string name)
-        {
-            if (_flags.ContainsKey(name))
-                _flags.Remove(name);
-        }
+        public void FlagClear(string name) => _flags.Remove(name);
 
         public bool FlagIsSet(string name) => _flags.ContainsKey(name);
 
@@ -1411,8 +1405,8 @@ namespace MOGWAI.Engine
 
         internal MOGFunction? GetFunction(string name)
         {
-            if (_functions.ContainsKey(name))
-                return _functions[name];
+            if (_functions.TryGetValue(name, out var function))
+                return function;
 
             return null;
         }
@@ -1429,8 +1423,8 @@ namespace MOGWAI.Engine
 
         internal MOGTimer? GetTimer(string name)
         {
-            if (_timers.ContainsKey(name))
-                return _timers[name];
+            if (_timers.TryGetValue(name, out var timer))
+                return timer;
 
             return null;
         }
@@ -1451,13 +1445,10 @@ namespace MOGWAI.Engine
 
         internal EvalResult PurgeTimer(string name)
         {
-            if (_timers.ContainsKey(name))
+            if (_timers.TryGetValue(name, out var timer))
             {
-                var timer = _timers[name];
                 timer.Stop();
-
                 _timers.Remove(name);
-
                 return EvalResult.NoError;
             }
 
@@ -1535,8 +1526,8 @@ namespace MOGWAI.Engine
 
         internal MOGEvent? GetEvent(string name)
         {
-            if (_events.ContainsKey(name))
-                return _events[name];
+            if (_events.TryGetValue(name, out var @event))
+                return @event;
 
             return null;
         }
@@ -1554,12 +1545,9 @@ namespace MOGWAI.Engine
 
         internal EvalResult EventPurge(string name)
         {
-            if (_events.ContainsKey(name))
-            {
-                _events.Remove(name);
+            if (_events.Remove(name))
                 return EvalResult.NoError;
-            }
-
+           
             return EvalResult.Failure(this, Error.UnknownNameError, $"unabled to purge unknown '{name}' event.");
         }
 
@@ -1569,13 +1557,13 @@ namespace MOGWAI.Engine
             {
                 await _fireEventSemaphore.WaitAsync();
 
-                if (_events.ContainsKey(name))
+                if (_events.TryGetValue(name, out var @event))
                 {
                     var primitiveSTO = GetPrimitive(typeof(PrimitiveSTO));
 
-                    if (primitiveSTO != null && _events.ContainsKey(name))
+                    if (primitiveSTO != null)
                     {
-                        var @event = _events[name].Clone();
+                        @event = @event.Clone();
 
                         @event.Function.Items.Insert(0, primitiveSTO);
                         @event.Function.Items.Insert(0, new MOGName(this, "eventData", 0));
@@ -1634,17 +1622,16 @@ namespace MOGWAI.Engine
 
         internal MOGTask? GetTask(string name)
         {
-            if (_tasks.ContainsKey(name))
-                return _tasks[name];
+            if (_tasks.TryGetValue(name, out var task))
+                return task;
 
             return null;
         }
 
         internal EvalResult TaskPurge(string name)
         {
-            if (_tasks.ContainsKey(name))
+            if (_tasks.TryGetValue(name, out var task))
             {
-                var task = _tasks[name];
                 task.Stop();
                 _tasks.Remove(name);
                 return EvalResult.NoError;
@@ -1694,14 +1681,14 @@ namespace MOGWAI.Engine
 
         internal void CloseOpeninFile(string id)
         {
-            if (_openinFiles.ContainsKey(id))
-                _openinFiles[id].Close();
+            if (_openinFiles.TryGetValue(id, out var stream))
+                stream.Close();
         }
 
         internal void CloseOpenoutFile(string id)
         {
-            if (_openoutFiles.ContainsKey(id))
-                _openoutFiles[id].Close();
+            if (_openoutFiles.TryGetValue(id, out var stream))
+                stream.Close();
         }
 
         internal byte[] FileRead(string id, int size)
@@ -2640,6 +2627,7 @@ namespace MOGWAI.Engine
             if (_primitives.ContainsKey(name))
                 return false;
 
+            // TODO: CACHE THIS ARRAY
             if (Delegate != null && Delegate.HostFunctions(this).Contains(name))
                 return false;
 
@@ -2663,16 +2651,16 @@ namespace MOGWAI.Engine
 
         internal MOGType GetType(Type type)
         {
-            if (_types.ContainsKey(type))
-                return _types[type];
+            if (_types.TryGetValue(type, out var mogType))
+                return mogType;
 
             return _typeAny;
         }
 
         internal MOGType? GetType(string name)
         {
-            if (_typesByName.ContainsKey(name))
-                return _typesByName[name];
+            if (_typesByName.TryGetValue(name, out var mogType))
+                return mogType;
 
             return null;
         }

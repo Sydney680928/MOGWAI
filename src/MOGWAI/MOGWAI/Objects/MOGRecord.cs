@@ -71,8 +71,8 @@ namespace MOGWAI.Objects
 
         public MOGObject? GetItem(string key)
         {
-            if (Items.ContainsKey(key))
-                return Items[key];
+            if (Items.TryGetValue(key, out var item))
+                return item;
 
             return null;
         }

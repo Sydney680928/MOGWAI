@@ -58,9 +58,8 @@ namespace MOGWAI.Primitives
                 {
                     if (key is MOGKey k)
                     {
-                        if (record.Items.ContainsKey(k.Value))
+                        if (record.Items.TryGetValue(k.Value, out var value))
                         {
-                            var value = record.Items[k.Value];
                             newRecord.Items[k.Value] = value;
                         }
                         else

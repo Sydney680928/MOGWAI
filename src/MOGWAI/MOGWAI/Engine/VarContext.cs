@@ -49,10 +49,8 @@ namespace MOGWAI.Engine
 
         public bool Write(string name, MOGObject value)
         {
-            if (_vars.ContainsKey(name))
+            if (_vars.TryGetValue(name, out var v))
             {
-                var v = _vars[name];
-
                 if (v.StrongType == null || v.StrongType == value.Type || v.StrongType.Code == "any")
                 {
                     v.Value = value;
@@ -72,23 +70,14 @@ namespace MOGWAI.Engine
 
         public MOGObject? Read(string name, bool clone = true)
         {
-            if (_vars.ContainsKey(name))
-                return clone ? _vars[name].Value.Clone() : _vars[name].Value;
+            if (_vars.TryGetValue(name, out var v))
+                return clone ? v.Value.Clone() : v.Value;
 
             return null;
         }
 
         public bool Exists(string name) => _vars.ContainsKey(name);
 
-        public bool Purge(string name)
-        {
-            if (_vars.ContainsKey(name))
-            {
-                _vars.Remove(name);
-                return true;
-            }
-
-            return false;
-        }
+        public bool Purge(string name) => _vars.Remove(name);
     }
 }

@@ -74,9 +74,9 @@ namespace MOGWAI.Engine
         }
 
         public static Error GetError(string code)
-        {
-            if (Errors.ContainsKey(code))
-                return Errors[code];
+        {              
+            if (Errors.TryGetValue(code, out var error))
+                return error;
 
             return new Error(code, "user error", ErrorType.User);
         }
