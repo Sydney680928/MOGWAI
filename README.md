@@ -397,6 +397,12 @@ MOGWAI STUDIO is not open source and will be distributed under a proprietary lic
 
 ---
 
+## Use Cases
+
+- [Use Case #1 — Electronic Board Test Bench](docs/EN/use-cases/use-case-01-test-bench.md)
+
+---
+
 ## Have Questions or Feedback?
 
 We'd love to hear from you!
