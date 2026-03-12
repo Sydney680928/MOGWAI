@@ -228,6 +228,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveEscape(this, "->escape"));
             RegisterPublicPrimitive(new PrimitiveUnescape(this, "->unescape"));
             RegisterPublicPrimitive(new PrimitiveToChar(this, "->char"));
+            RegisterPublicPrimitive(new PrimitiveFromChar(this, "char->"));
             RegisterPublicPrimitive(new PrimitiveToBinaryNumber(this, "->bin"));
             RegisterPublicPrimitive(new PrimitiveToBinaryNumber8(this, "->bin8"));
             RegisterPublicPrimitive(new PrimitiveToBinaryNumber16(this, "->bin16"));
