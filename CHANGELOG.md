@@ -16,6 +16,8 @@ Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `l
 
 ### Changed
 
+- Changed dictionary access to use `TryGetValue` instead of a `ContainsKey` check followed by value retrieval, improving lookup performance across all dictionaries used by the runtime.
+
 ### Fixed
 
 
