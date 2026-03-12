@@ -1034,6 +1034,11 @@ Converts a number to a character according to the Unicode standard.
 
 ***
 
+### `char->`
+Converts a single string character to this unicode strandard code.
+
+***
+
 ### `->name`
 
 Converts a string or key to a name.
