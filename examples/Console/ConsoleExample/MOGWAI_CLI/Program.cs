@@ -27,11 +27,15 @@ namespace MOGWAI_CLI
 
             Console.Title = "MOGWAI CLI";
             Console.Clear();
-
+       
+            Console.WriteLine("█   █   ███    ████  █     █   ███   ███");
+            Console.WriteLine("██ ██  █   █  █      █  █  █  █   █   █");
+            Console.WriteLine("█ █ █  █   █  █  ██  █  █  █  █████   █");
+            Console.WriteLine("█   █  █   █  █   █  ██ █ ██  █   █   █");
+            Console.WriteLine("█   █   ███    ████   █   █   █   █  ███");
+            Console.WriteLine();
             Console.WriteLine(MogwaiEngine.RuntimePrompt);
             Console.WriteLine();
-
-            await Task.Delay(2000);
 
             Console.CancelKeyPress += Console_CancelKeyPress;
 
@@ -41,6 +45,11 @@ namespace MOGWAI_CLI
             {             
                 try
                 {
+                    var filename = Path.GetFileName(args[0]);
+                    Console.WriteLine($"Running {filename}...");
+
+                    await Task.Delay(2000);
+
                     var code = File.ReadAllText(args[0]);
                     var result = await _engine.RunAsync(code, false);
 
@@ -60,7 +69,7 @@ namespace MOGWAI_CLI
             while (true)
             {
                 Console.WriteLine();
-                Console.Write("MOGWAI > ");
+                Console.Write("> ");
 
                 var code = Console.ReadLine() ?? string.Empty;
 
