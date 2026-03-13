@@ -58,7 +58,7 @@
 			- Added cooperative yielding to prevent blocking the single-threaded event loop.
 			- Timers and events now work correctly alongside long-running scripts in the browser.
 			- for loop infinite loop when start equals end.
-			- ->unescape does not handle \" escape sequence.
+			- -&gt;unescape does not handle \" escape sequence.
 		</PackageReleaseNotes>
 			
 		<!-- Pas de publication pour l'instant -->
@@ -73,6 +73,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="Primitives\PrimitiveSTO.cs" />
 		<None Include="README.md" Pack="true" PackagePath="\" />
 		<None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>

@@ -126,6 +126,7 @@ namespace MOGWAI.Engine
             RegisterType(typeof(MOGEmpty), "any");
             RegisterType(typeof(MOGType), "type");
             RegisterType(typeof(MOGRef), "ref");
+            RegisterType(typeof(MOGVar), "var");
             RegisterType(typeof(MOGHostFunction), "hfunc");
 
             #endregion
@@ -2624,6 +2625,20 @@ namespace MOGWAI.Engine
 
         internal bool IsValidName(string name)
         {
+            // Must not be empty
+
+            if (string.IsNullOrEmpty(name))
+                return false;
+
+            // Must start by a letter or an underscore  
+
+            var c1 = name[0];
+
+            if (!char.IsLetter(c1) && c1 != '_')
+                return false;
+
+            // Must not be a primitive name
+
             if (_primitives.ContainsKey(name))
                 return false;
 
@@ -2642,8 +2657,8 @@ namespace MOGWAI.Engine
                 invalid = [' ', '\'', '!', '{', '}', '«', '»', '(', ')', '[', ']', '"', ':', '\r', '\n', '\t'];
             }
 
-            foreach (var c in invalid)
-                if (name.Contains(c))
+            foreach (var c2 in invalid)
+                if (name.Contains(c2))
                     return false;
 
             return true;

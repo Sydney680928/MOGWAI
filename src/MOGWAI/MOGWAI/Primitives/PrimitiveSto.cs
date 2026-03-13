@@ -30,6 +30,7 @@ namespace MOGWAI.Primitives
             obj.UpdateFromOther(this);
             return obj;
         }
+
         public override async Task<EvalResult> EngineEval()
         {
             // value 'name' sto

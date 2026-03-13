@@ -329,15 +329,8 @@ namespace MOGWAI.Engine
             if (item.Length > 0)
             {
                 var hostFunctions = engine.HostFunctions;
-
-                if (double.TryParse(item, CultureInfo.InvariantCulture, out double n1))
-                {
-                    var number = new MOGNumber(engine, n1, offsetPosition);
-                    number.ExecutionContext = context;
-
-                    return [number];
-                }
-                else if (item.StartsWith("0x"))
+              
+                if (item.StartsWith("0x"))
                 {
                     if (item.Length > 2 && long.TryParse(item.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out long n2))
                     {
@@ -419,6 +412,41 @@ namespace MOGWAI.Engine
                         LastStartErrorPosition = offsetPosition;
                         LastEndErrorPosition = offsetPosition + item.Length - 1;
                         throw new MogwaiParseErrorException("empty binary not allowed");
+                    }
+                }
+                else if (item.StartsWith("@"))
+                {
+                    // VAR
+
+                    if (item.Length > 1)
+                    {
+                        var name = item.Substring(1);
+
+                        if (name.Length == 0)
+                        {
+                            LastStartErrorPosition = offsetPosition;
+                            LastEndErrorPosition = offsetPosition + item.Length - 1;
+                            throw new MogwaiParseErrorException($"illegal var name");
+                        }
+
+                        try
+                        {
+                            var t = new MOGVar(engine, name, offsetPosition);
+                            t.ExecutionContext = context;
+                            return [t];
+                        }
+                        catch
+                        {
+                            LastStartErrorPosition = offsetPosition;
+                            LastEndErrorPosition = offsetPosition + item.Length - 1;
+                            throw;
+                        }
+                    }
+                    else
+                    {
+                        LastStartErrorPosition = offsetPosition;
+                        LastEndErrorPosition = offsetPosition + item.Length - 1;
+                        throw new MogwaiParseErrorException("empty var name not allowed");
                     }
                 }
                 else if (item.StartsWith("&"))
@@ -633,6 +661,15 @@ namespace MOGWAI.Engine
                     k.ExecutionContext = context;
 
                     return [k];
+                }
+                else if (double.TryParse(item, CultureInfo.InvariantCulture, out double n1))
+                {
+                    // NUMBER 
+
+                    var number = new MOGNumber(engine, n1, offsetPosition);
+                    number.ExecutionContext = context;
+
+                    return [number];
                 }
                 else
                 {

@@ -16,39 +16,42 @@ using MOGWAI.Engine;
 
 namespace MOGWAI.Objects
 {
-    public class MOGNumber : MOGObject
+    public class MOGVar : MOGBaseString
     {
-        public double Value { get; set; }
-
-        public int IntValue => (int)Value;
-
-        public MOGNumber(MogwaiEngine engine, double value) : base(engine)
+        public MOGVar(MogwaiEngine engine, string value) : base(engine, value)
         {
-            Type = engine.GetType(typeof(MOGNumber));
-            Value = value;
+            Type = engine.GetType(typeof(MOGVar));
         }
 
-        public MOGNumber(MogwaiEngine engine, double value, int originPosition) : this(engine, value)
+        public MOGVar(MogwaiEngine engine, string value, int originPosition) : this(engine, value)
         {
             StartPos = originPosition;
-            EndPos = originPosition + value.ToString(System.Globalization.CultureInfo.InvariantCulture).Length - 1;
+            EndPos = originPosition + Value.Length;
         }
 
-        public override MOGNumber Clone()
+        public override MOGVar Clone()
         {
-            var obj = new MOGNumber(Engine, Value, StartPos);
+            var obj = new MOGVar(Engine, Value);
             obj.UpdateFromOther(this);
             return obj;
         }
 
-        public override string ToString()
+        public override async Task<EvalResult> EngineEval()
         {
-            return Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            await Task.CompletedTask;
+
+            var value = Engine.VarRead(Value);
+
+            if (value == null)
+                return EvalResult.Failure(Engine, Error.UnknownNameError, $"var '{Value}' is not defined.");
+
+            Engine.StackPush(value);
+            return EvalResult.NoError;
         }
 
-        public override string ToJson()
+        public override string ToString()
         {
-            return Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            return $"@{Value}";
         }
     }
 }

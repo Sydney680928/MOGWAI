@@ -52,8 +52,6 @@ namespace MOGWAI.Objects
             if (value == null)
                 return EvalResult.Failure(Engine, Error.UnknownWordError, Value);
 
-            // This word is just a word
-
             Engine.StackPush(value);
 
             return EvalResult.NoError;
