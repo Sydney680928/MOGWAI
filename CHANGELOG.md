@@ -15,7 +15,6 @@ Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `l
 - Added new `char->` primitive that returns the ASCII code from a single string character.
 - Added explicit variable access with `@varname` notation. The performance gain is significant with frequent variable access.
 - Added `foreach` loop over string characters.
-- 
 
 ### Changed
 
