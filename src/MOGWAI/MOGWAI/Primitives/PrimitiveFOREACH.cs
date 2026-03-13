@@ -35,9 +35,9 @@ namespace MOGWAI.Primitives
             // List name code FOREACH
             // (1 2 3) 'i' { i ? } FOREACH
             // {1 2 3} 'i' { i ? } FOREACH
-            // «1 2 3» 'i' { i ? } FOREACH
-            
+            // «1 2 3» 'i' { i ? } FOREACH       
             // D:010203 'i' { i ? } FOREACH 
+            // "XXXX" 'i' { i ? } FOREACH
 
             var s = Engine.StackSign(3);
 
@@ -130,6 +130,46 @@ namespace MOGWAI.Primitives
 
                     return result;
                 }
+                else if (s[2] == typeof(MOGString))
+                {
+                    var code = Engine.StackPopCode();
+                    var name = Engine.StackPopName();
+                    var @string = Engine.StackPopString();
+
+                    EvalResult result = EvalResult.NoError;
+
+                    if (!Engine.VarExists(name.Value) && Engine.StrictMode)
+                    {
+                        // On doit déclarer la variable avant de l'utiliser
+                        // De type .any
+
+                        var r = Engine.VarDeclareForType(name.Value, Engine.GetType("any")!);
+
+                        if (r != EvalResult.NoError)
+                            return r;
+                    }
+
+                    Engine.CreateBreakRequest();
+
+                    foreach (var item in @string.Value)
+                    {
+                        if (Engine.BreakRequested || Engine.ExitRequested || Engine.ReturnRequested)
+                            break;
+
+                        result = Engine.VarWrite(name.Value, new MOGString(Engine, item.ToString()));
+                        if (result != EvalResult.NoError)
+                            break;
+
+                        result = await code.Execute();
+                        if (result != EvalResult.NoError)
+                            break;
+                    }
+
+                    Engine.RemoveBreakRequest();
+
+                    return result;
+                }
+
             }
 
             return EvalResult.Failure(Engine, Error.BadArgumentTypeError, this);
