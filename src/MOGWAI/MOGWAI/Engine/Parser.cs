@@ -61,7 +61,7 @@ namespace MOGWAI.Engine
         public List<MOGObject> ParsedObjects => _parsedObjects;
 
         public void Parse(MogwaiEngine engine, string code, int offsetPosition, MogwaiExecutionContext? context)
-        {       
+        {
             _code = code;
             _currentIndex = 0;
             _currentItem.Clear();
@@ -117,7 +117,7 @@ namespace MOGWAI.Engine
                     }
 
                     GetEnclosedItem('(', ')');
-                    var l = new MOGList(engine, _currentItem.ToString(), Pos + 1, context);                                   
+                    var l = new MOGList(engine, _currentItem.ToString(), Pos + 1, context);
 
                     if (prefix != null)
                     {
@@ -182,12 +182,12 @@ namespace MOGWAI.Engine
                         if (LocalParser.ParsedObjects.Count != 1 || (LocalParser.ParsedObjects[0] is not MOGWord && LocalParser.ParsedObjects[0] is not MOGPrimitive))
                         {
                             LastStartErrorPosition = Pos - _currentItem.Length;
-                            LastEndErrorPosition = Pos; 
+                            LastEndErrorPosition = Pos;
                             throw new MogwaiParseErrorException("unexpected character '['");
                         }
 
                         prefix = LocalParser.ParsedObjects[0];
-                        _currentItem.Clear();  
+                        _currentItem.Clear();
                     }
 
                     GetEnclosedItem('[', ']');
@@ -237,7 +237,7 @@ namespace MOGWAI.Engine
                         }
 
                         if (autoEval != null)
-                            items.Remove(autoEval);                        
+                            items.Remove(autoEval);
                     }
 
                     var r = new MOGRecord(engine, items);
@@ -338,7 +338,7 @@ namespace MOGWAI.Engine
             if (item.Length > 0)
             {
                 var hostFunctions = engine.HostFunctions;
-              
+
                 if (item.StartsWith("0x"))
                 {
                     if (item.Length > 2 && long.TryParse(item.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out long n2))
@@ -729,7 +729,7 @@ namespace MOGWAI.Engine
             while (_currentIndex < _code.Length)
             {
                 currentChar = _code[_currentIndex++];
-                
+
                 if (currentChar == lastChar)
                 {
                     if (_currentIndex > 1 && _code[_currentIndex - 2] == '\\')
@@ -776,80 +776,80 @@ namespace MOGWAI.Engine
 
                     switch (word.Value)
                     {
-                        case "if": 
+                        case "if":
                             result = UpdateForIfSugar(engine, i);
                             break;
-                        
-                        case "foreach": 
-                            result = UpdateForForeachSugar(engine, i); 
+
+                        case "foreach":
+                            result = UpdateForForeachSugar(engine, i);
                             break;
-                        
-                        case "for": 
-                            result = UpdateForForSugar(engine, i); 
+
+                        case "for":
+                            result = UpdateForForSugar(engine, i);
                             break;
-                        
-                        case "repeat": 
-                            result = UpdateForRepeatSugar(engine, i); 
+
+                        case "repeat":
+                            result = UpdateForRepeatSugar(engine, i);
                             break;
-                        
-                        case "while": 
-                            result = UpdateForWhileSugar(engine, i); 
+
+                        case "while":
+                            result = UpdateForWhileSugar(engine, i);
                             break;
-                        
-                        case "do": 
-                            result = UpdateForDoWhileSugar(engine, i); 
+
+                        case "do":
+                            result = UpdateForDoWhileSugar(engine, i);
                             break;
-                        
-                        case "to": 
-                            result = UpdateForDefuncSugar(engine, i); 
+
+                        case "to":
+                            result = UpdateForDefuncSugar(engine, i);
                             break;
-                        
-                        case "forever": 
-                            result = UpdateForForeverSugar(engine, i); 
+
+                        case "forever":
+                            result = UpdateForForeverSugar(engine, i);
                             break;
-                        
-                        case "timer": 
-                            result = UpdateForTimerSugar(engine, i); 
+
+                        case "timer":
+                            result = UpdateForTimerSugar(engine, i);
                             break;
-                        
-                        case "onEvent": 
-                            result = UpdateForOnEventSugar(engine, i); 
+
+                        case "onEvent":
+                            result = UpdateForOnEventSugar(engine, i);
                             break;
-                        
-                        case "during": 
-                            result = UpdateForDuringSugar(engine, i); 
+
+                        case "during":
+                            result = UpdateForDuringSugar(engine, i);
                             break;
-                        
-                        case "trap": 
-                            result = UpdateForTrapSugar(engine, i); 
+
+                        case "trap":
+                            result = UpdateForTrapSugar(engine, i);
                             break;
-                        
-                        case "guard": 
-                            result = UpdateForGuardSugar(engine, i); 
+
+                        case "guard":
+                            result = UpdateForGuardSugar(engine, i);
                             break;
-                        
-                        case "=>": 
-                            result = UpdateForDeclareSugar(engine, i); 
+
+                        case "=>":
+                            result = UpdateForDeclareSugar(engine, i);
                             break;
-                        
-                        case "after": 
-                            result = UpdateForAfterSugar(engine, i); 
+
+                        case "after":
+                            result = UpdateForAfterSugar(engine, i);
                             break;
-                        
-                        case "switch": 
-                            result = UpdateForSwitchSugar(engine, i); 
+
+                        case "switch":
+                            result = UpdateForSwitchSugar(engine, i);
                             break;
-                        
-                        case "task": 
-                            result = UpdateForTaskSugar(engine, i); 
+
+                        case "task":
+                            result = UpdateForTaskSugar(engine, i);
                             break;
-                        
+
                         case "->":
                         case "->+":
                         case "->-":
                         case "->*":
                         case "->/":
-                            result = UpdateForStoOperationsSugar(engine, i, word.Value); 
+                            result = UpdateForStoOperationsSugar(engine, i, word.Value);
                             break;
                     }
 
@@ -882,50 +882,21 @@ namespace MOGWAI.Engine
             // 2 send
             // 3 object (message)
 
-            try
+            if (_parsedObjects.Count - index >= 4)
             {
-                if (_parsedObjects.Count - index >= 4)
+                var name = _parsedObjects[index + 1];
+
+                var doOrStartOrSendWord = _parsedObjects[index + 2] as MOGWord;
+
+                if (doOrStartOrSendWord != null)
                 {
-                    var name = _parsedObjects[index + 1];
-
-                    var doOrStartOrSendWord = _parsedObjects[index + 2] as MOGWord;
-
-                    if (doOrStartOrSendWord != null)
+                    if (doOrStartOrSendWord.Value == "do")
                     {
-                        if (doOrStartOrSendWord.Value == "do")
+                        var code = _parsedObjects[index + 3] as MOGCode;
+
+                        if (code != null)
                         {
-                            var code = _parsedObjects[index + 3] as MOGCode;
-
-                            if (code != null)
-                            {
-                                var primitive = engine.GetPrimitive(typeof(PrimitiveTASKDEF));
-
-                                if (primitive != null)
-                                {
-                                    primitive.StartPos = _parsedObjects[index].StartPos;
-                                    primitive.EndPos = _parsedObjects[index].EndPos;
-                                    primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
-
-                                    for (int i = 0; i < 4; i++)
-                                        _parsedObjects.RemoveAt(index);
-
-                                    // name
-                                    // function
-                                    // TASK.DEF
-
-                                    _parsedObjects.Insert(index, primitive);
-                                    _parsedObjects.Insert(index, code.ToFunction());
-                                    _parsedObjects.Insert(index, name);
-
-                                    return true;
-                                }
-                            }
-                        }
-                        else if (doOrStartOrSendWord.Value == "send")
-                        {
-                            var message = _parsedObjects[index + 3];
-
-                            var primitive = engine.GetPrimitive(typeof(PrimitiveTASKSEND));
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveTASKDEF));
 
                             if (primitive != null)
                             {
@@ -933,60 +904,58 @@ namespace MOGWAI.Engine
                                 primitive.EndPos = _parsedObjects[index].EndPos;
                                 primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                for (int i = 0; i < 4; i++)
-                                    _parsedObjects.RemoveAt(index);
-
-                                // name
-                                // message
-                                // TASK.SEND
-
-                                _parsedObjects.Insert(index, primitive);
-                                _parsedObjects.Insert(index, message);
-                                _parsedObjects.Insert(index, name);
+                                _parsedObjects.RemoveRange(index, 4);
+                                _parsedObjects.InsertRange(index, [name, code.ToFunction(), primitive]);
 
                                 return true;
                             }
                         }
-                        else if (doOrStartOrSendWord.Value == "start" && _parsedObjects.Count - index >= 5)
+                    }
+                    else if (doOrStartOrSendWord.Value == "send")
+                    {
+                        var message = _parsedObjects[index + 3];
+
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveTASKSEND));
+
+                        if (primitive != null)
                         {
-                            var withWord = _parsedObjects[index + 3] as MOGWord;
+                            primitive.StartPos = _parsedObjects[index].StartPos;
+                            primitive.EndPos = _parsedObjects[index].EndPos;
+                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                            if (withWord != null && withWord.Value == "with")
+                            _parsedObjects.RemoveRange(index, 4);
+                            _parsedObjects.InsertRange(index, [name, message, primitive]);
+
+                            return true;
+                        }
+                    }
+                    else if (doOrStartOrSendWord.Value == "start" && _parsedObjects.Count - index >= 5)
+                    {
+                        var withWord = _parsedObjects[index + 3] as MOGWord;
+
+                        if (withWord != null && withWord.Value == "with")
+                        {
+                            var parameter = _parsedObjects[index + 4];
+
+                            if (parameter != null)
                             {
-                                var parameter = _parsedObjects[index + 4];
+                                var primitive = engine.GetPrimitive(typeof(PrimitiveTASKSTART));
 
-                                if (parameter != null)
+                                if (primitive != null)
                                 {
-                                    var primitive = engine.GetPrimitive(typeof(PrimitiveTASKSTART));
+                                    primitive.StartPos = _parsedObjects[index].StartPos;
+                                    primitive.EndPos = _parsedObjects[index].EndPos;
+                                    primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                    if (primitive != null)
-                                    {
-                                        primitive.StartPos = _parsedObjects[index].StartPos;
-                                        primitive.EndPos = _parsedObjects[index].EndPos;
-                                        primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                    _parsedObjects.RemoveRange(index, 5);
+                                    _parsedObjects.InsertRange(index, [name, parameter, primitive]);
 
-                                        for (int i = 0; i < 5; i++)
-                                            _parsedObjects.RemoveAt(index);
-
-                                        // name
-                                        // parameter
-                                        // TASKSTART
-
-                                        _parsedObjects.Insert(index, primitive);
-                                        _parsedObjects.Insert(index, parameter);
-                                        _parsedObjects.Insert(index, name);
-
-                                        return true;
-                                    }
+                                    return true;
                                 }
                             }
                         }
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -1004,70 +973,60 @@ namespace MOGWAI.Engine
             //  (test) then {code}
             // }
 
-            try
+            if (_parsedObjects.Count - index >= 1)
             {
-                if (_parsedObjects.Count - index >= 1)
+                var globalCode = _parsedObjects[index + 1] as MOGCode;
+
+                if (globalCode != null)
                 {
-                    var globalCode = _parsedObjects[index + 1] as MOGCode;
+                    // Il faut un nombre paire d'items dans le code
 
-                    if (globalCode != null)
+                    if (globalCode.Items.Count % 3 == 0)
                     {
-                        // Il faut un nombre paire d'items dans le code
+                        // Il faut une succession d'une liste (condition) et du mot then et d'un code
 
-                        if (globalCode.Items.Count % 3 == 0)
+                        for (int i = 0; i < globalCode.Items.Count; i += 3)
                         {
-                            // Il faut une succession d'une liste (condition) et du mot then et d'un code
+                            var condition = globalCode.Items[i] as MOGList;
+                            var wordThen = globalCode.Items[i + 1] as MOGWord;
+                            var code = globalCode.Items[i + 2] as MOGCode;
+
+                            if (condition == null || wordThen == null || wordThen.Value != "then" || code == null)
+                                return false;
+                        }
+
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveSWITCH));
+
+                        if (primitive != null)
+                        {
+                            // On transforme les listes en code pour la vraie syntax de SWITCH
+
+                            primitive.StartPos = _parsedObjects[index].StartPos;
+                            primitive.EndPos = _parsedObjects[index].EndPos;
+                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+
+                            var finalCode = new MOGCode(engine, "", 0, _parsedObjects[index].ExecutionContext);
+                            finalCode.StartPos = globalCode.StartPos;
+                            finalCode.EndPos = globalCode.EndPos;
 
                             for (int i = 0; i < globalCode.Items.Count; i += 3)
                             {
-                                var condition = globalCode.Items[i] as MOGList;
-                                var wordThen = globalCode.Items[i + 1] as MOGWord;
+                                var condition = (globalCode.Items[i] as MOGList)!.ToCode();
                                 var code = globalCode.Items[i + 2] as MOGCode;
 
-                                if (condition == null || wordThen == null || wordThen.Value != "then" || code == null)
-                                    return false;
+                                finalCode.Items.Add(condition!);
+                                finalCode.Items.Add(code!);
                             }
 
-                            var primitive = engine.GetPrimitive(typeof(PrimitiveSWITCH));
+                            // On fabrique le code final
 
-                            if (primitive != null)
-                            {
-                                // On transforme les listes en code pour la vraie syntax de SWITCH
+                            _parsedObjects.RemoveRange(index, 2);
+                            _parsedObjects.InsertRange(index, [finalCode, primitive]);
 
-                                primitive.StartPos = _parsedObjects[index].StartPos;
-                                primitive.EndPos = _parsedObjects[index].EndPos;
-                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
-
-                                var finalCode = new MOGCode(engine, "", 0, _parsedObjects[index].ExecutionContext);
-                                finalCode.StartPos = globalCode.StartPos;
-                                finalCode.EndPos = globalCode.EndPos;
-
-                                for (int i = 0; i < globalCode.Items.Count; i += 3)
-                                {
-                                    var condition = (globalCode.Items[i] as MOGList)!.ToCode();
-                                    var code = globalCode.Items[i + 2] as MOGCode;
-
-                                    finalCode.Items.Add(condition!);
-                                    finalCode.Items.Add(code!);
-                                }
-
-                                // On fabrique le code final
-
-                                _parsedObjects.RemoveAt(index);
-                                _parsedObjects.RemoveAt(index);
-
-                                _parsedObjects.Insert(index, primitive);
-                                _parsedObjects.Insert(index, finalCode);
-
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -1080,51 +1039,36 @@ namespace MOGWAI.Engine
             // 2 do
             // 3 code
 
-            try
+            if (_parsedObjects.Count - index >= 4)
             {
-                if (_parsedObjects.Count - index >= 4)
+                var interval = _parsedObjects[index + 1];
+
+                if (interval != null)
                 {
-                    var interval = _parsedObjects[index + 1];
+                    var doWord = _parsedObjects[index + 2] as MOGWord;
 
-                    if (interval != null)
+                    if (doWord != null && doWord.Value == "do")
                     {
-                        var doWord = _parsedObjects[index + 2] as MOGWord;
+                        var code = _parsedObjects[index + 3] as MOGCode;
 
-                        if (doWord != null && doWord.Value == "do")
+                        if (code != null)
                         {
-                            var code = _parsedObjects[index + 3] as MOGCode;
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveLATER));
 
-                            if (code != null)
+                            if (primitive != null)
                             {
-                                var primitive = engine.GetPrimitive(typeof(PrimitiveLATER));
+                                primitive.StartPos = _parsedObjects[index].StartPos;
+                                primitive.EndPos = _parsedObjects[index].EndPos;
+                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                if (primitive != null)
-                                {
-                                    primitive.StartPos = _parsedObjects[index].StartPos;
-                                    primitive.EndPos = _parsedObjects[index].EndPos;
-                                    primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                _parsedObjects.RemoveRange(index, 4);
+                                _parsedObjects.InsertRange(index, [code.ToFunction(), interval, primitive]);
 
-                                    for (int i = 0; i < 4; i++)
-                                        _parsedObjects.RemoveAt(index);
-
-                                    // function
-                                    // Interval
-                                    // LATER
-
-                                    _parsedObjects.Insert(index, primitive);
-                                    _parsedObjects.Insert(index, interval);
-                                    _parsedObjects.Insert(index, code.ToFunction());
-
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -1136,62 +1080,52 @@ namespace MOGWAI.Engine
             //  0 word -> ->+ ->- ->* ->/
             //  1 name
 
-            try
+            if (_parsedObjects.Count - index >= 2)
             {
-                if (_parsedObjects.Count - index >= 2)
+                var name = _parsedObjects[index + 1] as MOGName;
+
+                if (name != null)
                 {
-                    var name = _parsedObjects[index + 1] as MOGName;
+                    MOGPrimitive? primitive = null;
 
-                    if (name != null)
+                    switch (word)
                     {
-                        MOGPrimitive? primitive = null;
+                        case "->":
+                            primitive = engine.GetPrimitive(typeof(PrimitiveSTO));
+                            break;
 
-                        switch (word)
-                        {
-                            case "->":
-                                primitive = engine.GetPrimitive(typeof(PrimitiveSTO));
-                                break;
+                        case "->+":
+                            primitive = engine.GetPrimitive(typeof(PrimitiveSTOPLUS));
+                            break;
 
-                            case "->+":
-                                primitive = engine.GetPrimitive(typeof(PrimitiveSTOPLUS));
-                                break;
+                        case "->-":
+                            primitive = engine.GetPrimitive(typeof(PrimitiveSTOSUBSTRACT));
+                            break;
 
-                            case "->-":
-                                primitive = engine.GetPrimitive(typeof(PrimitiveSTOSUBSTRACT));
-                                break;
+                        case "->*":
+                            primitive = engine.GetPrimitive(typeof(PrimitiveSTOMULTIPLY));
+                            break;
 
-                            case "->*":
-                                primitive = engine.GetPrimitive(typeof(PrimitiveSTOMULTIPLY));
-                                break;
+                        case "->/":
+                            primitive = engine.GetPrimitive(typeof(PrimitiveSTODIVIDE));
+                            break;
 
-                            case "->/":
-                                primitive = engine.GetPrimitive(typeof(PrimitiveSTODIVIDE));
-                                break;
+                        default:
+                            return false;
+                    }
 
-                            default:
-                                return false;
-                        }
+                    if (primitive != null)
+                    {
+                        primitive.StartPos = _parsedObjects[index].StartPos;
+                        primitive.EndPos = _parsedObjects[index].EndPos;
+                        primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                        if (primitive != null)
-                        {
-                            primitive.StartPos = _parsedObjects[index].StartPos;
-                            primitive.EndPos = _parsedObjects[index].EndPos;
-                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                        _parsedObjects[index] = name;
+                        _parsedObjects[index + 1] = primitive;
 
-                            _parsedObjects.RemoveAt(index);
-                            _parsedObjects.RemoveAt(index);
-
-                            _parsedObjects.Insert(index, primitive);
-                            _parsedObjects.Insert(index, name);
-
-                            return true;
-                        }
+                        return true;
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -1203,36 +1137,26 @@ namespace MOGWAI.Engine
             //  0 =>
             //  1 name
 
-            try
+            if (_parsedObjects.Count - index >= 2)
             {
-                if (_parsedObjects.Count - index >= 2)
+                var name = _parsedObjects[index + 1] as MOGName;
+
+                if (name != null)
                 {
-                    var name = _parsedObjects[index + 1] as MOGName;
+                    MOGPrimitive? primitive = engine.GetPrimitive(typeof(PrimitiveDECLARE));
 
-                    if (name != null)
+                    if (primitive != null)
                     {
-                        MOGPrimitive? primitive = engine.GetPrimitive(typeof(PrimitiveDECLARE));
+                        primitive.StartPos = _parsedObjects[index].StartPos;
+                        primitive.EndPos = _parsedObjects[index].EndPos;
+                        primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                        if (primitive != null)
-                        {
-                            primitive.StartPos = _parsedObjects[index].StartPos;
-                            primitive.EndPos = _parsedObjects[index].EndPos;
-                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                        _parsedObjects[index] = name;
+                        _parsedObjects[index + 1] = primitive;
 
-                            _parsedObjects.RemoveAt(index);
-                            _parsedObjects.RemoveAt(index);
-
-                            _parsedObjects.Insert(index, primitive);
-                            _parsedObjects.Insert(index, name);
-
-                            return true;
-                        }
+                        return true;
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -1245,47 +1169,36 @@ namespace MOGWAI.Engine
             // 2 else
             // 3 errorCode
 
-            try
+            if (_parsedObjects.Count - index > 3)
             {
-                if (_parsedObjects.Count - index > 3)
+                var code = _parsedObjects[index + 1] as MOGCode;
+
+                if (code != null)
                 {
-                    var code = _parsedObjects[index + 1] as MOGCode;
+                    var elseWord = _parsedObjects[index + 2] as MOGWord;
 
-                    if (code != null)
+                    if (elseWord != null && elseWord.Value == "else")
                     {
-                        var elseWord = _parsedObjects[index + 2] as MOGWord;
+                        var errorCode = _parsedObjects[index + 3] as MOGCode;
 
-                        if (elseWord != null && elseWord.Value == "else")
+                        if (errorCode != null)
                         {
-                            var errorCode = _parsedObjects[index + 3] as MOGCode;
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveErrorGuard));
 
-                            if (errorCode != null)
+                            if (primitive != null)
                             {
-                                var primitive = engine.GetPrimitive(typeof(PrimitiveErrorGuard));
+                                primitive.StartPos = _parsedObjects[index].StartPos;
+                                primitive.EndPos = _parsedObjects[index].EndPos;
+                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                if (primitive != null)
-                                {
-                                    primitive.StartPos = _parsedObjects[index].StartPos;
-                                    primitive.EndPos = _parsedObjects[index].EndPos;
-                                    primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                _parsedObjects.RemoveRange(index, 4);
+                                _parsedObjects.InsertRange(index, [code, errorCode, primitive]);
 
-                                    for (int i = 0; i < 4; i++)
-                                        _parsedObjects.RemoveAt(index);
-
-                                    _parsedObjects.Insert(index, primitive);
-                                    _parsedObjects.Insert(index, errorCode);
-                                    _parsedObjects.Insert(index, code);
-
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -1296,36 +1209,26 @@ namespace MOGWAI.Engine
             // 0 trap
             // 1 code
 
-            try
+            if (_parsedObjects.Count - index > 1)
             {
-                if (_parsedObjects.Count - index > 1)
+                var code = _parsedObjects[index + 1] as MOGCode;
+
+                if (code != null)
                 {
-                    var code = _parsedObjects[index + 1] as MOGCode;
+                    var primitive = engine.GetPrimitive(typeof(PrimitiveErrorTrap));
 
-                    if (code != null)
+                    if (primitive != null)
                     {
-                        var primitive = engine.GetPrimitive(typeof(PrimitiveErrorTrap));
+                        primitive.StartPos = _parsedObjects[index].StartPos;
+                        primitive.EndPos = _parsedObjects[index].EndPos;
+                        primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                        if (primitive != null)
-                        {
-                            primitive.StartPos = _parsedObjects[index].StartPos;
-                            primitive.EndPos = _parsedObjects[index].EndPos;
-                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                        _parsedObjects[index] = code;
+                        _parsedObjects[index + 1] = primitive;
 
-                            _parsedObjects.RemoveAt(index);
-                            _parsedObjects.RemoveAt(index);
-
-                            _parsedObjects.Insert(index, primitive);
-                            _parsedObjects.Insert(index, code);
-
-                            return true;
-                        }
+                        return true;
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -1338,47 +1241,36 @@ namespace MOGWAI.Engine
             // 2 do
             // 3 code
 
-            try
+            if (_parsedObjects.Count - index > 3)
             {
-                if (_parsedObjects.Count - index > 3)
+                var number = _parsedObjects[index + 1];
+
+                if (number != null)
                 {
-                    var number = _parsedObjects[index + 1];
+                    var doWord = _parsedObjects[index + 2] as MOGWord;
 
-                    if (number != null)
+                    if (doWord != null && doWord.Value == "do")
                     {
-                        var doWord = _parsedObjects[index + 2] as MOGWord;
+                        var code = _parsedObjects[index + 3] as MOGCode;
 
-                        if (doWord != null && doWord.Value == "do")
+                        if (code != null)
                         {
-                            var code = _parsedObjects[index + 3] as MOGCode;
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveDURING));
 
-                            if (code != null)
+                            if (primitive != null)
                             {
-                                var primitive = engine.GetPrimitive(typeof(PrimitiveDURING));
+                                primitive.StartPos = _parsedObjects[index].StartPos;
+                                primitive.EndPos = _parsedObjects[index].EndPos;
+                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                if (primitive != null)
-                                {
-                                    primitive.StartPos = _parsedObjects[index].StartPos;
-                                    primitive.EndPos = _parsedObjects[index].EndPos;
-                                    primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                _parsedObjects.RemoveRange(index, 4);
+                                _parsedObjects.InsertRange(index, [number, code, primitive]);
 
-                                    for (int i = 0; i < 4; i++)
-                                        _parsedObjects.RemoveAt(index);
-
-                                    _parsedObjects.Insert(index, primitive);
-                                    _parsedObjects.Insert(index, code);
-                                    _parsedObjects.Insert(index, number);
-
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -1391,47 +1283,36 @@ namespace MOGWAI.Engine
             // 2 do
             // 3 code
 
-            try
+            if (_parsedObjects.Count - index > 3)
             {
-                if (_parsedObjects.Count - index > 3)
+                var name = _parsedObjects[index + 1] as MOGName;
+
+                if (name != null)
                 {
-                    var name = _parsedObjects[index + 1] as MOGName;
+                    var doWord = _parsedObjects[index + 2] as MOGWord;
 
-                    if (name != null)
+                    if (doWord != null && doWord.Value == "do")
                     {
-                        var doWord = _parsedObjects[index + 2] as MOGWord;
+                        var code = _parsedObjects[index + 3] as MOGCode;
 
-                        if (doWord != null && doWord.Value == "do")
+                        if (code != null)
                         {
-                            var code = _parsedObjects[index + 3] as MOGCode;
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveEVENT));
 
-                            if (code != null)
+                            if (primitive != null)
                             {
-                                var primitive = engine.GetPrimitive(typeof(PrimitiveEVENT));
+                                primitive.StartPos = _parsedObjects[index].StartPos;
+                                primitive.EndPos = _parsedObjects[index].EndPos;
+                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                if (primitive != null)
-                                {
-                                    primitive.StartPos = _parsedObjects[index].StartPos;
-                                    primitive.EndPos = _parsedObjects[index].EndPos;
-                                    primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                _parsedObjects.RemoveRange(index, 4);
+                                _parsedObjects.InsertRange(index, [code.ToFunction(), name, primitive]);
 
-                                    for (int i = 0; i < 4; i++)
-                                        _parsedObjects.RemoveAt(index);
-
-                                    _parsedObjects.Insert(index, primitive);
-                                    _parsedObjects.Insert(index, name);
-                                    _parsedObjects.Insert(index, code.ToFunction());
-
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -1446,69 +1327,57 @@ namespace MOGWAI.Engine
             // 4 do
             // 5 code
 
-            try
+            if (_parsedObjects.Count - index > 5)
             {
-                if (_parsedObjects.Count - index > 5)
+                var name = _parsedObjects[index + 1] as MOGName;
+
+                if (name != null)
                 {
-                    var name = _parsedObjects[index + 1] as MOGName;
+                    var afterOrEveryWord = _parsedObjects[index + 2] as MOGWord;
 
-                    if (name != null)
+                    if (afterOrEveryWord != null && (afterOrEveryWord.Value == "after" || afterOrEveryWord.Value == "every"))
                     {
-                        var afterOrEveryWord = _parsedObjects[index + 2] as MOGWord;
+                        bool every = afterOrEveryWord.Value == "every";
 
-                        if (afterOrEveryWord != null && (afterOrEveryWord.Value == "after" || afterOrEveryWord.Value == "every"))
+                        var interval = _parsedObjects[index + 3];
+
+                        if (interval != null)
                         {
-                            bool every = afterOrEveryWord.Value == "every";
+                            var doWord = _parsedObjects[index + 4] as MOGWord;
 
-                            var interval = _parsedObjects[index + 3];
-
-                            if (interval != null)
+                            if (doWord != null && doWord.Value == "do")
                             {
-                                var doWord = _parsedObjects[index + 4] as MOGWord;
+                                var code = _parsedObjects[index + 5] as MOGCode;
 
-                                if (doWord != null && doWord.Value == "do")
+                                if (code != null)
                                 {
-                                    var code = _parsedObjects[index + 5] as MOGCode;
+                                    MOGPrimitive? primitive = null;
 
-                                    if (code != null)
+                                    if (every)
                                     {
-                                        MOGPrimitive? primitive = null;
+                                        primitive = engine.GetPrimitive(typeof(PrimitiveEVERY));
+                                    }
+                                    else
+                                    {
+                                        primitive = engine.GetPrimitive(typeof(PrimitiveAFTER));
+                                    }
 
-                                        if (every)
-                                        {
-                                            primitive = engine.GetPrimitive(typeof(PrimitiveEVERY));
-                                        }
-                                        else
-                                        {
-                                            primitive = engine.GetPrimitive(typeof(PrimitiveAFTER));
-                                        }
+                                    if (primitive != null)
+                                    {
+                                        primitive.StartPos = _parsedObjects[index].StartPos;
+                                        primitive.EndPos = _parsedObjects[index].EndPos;
+                                        primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                        if (primitive != null)
-                                        {
-                                            primitive.StartPos = _parsedObjects[index].StartPos;
-                                            primitive.EndPos = _parsedObjects[index].EndPos;
-                                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                        _parsedObjects.RemoveRange(index, 5);
+                                        _parsedObjects.InsertRange(index, [code.ToFunction(), interval, name, primitive]);
 
-                                            for (int i = 0; i <= 5; i++)
-                                                _parsedObjects.RemoveAt(index);
-
-                                            _parsedObjects.Insert(index, primitive);
-                                            _parsedObjects.Insert(index, name);
-                                            _parsedObjects.Insert(index, interval);
-                                            _parsedObjects.Insert(index, code.ToFunction());
-
-                                            return true;
-                                        }
+                                        return true;
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -1520,42 +1389,31 @@ namespace MOGWAI.Engine
             // 1 do
             // 2 code
 
-            try
+            if (_parsedObjects.Count - index > 2)
             {
-                if (_parsedObjects.Count - index > 2)
+                var doWord = _parsedObjects[index + 1] as MOGWord;
+
+                if (doWord != null && doWord.Value == "do")
                 {
-                    var doWord = _parsedObjects[index + 1] as MOGWord;
+                    var code = _parsedObjects[index + 2] as MOGCode;
 
-                    if (doWord != null && doWord.Value == "do")
+                    if (code != null)
                     {
-                        var code = _parsedObjects[index + 2] as MOGCode;
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveFOREVER));
 
-                        if (code != null)
+                        if (primitive != null)
                         {
-                            var primitive = engine.GetPrimitive(typeof(PrimitiveFOREVER));
+                            primitive.StartPos = _parsedObjects[index].StartPos;
+                            primitive.EndPos = _parsedObjects[index + 1].EndPos;
+                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                            if (primitive != null)
-                            {
-                                primitive.StartPos = _parsedObjects[index].StartPos;
-                                primitive.EndPos = _parsedObjects[index + 1].EndPos;
-                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                            _parsedObjects.RemoveRange(index, 3);
+                            _parsedObjects.InsertRange(index, [code, primitive]);
 
-                                _parsedObjects.RemoveAt(index);
-                                _parsedObjects.RemoveAt(index);
-                                _parsedObjects.RemoveAt(index);
-
-                                _parsedObjects.Insert(index, primitive);
-                                _parsedObjects.Insert(index, code);
-
-                                return true;
-                            }
+                            return true;
                         }
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -1589,15 +1447,12 @@ namespace MOGWAI.Engine
                         primitiveDEFUNC.EndPos = _parsedObjects[index].EndPos;
                         primitiveDEFUNC.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                        for (int i = 0; i < 4; i++)
-                            _parsedObjects.RemoveAt(index);
+                        _parsedObjects.RemoveRange(index, 4);
 
                         var function = code.ToFunction();
                         function.Name = name.Value;
 
-                        _parsedObjects.Insert(index, primitiveDEFUNC);
-                        _parsedObjects.Insert(index, name);
-                        _parsedObjects.Insert(index, function);
+                        _parsedObjects.InsertRange(index, [function, name, primitiveDEFUNC]);
 
                         return true;
                     }
@@ -1637,20 +1492,16 @@ namespace MOGWAI.Engine
                                 primitiveStackToSafeVars.PauseAllowed = false;
                                 primitiveStackToSafeVars.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                for (int i = 0; i < 6; i++)
-                                    _parsedObjects.RemoveAt(index);
+                                _parsedObjects.RemoveRange(index, 6);
 
                                 var function = code.ToFunction();
                                 function.Name = name.Value;
 
                                 // We need to modify the function's code to incorporate the parameters.
 
-                                function.Items.Insert(0, primitiveStackToSafeVars);
-                                function.Items.Insert(0, paramsRecord);
+                                function.Items.InsertRange(0, [paramsRecord, primitiveStackToSafeVars]);
 
-                                _parsedObjects.Insert(index, primitiveDEFUNC);
-                                _parsedObjects.Insert(index, name);
-                                _parsedObjects.Insert(index, function);
+                                _parsedObjects.InsertRange(index, [function, name, primitiveDEFUNC]);
 
                                 return true;
                             }
@@ -1692,20 +1543,16 @@ namespace MOGWAI.Engine
                                 primitiveStackToParams.PauseAllowed = false;
                                 primitiveStackToParams.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                for (int i = 0; i < 6; i++)
-                                    _parsedObjects.RemoveAt(index);
+                                _parsedObjects.RemoveRange(index, 6);
 
                                 var function = code.ToFunction();
                                 function.Name = name.Value;
 
                                 // We need to modify the function's code to incorporate the parameters.
 
-                                function.Items.Insert(0, primitiveStackToParams);
-                                function.Items.Insert(0, paramsRecord);
+                                function.Items.InsertRange(0, [paramsRecord, primitiveStackToParams]);
 
-                                _parsedObjects.Insert(index, primitiveDEFUNC);
-                                _parsedObjects.Insert(index, name);
-                                _parsedObjects.Insert(index, function);
+                                _parsedObjects.InsertRange(index, [function, name, primitiveDEFUNC]);
 
                                 return true;
                             }
@@ -1744,23 +1591,22 @@ namespace MOGWAI.Engine
                                 primitiveDEFUNC.EndPos = _parsedObjects[index].EndPos;
                                 primitiveDEFUNC.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                for (int i = 0; i < 6; i++)
-                                    _parsedObjects.RemoveAt(index);
+                                _parsedObjects.RemoveRange(index, 6);
 
                                 var codeFunction = code.ToFunction();
                                 codeFunction.AutoEval = true;
                                 codeFunction.Name = name.Value;
 
-                                var bodyItems = new List<MOGObject>();
-                                bodyItems.Add(codeFunction);
-                                bodyItems.Add(returns);
-                                bodyItems.Add(primitiveCheck);
+                                var bodyItems = new List<MOGObject>
+                                {
+                                    codeFunction,
+                                    returns,
+                                    primitiveCheck
+                                };
 
                                 var body = new MOGFunction(engine, bodyItems);
 
-                                _parsedObjects.Insert(index, primitiveDEFUNC);
-                                _parsedObjects.Insert(index, name);
-                                _parsedObjects.Insert(index, body);
+                                _parsedObjects.InsertRange(index, [body, name, primitiveDEFUNC]);
 
                                 return true;
                             }
@@ -1812,26 +1658,23 @@ namespace MOGWAI.Engine
                                         primitiveStackToSafeVars.PauseAllowed = false;
                                         primitiveStackToSafeVars.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                        for (int i = 0; i < 8; i++)
-                                            _parsedObjects.RemoveAt(index);
+                                        _parsedObjects.RemoveRange(index, 8);
 
                                         var codeFunction = code.ToFunction();
                                         codeFunction.AutoEval = true;
                                         codeFunction.Name = name.Value;
+                                        codeFunction.Items.InsertRange(0, [paramsRecord, primitiveStackToSafeVars]);
 
-                                        codeFunction.Items.Insert(0, primitiveStackToSafeVars);
-                                        codeFunction.Items.Insert(0, paramsRecord);
-
-                                        var bodyItems = new List<MOGObject>();
-                                        bodyItems.Add(codeFunction);
-                                        bodyItems.Add(returns);
-                                        bodyItems.Add(primitiveCheck);
+                                        var bodyItems = new List<MOGObject>
+                                        {
+                                            codeFunction,
+                                            returns,
+                                            primitiveCheck
+                                        };
 
                                         var body = new MOGFunction(engine, bodyItems);
 
-                                        _parsedObjects.Insert(index, primitiveDEFUNC);
-                                        _parsedObjects.Insert(index, name);
-                                        _parsedObjects.Insert(index, body);
+                                        _parsedObjects.InsertRange(index, [body, name, primitiveDEFUNC]);
 
                                         return true;
                                     }
@@ -1885,26 +1728,23 @@ namespace MOGWAI.Engine
                                         primitiveStackToParams.PauseAllowed = false;
                                         primitiveStackToParams.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                        for (int i = 0; i < 8; i++)
-                                            _parsedObjects.RemoveAt(index);
+                                        _parsedObjects.RemoveRange(index, 8);
 
                                         var codeFunction = code.ToFunction();
                                         codeFunction.AutoEval = true;
                                         codeFunction.Name = name.Value;
+                                        codeFunction.Items.InsertRange(0, [paramsRecord, primitiveStackToParams]);
 
-                                        codeFunction.Items.Insert(0, primitiveStackToParams);
-                                        codeFunction.Items.Insert(0, paramsRecord);
-
-                                        var bodyItems = new List<MOGObject>();
-                                        bodyItems.Add(codeFunction);
-                                        bodyItems.Add(returns);
-                                        bodyItems.Add(primitiveCheck);
+                                        var bodyItems = new List<MOGObject>
+                                        {
+                                            codeFunction,
+                                            returns,
+                                            primitiveCheck
+                                        };
 
                                         var body = new MOGFunction(engine, bodyItems);
 
-                                        _parsedObjects.Insert(index, primitiveDEFUNC);
-                                        _parsedObjects.Insert(index, name);
-                                        _parsedObjects.Insert(index, body);
+                                        _parsedObjects.InsertRange(index, [body, name, primitiveDEFUNC]);
 
                                         return true;
                                     }
@@ -1925,51 +1765,36 @@ namespace MOGWAI.Engine
             // 2 while
             // 3 (condition)
 
-            try
+            if (index >= 1 && _parsedObjects.Count - index >= 3)
             {
-                if (index >= 1 && _parsedObjects.Count - index >= 3)
+                var code = _parsedObjects[index + 1] as MOGCode;
+
+                if (code != null)
                 {
-                    var code = _parsedObjects[index + 1] as MOGCode;
+                    var whileWord = _parsedObjects[index + 2] as MOGWord;
 
-                    if (code != null)
+                    if (whileWord != null && whileWord.Value == "while")
                     {
-                        var whileWord = _parsedObjects[index + 2] as MOGWord;
+                        var condition = _parsedObjects[index + 3] as MOGList;
 
-                        if (whileWord != null && whileWord.Value == "while")
+                        if (condition != null)
                         {
-                            var condition = _parsedObjects[index + 3] as MOGList;
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveDOWHILE));
 
-                            if (condition != null)
+                            if (primitive != null)
                             {
-                                var primitive = engine.GetPrimitive(typeof(PrimitiveDOWHILE));
+                                primitive.StartPos = _parsedObjects[index].StartPos;
+                                primitive.EndPos = _parsedObjects[index].EndPos;
+                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                if (primitive != null)
-                                {
-                                    primitive.StartPos = _parsedObjects[index].StartPos;
-                                    primitive.EndPos = _parsedObjects[index].EndPos;
-                                    primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                _parsedObjects.RemoveRange(index, 3);
+                                _parsedObjects.InsertRange(index, [condition.ToCode(), code, primitive]);
 
-                                    for (int i = 0; i < 3; i++)
-                                        _parsedObjects.RemoveAt(index);
-
-                                    // condition
-                                    // code
-                                    // DOWHILE
-
-                                    _parsedObjects.Insert(index, primitive);
-                                    _parsedObjects.Insert(index, code);
-                                    _parsedObjects.Insert(index, condition.ToCode());
-
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -1982,51 +1807,36 @@ namespace MOGWAI.Engine
             // 2 do
             // 3 {code}
 
-            try
+            if (_parsedObjects.Count - index >= 4)
             {
-                if (_parsedObjects.Count - index >= 4)
+                var condition = _parsedObjects[index + 1] as MOGList;
+
+                if (condition != null)
                 {
-                    var condition = _parsedObjects[index + 1] as MOGList;
+                    var doWord = _parsedObjects[index + 2] as MOGWord;
 
-                    if (condition != null)
+                    if (doWord != null && doWord.Value == "do")
                     {
-                        var doWord = _parsedObjects[index + 2] as MOGWord;
+                        var code = _parsedObjects[index + 3] as MOGCode;
 
-                        if (doWord != null && doWord.Value == "do")
+                        if (code != null)
                         {
-                            var code = _parsedObjects[index + 3] as MOGCode;
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveWHILE));
 
-                            if (code != null)
+                            if (primitive != null)
                             {
-                                var primitive = engine.GetPrimitive(typeof(PrimitiveWHILE));
+                                primitive.StartPos = _parsedObjects[index].StartPos;
+                                primitive.EndPos = _parsedObjects[index].EndPos;
+                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                if (primitive != null)
-                                {
-                                    primitive.StartPos = _parsedObjects[index].StartPos;
-                                    primitive.EndPos = _parsedObjects[index].EndPos;
-                                    primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                _parsedObjects.RemoveRange(index, 4);
+                                _parsedObjects.InsertRange(index, [condition.ToCode(), code, primitive]);
 
-                                    for (int i = 0; i < 4; i++)
-                                        _parsedObjects.RemoveAt(index);
-
-                                    // number
-                                    // code
-                                    // WHILE
-
-                                    _parsedObjects.Insert(index, primitive);
-                                    _parsedObjects.Insert(index, code);
-                                    _parsedObjects.Insert(index, condition.ToCode());
-
-                                    return true;
-                                }
+                                return true;
                             }
                         }
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -2037,40 +1847,27 @@ namespace MOGWAI.Engine
             // 0 repeat
             // 1 code
 
-            try
+            if (_parsedObjects.Count - index >= 1)
             {
-                if (_parsedObjects.Count - index >= 1)
+                var code = _parsedObjects[index + 1] as MOGCode;
+
+                if (code != null)
                 {
-                    var code = _parsedObjects[index + 1] as MOGCode;
+                    var primitive = engine.GetPrimitive(typeof(PrimitiveREPEAT));
 
-                    if (code != null)
+                    if (primitive != null)
                     {
-                        var primitive = engine.GetPrimitive(typeof(PrimitiveREPEAT));
+                        primitive.StartPos = _parsedObjects[index].StartPos;
+                        primitive.EndPos = _parsedObjects[index].EndPos;
+                        primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                        if (primitive != null)
-                        {
-                            primitive.StartPos = _parsedObjects[index].StartPos;
-                            primitive.EndPos = _parsedObjects[index].EndPos;
-                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                        _parsedObjects.RemoveRange(index, 2);
+                        _parsedObjects.InsertRange(index, [code, primitive]);
 
-                            for (int i = 0; i < 2; i++)
-                                _parsedObjects.RemoveAt(index);
-
-                            // code
-                            // REPEAT
-
-                            _parsedObjects.Insert(index, primitive);
-                            _parsedObjects.Insert(index, code);
-
-                            return true;
-                        }
-
+                        return true;
                     }
-                }
-            }
-            catch
-            {
 
+                }
             }
 
             return false;
@@ -2084,85 +1881,58 @@ namespace MOGWAI.Engine
             // 2 do
             // 3 code
 
-            try
+            if (engine.CheckCodeFootprint(_parsedObjects, index, "foreach", null, "do", null))
             {
-                if (engine.CheckCodeFootprint(_parsedObjects, index, "foreach", null, "do", null))
+                var name = _parsedObjects[index + 1] as MOGName;
+
+                if (name != null)
                 {
-                    var name = _parsedObjects[index + 1] as MOGName;
+                    var code = _parsedObjects[index + 3] as MOGCode;
 
-                    if (name != null)
+                    if (code != null)
                     {
-                        var code = _parsedObjects[index + 3] as MOGCode;
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveFOREACH));
 
-                        if (code != null)
+                        if (primitive != null)
                         {
-                            var primitive = engine.GetPrimitive(typeof(PrimitiveFOREACH));
+                            primitive.StartPos = _parsedObjects[index].StartPos;
+                            primitive.EndPos = _parsedObjects[index].EndPos;
+                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                            if (primitive != null)
-                            {
-                                primitive.StartPos = _parsedObjects[index].StartPos;
-                                primitive.EndPos = _parsedObjects[index].EndPos;
-                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                            _parsedObjects.RemoveRange(index, 4);
+                            _parsedObjects.InsertRange(index, [name, code, primitive]);
 
-                                for (int i = 0; i < 4; i++)
-                                    _parsedObjects.RemoveAt(index);
-
-                                // On crée le vrai FOREACH
-                                // 0 items
-                                // 1 name
-                                // 2 code
-                                // 3 FOREACH
-
-                                _parsedObjects.Insert(index, primitive);
-                                _parsedObjects.Insert(index, code);
-                                _parsedObjects.Insert(index, name);
-
-                                return true;
-                            }
-                        }
-
-                    }
-                }
-                else if (engine.CheckCodeFootprint(_parsedObjects, index, "foreach", null, "transform", null))
-                {
-                    var name = _parsedObjects[index + 1] as MOGName;
-
-                    if (name != null)
-                    {
-                        var code = _parsedObjects[index + 3] as MOGCode;
-
-                        if (code != null)
-                        {
-                            var primitive = engine.GetPrimitive(typeof(PrimitiveFOREACHTRANSFORM));
-
-                            if (primitive != null)
-                            {
-                                primitive.StartPos = _parsedObjects[index].StartPos;
-                                primitive.EndPos = _parsedObjects[index].EndPos;
-                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
-
-                                for (int i = 0; i < 4; i++)
-                                    _parsedObjects.RemoveAt(index);
-
-                                // On crée le vrai FOREACHTRANSFORM
-                                // 0 items
-                                // 1 name
-                                // 2 code
-                                // 3 FOREACHTRANSFORM
-
-                                _parsedObjects.Insert(index, primitive);
-                                _parsedObjects.Insert(index, code);
-                                _parsedObjects.Insert(index, name);
-
-                                return true;
-                            }
+                            return true;
                         }
                     }
+
                 }
             }
-            catch
+            else if (engine.CheckCodeFootprint(_parsedObjects, index, "foreach", null, "transform", null))
             {
+                var name = _parsedObjects[index + 1] as MOGName;
 
+                if (name != null)
+                {
+                    var code = _parsedObjects[index + 3] as MOGCode;
+
+                    if (code != null)
+                    {
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveFOREACHTRANSFORM));
+
+                        if (primitive != null)
+                        {
+                            primitive.StartPos = _parsedObjects[index].StartPos;
+                            primitive.EndPos = _parsedObjects[index].EndPos;
+                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+
+                            _parsedObjects.RemoveRange(index, 4);
+                            _parsedObjects.InsertRange(index, [name, code, primitive]);
+
+                            return true;
+                        }
+                    }
+                }
             }
 
             return false;
@@ -2182,129 +1952,115 @@ namespace MOGWAI.Engine
             // 4 else
             // 5 {codeFalse}
 
-            try
+            if (_parsedObjects.Count - index >= 3)
             {
-                if (_parsedObjects.Count - index >= 3)
+                var condition = _parsedObjects[index + 1] as MOGList;
+
+                if (condition != null)
                 {
-                    var condition = _parsedObjects[index + 1] as MOGList;
+                    var wordThen = _parsedObjects[index + 2] as MOGWord;
 
-                    if (condition != null)
+                    if (wordThen != null && wordThen.Value == "then")
                     {
-                        var wordThen = _parsedObjects[index + 2] as MOGWord;
+                        var codeTrue = _parsedObjects[index + 3] as MOGCode;
 
-                        if (wordThen != null && wordThen.Value == "then")
+                        if (codeTrue != null)
                         {
-                            var codeTrue = _parsedObjects[index + 3] as MOGCode;
+                            bool withElse = false;
 
-                            if (codeTrue != null)
+                            if (_parsedObjects.Count - index >= 6)
                             {
-                                bool withElse = false;
+                                var wordElse = _parsedObjects[index + 4] as MOGWord;
+                                withElse = (wordElse != null && wordElse.Value == "else");
+                            }
 
-                                if (_parsedObjects.Count - index >= 6)
+                            if (withElse)
+                            {
+                                // IFELSE
+
+                                var codeFalse = _parsedObjects[index + 5] as MOGCode;
+
+                                if (codeFalse != null)
                                 {
-                                    var wordElse = _parsedObjects[index + 4] as MOGWord;
-                                    withElse = (wordElse != null && wordElse.Value == "else");
-                                }
+                                    // 0 if
+                                    // 1 (condition)
+                                    // 2 then
+                                    // 3 {codeTrue}
+                                    // 4 else
+                                    // 5 {codeFalse}
 
-                                if (withElse)
-                                {
-                                    // IFELSE
+                                    var primitive = engine.GetPrimitive(typeof(PrimitiveIFELSE));
 
-                                    var codeFalse = _parsedObjects[index + 5] as MOGCode;
-
-                                    if (codeFalse != null)
+                                    if (primitive != null)
                                     {
-                                        // 0 if
-                                        // 1 (condition)
-                                        // 2 then
-                                        // 3 {codeTrue}
-                                        // 4 else
-                                        // 5 {codeFalse}
+                                        primitive.StartPos = _parsedObjects[index].StartPos;
+                                        primitive.EndPos = _parsedObjects[index].EndPos;
+                                        primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                        var primitive = engine.GetPrimitive(typeof(PrimitiveIFELSE));
+                                        // On retire 6 éléments à partir de l'index
 
-                                        if (primitive != null)
-                                        {
-                                            primitive.StartPos = _parsedObjects[index].StartPos;
-                                            primitive.EndPos = _parsedObjects[index].EndPos;
-                                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                        _parsedObjects.RemoveRange(index, 6);
 
-                                            // On retire 6 éléments à partir de l'index
+                                        // On insère
 
-                                            for (int i = 0; i < 6; i++)
-                                                _parsedObjects.RemoveAt(index);
+                                        // 0 (condition) ---> {! condition}
+                                        // 1 {codeTrue}
+                                        // 2 {codeFalse}
+                                        // 3 IFELSE
 
-                                            // On insère
+                                        var codeCondition = condition.ToCode();
+                                        codeCondition.AutoEval = true;
 
-                                            // 0 (condition) ---> {! condition}
-                                            // 1 {codeTrue}
-                                            // 2 {codeFalse}
-                                            // 3 IFELSE
+                                        _parsedObjects.InsertRange(index, [codeCondition, codeTrue, codeFalse, primitive]);
 
-                                            var codeCondition = condition.ToCode();
-                                            codeCondition.AutoEval = true;
-
-                                            _parsedObjects.Insert(index, primitive);
-                                            _parsedObjects.Insert(index, codeFalse);
-                                            _parsedObjects.Insert(index, codeTrue);
-                                            _parsedObjects.Insert(index, codeCondition);
-
-                                            return true;
-                                        }
+                                        return true;
                                     }
                                 }
-                                else
+                            }
+                            else
+                            {
+                                // IF
+
+                                var code = _parsedObjects[index + 3] as MOGCode;
+
+                                if (code != null)
                                 {
-                                    // IF
+                                    // 0 if
+                                    // 1 (condition)
+                                    // 2 then
+                                    // 3 {code}
 
-                                    var code = _parsedObjects[index + 3] as MOGCode;
+                                    var primitive = engine.GetPrimitive("IF");
 
-                                    if (code != null)
+                                    if (primitive != null)
                                     {
-                                        // 0 if
-                                        // 1 (condition)
-                                        // 2 then
-                                        // 3 {code}
+                                        primitive.StartPos = _parsedObjects[index].StartPos;
+                                        primitive.EndPos = _parsedObjects[index].EndPos;
+                                        primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                        var primitive = engine.GetPrimitive("IF");
+                                        // On retire 4 éléments à partir de l'index
 
-                                        if (primitive != null)
-                                        {
-                                            primitive.StartPos = _parsedObjects[index].StartPos;
-                                            primitive.EndPos = _parsedObjects[index].EndPos;
-                                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                        _parsedObjects.RemoveRange(index, 4);
 
-                                            // On retire 4 éléments à partir de l'index
+                                        // On insère
 
-                                            for (int i = 0; i < 4; i++)
-                                                _parsedObjects.RemoveAt(index);
+                                        // 0 (condition) ---> {! condition}
+                                        // 1 + eval
+                                        // 2 {code}
+                                        // 3 IF
 
-                                            // On insère
+                                        var codeCondition = condition.ToCode();
+                                        codeCondition.AutoEval = true;
 
-                                            // 0 (condition) ---> {! condition}
-                                            // 1 + eval
-                                            // 2 {code}
-                                            // 3 IF
+                                        _parsedObjects.InsertRange(index, [codeCondition, code, primitive]);
 
-                                            var codeCondition = condition.ToCode();
-                                            codeCondition.AutoEval = true;
-
-                                            _parsedObjects.Insert(index, primitive);
-                                            _parsedObjects.Insert(index, code);
-                                            _parsedObjects.Insert(index, codeCondition);
-
-                                            return true;
-                                        }
+                                        return true;
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
-            catch
-            {
-
             }
 
             return false;
@@ -2326,92 +2082,82 @@ namespace MOGWAI.Engine
             // 4 do
             // 5 code
 
-            try
+            if (_parsedObjects.Count - index >= 4 && index > 0)
             {
-                if (_parsedObjects.Count - index >= 4 && index > 0)
+                var name = _parsedObjects[index + 1] as MOGName;
+
+                if (name != null)
                 {
-                    var name = _parsedObjects[index + 1] as MOGName;
+                    var doOrStepWord = _parsedObjects[index + 2] as MOGWord;
 
-                    if (name != null)
+                    if (doOrStepWord != null && doOrStepWord.Value == "do")
                     {
-                        var doOrStepWord = _parsedObjects[index + 2] as MOGWord;
+                        // FOR 
 
-                        if (doOrStepWord != null && doOrStepWord.Value == "do")
+                        var code = _parsedObjects[index + 3] as MOGCode;
+
+                        if (code != null)
                         {
-                            // FOR 
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveFOR));
 
-                            var code = _parsedObjects[index + 3] as MOGCode;
-
-                            if (code != null)
+                            if (primitive != null)
                             {
-                                var primitive = engine.GetPrimitive(typeof(PrimitiveFOR));
+                                primitive.StartPos = _parsedObjects[index].StartPos;
+                                primitive.EndPos = _parsedObjects[index].EndPos;
+                                primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                if (primitive != null)
-                                {
-                                    primitive.StartPos = _parsedObjects[index].StartPos;
-                                    primitive.EndPos = _parsedObjects[index].EndPos;
-                                    primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                // On enlève les 4 éléments
 
-                                    // On enlève les 4 éléments
+                                _parsedObjects.RemoveRange(index, 4);
 
-                                    for (int i = 0; i < 4; i++)
-                                        _parsedObjects.RemoveAt(index);
+                                // On crée le vrai FOR
+                                // 0 name
+                                // 1 code
+                                // 2 FOR
 
-                                    // On crée le vrai FOR
-                                    // 0 name
-                                    // 1 code
-                                    // 2 FOR
+                                _parsedObjects.InsertRange(index, [name, code, primitive]);
 
-                                    _parsedObjects.Insert(index, primitive);
-                                    _parsedObjects.Insert(index, code);
-                                    _parsedObjects.Insert(index, name);
-
-                                    return true;
-                                }
+                                return true;
                             }
                         }
-                        else
+                    }
+                    else
+                    {
+                        // FORSTEP
+
+                        var stepValue = _parsedObjects[index + 3];
+
+                        if (stepValue != null)
                         {
-                            // FORSTEP
+                            var doWord = _parsedObjects[index + 4] as MOGWord;
 
-                            var stepValue = _parsedObjects[index + 3];
-
-                            if (stepValue != null)
+                            if (doWord != null && doWord.Value == "do")
                             {
-                                var doWord = _parsedObjects[index + 4] as MOGWord;
+                                var code = _parsedObjects[index + 5] as MOGCode;
 
-                                if (doWord != null && doWord.Value == "do")
+                                if (code != null)
                                 {
-                                    var code = _parsedObjects[index + 5] as MOGCode;
+                                    var primitive = engine.GetPrimitive(typeof(PrimitiveFORSTEP));
 
-                                    if (code != null)
+                                    if (primitive != null)
                                     {
-                                        var primitive = engine.GetPrimitive(typeof(PrimitiveFORSTEP));
+                                        primitive.StartPos = _parsedObjects[index].StartPos;
+                                        primitive.EndPos = _parsedObjects[index].EndPos;
+                                        primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                                        if (primitive != null)
-                                        {
-                                            primitive.StartPos = _parsedObjects[index].StartPos;
-                                            primitive.EndPos = _parsedObjects[index].EndPos;
-                                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                        // On enlève les 6 éléments
 
-                                            // On enlève les 4 éléments
+                                        _parsedObjects.RemoveRange(index, 6);
 
-                                            for (int i = 0; i < 6; i++)
-                                                _parsedObjects.RemoveAt(index);
+                                        // On crée le vrai FORSTEP
+                                        // 0 step
+                                        // 1 name
+                                        // 2 code
+                                        // 3 FOR
 
-                                            // On crée le vrai FORSTEP
-                                            // 0 step
-                                            // 1 name
-                                            // 2 code
-                                            // 3 FOR
+                                        _parsedObjects.InsertRange(index, [stepValue, name, code, primitive]);
 
-                                            _parsedObjects.Insert(index, primitive);
-                                            _parsedObjects.Insert(index, code);
-                                            _parsedObjects.Insert(index, name);
-                                            _parsedObjects.Insert(index, stepValue);
-
-                                            return true;
-                                        }
+                                        return true;
                                     }
                                 }
                             }
@@ -2419,13 +2165,8 @@ namespace MOGWAI.Engine
                     }
                 }
             }
-            catch
-            {
-
-            }
 
             return false;
         }
-
     }
 }

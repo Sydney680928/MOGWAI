@@ -27,13 +27,18 @@ namespace MOGWAI.Engine
 {
     public sealed class MogwaiEngine
     {
+        private static readonly char[] _invalidCharsExtended = [' ', '\'', '{', '}', '«', '»', '(', ')', '[', ']', '"', ':', '\r', '\n', '\t'];
+        private static readonly char[] _invalidChars =  [' ', '\'', '!', '{', '}', '«', '»', '(', ')', '[', ']', '"', ':', '\r', '\n', '\t'];
+
         private string _name;
         private int _debugPort;
         private List<Stack<MOGObject>> _stacks = [];
+        private IDelegate? _delegate;
 
         private FrozenDictionary<string, MOGPrimitive> _primitives;
         private Dictionary<string, MOGPrimitive> _initializingPrimitives = [];
 
+        private string[] _hostFunctions = [];
         private Parser _parser = new();
         private readonly List<VarContext> _varsContext = [];
         private List<bool> _breakRequested = new();
@@ -559,7 +564,16 @@ namespace MOGWAI.Engine
 
         public int StackSize => _stacks.Last().Count;
 
-        public IDelegate? Delegate { get; set; }
+        public IDelegate? Delegate
+        {
+            get => _delegate;
+
+            set
+            {
+                _delegate = value;
+                _hostFunctions = _delegate?.HostFunctions(this) ?? [];  
+            }
+        }
 
         public bool AllowPrivatePrimitives { get; set; } = false;
 
@@ -2625,43 +2639,23 @@ namespace MOGWAI.Engine
 
         internal bool IsValidName(string name)
         {
-            // Must not be empty
-
             if (string.IsNullOrEmpty(name))
                 return false;
 
-            // Must start by a letter or an underscore or $
-
             var c1 = name[0];
+            var c2 = name.Length > 1 ? name[1] : '\0';
 
-            if (!char.IsLetter(c1) && c1 != '_' && c1 != '$')
+            if (!char.IsLetter(c1) && c1 != '_' && c1 != '$' && (c1 != '-' || c2 != '>'))
                 return false;
-
-            // Must not be a primitive name
 
             if (_primitives.ContainsKey(name))
                 return false;
 
-            // TODO: CACHE THIS ARRAY
-            if (Delegate != null && Delegate.HostFunctions(this).Contains(name))
+            if (_hostFunctions.Contains(name))
                 return false;
 
-            char[]? invalid = null;
-
-            if (AllowExtendedNames)
-            {
-                invalid = [' ', '\'', '{', '}', '«', '»', '(', ')', '[', ']', '"', ':', '\r', '\n', '\t'];
-            }
-            else
-            {
-                invalid = [' ', '\'', '!', '{', '}', '«', '»', '(', ')', '[', ']', '"', ':', '\r', '\n', '\t'];
-            }
-
-            foreach (var c2 in invalid)
-                if (name.Contains(c2))
-                    return false;
-
-            return true;
+            var invalid = AllowExtendedNames ? _invalidCharsExtended : _invalidChars;
+            return name.IndexOfAny(invalid) == -1;
         }
 
         internal MOGType GetType(Type type)
