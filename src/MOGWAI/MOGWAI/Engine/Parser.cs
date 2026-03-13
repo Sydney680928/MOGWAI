@@ -28,6 +28,7 @@ namespace MOGWAI.Engine
         private string _code = string.Empty;
         private StringBuilder _currentItem = new StringBuilder();
         private List<MOGObject> _parsedObjects = new();
+        private Parser? _localParser = null;
 
         private int Pos
         {
@@ -40,6 +41,17 @@ namespace MOGWAI.Engine
             }
         }
 
+        private Parser LocalParser
+        {
+            get
+            {
+                if (_localParser == null)
+                    _localParser = new Parser();
+
+                return _localParser;
+            }
+        }
+
         public static int LastStartErrorPosition { get; private set; } = -1;
 
         public static int LastEndErrorPosition { get; private set; } = -1;
@@ -49,7 +61,7 @@ namespace MOGWAI.Engine
         public List<MOGObject> ParsedObjects => _parsedObjects;
 
         public void Parse(MogwaiEngine engine, string code, int offsetPosition, MogwaiExecutionContext? context)
-        {
+        {       
             _code = code;
             _currentIndex = 0;
             _currentItem.Clear();
@@ -91,17 +103,16 @@ namespace MOGWAI.Engine
                         // Cas de figure où un mot est suivi d'une liste sans espace.
                         // On peut traduire ça par une application du mot à tous les éléments de la liste.
 
-                        var p = new Parser();
-                        p.Parse(engine, _currentItem.ToString(), Pos - _currentItem.Length, context);
+                        LocalParser.Parse(engine, _currentItem.ToString(), Pos - _currentItem.Length, context);
 
-                        if (p.ParsedObjects.Count != 1 || (p.ParsedObjects[0] is not MOGWord && p._parsedObjects[0] is not MOGPrimitive))
+                        if (LocalParser.ParsedObjects.Count != 1 || (LocalParser.ParsedObjects[0] is not MOGWord && LocalParser._parsedObjects[0] is not MOGPrimitive))
                         {
                             LastStartErrorPosition = Pos - _currentItem.Length;
                             LastEndErrorPosition = Pos;
                             throw new MogwaiParseErrorException("unexpected character '('");
                         }
 
-                        prefix = p.ParsedObjects[0];
+                        prefix = LocalParser.ParsedObjects[0];
                         _currentItem.Clear();
                     }
 
@@ -166,25 +177,23 @@ namespace MOGWAI.Engine
                         // On peut traduire ça par une application du mot au record, ce qui est un cas fréquent notamment pour les messages à la Objective C (ex: myObject doSomethingWith: arg1 and: arg2)
                         // Dans ce cas on ajoute le mot comme 1er item du record, ce qui permet de faire le lien entre le mot et le record et d'avoir un code plus naturel à écrire et à lire.
 
-                        var p = new Parser();  
-                        p.Parse(engine, _currentItem.ToString(), Pos - _currentItem.Length, context);
+                        LocalParser.Parse(engine, _currentItem.ToString(), Pos - _currentItem.Length, context);
 
-                        if (p.ParsedObjects.Count != 1 || (p.ParsedObjects[0] is not MOGWord && p._parsedObjects[0] is not MOGPrimitive))
+                        if (LocalParser.ParsedObjects.Count != 1 || (LocalParser.ParsedObjects[0] is not MOGWord && LocalParser.ParsedObjects[0] is not MOGPrimitive))
                         {
                             LastStartErrorPosition = Pos - _currentItem.Length;
                             LastEndErrorPosition = Pos; 
                             throw new MogwaiParseErrorException("unexpected character '['");
                         }
 
-                        prefix = p.ParsedObjects[0];
+                        prefix = LocalParser.ParsedObjects[0];
                         _currentItem.Clear();  
                     }
 
                     GetEnclosedItem('[', ']');
 
-                    var parser = new Parser();
-                    parser.Parse(engine, _currentItem.ToString(), Pos + 1, context);
-                    var items = parser.ParsedObjects;
+                    LocalParser.Parse(engine, _currentItem.ToString(), Pos + 1, context);
+                    var items = LocalParser.ParsedObjects;
 
                     MOGObject? item0 = null;
                     MOGObject? autoEval = null;
