@@ -14,7 +14,9 @@ Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `l
 - Added host function detection by the parser to avoid delegate calls at runtime, improving execution performance.
 - Added new `char->` primitive that returns the ASCII code from a single string character.
 - Added explicit variable access with `@varname` notation. The performance gain is significant with frequent variable access.
-  
+- Added `foreach` loop over string characters.
+- 
+
 ### Changed
 
 - Changed dictionary access to use `TryGetValue` instead of a `ContainsKey` check followed by value retrieval, improving lookup performance across all dictionaries used by the runtime.
