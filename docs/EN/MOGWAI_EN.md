@@ -189,6 +189,8 @@ If you try to delete a variable that doesn't exist, an error is raised.
 
 To place the value of a variable on the stack, simply invoke its name without apostrophes.
 
+To speed up execution, you can use the `@` character to explicitly access a variable.
+
 ```
 # We assign 'A' and 'B' with numbers.
 20 -> 'A'
@@ -196,6 +198,9 @@ To place the value of a variable on the stack, simply invoke its name without ap
 
 # We perform the sum of the 2 variables and store the result in the variable 'C'
 A B + -> 'C'
+
+# Or use the @ character to speed up execution
+@A @B + -> 'C'
 ```
 
 With the `rcl` function, it is possible to place the value of a variable on the stack using its name.
