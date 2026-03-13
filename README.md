@@ -233,6 +233,8 @@ if (temp 25 >) then
 
 ![MOGWAI](./images/img07.png)
 
+[Use Case #1 — Electronic Board Test Bench](docs/EN/use-cases/use-case-01-test-bench.md)
+
 ### Embedded Applications
 
 ```mogwai
@@ -394,12 +396,6 @@ MOGWAI STUDIO is not open source and will be distributed under a proprietary lic
 - **HP Calculators** - For inspiring the RPN approach
 - **Open Source Community** - For .NET and supporting tools
 - **Early Adopters** - For feedback and real-world testing
-
----
-
-## Use Cases
-
-- [Use Case #1 — Electronic Board Test Bench](docs/EN/use-cases/use-case-01-test-bench.md)
 
 ---
 
