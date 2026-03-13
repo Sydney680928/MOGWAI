@@ -30,15 +30,13 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
-
             if (@string.Value.Length == 0)
-                return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
 
             if (!Path.Exists(@string.Value))
-                return EvalResult.Failure(Engine, Error.InvalidPathError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.InvalidPathError, Name));
 
             try
             {
@@ -50,11 +48,11 @@ namespace MOGWAI.Primitives
 
                 Engine.StackPush(list);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             catch
             {
-                return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
             }
         }
     }

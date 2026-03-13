@@ -31,12 +31,11 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGNumber number1, MOGNumber number2)
+        public override Task<EvalResult> PerformOperation(MOGNumber number1, MOGNumber number2)
         {
-            await Task.CompletedTask;
             int v = number1.IntValue & number2.IntValue;
             Engine.StackPushNumber(v);
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

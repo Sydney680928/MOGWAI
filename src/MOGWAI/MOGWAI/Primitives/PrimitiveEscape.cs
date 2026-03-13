@@ -32,19 +32,17 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
-
             try
             {
                 var encoded = JsonSerializer.Serialize(@string.Value);
                 Engine.StackPushString(encoded.Trim('\"'));
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             catch (Exception ex)
             {
-                return EvalResult.Failure(Engine, Error.InternalError, this, ex.Message);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.InternalError, this, ex.Message));
             }
         }
     }

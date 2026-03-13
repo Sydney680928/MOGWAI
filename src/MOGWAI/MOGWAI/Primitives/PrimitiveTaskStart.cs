@@ -31,17 +31,16 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // name object TASKSTART
             // objet is a parameter for the task's job
 
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[1] == typeof(MOGName))
             {
@@ -51,17 +50,17 @@ namespace MOGWAI.Primitives
                 var task = Engine.GetTask(name.Value);
 
                 if (task == null)
-                    return EvalResult.Failure(Engine, Error.UnknownNameError, Name, name.ToString());
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.UnknownNameError, Name, name.ToString()));
 
                 string? paramString = null;
 
                 if (parameter is not MOGNull)
                     paramString = parameter!.ToString();
 
-                return task.Start(paramString);
+                return Task.FromResult(task.Start(paramString));
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

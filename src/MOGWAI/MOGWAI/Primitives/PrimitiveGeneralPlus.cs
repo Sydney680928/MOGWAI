@@ -32,14 +32,11 @@ namespace MOGWAI.Primitives
         }
         public override async Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(2);
 
             if (s.Count < 2)
-            {
                 return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
-            }
+
 
             if (s[0] == typeof(MOGNumber) && s[1] == typeof(MOGNumber))
             {

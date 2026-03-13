@@ -31,18 +31,16 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // (1 2 3 5 6 3) 3 where ---> (2 5)
             // DATA:EB5600FF56 0x56 where ---> (1 4)
             // "ERERRE" "RE" where --> (1 4)
 
-            await Task.CompletedTask;
-
             var sign = Engine.StackSign(2);
 
             if (sign.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             var n0 = Engine.StackPop();
             var n1 = Engine.StackPop();
@@ -57,7 +55,7 @@ namespace MOGWAI.Primitives
 
                 Engine.StackPush(lst);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             else if (n1 is MOGData data)
             {
@@ -70,7 +68,7 @@ namespace MOGWAI.Primitives
 
                     Engine.StackPush(lst);
 
-                    return EvalResult.NoError;
+                    return Task.FromResult(EvalResult.NoError);
                 }
                 else if (n0 is MOGData data2)
                 {
@@ -99,11 +97,11 @@ namespace MOGWAI.Primitives
 
                     Engine.StackPush(lst);
 
-                    return EvalResult.NoError;
+                    return Task.FromResult(EvalResult.NoError);
                 }
                 else
                 {
-                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, ".number expected");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, ".number expected"));
                 }
             }
             else if (n1 is MOGString str)
@@ -125,15 +123,15 @@ namespace MOGWAI.Primitives
 
                     Engine.StackPush(lst);
 
-                    return EvalResult.NoError;
+                    return Task.FromResult(EvalResult.NoError);
                 }
                 else
                 {
-                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, ".string expected");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, ".string expected"));
                 }
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

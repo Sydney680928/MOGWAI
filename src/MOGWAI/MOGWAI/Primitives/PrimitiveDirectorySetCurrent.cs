@@ -30,18 +30,17 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
 
             try
             {
                 Directory.SetCurrentDirectory(@string.Value);
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             catch
             {
-                return EvalResult.Failure(Engine, Error.FileOperationError, this);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.FileOperationError, this));
             }
         }
     }

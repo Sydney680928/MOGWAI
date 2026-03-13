@@ -33,8 +33,6 @@ namespace MOGWAI.Primitives
 
         public override async Task<EvalResult> PerformOperation(MOGName name)
         {
-            await Task.CompletedTask;
-
             if (Engine.Delegate != null)
                 await Engine.Delegate.ConsoleSetForegroundColor(Engine, name.Value);
 

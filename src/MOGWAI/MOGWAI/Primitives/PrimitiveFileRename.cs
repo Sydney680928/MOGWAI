@@ -31,14 +31,12 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGString) && s[1] == typeof(MOGString))
             {
@@ -48,15 +46,15 @@ namespace MOGWAI.Primitives
                 try
                 {
                     File.Move(source.Value, destination.Value);
-                    return EvalResult.NoError;
+                    return Task.FromResult(EvalResult.NoError);
                 }
                 catch
                 {
-                    return EvalResult.Failure(Engine, Error.FileOperationError, Name);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.FileOperationError, Name));
                 }
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

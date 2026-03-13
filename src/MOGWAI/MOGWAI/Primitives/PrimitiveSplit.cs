@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,18 +31,16 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // ( 1 2 3) split ---> 1 2 3
             // DATA:102030 split ---> %10 %20 %30
             // "ABCD;EFGH;TYUI" ";" split---- > ("ABCD" "EFGH" "TYUI")
 
-            await Task.CompletedTask;
-
             var sign = Engine.StackSign(1);
 
             if (sign.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (sign[0] == typeof(MOGList))
             {
@@ -51,7 +49,7 @@ namespace MOGWAI.Primitives
                 foreach (var s in list.Items)
                     Engine.StackPush(s);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             else if (sign[0] == typeof(MOGData))
             {
@@ -60,13 +58,13 @@ namespace MOGWAI.Primitives
                 foreach (var s in data.Items)
                     Engine.StackPushNumber(s);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
             sign = Engine.StackSign(2);
 
             if (sign.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (sign[0] == typeof(MOGString) && sign[1] == typeof(MOGString))
             {
@@ -81,10 +79,10 @@ namespace MOGWAI.Primitives
 
                 Engine.StackPush(lst);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

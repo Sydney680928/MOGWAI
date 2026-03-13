@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,11 +32,9 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGList list)
+        public override Task<EvalResult> PerformOperation(MOGList list)
         {
             // (.name .number) check
-
-            await Task.CompletedTask;
 
             // On doit fournir une liste uniquement composée de types
 
@@ -50,14 +48,14 @@ namespace MOGWAI.Primitives
                 }
                 else
                 {
-                    return EvalResult.Failure(Engine, Error.BadArgumentValueError, "list must contains only type values");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, "list must contains only type values"));
                 }
             }
 
             var s = Engine.StackSign(expectedTypes.Count);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.StackCorruptionError, $"{list.Items.Count} items expected, but stack size is {Engine.StackSize}");
+                return Task.FromResult(EvalResult.Failure(Engine, Error.StackCorruptionError, $"{list.Items.Count} items expected, but stack size is {Engine.StackSize}"));
 
             // On compose la liste de types réels de la stack
 
@@ -68,7 +66,7 @@ namespace MOGWAI.Primitives
                 var t = Engine.GetType(s[i]);
 
                 if (t == null)
-                    return EvalResult.Failure(Engine, Error.FatalError, $"unknown engine type for '{s[i].Name}' internal class");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.FatalError, $"unknown engine type for '{s[i].Name}' internal class"));
 
                 realTypes.Add(t.ToString());
             }
@@ -83,7 +81,7 @@ namespace MOGWAI.Primitives
                     sb.Append(list.ToString());
                     sb.Append(" but actually (");
 
-                    for (int j = 0; j < realTypes.Count; j++)   
+                    for (int j = 0; j < realTypes.Count; j++)
                     {
                         if (j > 0)
                             sb.Append(" ");
@@ -93,11 +91,11 @@ namespace MOGWAI.Primitives
 
                     sb.Append(")");
 
-                    return EvalResult.Failure(Engine, Error.StackCorruptionError, sb.ToString());
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.StackCorruptionError, sb.ToString()));
                 }
             }
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,10 +31,8 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             var infos = Engine.GetVersionInformations();
 
             var record = new MOGRecord(Engine);
@@ -63,12 +61,12 @@ namespace MOGWAI.Primitives
 
             record.SetItem("externalKeywords", keywords);
 
-            var hostKeywords = new MOGList(Engine); 
+            var hostKeywords = new MOGList(Engine);
 
             if (Engine.Delegate != null)
             {
-                foreach (var hk in Engine.Delegate.HostFunctions(Engine)) 
-                    hostKeywords.AddItem(new MOGName(Engine, hk));  
+                foreach (var hk in Engine.Delegate.HostFunctions(Engine))
+                    hostKeywords.AddItem(new MOGName(Engine, hk));
             }
 
             record.SetItem("hostKeywords", hostKeywords);
@@ -79,7 +77,7 @@ namespace MOGWAI.Primitives
 
             Engine.StackPush(record);
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

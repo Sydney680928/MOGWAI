@@ -30,16 +30,14 @@ namespace MOGWAI.Primitives
             obj.UpdateFromOther(this);
             return obj;
         }
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // xxx yyyy ==
-
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGNumber) && s[1] == typeof(MOGNumber))
             {
@@ -83,10 +81,10 @@ namespace MOGWAI.Primitives
             }
             else
             {
-                return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
             }
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

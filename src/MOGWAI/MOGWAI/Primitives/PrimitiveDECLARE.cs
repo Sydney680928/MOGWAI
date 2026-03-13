@@ -31,14 +31,12 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, this);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, this));
 
             if (s[0] == typeof(MOGName))
             {
@@ -46,12 +44,12 @@ namespace MOGWAI.Primitives
                 var value = Engine.StackPop();  
 
                 if (Engine.VarExists(name.Value))
-                    return EvalResult.Failure(Engine, Error.NameAlreadyExistsError, this, name.ToString());
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.NameAlreadyExistsError, this, name.ToString()));
 
-                return Engine.VarDeclare(name.Value, value!);
+                return Task.FromResult(Engine.VarDeclare(name.Value, value!));
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, this);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, this));
         }
     }
 }

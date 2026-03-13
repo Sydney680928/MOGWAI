@@ -31,27 +31,26 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // DATA:1 ->uint8    ----> .number
             // .number ->uint8   ----> DATA:1
 
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             var n0 = Engine.StackPop();
 
             if (n0 is MOGData data)
             {
                 if (data.Items.Count == 0)
-                    return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ".data is empty.");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ".data is empty."));
 
                 Engine.StackPushNumber(data.Items[0]);
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             else if (n0 is MOGNumber number)
             {
@@ -63,7 +62,7 @@ namespace MOGWAI.Primitives
                 }
                 catch (Exception ex)
                 {
-                    return EvalResult.Failure(Engine, Error.BadArgumentValueError, ex.Message);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, ex.Message));
                 }
 
                 var d = new MOGData(Engine);
@@ -71,10 +70,10 @@ namespace MOGWAI.Primitives
 
                 Engine.StackPush(d);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

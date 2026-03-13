@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,10 +31,8 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGNumber number)
+        public override Task<EvalResult> PerformOperation(MOGNumber number)
         {
-            await Task.CompletedTask;
-
             var sgn = Engine.StackSign(number.IntValue);
             var list = new MOGList(Engine);
 
@@ -46,7 +44,7 @@ namespace MOGWAI.Primitives
 
             Engine.StackPush(list);
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

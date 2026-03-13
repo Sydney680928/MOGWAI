@@ -30,11 +30,10 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
             var error = Error.GetError(@string.Value);
-            return EvalResult.Failure(Engine, error);
+            return Task.FromResult(EvalResult.Failure(Engine, error));
         }
     }
 }

@@ -30,14 +30,13 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
 
             var sign = Engine.StackSign(2);
 
             if (sign.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (sign[0] == typeof(MOGString) && sign[1] == typeof(MOGNumber))
             {
@@ -48,15 +47,15 @@ namespace MOGWAI.Primitives
                 {
                     var s = n1.Value.ToString(n0.Value, System.Globalization.CultureInfo.InvariantCulture);
                     Engine.StackPushString(s);
-                    return EvalResult.NoError;
+                    return Task.FromResult(EvalResult.NoError);
                 }
                 catch (Exception ex)
                 {
-                    return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ex.Message);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ex.Message));
                 }
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

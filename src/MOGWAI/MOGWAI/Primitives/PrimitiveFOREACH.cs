@@ -39,8 +39,6 @@ namespace MOGWAI.Primitives
             
             // D:010203 'i' { i ? } FOREACH 
 
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(3);
 
             if (s.Count == 0)

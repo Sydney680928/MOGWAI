@@ -31,10 +31,8 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override  Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
-
             var s = @string.Value;
 
             if (s.StartsWith("0x") || s.StartsWith("0X"))
@@ -43,10 +41,10 @@ namespace MOGWAI.Primitives
             if (long.TryParse(s, System.Globalization.NumberStyles.HexNumber, null, out var result))
             {
                 Engine.StackPushNumber(result);
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, @string.Value);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, @string.Value));
         }
     }
 }

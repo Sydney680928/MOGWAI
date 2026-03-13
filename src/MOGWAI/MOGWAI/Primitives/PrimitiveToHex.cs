@@ -24,12 +24,11 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGNumber number)
+        public override Task<EvalResult> PerformOperation(MOGNumber number)
         {
-            await Task.CompletedTask;
             var s = number!.IntValue.ToString("X");
             Engine.StackPushString(s);
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
         public override MOGObject Clone()

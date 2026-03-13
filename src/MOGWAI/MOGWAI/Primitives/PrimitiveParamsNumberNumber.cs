@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,32 +24,29 @@ namespace MOGWAI.Primitives
 
         }
 
-        public virtual async Task<EvalResult> PerformOperation(MOGNumber number1, MOGNumber number2)
+        public virtual Task<EvalResult> PerformOperation(MOGNumber number1, MOGNumber number2)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // number number operation (ex - * / )
-
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGNumber) && s[1] == typeof(MOGNumber))
             {
                 var number2 = Engine.StackPopNumber();
                 var number1 = Engine.StackPopNumber();
 
-                return await PerformOperation(number1, number2);
+                return PerformOperation(number1, number2);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

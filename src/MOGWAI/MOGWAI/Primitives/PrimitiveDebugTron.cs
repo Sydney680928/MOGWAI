@@ -31,11 +31,10 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGNumber number)
+        public override Task<EvalResult> PerformOperation(MOGNumber number)
         {
-            await Task.CompletedTask;
             Engine.TronValue = number.IntValue;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

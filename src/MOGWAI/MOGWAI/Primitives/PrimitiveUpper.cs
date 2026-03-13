@@ -31,13 +31,12 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
 
             @string.Value = @string.Value.ToUpper();
             Engine.StackPush(@string);
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

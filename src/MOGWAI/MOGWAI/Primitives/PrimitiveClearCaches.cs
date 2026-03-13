@@ -31,11 +31,10 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
-        {
-            await Task.CompletedTask;
+        public override Task<EvalResult> EngineEval()
+        {         
             Engine.ClearIncludes();
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

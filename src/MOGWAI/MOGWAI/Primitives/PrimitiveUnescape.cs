@@ -32,9 +32,8 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
 
             try
             {
@@ -44,16 +43,16 @@ namespace MOGWAI.Primitives
                 if (unescaped != null)
                 {
                     Engine.StackPushString(unescaped);
-                    return EvalResult.NoError;
+                    return Task.FromResult(EvalResult.NoError);
                 }
                 else
                 {
-                    return EvalResult.Failure(Engine, Error.InternalError, this, "unescape operation failed.");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.InternalError, this, "unescape operation failed."));
                 }
             }
             catch (Exception ex)
             {
-                return EvalResult.Failure(Engine, Error.InternalError, this, "unescape operation failed: Invalid string format.", ex.Message);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.InternalError, this, "unescape operation failed: Invalid string format.", ex.Message));
             }
         }
     }

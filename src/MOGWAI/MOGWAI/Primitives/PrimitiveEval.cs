@@ -32,8 +32,6 @@ namespace MOGWAI.Primitives
         }
         public override async Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             if (Engine.StackSize == 0)
                 return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
 

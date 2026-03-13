@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,26 +26,24 @@ namespace MOGWAI.Primitives
 
         public abstract Task<EvalResult> PerformOperation(MOGBoolean bool1, MOGBoolean bool2);
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // boolean boolean operation (ex and or xor)
-
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGBoolean) && s[1] == typeof(MOGBoolean))
             {
                 var b1 = Engine.StackPopBoolean();
                 var b2 = Engine.StackPopBoolean();
 
-                return await PerformOperation(b1, b2);
+                return PerformOperation(b1, b2);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

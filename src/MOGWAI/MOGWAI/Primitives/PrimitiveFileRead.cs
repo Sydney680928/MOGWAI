@@ -30,16 +30,14 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // fileid number file.read
-
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGNumber) && s[1] == typeof(MOGString))
             {
@@ -47,10 +45,10 @@ namespace MOGWAI.Primitives
                 var file = Engine.StackPopString();
 
                 if (!Engine.OpeninFileExists(file.Value))
-                    return EvalResult.Failure(Engine, Error.UnknownFileError, Name);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.UnknownFileError, Name));
 
                 if (size!.IntValue < 1)
-                    return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
 
                 try
                 {
@@ -58,16 +56,16 @@ namespace MOGWAI.Primitives
                     var data = new MOGData(Engine, b);
                     
                     Engine.StackPush(data);
-                    
-                    return EvalResult.NoError;
+
+                    return Task.FromResult(EvalResult.NoError);
                 }
                 catch
                 {
-                    return EvalResult.Failure(Engine, Error.FileOperationError, Name);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.FileOperationError, Name));
                 }
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

@@ -30,19 +30,17 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGNumber number1, MOGNumber number2)
+        public override Task<EvalResult> PerformOperation(MOGNumber number1, MOGNumber number2)
         {
-            await Task.CompletedTask;
-
             try
             {
                 var v = Math.Pow(number1.Value, number2.Value);
                 Engine.StackPushNumber(v);
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             catch (Exception ex)
             {
-                return EvalResult.Failure(Engine, Error.MathematicalError, Name, ex.Message);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.MathematicalError, Name, ex.Message));
             }
         }
     }

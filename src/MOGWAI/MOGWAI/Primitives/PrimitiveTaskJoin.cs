@@ -34,8 +34,6 @@ namespace MOGWAI.Primitives
         {
             // list tasks.join
 
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)

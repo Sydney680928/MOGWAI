@@ -35,12 +35,10 @@ namespace MOGWAI.Primitives
         {
             // 1 2 'i' {...} FOR
 
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(4);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, this);
+                EvalResult.Failure(Engine, Error.TooFewArgumentsError, this);
 
             if (s[0] == typeof(MOGCode) && s[1] == typeof(MOGName) && s[2] == typeof(MOGNumber) && s[3] == typeof(MOGNumber))
             {

@@ -31,9 +31,8 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGData data)
+        public override Task<EvalResult> PerformOperation(MOGData data)
         {
-            await Task.CompletedTask;
 
             var b = data.Items.ToArray();
 
@@ -46,10 +45,10 @@ namespace MOGWAI.Primitives
                 {
                     var hash = new MOGData(Engine, h);
                     Engine.StackPush(hash);
-                    return EvalResult.NoError;
+                    return Task.FromResult(EvalResult.NoError);
                 }
 
-                return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,18 +30,16 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
-
             try
             {
                 Engine.ProgramsDirectory = Path.GetFullPath(@string.Value);
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             catch
             {
-                return EvalResult.Failure(Engine, Error.FileOperationError, this);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.FileOperationError, this));
             }
         }
     }

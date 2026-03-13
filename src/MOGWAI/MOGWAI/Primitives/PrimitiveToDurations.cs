@@ -31,9 +31,8 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGNumber number)
+        public override Task<EvalResult> PerformOperation(MOGNumber number)
         {
-            await Task.CompletedTask;
 
             var t = new TimeSpan((long)number!.Value);
             var r = new MOGRecord(Engine);
@@ -45,7 +44,7 @@ namespace MOGWAI.Primitives
             r.Items["totalMs"] = new MOGNumber(Engine, t.TotalMilliseconds);
 
             Engine.StackPush(r);
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

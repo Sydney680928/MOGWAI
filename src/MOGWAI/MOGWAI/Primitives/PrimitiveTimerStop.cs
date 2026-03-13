@@ -30,16 +30,15 @@ namespace MOGWAI.Primitives
             obj.UpdateFromOther(this);
             return obj;
         }
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // name timer.stop
 
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGName))
             {
@@ -48,12 +47,12 @@ namespace MOGWAI.Primitives
                 var timer = Engine.GetTimer(name.Value);
 
                 if (timer == null)
-                    return EvalResult.Failure(Engine, Error.UnknownNameError, Name);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.UnknownNameError, Name));
 
-                return timer.Stop();
+                return Task.FromResult(timer.Stop());
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

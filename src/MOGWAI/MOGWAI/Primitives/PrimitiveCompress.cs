@@ -31,21 +31,19 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGData data)
+        public override Task<EvalResult> PerformOperation(MOGData data)
         {
-            await Task.CompletedTask;
-
             try
             {
                 var bytes = data.Items.ToArray();
                 var newData = new MOGData(Engine, Engine.Compress(bytes));
                 Engine.StackPush(newData);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             catch
             {
-                return EvalResult.Failure(Engine, Error.InternalError, $"Compression failed.");
+                return Task.FromResult(EvalResult.Failure(Engine, Error.InternalError, $"Compression failed."));
             }
         }
     }

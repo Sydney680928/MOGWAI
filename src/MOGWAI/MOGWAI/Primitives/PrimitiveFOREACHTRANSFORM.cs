@@ -32,8 +32,6 @@ namespace MOGWAI.Primitives
         }
         public override async Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(3);
 
             if (s.Count == 0)

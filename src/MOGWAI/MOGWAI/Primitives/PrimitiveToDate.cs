@@ -31,11 +31,10 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGNumber number)
+        public override Task<EvalResult> PerformOperation(MOGNumber number)
         {
             // ticks ->date ----> [day: 28 ...
 
-            await Task.CompletedTask;
 
             var d = new DateTime((long)number.Value);
             var r = new MOGRecord(Engine);
@@ -50,7 +49,7 @@ namespace MOGWAI.Primitives
             r.Items["dayOfWeek"] = new MOGNumber(Engine, (int)d.DayOfWeek);
 
             Engine.StackPush(r);
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

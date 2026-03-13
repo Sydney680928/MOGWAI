@@ -31,13 +31,12 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // rand
 
-            await Task.CompletedTask;
             Engine.StackPushNumber(Engine.GetNexRandomValue());
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

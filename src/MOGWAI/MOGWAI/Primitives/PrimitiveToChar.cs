@@ -31,19 +31,18 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGNumber number)
+        public override Task<EvalResult> PerformOperation(MOGNumber number)
         {
-            await Task.CompletedTask;
 
             try
             {
                 char c = (char)number.IntValue;
                 Engine.StackPushString(c.ToString());
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             catch
             {
-                return EvalResult.Failure(Engine, Error.InternalError, this, $"Failed to convert number {number.Value} to char.");
+                return Task.FromResult(EvalResult.Failure(Engine, Error.InternalError, this, $"Failed to convert number {number.Value} to char."));
             }
         }
     }

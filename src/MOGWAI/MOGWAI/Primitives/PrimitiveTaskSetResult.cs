@@ -31,14 +31,13 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // object task.setResult
 
-            await Task.CompletedTask;
 
             if (Engine.StackSize == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             var obj = Engine.StackPop();
 
@@ -52,13 +51,13 @@ namespace MOGWAI.Primitives
                 }
                 catch (Exception ex)
                 {
-                    return EvalResult.Failure(Engine, Error.ParseError, ex.Message);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.ParseError, ex.Message));
                 }
 
                 Engine.TaskResult = items[0];
             }
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

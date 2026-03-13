@@ -32,16 +32,14 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // ( "ABCD" "EFGH" "TYUI") ";" join ----> "ABCD;EFGH;TYUI"
-
-            await Task.CompletedTask;
 
             var sign = Engine.StackSign(2);
 
             if (sign.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (sign[0] == typeof(MOGString) && sign[1] == typeof(MOGList))
             {
@@ -61,10 +59,10 @@ namespace MOGWAI.Primitives
 
                 Engine.StackPushString(str.ToString());
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

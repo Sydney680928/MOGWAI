@@ -31,21 +31,19 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // [x: 50 y: 100 z: 10] (x: y:) extract ----> [x: 50 y: 100]
             // (1 2 3 4) (0 2) extract ---> (1 3)
             // D:FFAB5612AE (0 2) extract ---> D:FF56
 
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] != typeof(MOGList))
-                return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
 
             if (s[1] == typeof(MOGRecord))
             {
@@ -69,7 +67,7 @@ namespace MOGWAI.Primitives
                     }
                     else
                     {
-                        return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "only keys are allowed !");
+                        return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "only keys are allowed !"));
                     }
                 }
 
@@ -98,7 +96,7 @@ namespace MOGWAI.Primitives
                     }
                     else
                     {
-                        return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "only numbers are allowed !");
+                        return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "only numbers are allowed !"));
                     }
                 }
 
@@ -122,12 +120,12 @@ namespace MOGWAI.Primitives
                         }
                         else
                         {
-                            return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "index out of range !");
+                            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "index out of range !"));
                         }
                     }
                     else
                     {
-                        return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "index out of range !");
+                        return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "index out of range !"));
                     }
                 }
 
@@ -135,10 +133,10 @@ namespace MOGWAI.Primitives
             }
             else
             {
-                return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
             }
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

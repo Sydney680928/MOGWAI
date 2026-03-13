@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,28 +30,27 @@ namespace MOGWAI.Primitives
             obj.UpdateFromOther(this);
             return obj;
         }
-        public override async Task<EvalResult> EngineEval()
+
+        public override Task<EvalResult> EngineEval()
         {
             // 'A' rclx
-
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] != typeof(MOGName))
-                return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
 
             var name = Engine.StackPopName();
             var value = Engine.VarRead(name.Value, false);
 
             if (value == null)
-                return EvalResult.Failure(Engine, Error.UnknownNameError, Name, name.ToString());
+                return Task.FromResult(EvalResult.Failure(Engine, Error.UnknownNameError, Name, name.ToString()));
 
             Engine.StackPush(value);
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

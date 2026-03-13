@@ -31,32 +31,30 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // bool not
-
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGBoolean))
             {
                 var b = Engine.StackPopBoolean();
                 Engine.StackPushBoolean(!b.Value);
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             else if (s[0] == typeof(MOGBinaryNumber))
             {
                 var bin = Engine.StackPopBinaryNumber();    
                 bin.Not();
-                Engine.StackPush(bin);  
-                return EvalResult.NoError;
+                Engine.StackPush(bin);
+                return Task.FromResult(EvalResult.NoError);
             }
 
-                return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

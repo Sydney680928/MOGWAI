@@ -31,12 +31,10 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
-
             if (@string.Value.Length == 0)
-                return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
 
             try
             {
@@ -46,11 +44,11 @@ namespace MOGWAI.Primitives
                 Engine.RegisterNewOpeninFile(id, reader);
                 Engine.StackPushString(id);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             catch
             {
-                return EvalResult.Failure(Engine, Error.FileOperationError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.FileOperationError, Name));
             }
         }
     }

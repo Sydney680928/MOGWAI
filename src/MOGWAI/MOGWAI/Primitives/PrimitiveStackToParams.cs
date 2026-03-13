@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,19 +31,17 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // [id: 50 name: "SIBUE" x: 'Z'] [id: .number name: .string u: (.boolean true)] ->params -------> id=50 name="SIBUE u=true"
-
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] != typeof(MOGRecord) || s[1] != typeof(MOGRecord))
-                return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
 
             var n0 = Engine.StackPopRecord();
             var n1 = Engine.StackPopRecord();
@@ -70,7 +68,7 @@ namespace MOGWAI.Primitives
                     // La liste doit être composée de 2 élements
 
                     if (list.Size != 2)
-                        return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, $"{key}: parameter", "default value list definition must have 2 items (type defaultValue).");
+                        return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, $"{key}: parameter", "default value list definition must have 2 items (type defaultValue)."));
 
                     // L'item 0 doit être un type
 
@@ -87,17 +85,17 @@ namespace MOGWAI.Primitives
                         }
                         else
                         {
-                            return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, $"{key}: parameter", "default value list definition must have a value with the good type in second position.");
+                            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, $"{key}: parameter", "default value list definition must have a value with the good type in second position."));
                         }
                     }
                     else
                     {
-                        return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, $"{key}: parameter", "default value list definition must have a type in first position.");
+                        return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, $"{key}: parameter", "default value list definition must have a type in first position."));
                     }
                 }
                 else
                 {
-                    return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, $"{key}: parameter", "parameter definition is a type or a list (type defaultValue).");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, $"{key}: parameter", "parameter definition is a type or a list (type defaultValue)."));
                 }
             }
 
@@ -118,7 +116,7 @@ namespace MOGWAI.Primitives
                     }
                     else
                     {
-                        return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, $"{p.VarName}: type is invalid !", $"{p.Type} expected", $"{pv.Type} provided");
+                        return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, $"{p.VarName}: type is invalid !", $"{p.Type} expected", $"{pv.Type} provided"));
                     }
                 }
                 else
@@ -127,7 +125,7 @@ namespace MOGWAI.Primitives
                     // Si on a une valeur par défaut c'est pas grave, sinon erreur !
 
                     if (p.Value == null)
-                        return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, $"{p.VarName}: parameter is mandatory !");
+                        return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, $"{p.VarName}: parameter is mandatory !"));
                 }
             }
 
@@ -147,7 +145,7 @@ namespace MOGWAI.Primitives
                     var r1 = Engine.VarDeclareForType(pdef.VarName, Engine.GetType("any")!);
 
                     if (r1 != EvalResult.NoError)
-                        return r1;
+                        return Task.FromResult(r1);
                 }
 
                 result = Engine.VarWrite(pdef.VarName, pdef.Value ?? new MOGNull(Engine));
@@ -156,8 +154,9 @@ namespace MOGWAI.Primitives
                     break;
             }
 
-            return result;
+            return Task.FromResult(result);
         }
+
         private class ParamDefinition
         {
             public string VarName { get; set; }

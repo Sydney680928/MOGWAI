@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,17 +31,15 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // 10 20 30 ( 'A' 'B' 'C') ->vars -----> A=10 B=20 C=30
             // [id: 50 name: "SIBUE" x: 'Z'] ->vars -------> id=50 name="SIBUE" x='Z'
 
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGList))
             {
@@ -54,13 +52,13 @@ namespace MOGWAI.Primitives
                 foreach (var item in list.Items)
                 {
                     if (item is not MOGName)
-                        return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, "the list parameter can only contain names.");
+                        return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, "the list parameter can only contain names."));
                 }
 
                 // La stack doit comporter assez d'éléments
 
                 if (Engine.StackSize < list.Size)
-                    return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name, "the stack does not contain enough elements.");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name, "the stack does not contain enough elements."));
 
                 // Pour chaque name on prend un item de la stack et on crée une variable avec
                 // On travaille à l'envers pour que les paramètres soient dans le bon sens
@@ -78,16 +76,16 @@ namespace MOGWAI.Primitives
                         var r1 = Engine.VarDeclareForType(name.Value, Engine.GetType("any")!);
 
                         if (r1 != EvalResult.NoError)
-                            return r1;
+                            return Task.FromResult(r1);
                     }
 
                     var r2 = Engine.VarWrite(name!.Value, item!);
 
                     if (r2 != EvalResult.NoError)
-                        return r2;
+                        return Task.FromResult(r2);
                 }
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             else if (s[0] == typeof(MOGRecord))
             {
@@ -107,16 +105,16 @@ namespace MOGWAI.Primitives
                         var r1 = Engine.VarDeclareForType(key, Engine.GetType("any")!);
 
                         if (r1 != EvalResult.NoError)
-                            return r1;
+                            return Task.FromResult(r1);
                     }
 
                     Engine.VarWrite(key, item);
                 }
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

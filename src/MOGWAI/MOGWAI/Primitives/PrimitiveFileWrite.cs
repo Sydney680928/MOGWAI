@@ -31,16 +31,14 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // fileid data file.write
-
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGData) && s[1] == typeof(MOGString))
             {
@@ -48,20 +46,20 @@ namespace MOGWAI.Primitives
                 var file = Engine.StackPopString();
 
                 if (!Engine.OpenoutFileExists(file.Value))
-                    return EvalResult.Failure(Engine, Error.UnknownFileError, Name);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.UnknownFileError, Name));
 
                 try
                 {
                     Engine.FileWrite(file.Value, data.Items.ToArray());
-                    return EvalResult.NoError;
+                    return Task.FromResult(EvalResult.NoError);
                 }
                 catch
                 {
-                    return EvalResult.Failure(Engine, Error.FileOperationError, Name);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.FileOperationError, Name));
                 }
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

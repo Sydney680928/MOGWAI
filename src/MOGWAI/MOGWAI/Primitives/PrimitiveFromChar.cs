@@ -33,15 +33,13 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
-
             if (@string.Value.Length == 0)
-                return EvalResult.Failure(Engine, Error.BadArgumentTypeError, "string must not be empty");
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, "string must not be empty"));
 
             Engine.StackPushNumber(@string.Value[0]);
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

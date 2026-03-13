@@ -31,10 +31,8 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
-
             try
             {
                 JsonDocument doc = JsonDocument.Parse(@string.Value);
@@ -45,15 +43,15 @@ namespace MOGWAI.Primitives
                 if (obj != null)
                 {
                     Engine.StackPush(obj);
-                    return EvalResult.NoError;
+                    return Task.FromResult(EvalResult.NoError);
                 }
             }
             catch (JsonException)
             {
-                return EvalResult.Failure(Engine, Error.InternalError, "invalid JSON format.");
+                return Task.FromResult(EvalResult.Failure(Engine, Error.InternalError, "invalid JSON format."));
             }
 
-            return EvalResult.Failure(Engine, Error.InternalError, "failed to convert JSON to object.");
+            return Task.FromResult(EvalResult.Failure(Engine, Error.InternalError, "failed to convert JSON to object."));
         }
     }
 }

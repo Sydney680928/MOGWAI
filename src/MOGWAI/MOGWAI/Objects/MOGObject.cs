@@ -51,12 +51,10 @@ namespace MOGWAI.Objects
             ExecutionContext = other.ExecutionContext;
         }
 
-        public virtual async Task<EvalResult> EngineEval()
+        public virtual Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             Engine.StackPush(this);
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
         public virtual async Task<EvalResult> UserEval()

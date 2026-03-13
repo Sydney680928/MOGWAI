@@ -30,16 +30,14 @@ namespace MOGWAI.Primitives
             obj.UpdateFromOther(this);
             return obj;
         }
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // function interval name AFTER
-
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(3);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGName) && s[1] == typeof(MOGNumber) && s[2] == typeof(MOGFunction))
             {
@@ -47,10 +45,10 @@ namespace MOGWAI.Primitives
                 var interval = Engine.StackPopNumber();
                 var function = Engine.StackPopFunction();
 
-                return Engine.CreateNewTimer(name.Value, interval.IntValue, false, function);
+                return Task.FromResult(Engine.CreateNewTimer(name.Value, interval.IntValue, false, function));
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

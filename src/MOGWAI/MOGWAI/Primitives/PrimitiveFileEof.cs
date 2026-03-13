@@ -31,17 +31,15 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
-
             if (!Engine.OpeninFileExists(@string.Value))
-                return EvalResult.Failure(Engine, Error.UnknownFileError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.UnknownFileError, Name));
 
             var b = Engine.FileEof(@string.Value);
             Engine.StackPushBoolean(b);
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
 
         }
     }

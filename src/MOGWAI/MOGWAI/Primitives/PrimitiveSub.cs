@@ -32,8 +32,6 @@ namespace MOGWAI.Primitives
 
         public override async Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             // "ABCDE" 1 1 sub ---> "B"
             // "ABCDE" 2 0 sub   ---> "CDE"
 

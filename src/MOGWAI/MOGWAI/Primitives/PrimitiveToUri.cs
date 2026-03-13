@@ -31,11 +31,10 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGRecord record)
+        public override Task<EvalResult> PerformOperation(MOGRecord record)
         {
             // [url: "https://cloude.olnica.com" path: "api/v0/login" query: [id: "50" name: "SIBUE"]] ->uri
 
-            await Task.CompletedTask;
 
             UriBuilder? ub = null;
 
@@ -80,7 +79,7 @@ namespace MOGWAI.Primitives
             }
 
             Engine.StackPushString(ub.ToString());
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

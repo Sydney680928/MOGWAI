@@ -31,14 +31,12 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGRecord))
             {
@@ -75,7 +73,7 @@ namespace MOGWAI.Primitives
                         {
                             var dt = new DateTime(year, month, day, hour, minute, second);
                             Engine.StackPushNumber(dt.Ticks);
-                            return EvalResult.NoError;
+                            return Task.FromResult(EvalResult.NoError);
                         }
                         catch
                         {
@@ -84,10 +82,10 @@ namespace MOGWAI.Primitives
                     }
                 }
 
-                return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "day: month: year: keys are mandatories");
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "day: month: year: keys are mandatories"));
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

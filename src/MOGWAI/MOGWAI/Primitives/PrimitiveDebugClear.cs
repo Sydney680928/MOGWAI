@@ -32,8 +32,6 @@ namespace MOGWAI.Primitives
 
         public override async Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             if (Engine.Delegate != null)
                 await Engine.Delegate.DebugClear(Engine);
 

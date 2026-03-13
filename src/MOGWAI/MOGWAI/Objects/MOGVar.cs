@@ -36,17 +36,16 @@ namespace MOGWAI.Objects
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override  Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             var value = Engine.VarRead(Value);
 
             if (value == null)
-                return EvalResult.Failure(Engine, Error.UnknownNameError, $"var '{Value}' is not defined.");
+                return Task.FromResult(EvalResult.Failure(Engine, Error.UnknownNameError, $"var '{Value}' is not defined."));
 
             Engine.StackPush(value);
-            return EvalResult.NoError;
+
+            return Task.FromResult(EvalResult.NoError);
         }
 
         public override string ToString()

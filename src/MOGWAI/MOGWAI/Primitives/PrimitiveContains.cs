@@ -31,10 +31,8 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             // (1 2 3) 3 contains ---> true
             // [id: 50 name: "SIBUE"] name: contains ---> true
             // DATA:EB5600FF 0x56 contains ---> true
@@ -43,7 +41,7 @@ namespace MOGWAI.Primitives
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             var n0 = Engine.StackPop();
             var n1 = Engine.StackPop();
@@ -56,12 +54,12 @@ namespace MOGWAI.Primitives
                     if (item.ToString() == ss)
                     {
                         Engine.StackPushBoolean(true);
-                        return EvalResult.NoError;
+                        return Task.FromResult(EvalResult.NoError);
                     }
                 }
 
                 Engine.StackPushBoolean(false);
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             else if (n1 is MOGRecord record)
             {
@@ -72,15 +70,15 @@ namespace MOGWAI.Primitives
                         if (k == key.Value)
                         {
                             Engine.StackPushBoolean(true);
-                            return EvalResult.NoError;
+                            return Task.FromResult(EvalResult.NoError);
                         }
                     }
 
                     Engine.StackPushBoolean(false);
-                    return EvalResult.NoError;
+                    return Task.FromResult(EvalResult.NoError);
                 }
 
-                return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, ".key expected.");
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, ".key expected."));
             }
             else if (n1 is MOGData data)
             {
@@ -91,16 +89,16 @@ namespace MOGWAI.Primitives
                         if (bb == n.Value)
                         {
                             Engine.StackPushBoolean(true);
-                            return EvalResult.NoError;
+                            return Task.FromResult(EvalResult.NoError);
                         }
                     }
 
                     Engine.StackPushBoolean(false);
-                    return EvalResult.NoError;
+                    return Task.FromResult(EvalResult.NoError);
                 }
                 else
                 {
-                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError));
                 }
             }
             else if (n1 is MOGString str)
@@ -109,13 +107,13 @@ namespace MOGWAI.Primitives
                 {
                     var b = (str.Value.IndexOf(str2.Value) > -1);
                     Engine.StackPushBoolean(b);
-                    return EvalResult.NoError;
+                    return Task.FromResult(EvalResult.NoError);
                 }
 
-                return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, ".string expected.");
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, ".string expected."));
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

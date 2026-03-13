@@ -31,10 +31,9 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGName name)
+        public override Task<EvalResult> PerformOperation(MOGName name)
         {
-            await Task.CompletedTask;
-            return Engine.TaskPurge(name!.Value);
+            return Task.FromResult(Engine.TaskPurge(name!.Value));
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,8 +33,6 @@ namespace MOGWAI.Primitives
 
         public override async Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
@@ -53,10 +51,10 @@ namespace MOGWAI.Primitives
             else if (s[0] == typeof(MOGString))
             {
                 var @string = Engine.StackPopString();
-                
+
                 // On prend le dossier complet
 
-                var path = Path.GetFullPath(@string.Value); 
+                var path = Path.GetFullPath(@string.Value);
                 return await Engine.Using(path);
             }
 

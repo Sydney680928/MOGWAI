@@ -34,8 +34,6 @@ namespace MOGWAI.Primitives
         {
             // 1 2 2 'i' {...} FORSTEP
 
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(5);
 
             if (s.Count == 0)

@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,19 +31,17 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // 10 "SIBUE" 'Z' [id: .number name: .string x: .name] ->safeVars -------> id=50 name="SIBUE" x='Z'
-
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] != typeof(MOGRecord))
-                return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
 
             // On récupère le record de référence et ses clés
 
@@ -55,13 +53,13 @@ namespace MOGWAI.Primitives
             foreach (var k in keys)
             {
                 if (recf.Items[k] is not MOGType)
-                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, "reference record must have .type values.");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, "reference record must have .type values."));
             }
 
             // La pile doit au moins contenir le nombre de clés du record de référence
 
             if (Engine.StackSize < recf.Items.Count)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, "the stack does not contain enough elements.");
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, "the stack does not contain enough elements."));
 
             // On récupère toute les valeurs depuis la pile
 
@@ -87,7 +85,7 @@ namespace MOGWAI.Primitives
                 // Si incorrect on arrête tout
 
                 if (tv!.Value != "any" && tv!.Value != pv!.Type.Value)
-                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, $"{tv} expected but {pv.Type} found for '{keys[i]}' parameter");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, $"{tv} expected but {pv.Type} found for '{keys[i]}' parameter"));
             }
 
             // On crée les variables locales
@@ -104,17 +102,17 @@ namespace MOGWAI.Primitives
                     var r1 = Engine.VarDeclareForType(keys[i], Engine.GetType("any")!);
 
                     if (r1 != EvalResult.NoError)
-                        return r1;
+                        return Task.FromResult(r1);
                 }
 
                 var v = values[index++];
                 var r = Engine.VarWrite(keys[i], v);
 
                 if (r != EvalResult.NoError)
-                    return r;
+                    return Task.FromResult(r);
             }
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

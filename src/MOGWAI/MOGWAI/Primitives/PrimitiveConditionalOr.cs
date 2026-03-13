@@ -31,11 +31,10 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGBoolean bool1, MOGBoolean bool2)
+        public override Task<EvalResult> PerformOperation(MOGBoolean bool1, MOGBoolean bool2)
         {
-            await Task.CompletedTask;
             Engine.StackPushBoolean(bool1.Value || bool2.Value);
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

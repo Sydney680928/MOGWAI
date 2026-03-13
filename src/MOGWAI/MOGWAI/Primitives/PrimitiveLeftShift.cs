@@ -31,14 +31,12 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGNumber) && s[1] == typeof(MOGNumber))
             {
@@ -47,7 +45,7 @@ namespace MOGWAI.Primitives
 
                 int v = n1.IntValue << n0.IntValue;
                 Engine.StackPushNumber(v);
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             else if (s[0] == typeof(MOGNumber) && s[1] == typeof(MOGBinaryNumber))
             {
@@ -56,10 +54,10 @@ namespace MOGWAI.Primitives
 
                 n1.LeftShift(n0.IntValue);
                 Engine.StackPush(n1);
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

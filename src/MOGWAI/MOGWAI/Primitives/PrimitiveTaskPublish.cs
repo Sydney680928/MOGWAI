@@ -34,8 +34,6 @@ namespace MOGWAI.Primitives
         {
             // message task.publish
 
-            await Task.CompletedTask;
-
             if (Engine.StackSize == 0)
                 return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
 

@@ -38,8 +38,6 @@ namespace MOGWAI.Primitives
             // [id: 5 pos: [x: 5 y: 9]] (pos: y:) get ---> 9
             // ( 1 2 3 [id: 50 name: "SMITH"] [id: 60 name: "DOE"]) (3 name:) get ---> "SMITH"
 
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)

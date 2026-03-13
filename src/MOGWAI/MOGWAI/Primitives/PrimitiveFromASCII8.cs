@@ -33,12 +33,11 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
             var b = Encoding.GetEncoding(28591).GetBytes(@string.Value);
             Engine.StackPush(new MOGData(Engine, b));
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

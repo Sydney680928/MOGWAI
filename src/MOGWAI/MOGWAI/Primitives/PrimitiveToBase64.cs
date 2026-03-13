@@ -31,12 +31,11 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGData data)
+        public override Task<EvalResult> PerformOperation(MOGData data)
         {
-            await Task.CompletedTask;
             var s = Convert.ToBase64String(data.Items.ToArray());
             Engine.StackPushString(s);
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

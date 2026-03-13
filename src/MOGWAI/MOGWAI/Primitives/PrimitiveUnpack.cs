@@ -31,9 +31,8 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGData data)
+        public override Task<EvalResult> PerformOperation(MOGData data)
         {
-            await Task.CompletedTask;
 
             try
             {
@@ -47,11 +46,11 @@ namespace MOGWAI.Primitives
 
                 Engine.StackPush(parser.ParsedObjects[0]);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             catch
             {
-                return EvalResult.Failure(Engine, Error.InternalError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.InternalError, Name));
             }
         }
     }

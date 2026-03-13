@@ -31,26 +31,24 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // obj ->type
-
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             var obj = Engine.StackPop();
 
             if (obj!.Type != null)
             {
                 Engine.StackPush(obj!.Type.Clone());
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, obj!.ToString() ?? "");
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, obj!.ToString() ?? ""));
         }
     }
 }

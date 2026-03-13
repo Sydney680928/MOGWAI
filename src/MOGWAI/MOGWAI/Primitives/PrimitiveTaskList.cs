@@ -30,9 +30,8 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
 
             var list = new MOGList(Engine);
             var tasks = Engine.GetTasks();
@@ -41,7 +40,7 @@ namespace MOGWAI.Primitives
                 list.Items.Add(new MOGName(Engine, task));
 
             Engine.StackPush(list);
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

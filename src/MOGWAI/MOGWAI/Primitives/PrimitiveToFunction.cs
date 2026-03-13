@@ -31,26 +31,25 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGCode))
             {
                 var code = Engine.StackPopCode();
                 Engine.StackPush(code.ToFunction());
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             else if (s[0] == typeof(MOGList))
             {
                 var list = Engine.StackPopList();
                 Engine.StackPush(list.ToCode().ToFunction());
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             else if (s[0] == typeof(MOGString))
             {
@@ -63,16 +62,16 @@ namespace MOGWAI.Primitives
                 }
                 catch (Exception ex)
                 {
-                    return EvalResult.Failure(Engine, Error.ParseError, ex.Message);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.ParseError, ex.Message));
                 }
 
                 var func = new MOGFunction(Engine, items);
                 Engine.StackPush(func);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

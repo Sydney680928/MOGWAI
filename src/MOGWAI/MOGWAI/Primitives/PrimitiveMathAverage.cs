@@ -30,15 +30,13 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGList list)
+        public override Task<EvalResult> PerformOperation(MOGList list)
         {
-            await Task.CompletedTask;
-
             if (list.Items.Count == 0)
-                return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
 
             if (list.Items[0] is not MOGNumber)
-                return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
 
             double sum = 0;
 
@@ -50,13 +48,13 @@ namespace MOGWAI.Primitives
                 }
                 else
                 {
-                    return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
                 }
             }
 
             Engine.StackPushNumber(sum / list.Items.Count);
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

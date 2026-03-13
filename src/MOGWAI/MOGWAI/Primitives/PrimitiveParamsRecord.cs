@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,30 +24,27 @@ namespace MOGWAI.Primitives
 
         }
 
-        public virtual async Task<EvalResult> PerformOperation(MOGRecord record)
+        public virtual Task<EvalResult> PerformOperation(MOGRecord record)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
-            // name operation (ex flag.set purge timer.start)
-
-            await Task.CompletedTask;
+            // record operation
 
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGRecord))
             {
                 var record = Engine.StackPopRecord();
-                return await PerformOperation(record);
+                return PerformOperation(record);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

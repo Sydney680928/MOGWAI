@@ -34,8 +34,6 @@ namespace MOGWAI.Primitives
         {
             // bool codeTrue codeFalse IFELSE
 
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(3);
 
             if (s.Count == 0)

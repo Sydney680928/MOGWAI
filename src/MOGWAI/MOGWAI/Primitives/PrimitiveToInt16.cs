@@ -31,28 +31,27 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             var n0 = Engine.StackPop();
 
             if (n0 is MOGData data)
             {
                 if (data.Items.Count < 2)
-                    return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ".data too small.");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ".data too small."));
 
                 var bytes = new byte[] { data.Items[1], data.Items[0] };
                 var x = BitConverter.ToInt16(bytes);
 
                 Engine.StackPushNumber(x);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             else if (n0 is MOGNumber number)
             {
@@ -64,7 +63,7 @@ namespace MOGWAI.Primitives
                 }
                 catch (Exception ex)
                 {
-                    return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ex.Message);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ex.Message));
                 }
 
                 byte[] bytes = BitConverter.GetBytes(b);
@@ -76,10 +75,10 @@ namespace MOGWAI.Primitives
 
                 Engine.StackPush(d);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

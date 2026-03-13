@@ -37,8 +37,6 @@ namespace MOGWAI.Primitives
             // [id: 5 x: 9] x: 500 put ----> [id: 5 x: 500]
             // D:FF0510 0 0x0 set ----> D:000510
 
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(3);
 
             if (s.Count == 0)

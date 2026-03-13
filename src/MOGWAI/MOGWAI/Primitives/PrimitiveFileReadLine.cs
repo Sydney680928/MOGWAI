@@ -30,22 +30,20 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGString @string)
+        public override Task<EvalResult> PerformOperation(MOGString @string)
         {
-            await Task.CompletedTask;
-
             if (!Engine.OpeninFileExists(@string.Value))
-                return EvalResult.Failure(Engine, Error.UnknownFileError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.UnknownFileError, Name));
 
             try
             {
                 var bytes = Engine.FileReadLine(@string.Value);
                 Engine.StackPushData(bytes);
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             catch
             {
-                return EvalResult.Failure(Engine, Error.FileOperationError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.FileOperationError, Name));
             }
         }
     }

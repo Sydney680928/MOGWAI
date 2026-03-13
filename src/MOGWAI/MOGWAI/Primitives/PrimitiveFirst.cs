@@ -36,8 +36,6 @@ namespace MOGWAI.Primitives
             // list first
             // data first
 
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)

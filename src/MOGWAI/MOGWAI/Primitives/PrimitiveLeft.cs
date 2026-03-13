@@ -31,17 +31,15 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
             // string number left
             // data number left
 
-            await Task.CompletedTask;
-
             var s = Engine.StackSign(2);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGNumber) && s[1] == typeof(MOGString))
             {
@@ -49,7 +47,7 @@ namespace MOGWAI.Primitives
                 var @string = Engine.StackPopString();
 
                 if (number.IntValue < 1)
-                    return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "characters number must be >0.");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "characters number must be >0."));
 
                 if (@string.Value.Length < number.IntValue)
                 {
@@ -60,7 +58,7 @@ namespace MOGWAI.Primitives
                     Engine.StackPushString(@string.Value.Substring(0, number.IntValue));
                 }
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             else if (s[0] == typeof(MOGNumber) && s[1] == typeof(MOGData))
             {
@@ -68,7 +66,7 @@ namespace MOGWAI.Primitives
                 var data = Engine.StackPopData();
 
                 if (number.IntValue < 1)
-                    return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "bytes number must be >0.");
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "bytes number must be >0."));
 
                 if (data.Items.Count < number.IntValue)
                 {
@@ -86,10 +84,10 @@ namespace MOGWAI.Primitives
                     Engine.StackPush(data);
                 }
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

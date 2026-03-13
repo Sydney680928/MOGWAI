@@ -30,21 +30,20 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> EngineEval()
+        public override Task<EvalResult> EngineEval()
         {
-            await Task.CompletedTask;
 
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
-                return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
             if (s[0] == typeof(MOGNumber))
             {
                 var n0 = Engine.StackPopNumber();
 
                 if (n0.IntValue > Engine.StackSize)
-                    return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
                 var lst = new MOGList(Engine);
 
@@ -56,7 +55,7 @@ namespace MOGWAI.Primitives
 
                 Engine.StackPush(lst);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
             else if (s[0] == typeof(MOGData))
             {
@@ -68,10 +67,10 @@ namespace MOGWAI.Primitives
 
                 Engine.StackPush(lst);
 
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
-            return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name);
+            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
     }
 }

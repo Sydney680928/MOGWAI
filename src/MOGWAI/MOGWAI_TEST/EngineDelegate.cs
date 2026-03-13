@@ -29,77 +29,65 @@ namespace MOGWAI_TEST
             _engine = engine;
         }
 
-        public async Task ProgramStart(MogwaiEngine engine, string code)
+        public Task ProgramStart(MogwaiEngine engine, string code)
         {
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public async Task ProgramEnd(MogwaiEngine engine, EvalResult result)
+        public Task ProgramEnd(MogwaiEngine engine, EvalResult result)
         {
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public async Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine)
+        public Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-
             lock (_consoleAccessLocker)
                 Console.Clear();
 
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message)
+        public Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message)
         {
-            await Task.CompletedTask;
-
             lock (_consoleAccessLocker)
                 Console.WriteLine(message);
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message)
+        public Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message)
         {
-            await Task.CompletedTask;
-
             lock (_consoleAccessLocker)
                 Console.Write(message);
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsoleShow(MogwaiEngine engine)
+        public Task<EvalResult> ConsoleShow(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsoleHide(MogwaiEngine engine)
+        public Task<EvalResult> ConsoleHide(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y)
+        public Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y)
         {
-            await Task.CompletedTask;
             Console.SetCursorPosition(x, y);
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<(EvalResult result, int x, int y)> ConsoleGetCursorPosition(MogwaiEngine engine)
+        public Task<(EvalResult result, int x, int y)> ConsoleGetCursorPosition(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
             var r = Console.GetCursorPosition();
-            return (EvalResult.NoError, r.Left, r.Top);
+            return Task.FromResult((EvalResult.NoError, r.Left, r.Top));
         }
 
-        public async Task<EvalResult> ConsoleSetForegroundColor(MogwaiEngine engine, string color)
+        public Task<EvalResult> ConsoleSetForegroundColor(MogwaiEngine engine, string color)
         {
-            await Task.CompletedTask;
-
             switch (color.ToLower())
             {
                 case "black":
@@ -133,13 +121,11 @@ namespace MOGWAI_TEST
                     break;
             }
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsoleSetBackgroundColor(MogwaiEngine engine, string color)
+        public Task<EvalResult> ConsoleSetBackgroundColor(MogwaiEngine engine, string color)
         {
-            await Task.CompletedTask;
-
             switch (color.ToLower())
             {
                 case "black":
@@ -173,13 +159,11 @@ namespace MOGWAI_TEST
                     break;
             }
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine)
+        public Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-
             int key = -1;
 
             if (Console.KeyAvailable)
@@ -188,25 +172,21 @@ namespace MOGWAI_TEST
                 key = (int)keyInfo.Key;
             }
 
-            return (EvalResult.NoError, key);
+            return Task.FromResult((EvalResult.NoError, key));
 
         }
 
-        public async Task<(EvalResult result, string? value)> Prompt(MogwaiEngine engine, string message)
+        public Task<(EvalResult result, string? value)> Prompt(MogwaiEngine engine, string message)
         {
-            await Task.CompletedTask;
-
             Console.Write(message);
             var r = Console.ReadLine();
-            return (EvalResult.NoError, r);
+            return Task.FromResult((EvalResult.NoError, r));
         }
 
         public string[] HostFunctions(MogwaiEngine engine) => ["?s", "run"];
 
         public async Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string word)
         {
-            await Task.CompletedTask;
-
             if (word == "?s")
             {
                 if (engine.StackSize == 0)
@@ -275,58 +255,49 @@ namespace MOGWAI_TEST
             return EvalResult.NoExternalFunction;
         }
 
-        public async Task<EvalResult> MessageReceivedFromRuntime(MogwaiEngine engine, string message, MOGObject parameter)
+        public Task<EvalResult> MessageReceivedFromRuntime(MogwaiEngine engine, string message, MOGObject parameter)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> EngineDidPause(MogwaiEngine engine)
+        public Task<EvalResult> EngineDidPause(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> EngineDidResume(MogwaiEngine engine)
+        public Task<EvalResult> EngineDidResume(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> StudioDidConnect(MogwaiEngine engine)
+        public Task<EvalResult> StudioDidConnect(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> StudioDidDisconnect(MogwaiEngine engine)
+        public Task<EvalResult> StudioDidDisconnect(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> SocketServerDidStart(MogwaiEngine engine, IPAddress address, int port)
+        public Task<EvalResult> SocketServerDidStart(MogwaiEngine engine, IPAddress address, int port)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> SocketServerDidStop(MogwaiEngine engine)
+        public Task<EvalResult> SocketServerDidStop(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> DebugMessage(MogwaiEngine engine, string message)
+        public Task<EvalResult> DebugMessage(MogwaiEngine engine, string message)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> DebugClear(MogwaiEngine engine)
+        public Task<EvalResult> DebugClear(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

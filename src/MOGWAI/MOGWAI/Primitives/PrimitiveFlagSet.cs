@@ -31,17 +31,15 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGName name)
+        public override Task<EvalResult> PerformOperation(MOGName name)
         {
-            await Task.CompletedTask;
-
             if (Engine.IsValidName(name!.Value))
             {
                 Engine.FlagSet(name!.Value);
-                return EvalResult.NoError;
+                return Task.FromResult(EvalResult.NoError);
             }
 
-            return EvalResult.Failure(Engine, Error.InvalidNameError, Name, name.ToString());
+            return Task.FromResult(EvalResult.Failure(Engine, Error.InvalidNameError, Name, name.ToString()));
         }
     }
 }

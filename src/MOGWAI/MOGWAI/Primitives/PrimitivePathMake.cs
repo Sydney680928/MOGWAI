@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,12 +31,10 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override async Task<EvalResult> PerformOperation(MOGList list)
+        public override Task<EvalResult> PerformOperation(MOGList list)
         {
-            await Task.CompletedTask;
-
             if (list.Items.Count == 0)
-                return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
 
             var items = new List<string>();
 
@@ -48,14 +46,14 @@ namespace MOGWAI.Primitives
                 }
                 else
                 {
-                    return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
                 }
             }
 
             var path = Path.Combine(items.ToArray());
             Engine.StackPushString(path);
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }
