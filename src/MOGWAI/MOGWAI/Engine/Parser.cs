@@ -765,77 +765,83 @@ namespace MOGWAI.Engine
                 {
                     bool result = true;
 
-                    if (word.Value == "if")
+                    switch (word.Value)
                     {
-                        result = UpdateForIfSugar(engine, i);
-                    }
-                    else if (word.Value == "foreach")
-                    {
-                        result = UpdateForForeachSugar(engine, i);
-                    }
-                    else if (word.Value == "for")
-                    {
-                        result = UpdateForForSugar(engine, i);
-                    }
-                    else if (word.Value == "repeat")
-                    {
-                        result = UpdateForRepeatSugar(engine, i);
-                    }
-                    else if (word.Value == "while")
-                    {
-                        result = UpdateForWhileSugar(engine, i);
-                    }
-                    else if (word.Value == "do")
-                    {
-                        result = UpdateForDoWhileSugar(engine, i);
-                    }
-                    else if (word.Value == "to")
-                    {
-                        result = UpdateForDefuncSugar(engine, i);
-                    }
-                    else if (word.Value == "forever")
-                    {
-                        result = UpdateForForeverSugar(engine, i);
-                    }
-                    else if (word.Value == "timer")
-                    {
-                        result = UpdateForTimerSugar(engine, i);
-                    }
-                    else if (word.Value == "onEvent")
-                    {
-                        result = UpdateForOnEventSugar(engine, i);
-                    }
-                    else if (word.Value == "during")
-                    {
-                        result = UpdateForDuringSugar(engine, i);
-                    }
-                    else if (word.Value == "trap")
-                    {
-                        result = UpdateForTrapSugar(engine, i);
-                    }
-                    else if (word.Value == "guard")
-                    {
-                        result = UpdateForGuardSugar(engine, i);
-                    }
-                    else if (word.Value == "->" || word.Value == "->+" || word.Value == "->-" || word.Value == "->*" || word.Value == "->/")
-                    {
-                        result = UpdateForStoOperationsSugar(engine, i, word.Value);
-                    }
-                    else if (word.Value == "=>")
-                    {
-                        result = UpdateForDeclareSugar(engine, i);
-                    }
-                    else if (word.Value == "after")
-                    {
-                        result = UpdateForAfterSugar(engine, i);
-                    }
-                    else if (word.Value == "switch")
-                    {
-                        result = UpdateForSwitchSugar(engine, i);
-                    }
-                    else if (word.Value == "task")
-                    {
-                        result = UpdateForTaskSugar(engine, i);
+                        case "if": 
+                            result = UpdateForIfSugar(engine, i);
+                            break;
+                        
+                        case "foreach": 
+                            result = UpdateForForeachSugar(engine, i); 
+                            break;
+                        
+                        case "for": 
+                            result = UpdateForForSugar(engine, i); 
+                            break;
+                        
+                        case "repeat": 
+                            result = UpdateForRepeatSugar(engine, i); 
+                            break;
+                        
+                        case "while": 
+                            result = UpdateForWhileSugar(engine, i); 
+                            break;
+                        
+                        case "do": 
+                            result = UpdateForDoWhileSugar(engine, i); 
+                            break;
+                        
+                        case "to": 
+                            result = UpdateForDefuncSugar(engine, i); 
+                            break;
+                        
+                        case "forever": 
+                            result = UpdateForForeverSugar(engine, i); 
+                            break;
+                        
+                        case "timer": 
+                            result = UpdateForTimerSugar(engine, i); 
+                            break;
+                        
+                        case "onEvent": 
+                            result = UpdateForOnEventSugar(engine, i); 
+                            break;
+                        
+                        case "during": 
+                            result = UpdateForDuringSugar(engine, i); 
+                            break;
+                        
+                        case "trap": 
+                            result = UpdateForTrapSugar(engine, i); 
+                            break;
+                        
+                        case "guard": 
+                            result = UpdateForGuardSugar(engine, i); 
+                            break;
+                        
+                        case "=>": 
+                            result = UpdateForDeclareSugar(engine, i); 
+                            break;
+                        
+                        case "after": 
+                            result = UpdateForAfterSugar(engine, i); 
+                            break;
+                        
+                        case "switch": 
+                            result = UpdateForSwitchSugar(engine, i); 
+                            break;
+                        
+                        case "task": 
+                            result = UpdateForTaskSugar(engine, i); 
+                            break;
+                        
+                        case "->":
+                        case "->+":
+                        case "->-":
+                        case "->*":
+                        case "->/":
+                            result = UpdateForStoOperationsSugar(engine, i, word.Value); 
+                            break;
                     }
 
                     if (!result)

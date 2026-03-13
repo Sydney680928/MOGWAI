@@ -2630,11 +2630,11 @@ namespace MOGWAI.Engine
             if (string.IsNullOrEmpty(name))
                 return false;
 
-            // Must start by a letter or an underscore  
+            // Must start by a letter or an underscore or $
 
             var c1 = name[0];
 
-            if (!char.IsLetter(c1) && c1 != '_')
+            if (!char.IsLetter(c1) && c1 != '_' && c1 != '$')
                 return false;
 
             // Must not be a primitive name
