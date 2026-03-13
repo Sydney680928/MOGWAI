@@ -12,11 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added variable reference support with `&varname` notation. It is now possible to mutate variable content without pushing a copy onto the stack. The performance gain is significant with large lists, records, data, and strings.
 Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `last`, `first`, `sub` and, `size`.
 - Added host function detection by the parser to avoid delegate calls at runtime, improving execution performance.
-- Added new `char->` primitive that returns then ASCII code from a single string character.
-
+- Added new `char->` primitive that returns the ASCII code from a single string character.
+- Added explicit variable access with `@varname` notation. The performance gain is significant with frequent variable access.
+  
 ### Changed
 
 - Changed dictionary access to use `TryGetValue` instead of a `ContainsKey` check followed by value retrieval, improving lookup performance across all dictionaries used by the runtime.
+- Changed variable and function name validation. Now, names must start with a letter or the _ character only.
 
 ### Fixed
 
