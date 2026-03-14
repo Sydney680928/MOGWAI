@@ -480,6 +480,7 @@ namespace MOGWAI.Engine
             RegisterPrivatePrimitive(new PrimitiveDECLARE(this, "DECLARE"), "=>");
 
             _primitives = _initializingPrimitives.ToFrozenDictionary();
+            _initializingPrimitives.Clear();
 
             #endregion
 
