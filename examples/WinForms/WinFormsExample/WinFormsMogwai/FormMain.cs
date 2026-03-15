@@ -475,123 +475,113 @@ namespace WinFormsMogwai
         // All these functions are the link between the engine and its host (this window).
         // They are all called from a thread other than the UI thread.
 
-        public async Task ProgramStart(MogwaiEngine engine, string code)
+        public Task ProgramStart(MogwaiEngine engine, string code)
         {
             // Called when program starts
             // code parameter contains the code to execute
-
-            await Task.CompletedTask;
 
             Invoke(() =>
             {
                 HaltButton.Enabled = true;
             });
+
+            return Task.CompletedTask;
         }
 
-        public async Task ProgramEnd(MogwaiEngine engine, EvalResult result)
+        public Task ProgramEnd(MogwaiEngine engine, EvalResult result)
         {
             // Called when program ends
             // result parameter contains status (ok or error)
-
-            await Task.CompletedTask;
 
             Invoke(() =>
             {
                 HaltButton.Enabled = false;
             });
+
+            return Task.CompletedTask;
         }
 
-        public async Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine)
+        public Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine)
         {
             // MOGWAI console.clear function
             // We clear the output console
 
-            await Task.CompletedTask;
             Invoke(() => { OutputTextBox.Clear(); });
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message)
+        public Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message)
         {
             // MOGWAI console.printLn or ? function
             // We print a line to the output console
 
-            await Task.CompletedTask;
             Invoke(() => { OutputTextBox.WriteLine(message); });
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message)
+        public Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message)
         {
             // MOGWAI console.print or ?? function
             // We print a line to the output console
 
-            await Task.CompletedTask;
             Invoke(() => { OutputTextBox.Write(message); });
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsoleShow(MogwaiEngine engine)
+        public Task<EvalResult> ConsoleShow(MogwaiEngine engine)
         {
             // MOGWAI console.hide function
             // Not implemented in this example.
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsoleHide(MogwaiEngine engine)
+        public Task<EvalResult> ConsoleHide(MogwaiEngine engine)
         {
             // MOGWAI console.hide function
             // Not implemented in this example.
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y)
+        public Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y)
         {
             // MOGWAI console.locate function
             // Not implemented in this example.
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<(EvalResult result, int x, int y)> ConsoleGetCursorPosition(MogwaiEngine engine)
+        public Task<(EvalResult result, int x, int y)> ConsoleGetCursorPosition(MogwaiEngine engine)
         {
             // MOGWAI console.cursor function
             // Not implemented in this example.
 
-            await Task.CompletedTask;
-            return (EvalResult.NoError, 0, 0);
+            return Task.FromResult((EvalResult.NoError, 0, 0));
         }
 
-        public async Task<EvalResult> ConsoleSetForegroundColor(MogwaiEngine engine, string color)
+        public Task<EvalResult> ConsoleSetForegroundColor(MogwaiEngine engine, string color)
         {
             // MOGWAI console.setForegroundColor function
             // Not implemented in this example.
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsoleSetBackgroundColor(MogwaiEngine engine, string color)
+        public Task<EvalResult> ConsoleSetBackgroundColor(MogwaiEngine engine, string color)
         {
             // MOGWAI console.setBackgroundColor function
             // Not implemented in this example.
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine)
+        public Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine)
         {
             // MOGWAI console.getInputKey function
             // Not implemented in this example.
 
-            await Task.CompletedTask;
-            return (EvalResult.NoError, -1);
+            return Task.FromResult((EvalResult.NoError, -1));
         }
 
         public async Task<(EvalResult result, string? value)> Prompt(MogwaiEngine engine, string message)
@@ -619,7 +609,7 @@ namespace WinFormsMogwai
                 ];
         }
 
-        public async Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string word)
+        public Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string word)
         {
             // Called when MOGWAI encounters a keyword it doesn't know.
             // In this case, it asks the host if it can respond.
@@ -627,155 +617,138 @@ namespace WinFormsMogwai
             switch (word)
             {
                 case "clg":
-                    return await ClgExtension(engine, word);
+                    return Task.FromResult(ClgExtension(engine, word));
 
                 case "refresh":
-                    return await RefreshExtension(engine, word);
+                    return Task.FromResult(RefreshExtension(engine, word));
 
                 case "turtle.penDown":
-                    return await PenDownExtension(engine, word);
+                    return Task.FromResult(PenDownExtension(engine, word));
 
                 case "turtle.penUp":
-                    return await PenUpExtension(engine, word);
+                    return Task.FromResult(PenUpExtension(engine, word));
 
                 case "turtle.show":
-                    return await ShowTurtleExtension(engine, word);
+                    return Task.FromResult(ShowTurtleExtension(engine, word));
 
                 case "turtle.hide":
-                    return await HideTurtleExtension(engine, word);
+                    return Task.FromResult(HideTurtleExtension(engine, word));
 
                 case "turtle.move":
-                    return await MoveExtension(engine, word);
+                    return Task.FromResult(MoveExtension(engine, word));
 
                 case "turtle.turn":
-                    return await TurnExtension(engine, word);
+                    return Task.FromResult(TurnExtension(engine, word));
             }
 
-            return EvalResult.NoExternalFunction;
+            return Task.FromResult(EvalResult.NoExternalFunction);
         }
 
-        public async Task<EvalResult> MessageReceivedFromRuntime(MogwaiEngine engine, string message, MOGObject parameter)
+        public Task<EvalResult> MessageReceivedFromRuntime(MogwaiEngine engine, string message, MOGObject parameter)
         {
             // Called when runtime send message to host
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> DebugMessage(MogwaiEngine engine, string message)
+        public Task<EvalResult> DebugMessage(MogwaiEngine engine, string message)
         {
             // MOGWAI debug.write function
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> DebugClear(MogwaiEngine engine)
+        public Task<EvalResult> DebugClear(MogwaiEngine engine)
         {
             // MOGWAI debug.clear function
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> EngineDidPause(MogwaiEngine engine)
+        public Task<EvalResult> EngineDidPause(MogwaiEngine engine)
         {
             // Called when runtime is paused
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> EngineDidResume(MogwaiEngine engine)
+        public Task<EvalResult> EngineDidResume(MogwaiEngine engine)
         {
             // Called when runtime is resumed
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> StudioDidConnect(MogwaiEngine engine)
+        public Task<EvalResult> StudioDidConnect(MogwaiEngine engine)
         {
             // Called when MOGWAI STUDIO connects
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> StudioDidDisconnect(MogwaiEngine engine)
+        public Task<EvalResult> StudioDidDisconnect(MogwaiEngine engine)
         {
             // Called when MOGWAI STUDIO disconnects
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> SocketServerDidStart(MogwaiEngine engine, IPAddress address, int port)
+        public Task<EvalResult> SocketServerDidStart(MogwaiEngine engine, IPAddress address, int port)
         {
             // Called when debug server starts
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> SocketServerDidStop(MogwaiEngine engine)
+        public Task<EvalResult> SocketServerDidStop(MogwaiEngine engine)
         {
             // Called when debug server stops
 
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
         #endregion
 
         #region MOGWAI additional functions
 
-        private async Task<EvalResult> ClgExtension(MogwaiEngine engine, string word)
+        private EvalResult ClgExtension(MogwaiEngine engine, string word)
         {
-            await Task.CompletedTask;
             TurtleClear();
             return EvalResult.NoError;
         }
 
-        private async Task<EvalResult> RefreshExtension(MogwaiEngine engine, string word)
+        private EvalResult RefreshExtension(MogwaiEngine engine, string word)
         {
-            await Task.CompletedTask;
             RefreshGraphAreaIfNeed();
             return EvalResult.NoError;
         }
 
-        private async Task<EvalResult> PenDownExtension(MogwaiEngine engine, string word)
+        private EvalResult PenDownExtension(MogwaiEngine engine, string word)
         {
-            await Task.CompletedTask;
             TurtlePenDown(true);
             return EvalResult.NoError;
         }
 
-        private async Task<EvalResult> PenUpExtension(MogwaiEngine engine, string word)
+        private EvalResult PenUpExtension(MogwaiEngine engine, string word)
         {
-            await Task.CompletedTask;
             TurtlePenDown(false);
             return EvalResult.NoError;
         }
 
-        private async Task<EvalResult> ShowTurtleExtension(MogwaiEngine engine, string word)
+        private EvalResult ShowTurtleExtension(MogwaiEngine engine, string word)
         {
-            await Task.CompletedTask;
             ShowTurtle(true);
             return EvalResult.NoError;
         }
 
-        private async Task<EvalResult> HideTurtleExtension(MogwaiEngine engine, string word)
+        private EvalResult HideTurtleExtension(MogwaiEngine engine, string word)
         {
-            await Task.CompletedTask;
             ShowTurtle(false);
             return EvalResult.NoError;
         }
 
-        private async Task<EvalResult> MoveExtension(MogwaiEngine engine, string word)
+        private EvalResult MoveExtension(MogwaiEngine engine, string word)
         {
-            await Task.CompletedTask;
-
             var sign = engine.StackSign(1);
 
             if (sign.Count == 0)
@@ -790,10 +763,8 @@ namespace WinFormsMogwai
             return EvalResult.NoError;
         }
 
-        private async Task<EvalResult> TurnExtension(MogwaiEngine engine, string word)
+        private EvalResult TurnExtension(MogwaiEngine engine, string word)
         {
-            await Task.CompletedTask;
-
             var sign = engine.StackSign(1);
 
             if (sign.Count == 0)
