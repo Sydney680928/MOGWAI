@@ -84,9 +84,9 @@ namespace MOGWAI.Engine
             return new EvalResult
             {
                 Error = engine.LastError,
-                StartErrorPosition = Parser.LastStartErrorPosition,
-                EndErrorPosition = Parser.LastEndErrorPosition,
-                ExecutionContext = Parser.LastExecutionContext,
+                StartErrorPosition = engine.LastParserStartErrorPosition,
+                EndErrorPosition = engine.LastParserEndErrorPosition,
+                ExecutionContext = engine.LastParserExecutionContext,
                 Informations = informations
             };
         }

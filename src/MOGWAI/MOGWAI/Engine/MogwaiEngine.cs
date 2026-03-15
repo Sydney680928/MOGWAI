@@ -704,6 +704,12 @@ namespace MOGWAI.Engine
 
         internal string[] HostFunctions => Delegate?.HostFunctions(this) ?? [];
 
+        internal int LastParserStartErrorPosition { get; set; } = -1;
+
+        internal int LastParserEndErrorPosition { get; set; } = -1;
+
+        internal MogwaiExecutionContext? LastParserExecutionContext { get; set; }
+
         #endregion
 
         #region PRIVATE FUNCTIONS   
