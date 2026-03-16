@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added variable reference support with `&varname` notation. It is now possible to mutate variable content without pushing a copy onto the stack. The performance gain is significant with large lists, records, data, and strings.
-Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `last`, `first`, `sub` and, `size`.
+Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `last`, `first`, `sub`, and `size`.
 - Added host function detection by the parser to avoid delegate calls at runtime, improving execution performance.
 - Added new `char->` primitive that returns the ASCII code from a single string character.
 - Added explicit variable access with `@varname` notation. The performance gain is significant with frequent variable access.
@@ -22,7 +22,7 @@ Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `l
 - Changed variable and function name validation. Now, names must start with a letter or the _ character only.
 - Refactored synchronous primitives: removed spurious `async`/`await Task.CompletedTask`, replaced with `Task.FromResult()`. No behavioral change.
 - Removed systematic primitive cloning during execution, resulting in a performance gain.
-- Removed all LINK calls during execution.
+- Removed all `LINK` calls during execution.
 - Optimized primitive dictionaries to improve lookup speed.
   
 ### Fixed
@@ -42,8 +42,8 @@ Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `l
 ### Fixed
 
 - Fixed UI freeze in Blazor WebAssembly playground when using `forever` loops.
-- Added cooperative yielding to prevent blocking the single-threaded event loop.
-- Timers and events now work correctly alongside long-running scripts in the browser.
+- Fixed blocking of the single-threaded event loop by adding cooperative yielding.
+- Fixed timers and events not working correctly alongside long-running scripts in the browser.
 - `for` loop infinite loop when start equals end. (Issues #4)
 - `->unescape` does not handle `\"` escape sequence. (Issues #5)
 
@@ -63,7 +63,7 @@ Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `l
   - `AddNull()` - Add MOGNull
   - `AddEmpty()` - Add MOGEmpty
 
-   These methods simplify object creation by not requiring explicit Engine reference
+   These methods simplify object creation by not requiring an explicit Engine reference
 
  - Added convenience methods to MOGRecord for adding typed objects:
    - `SetString(string key, string value)` - Add MOGString
@@ -75,7 +75,7 @@ Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `l
    - `SetNull(string key)` - Add MOGNull
    - `SetEmpty(string key)` - Add MOGEmpty
   
-   These methods simplify object creation by not requiring explicit Engine reference
+   These methods simplify object creation by not requiring an explicit Engine reference
 
  - Added new `foreach` usage that allows transforming items while iterating:
    - `(1 2 3 4) foreach 'item' transform { item 2 * }` returns `(2 4 6 8)`
