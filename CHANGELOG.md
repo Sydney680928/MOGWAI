@@ -21,6 +21,9 @@ Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `l
 - Changed dictionary access to use `TryGetValue` instead of a `ContainsKey` check followed by value retrieval, improving lookup performance across all dictionaries used by the runtime.
 - Changed variable and function name validation. Now, names must start with a letter or the _ character only.
 - Refactored synchronous primitives: removed spurious `async`/`await Task.CompletedTask`, replaced with `Task.FromResult()`. No behavioral change.
+- Removed systematic primitive cloning during execution, resulting in a performance gain.
+- Removed all LINK calls during execution.
+- Optimized primitive dictionaries to improve lookup speed.
   
 ### Fixed
 
