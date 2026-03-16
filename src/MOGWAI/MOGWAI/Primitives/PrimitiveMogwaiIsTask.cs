@@ -24,13 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveMogwaiIsTask(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
-
         public override Task<EvalResult> EngineEval()
         {
             Engine.StackPushBoolean(Engine.IsTask);

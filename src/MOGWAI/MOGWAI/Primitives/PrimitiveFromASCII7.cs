@@ -26,13 +26,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveFromASCII7(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
-
         public override Task<EvalResult> PerformOperation(MOGString @string)
         {
             var b = Encoding.ASCII.GetBytes(@string.Value);

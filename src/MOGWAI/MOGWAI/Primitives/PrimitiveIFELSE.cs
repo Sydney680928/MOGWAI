@@ -24,12 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveIFELSE(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
         public override async Task<EvalResult> EngineEval()
         {
             // bool codeTrue codeFalse IFELSE

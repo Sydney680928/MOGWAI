@@ -24,13 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveFileSize(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
-
         public override Task<EvalResult> PerformOperation(MOGString @string)
         {
             if (!Engine.OpeninFileExists(@string.Value))

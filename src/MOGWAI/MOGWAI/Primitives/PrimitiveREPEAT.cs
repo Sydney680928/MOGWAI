@@ -24,13 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveREPEAT(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
-
         public override async Task<EvalResult> EngineEval()
         {
             // 5 code REPEAT

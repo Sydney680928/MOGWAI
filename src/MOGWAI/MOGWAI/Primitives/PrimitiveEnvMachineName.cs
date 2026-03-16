@@ -21,13 +21,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveEnvMachineName(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveEnvMachineName(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override Task<EvalResult> EngineEval()

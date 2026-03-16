@@ -31,14 +31,7 @@ namespace MOGWAI.Engine
         
         public int Port { get; private set; }
 
-        public bool IsRunning
-        {
-            get 
-            {
-                if (_processMessageTask != null && !_processMessageTask.IsCompleted) return true;
-                return false;
-            }
-        }
+        public bool IsRunning => _processMessageTask != null && !_processMessageTask.IsCompleted;
 
         private StreamReader? _socketReader = null;
         private StreamWriter? _socketWriter = null;

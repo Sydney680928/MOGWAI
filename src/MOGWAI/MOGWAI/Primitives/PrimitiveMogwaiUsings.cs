@@ -24,13 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveMogwaiUsings(Engine, Code);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
-
         public override Task<EvalResult> EngineEval()
         {
             var list = new MOGList(Engine);

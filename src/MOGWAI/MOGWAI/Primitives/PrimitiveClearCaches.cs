@@ -24,13 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveClearCaches(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
-
         public override Task<EvalResult> EngineEval()
         {         
             Engine.ClearIncludes();

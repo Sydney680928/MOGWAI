@@ -21,13 +21,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitivePathSetUsingsDirectory(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitivePathSetUsingsDirectory(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override Task<EvalResult> PerformOperation(MOGString @string)

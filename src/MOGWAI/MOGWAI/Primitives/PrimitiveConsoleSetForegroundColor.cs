@@ -24,13 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveConsoleSetForegroundColor(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
-
         public override async Task<EvalResult> PerformOperation(MOGName name)
         {
             if (Engine.Delegate != null)

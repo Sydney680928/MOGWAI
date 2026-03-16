@@ -24,13 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveBinaryComplement(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
-
         public override Task<EvalResult> PerformOperation(MOGNumber number)
         {
             int v = ~number.IntValue;

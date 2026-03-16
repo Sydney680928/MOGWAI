@@ -21,13 +21,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveLast(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveLast(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override async Task<EvalResult> EngineEval()
@@ -58,7 +52,7 @@ namespace MOGWAI.Primitives
                 if (list.Items.Count == 0)
                     return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
 
-                Engine.StackPush(list.Items.Last());
+                Engine.StackPush(list.Items[list.Items.Count - 1]);
                 return EvalResult.NoError;
             }
             else if (s[0] == typeof(MOGData))
@@ -68,7 +62,7 @@ namespace MOGWAI.Primitives
                 if (data.Items.Count == 0)
                     return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
 
-                Engine.StackPushNumber(data.Items.Last());
+                Engine.StackPushNumber(data.Items[data.Items.Count - 1]);
                 return EvalResult.NoError;
             }
             else if (s[0] == typeof(MOGRef))

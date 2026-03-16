@@ -21,13 +21,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveErrorThrow(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveErrorThrow(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override Task<EvalResult> PerformOperation(MOGString @string)

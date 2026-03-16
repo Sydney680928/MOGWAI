@@ -23,13 +23,6 @@ namespace MOGWAI.Primitives
         {
 
         }
-
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveIsSuperiorOrEqual(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
         public override Task<EvalResult> EngineEval()
         {
             // xxx yyyy >=

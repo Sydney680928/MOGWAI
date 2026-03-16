@@ -25,13 +25,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveToUTF8(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
-
         public override Task<EvalResult> PerformOperation(MOGString @string)
         {
             var b = Encoding.UTF8.GetBytes(@string!.Value);

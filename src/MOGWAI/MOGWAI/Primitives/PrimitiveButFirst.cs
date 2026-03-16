@@ -21,13 +21,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveButFirst(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveButFirst(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override async Task<EvalResult> EngineEval()

@@ -24,13 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveMogwaiInclude(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
-
         public override async Task<EvalResult> PerformOperation(MOGString @string) => await Engine.Include(@string.Value);
     }
 }

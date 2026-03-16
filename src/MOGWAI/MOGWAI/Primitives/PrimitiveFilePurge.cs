@@ -22,13 +22,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveFilePurge(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveFilePurge(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override Task<EvalResult> PerformOperation(MOGString @string)

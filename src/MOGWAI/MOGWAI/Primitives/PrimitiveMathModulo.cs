@@ -21,13 +21,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveMathModulo(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveMathModulo(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override Task<EvalResult> PerformOperation(MOGNumber number1, MOGNumber number2)

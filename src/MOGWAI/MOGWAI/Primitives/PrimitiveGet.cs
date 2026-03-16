@@ -24,12 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveGet(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
         public override async Task<EvalResult> EngineEval()
         {
             // [x: 50 y: 100] x: get ---> 50

@@ -631,8 +631,9 @@ namespace MOGWAI.Engine
 
                     if (_parsedObjects.Count > 0)
                     {
-                        var value = _parsedObjects.Last();
-                        _parsedObjects.RemoveAt(_parsedObjects.Count - 1);
+                        var index = _parsedObjects.Count - 1;
+                        var value = _parsedObjects[index];
+                        _parsedObjects.RemoveAt(index);
 
                         return [item1, item2, value, primitive];
                     }

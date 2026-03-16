@@ -24,13 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveErrorGuard(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
-
         public override async Task<EvalResult> EngineEval()
         {
             var s = Engine.StackSign(2);

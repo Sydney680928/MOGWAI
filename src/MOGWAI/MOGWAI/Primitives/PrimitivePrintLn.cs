@@ -24,12 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitivePrintLn(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
         public override async Task<EvalResult> EngineEval()
         {
             if (Engine.StackSize == 0)

@@ -21,13 +21,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveDirectorySetCurrent(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveDirectorySetCurrent(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override Task<EvalResult> PerformOperation(MOGString @string)

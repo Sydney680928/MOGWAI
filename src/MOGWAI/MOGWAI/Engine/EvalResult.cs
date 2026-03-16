@@ -42,6 +42,8 @@ namespace MOGWAI.Engine
 
         public bool IsError => Error != Error.None; 
 
+        public bool IsSuccess => Error == Error.None;   
+
         public MogwaiExecutionContext? ExecutionContext { get; private set; }
 
         private EvalResult()

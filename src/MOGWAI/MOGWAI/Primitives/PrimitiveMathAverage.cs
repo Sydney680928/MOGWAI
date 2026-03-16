@@ -21,13 +21,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveMathAverage(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveMathAverage(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override Task<EvalResult> PerformOperation(MOGList list)

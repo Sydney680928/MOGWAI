@@ -62,9 +62,7 @@ namespace MOGWAI.Objects
                     result = await Engine.ExecuteWaitingFireObjects();
 
                     if (result != EvalResult.NoError)
-                        break;
-
-                    Engine.CurrentEvalObject = item.Clone();
+                        break;               
 
                     if (Engine.ExitRequested || Engine.BreakRequested)
                         break;
@@ -77,6 +75,8 @@ namespace MOGWAI.Objects
                         result = EvalResult.Failure(Engine, Error.HaltEncountedError);
                         break;
                     }
+
+                    Engine.CurrentEvalObject = item.Clone();
 
                     if (Engine.DebugMode && ExecutionContextAllowDebugMode)
                     {
@@ -97,14 +97,17 @@ namespace MOGWAI.Objects
                                 }
                             }
 
-                            await Engine.SendProgramInformations(Engine.CurrentEvalObject, item.ExecutionContext?.CodeFilename ?? null);
-
-                            await Engine.SendTrace();
+                            if (Engine.IsSocketServerServiceRunning)
+                            {
+                                await Engine.SendProgramInformations(Engine.CurrentEvalObject, item.ExecutionContext?.CodeFilename ?? null);
+                                await Engine.SendTrace();
+                            }
 
                             while (!Engine.DebugResumeSignal && !Engine.DebugNextStepSignal && !Engine.HaltRequested)
                                 await Task.Delay(250);
 
-                            await Engine.SendProgramResume();
+                            if (Engine.IsSocketServerRunning)
+                                await Engine.SendProgramResume();
 
                             if (Engine.Delegate != null)
                             {
@@ -124,7 +127,7 @@ namespace MOGWAI.Objects
                         }
                         else
                         {
-                            if (Engine.TronValue > 0 && item.PauseAllowed)
+                            if (Engine.IsSocketServerServiceRunning && Engine.TronValue > 0 && item.PauseAllowed)
                             {
                                 await Engine.SendProgramInformations(Engine.CurrentEvalObject, item.ExecutionContext?.CodeFilename ?? null);
                                 await Engine.SendTrace();
@@ -142,7 +145,7 @@ namespace MOGWAI.Objects
                         result = EvalResult.Failure(Engine, Error.FatalError, ex.Message);
                     }
 
-                    if (result != EvalResult.NoError)
+                    if (result.IsError)
                         break;
 
                     counter++;

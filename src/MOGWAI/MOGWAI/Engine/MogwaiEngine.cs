@@ -21,6 +21,7 @@ using System.IO.Compression;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
+using System.Xml.Linq;
 
 namespace MOGWAI.Engine
 
@@ -33,14 +34,19 @@ namespace MOGWAI.Engine
         private string _name;
         private int _debugPort;
         private List<Stack<MOGObject>> _stacks = [];
+        private Stack<MOGObject> _currentStack;
         private IDelegate? _delegate;
 
-        private FrozenDictionary<string, MOGPrimitive> _primitives;
-        private Dictionary<string, MOGPrimitive> _initializingPrimitives = [];
+        private FrozenDictionary<string, MOGPrimitive> _primitivesByName;
+        private Dictionary<string, MOGPrimitive> _initializingPrimitivesByName = [];
+
+        private FrozenDictionary<Type, MOGPrimitive> _primitivesByType;
+        private Dictionary<Type, MOGPrimitive> _initializingPrimitivesByType = [];
 
         private string[] _hostFunctions = [];
         private Parser _parser = new();
         private readonly List<VarContext> _varsContext = [];
+        private VarContext? _currentLocalVarsContext;
         private List<bool> _breakRequested = new();
         private MOGFunction? _lastProgram;
         private int _lastParsingHash;
@@ -97,6 +103,7 @@ namespace MOGWAI.Engine
             // Create main stack
 
             _stacks.Add(new());
+            _currentStack = _stacks[0];
 
             // Create SocketServer and DatagramManager
 
@@ -109,7 +116,7 @@ namespace MOGWAI.Engine
             // Create vars context
             // Context zéro = Global vars
 
-            _varsContext.Add(new VarContext("GLOBAL"));
+            _varsContext.Add(new VarContext("GLOBAL"));          
 
             #region DEFINE TYPES
 
@@ -479,8 +486,11 @@ namespace MOGWAI.Engine
             RegisterPrivatePrimitive(new PrimitiveSWITCH(this, "SWITCH"), "switch");
             RegisterPrivatePrimitive(new PrimitiveDECLARE(this, "DECLARE"), "=>");
 
-            _primitives = _initializingPrimitives.ToFrozenDictionary();
-            _initializingPrimitives.Clear();
+            _primitivesByName = _initializingPrimitivesByName.ToFrozenDictionary();
+            _initializingPrimitivesByName.Clear();
+
+            _primitivesByType = _initializingPrimitivesByType.ToFrozenDictionary(); 
+            _initializingPrimitivesByType.Clear();
 
             #endregion
 
@@ -563,7 +573,7 @@ namespace MOGWAI.Engine
 
         public string Name => _name;
 
-        public int StackSize => _stacks.Last().Count;
+        public int StackSize => _currentStack.Count;
 
         public IDelegate? Delegate
         {
@@ -580,19 +590,16 @@ namespace MOGWAI.Engine
 
         public MOGPrimitive? GetPrimitive(string name)
         {
-            if (_primitives.TryGetValue(name, out var primitive))
-                return primitive.Clone() as MOGPrimitive;
+            if (_primitivesByName.TryGetValue(name, out var primitive))
+                return primitive;
 
             return null;
         }
 
         public MOGPrimitive? GetPrimitive(Type type)
         {
-            foreach (var primitive in _primitives.Values)
-            {
-                if (primitive.GetType() == type)
-                    return primitive.Clone() as MOGPrimitive;
-            }
+            if (_primitivesByType.TryGetValue(type, out var primitive))
+                return primitive;
 
             return null;
         }
@@ -646,9 +653,9 @@ namespace MOGWAI.Engine
             {
                 var list = new List<string>();
 
-                foreach (var key in _primitives.Keys)
+                foreach (var key in _primitivesByName.Keys)
                 {
-                    if (_primitives[key].IsPrivate)
+                    if (_primitivesByName[key].IsPrivate)
                         list.Add(key);
                 }
 
@@ -662,9 +669,9 @@ namespace MOGWAI.Engine
             {
                 var list = new List<string>();
 
-                foreach (var key in _primitives.Keys)
+                foreach (var key in _primitivesByName.Keys)
                 {
-                    if (!_primitives[key].IsPrivate)
+                    if (!_primitivesByName[key].IsPrivate)
                         list.Add(key);
                 }
 
@@ -672,7 +679,7 @@ namespace MOGWAI.Engine
             }
         }
 
-        private List<string> AllPrimitives => _primitives.Keys.ToList();
+        private List<string> AllPrimitives => _primitivesByName.Keys.ToList();
 
         public bool KeepAlive => _keepAlive;
 
@@ -710,6 +717,8 @@ namespace MOGWAI.Engine
 
         internal MogwaiExecutionContext? LastParserExecutionContext { get; set; }
 
+        internal bool IsSocketServerServiceRunning => _socketServerService != null && _socketServerService.IsRunning;
+
         #endregion
 
         #region PRIVATE FUNCTIONS   
@@ -719,14 +728,25 @@ namespace MOGWAI.Engine
             primitive.IsPrivate = false;
             primitive.Category = category;
 
-            _initializingPrimitives[primitive.Name] = primitive;
+            _initializingPrimitivesByName[primitive.Name] = primitive;
+
+            var type = primitive.GetType();
+
+            if (!_initializingPrimitivesByType.ContainsKey(type))
+                _initializingPrimitivesByType[type] = primitive;
         }
 
         private void RegisterPrivatePrimitive(MOGPrimitive primitive, string friendlyName)
         {
             primitive.IsPrivate = true;
             primitive.FriendlyName = friendlyName;
-            _initializingPrimitives[primitive.Name] = primitive;
+           
+            _initializingPrimitivesByName[primitive.Name] = primitive;
+
+            var type = primitive.GetType();
+
+            if (!_initializingPrimitivesByType.ContainsKey(type))
+                _initializingPrimitivesByType[type] = primitive;
         }
 
         private void RegisterType(Type type, string name)
@@ -970,7 +990,7 @@ namespace MOGWAI.Engine
         {
             var lst = new List<string>();
 
-            foreach (var p in _primitives.Values)
+            foreach (var p in _primitivesByName.Values)
             {
                 if (!p.IsPrivate)
                     lst.Add(p.Name);
@@ -983,7 +1003,7 @@ namespace MOGWAI.Engine
         {
             var lst = new List<string>();
 
-            foreach (var p in _primitives.Values)
+            foreach (var p in _primitivesByName.Values)
             {
                 if (p.IsPrivate)
                     lst.Add(p.Name);
@@ -1086,47 +1106,42 @@ namespace MOGWAI.Engine
 
         #region STACK FUNCTIONS
 
-        public void StackPush(MOGObject obj)
-        {
-            _stacks.Last().Push(obj);
-        }
+        public void StackPush(MOGObject obj) => _currentStack.Push(obj);
 
-        public void StackPushString(string str) => _stacks.Last().Push(new MOGString(this, str, 0));
+        public void StackPushString(string str) => _currentStack.Push(new MOGString(this, str, 0));
 
-        public void StackPushNumber(double number) => _stacks.Last().Push(new MOGNumber(this, number, 0));
+        public void StackPushNumber(double number) => _currentStack.Push(new MOGNumber(this, number, 0));
 
-        public void StackPushName(string name) => _stacks.Last().Push(new MOGName(this, name, 0));
+        public void StackPushName(string name) => _currentStack.Push(new MOGName(this, name, 0));
 
-        public void StackPushKey(string key) => _stacks.Last().Push(new MOGKey(this, key, 0));
+        public void StackPushKey(string key) => _currentStack.Push(new MOGKey(this, key, 0));
 
-        public void StackPushWord(string word) => _stacks.Last().Push(new MOGWord(this, word, 0));
+        public void StackPushWord(string word) => _currentStack.Push(new MOGWord(this, word, 0));
 
-        public void StackPushBoolean(bool b) => _stacks.Last().Push(new MOGBoolean(this, b, 0));
+        public void StackPushBoolean(bool b) => _currentStack.Push(new MOGBoolean(this, b, 0));
 
-        public void StackPushNull() => _stacks.Last().Push(new MOGNull(this, 0));
+        public void StackPushNull() => _currentStack.Push(new MOGNull(this, 0));
 
-        public void StackPushData(byte[] bytes) => _stacks.Last().Push(new MOGData(this, bytes));
+        public void StackPushData(byte[] bytes) => _currentStack.Push(new MOGData(this, bytes));
 
         public MOGObject? StackPop()
         {
-            if (_stacks.Last().Count == 0)
+            if (_currentStack.Count == 0)
                 return null;
 
-            return _stacks.Last().Pop();
+            return _currentStack.Pop();
         }
 
         public List<Type> StackSign(int size)
         {
             List<Type> types = new();
 
-            if (_stacks.Last().Count >= size)
+            if (_currentStack.Count >= size)
             {
-                MOGObject[] arr = _stacks.Last().ToArray();
+                MOGObject[] arr = _currentStack.ToArray();
 
                 for (int i = 0; i < size; i++)
-                {
                     types.Add(arr[i].GetType());
-                }
             }
 
             return types;
@@ -1134,14 +1149,15 @@ namespace MOGWAI.Engine
 
         public void StackClear()
         {
-            _stacks.Last().Clear();
+            _currentStack.Clear();
         }
 
-        public MOGObject[] StackArray() => _stacks.Last().ToArray();
+        public MOGObject[] StackArray() => _currentStack.ToArray();
 
         public void AddNewStack()
         {
             _stacks.Add(new());
+            _currentStack = _stacks[_stacks.Count - 1]; 
         }
 
         public void RemoveLastStack()
@@ -1149,12 +1165,13 @@ namespace MOGWAI.Engine
             if (_stacks.Count > 1)
             {
                 _stacks.RemoveAt(_stacks.Count - 1);
+                _currentStack = _stacks[_stacks.Count - 1];
             }
         }
 
         public EvalResult StackSwap()
         {
-            var stack = _stacks.Last();
+            var stack = _currentStack;
 
             if (stack.Count < 2)
                 return EvalResult.Failure(this, Error.TooFewArgumentsError, "swap");
@@ -1170,7 +1187,7 @@ namespace MOGWAI.Engine
 
         public EvalResult StackDup()
         {
-            var stack = _stacks.Last();
+            var stack = _currentStack;  
 
             if (stack.Count < 1)
                 return EvalResult.Failure(this, Error.TooFewArgumentsError, "dup");
@@ -1183,7 +1200,7 @@ namespace MOGWAI.Engine
 
         public EvalResult StackDrop()
         {
-            var stack = _stacks.Last();
+            var stack = _currentStack;
 
             if (stack.Count < 1)
                 return EvalResult.Failure(this, Error.TooFewArgumentsError, "drop");
@@ -1227,7 +1244,7 @@ namespace MOGWAI.Engine
 
         public string[] StackSave()
         {
-            var stack = _stacks.Last().ToArray();
+            var stack = _currentStack.ToArray();
             var list = new List<string>();
 
             for (int i = 0; i < stack.Length; i++)
@@ -1238,7 +1255,7 @@ namespace MOGWAI.Engine
 
         public EvalResult StackRestore(string[] backup)
         {
-            var stack = _stacks.Last();
+            var stack = _currentStack;
 
             stack.Clear();
 
@@ -1286,7 +1303,7 @@ namespace MOGWAI.Engine
             {
                 // Local var
 
-                r = _varsContext.Last().Write(name, value);
+                r = _currentLocalVarsContext.Write(name, value);
             }
 
             if (!r)
@@ -1316,7 +1333,7 @@ namespace MOGWAI.Engine
             {
                 // Local var
 
-                _varsContext.Last().Declare(name, value);
+                _currentLocalVarsContext?.Declare(name, value);
             }
 
             return EvalResult.NoError;
@@ -1339,7 +1356,7 @@ namespace MOGWAI.Engine
             {
                 // Local var
 
-                _varsContext.Last().DeclareForType(name, type);
+                _currentLocalVarsContext?.DeclareForType(name, type);
             }
 
             return EvalResult.NoError;
@@ -1355,7 +1372,7 @@ namespace MOGWAI.Engine
             }
             else
             {
-                value = _varsContext.Last().Read(name, clone);
+                value = _currentLocalVarsContext?.Read(name, clone);
             }
 
             return value;
@@ -1369,7 +1386,7 @@ namespace MOGWAI.Engine
             }
             else
             {
-                return _varsContext.Last().Exists(name);
+                return _currentLocalVarsContext?.Exists(name) ?? false;
             }
         }
 
@@ -1381,14 +1398,15 @@ namespace MOGWAI.Engine
             }
             else
             {
-                return _varsContext.Last().Purge(name);
+                return _currentLocalVarsContext?.Purge(name) ?? false;
             }
         }
 
         public void VarPushContext(string name)
         {
-            var context = new VarContext(name);
-            _varsContext.Add(context);
+            _currentLocalVarsContext = new VarContext(name);
+            _varsContext.Add(_currentLocalVarsContext);
+
         }
 
         public void VarPopContext()
@@ -1396,6 +1414,15 @@ namespace MOGWAI.Engine
             if (_varsContext.Count > 1)
             {
                 _varsContext.RemoveAt(_varsContext.Count - 1);
+
+                if (_varsContext.Count > 1)
+                {
+                    _currentLocalVarsContext = _varsContext[_varsContext.Count - 1];
+                }
+                else
+                {
+                    _currentLocalVarsContext = null;
+                }
             }
         }
 
@@ -1406,7 +1433,7 @@ namespace MOGWAI.Engine
             if (_varsContext.Count < 2)
                 return [];
 
-            return _varsContext.Last().Keys.ToArray();
+            return _currentLocalVarsContext?.Keys.ToArray() ?? [];
         }
 
         #endregion
@@ -1500,9 +1527,7 @@ namespace MOGWAI.Engine
         internal void RegisterFireObject(MOGFireObject fireObject)
         {
             lock (_fireObjectsQueueLock)
-            {
                 _fireObjectsQueue.Enqueue(fireObject);
-            }
         }
 
         internal void ClearWaitingFireObjects()
@@ -1510,9 +1535,7 @@ namespace MOGWAI.Engine
             // Cleaning waiting fire objects function
 
             lock (_fireObjectsQueueLock)
-            {
                 _fireObjectsQueue.Clear();
-            }
         }
 
         internal async Task<EvalResult> ExecuteWaitingFireObjects()
@@ -1524,9 +1547,7 @@ namespace MOGWAI.Engine
                 MOGFireObject? fireObject = null;
 
                 lock (_fireObjectsQueueLock)
-                {
                     fireObject = _fireObjectsQueue.Dequeue();
-                }
 
                 AddNewStack();
 
@@ -1968,7 +1989,7 @@ namespace MOGWAI.Engine
 
             foreach (var key in Primitives)
             {
-                var p = _primitives[key];
+                var p = _primitivesByName[key];
 
                 sb.Append(p.Name);
                 sb.Append(" ");
@@ -2188,7 +2209,6 @@ namespace MOGWAI.Engine
             if (parameters.Count > 0 && !IsRunning)
             {
                 var code = parameters[0] ?? "";
-
                 _ = RunAsync(code, false);
             }
         }
@@ -2514,7 +2534,7 @@ namespace MOGWAI.Engine
             if (_socketServerService != null)
             {
                 var lst = new List<string>();
-                var items = _stacks.Last().ToArray();
+                var items = _currentStack.ToArray();
 
                 foreach (var item in items)
                     lst.Add(item.ToString());
@@ -2558,23 +2578,25 @@ namespace MOGWAI.Engine
             // P1 = item1
             // PN = itemN
 
-            var lst = new List<string>();
-            var context = _varsContext.Last();
-
-            foreach (var name in context.Keys)
+            if (_currentLocalVarsContext != null)
             {
-                var v = context.Read(name);
+                var lst = new List<string>();
 
-                if (v != null)
+                foreach (var name in _currentLocalVarsContext.Keys)
                 {
-                    var type = v.Type;
-                    var value = v.ToString();
+                    var v = _currentLocalVarsContext.Read(name);
 
-                    lst.Add($"{name}\t{type}\t{value}");
+                    if (v != null)
+                    {
+                        var type = v.Type;
+                        var value = v.ToString();
+
+                        lst.Add($"{name}\t{type}\t{value}");
+                    }
                 }
-            }
 
-            await _socketServerService.SendToClientAsync("LVARS", lst.ToArray());
+                await _socketServerService.SendToClientAsync("LVARS", lst.ToArray());
+            }
         }
 
         private async Task StudioRequestTasksInformations()
@@ -2655,7 +2677,7 @@ namespace MOGWAI.Engine
             if (!char.IsLetter(c1) && c1 != '_' && c1 != '$' && (c1 != '-' || c2 != '>'))
                 return false;
 
-            if (_primitives.ContainsKey(name))
+            if (_primitivesByName.ContainsKey(name))
                 return false;
 
             if (_hostFunctions.Contains(name))

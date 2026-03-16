@@ -23,13 +23,6 @@ namespace MOGWAI.Primitives
         {
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveBinaryDown(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
-
         public override Task<EvalResult> EngineEval()
         {
             var s = Engine.StackSign(2);

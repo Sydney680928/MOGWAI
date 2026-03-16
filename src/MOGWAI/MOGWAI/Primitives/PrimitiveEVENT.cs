@@ -24,12 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveEVENT(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
         public override Task<EvalResult> EngineEval()
         {
             // function name EVENT

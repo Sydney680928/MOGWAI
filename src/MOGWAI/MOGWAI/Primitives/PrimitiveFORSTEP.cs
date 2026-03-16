@@ -24,12 +24,6 @@ namespace MOGWAI.Primitives
 
         }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveFORSTEP(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
         public override async Task<EvalResult> EngineEval()
         {
             // 1 2 2 'i' {...} FORSTEP

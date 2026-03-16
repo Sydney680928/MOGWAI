@@ -22,13 +22,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveUnpack(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveUnpack(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override Task<EvalResult> PerformOperation(MOGData data)

@@ -75,5 +75,10 @@ namespace MOGWAI
             StartPos = p.StartPos;
             EndPos = p.EndPos;
         }
+
+        public override MOGObject Clone()
+        {
+            return this;
+        }
     }
 }

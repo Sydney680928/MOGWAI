@@ -22,13 +22,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveToMD5(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveToMD5(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override Task<EvalResult> PerformOperation(MOGData data)

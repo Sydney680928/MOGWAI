@@ -22,13 +22,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveToASCII7(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveToASCII7(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override Task<EvalResult> PerformOperation(MOGData data)

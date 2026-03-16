@@ -21,13 +21,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveNow(MogwaiEngine engine, string name, bool isPrivate = false, string helpText = "") : base(engine, name, isPrivate, helpText)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveNow(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override Task<EvalResult> EngineEval()

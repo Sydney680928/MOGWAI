@@ -21,13 +21,7 @@ namespace MOGWAI.Primitives
     {
         public PrimitiveDebugClear(MogwaiEngine engine, string name) : base(engine, name)
         {
-        }
 
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveDebugClear(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
         }
 
         public override async Task<EvalResult> EngineEval()

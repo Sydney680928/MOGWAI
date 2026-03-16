@@ -30,12 +30,5 @@ namespace MOGWAI.Primitives
             Engine.StackPushString(s);
             return Task.FromResult(EvalResult.NoError);
         }
-
-        public override MOGObject Clone()
-        {
-            var obj = new PrimitiveToHex(Engine, Name);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
     }
 }
