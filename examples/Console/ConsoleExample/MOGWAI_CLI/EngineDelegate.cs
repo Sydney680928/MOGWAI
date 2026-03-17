@@ -298,189 +298,173 @@ namespace MOGWAI_CLI
 
         private object _ConsoleAccessLocker = new();
 
-        public async Task ProgramStart(MogwaiEngine engine, string code)
+        public Task ProgramStart(MogwaiEngine engine, string code)
         {
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public async Task ProgramEnd(MogwaiEngine engine, EvalResult result)
+        public Task ProgramEnd(MogwaiEngine engine, EvalResult result)
         {
-            await Task.CompletedTask;
+            return Task.CompletedTask;
         }
 
-        public async Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine)
+        public Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-
             lock (_ConsoleAccessLocker)
-            {
                 Console.Clear();
-            }
 
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message)
+        public Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message)
         {
-            await Task.CompletedTask;
+            lock (_ConsoleAccessLocker)
+                Console.WriteLine(message);
+
+            return Task.FromResult(EvalResult.NoError);
+        }
+
+        public Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message)
+        {
+            lock (_ConsoleAccessLocker)
+                Console.Write(message);
+
+            return Task.FromResult(EvalResult.NoError);
+        }
+
+        public Task<EvalResult> ConsoleShow(MogwaiEngine engine)
+        {
+            return Task.FromResult(EvalResult.NoError);
+        }
+
+        public Task<EvalResult> ConsoleHide(MogwaiEngine engine)
+        {
+            return Task.FromResult(EvalResult.NoError);
+        }
+
+        public Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y)
+        {
+            lock (_ConsoleAccessLocker)
+                Console.SetCursorPosition(x, y);
+
+            return Task.FromResult(EvalResult.NoError);
+        }
+
+        public Task<(EvalResult result, int x, int y)> ConsoleGetCursorPosition(MogwaiEngine engine)
+        {
+            var r = Console.GetCursorPosition();
+            return Task.FromResult((EvalResult.NoError, r.Left, r.Top));
+        }
+
+        public Task<EvalResult> ConsoleSetForegroundColor(MogwaiEngine engine, string color)
+        {
+            lock (_ConsoleAccessLocker)
+                switch (color.ToLower())
+                {
+                    case "black":
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        break;
+                    case "blue":
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        break;
+                    case "cyan":
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        break;
+                    case "gray":
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        break;
+                    case "green":
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        break;
+                    case "magenta":
+                        Console.ForegroundColor = ConsoleColor.Magenta;
+                        break;
+                    case "red":
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        break;
+                    case "white":
+                        Console.ForegroundColor = ConsoleColor.White;
+                        break;
+                    case "yellow":
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        break;
+                    default:
+                        break;
+                }
+
+            return Task.FromResult(EvalResult.NoError);
+        }
+
+        public Task<EvalResult> ConsoleSetBackgroundColor(MogwaiEngine engine, string color)
+        {
+            lock (_ConsoleAccessLocker)
+                switch (color.ToLower())
+                {
+                    case "black":
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        break;
+                    case "blue":
+                        Console.BackgroundColor = ConsoleColor.Blue;
+                        break;
+                    case "cyan":
+                        Console.BackgroundColor = ConsoleColor.Cyan;
+                        break;
+                    case "gray":
+                        Console.BackgroundColor = ConsoleColor.Gray;
+                        break;
+                    case "green":
+                        Console.BackgroundColor = ConsoleColor.Green;
+                        break;
+                    case "magenta":
+                        Console.BackgroundColor = ConsoleColor.Magenta;
+                        break;
+                    case "red":
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        break;
+                    case "white":
+                        Console.BackgroundColor = ConsoleColor.White;
+                        break;
+                    case "yellow":
+                        Console.BackgroundColor = ConsoleColor.Yellow;
+                        break;
+                    default:
+                        break;
+                }
+
+            return Task.FromResult(EvalResult.NoError);
+        }
+
+        public Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine)
+        {
+            int key = -1;
 
             lock (_ConsoleAccessLocker)
             {
-                Console.WriteLine(message);
+                if (Console.KeyAvailable)
+                {
+                    var keyInfo = Console.ReadKey(true);
+                    key = (int)keyInfo.Key;
+                }
             }
 
-            return EvalResult.NoError;
+            return Task.FromResult((EvalResult.NoError, key));
+
         }
 
-        public async Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message)
+        public Task<(EvalResult result, string? value)> Prompt(MogwaiEngine engine, string message)
         {
-            await Task.CompletedTask;
-
             lock (_ConsoleAccessLocker)
             {
                 Console.Write(message);
+                var r = Console.ReadLine();
+                return Task.FromResult((EvalResult.NoError, r));
             }
-
-            return EvalResult.NoError;
-        }
-
-        public async Task<EvalResult> ConsoleShow(MogwaiEngine engine)
-        {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
-        }
-
-        public async Task<EvalResult> ConsoleHide(MogwaiEngine engine)
-        {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
-        }
-
-        public async Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y)
-        {
-            await Task.CompletedTask;
-            Console.SetCursorPosition(x, y);
-            return EvalResult.NoError;
-        }
-
-        public async Task<(EvalResult result, int x, int y)> ConsoleGetCursorPosition(MogwaiEngine engine)
-        {
-            await Task.CompletedTask;
-            var r = Console.GetCursorPosition();
-            return (EvalResult.NoError, r.Left, r.Top);
-        }
-
-        public async Task<EvalResult> ConsoleSetForegroundColor(MogwaiEngine engine, string color)
-        {
-            await Task.CompletedTask;
-
-            switch (color.ToLower())
-            {
-                case "black":
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    break;
-                case "blue":
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    break;
-                case "cyan":
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    break;
-                case "gray":
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    break;
-                case "green":
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    break;
-                case "magenta":
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    break;
-                case "red":
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                case "white":
-                    Console.ForegroundColor = ConsoleColor.White;
-                    break;
-                case "yellow":
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
-                default:
-                    break;
-            }
-
-            return EvalResult.NoError;
-        }
-
-        public async Task<EvalResult> ConsoleSetBackgroundColor(MogwaiEngine engine, string color)
-        {
-            await Task.CompletedTask;
-
-            switch (color.ToLower())
-            {
-                case "black":
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    break;
-                case "blue":
-                    Console.BackgroundColor = ConsoleColor.Blue;
-                    break;
-                case "cyan":
-                    Console.BackgroundColor = ConsoleColor.Cyan;
-                    break;
-                case "gray":
-                    Console.BackgroundColor = ConsoleColor.Gray;
-                    break;
-                case "green":
-                    Console.BackgroundColor = ConsoleColor.Green;
-                    break;
-                case "magenta":
-                    Console.BackgroundColor = ConsoleColor.Magenta;
-                    break;
-                case "red":
-                    Console.BackgroundColor = ConsoleColor.Red;
-                    break;
-                case "white":
-                    Console.BackgroundColor = ConsoleColor.White;
-                    break;
-                case "yellow":
-                    Console.BackgroundColor = ConsoleColor.Yellow;
-                    break;
-                default:
-                    break;
-            }
-
-            return EvalResult.NoError;
-        }
-
-        public async Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine)
-        {
-            await Task.CompletedTask;
-
-            int key = -1;
-
-            if (Console.KeyAvailable)
-            {
-                var keyInfo = Console.ReadKey(true);
-                key = (int)keyInfo.Key;
-            }
-
-            return (EvalResult.NoError, key);
-
-        }
-
-        public async Task<(EvalResult result, string? value)> Prompt(MogwaiEngine engine, string message)
-        {
-            await Task.CompletedTask;
-
-            Console.Write(message);
-            var r = Console.ReadLine();
-            return (EvalResult.NoError, r);
         }
 
         public string[] HostFunctions(MogwaiEngine engine) => ["?s", "run", "edit", "file.edit", "file.select"];
 
         public async Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string word)
         {
-            await Task.CompletedTask;
-
             if (word == "?s")
             {
                 if (engine.StackSize == 0)
@@ -611,58 +595,49 @@ namespace MOGWAI_CLI
             return EvalResult.NoExternalFunction;
         }
 
-        public async Task<EvalResult> MessageReceivedFromRuntime(MogwaiEngine engine, string message, MOGObject parameter)
+        public Task<EvalResult> MessageReceivedFromRuntime(MogwaiEngine engine, string message, MOGObject parameter)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> EngineDidPause(MogwaiEngine engine)
+        public Task<EvalResult> EngineDidPause(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> EngineDidResume(MogwaiEngine engine)
+        public Task<EvalResult> EngineDidResume(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> StudioDidConnect(MogwaiEngine engine)
+        public Task<EvalResult> StudioDidConnect(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> StudioDidDisconnect(MogwaiEngine engine)
+        public Task<EvalResult> StudioDidDisconnect(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> SocketServerDidStart(MogwaiEngine engine, IPAddress address, int port)
+        public Task<EvalResult> SocketServerDidStart(MogwaiEngine engine, IPAddress address, int port)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> SocketServerDidStop(MogwaiEngine engine)
+        public Task<EvalResult> SocketServerDidStop(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> DebugMessage(MogwaiEngine engine, string message)
+        public Task<EvalResult> DebugMessage(MogwaiEngine engine, string message)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
 
-        public async Task<EvalResult> DebugClear(MogwaiEngine engine)
+        public Task<EvalResult> DebugClear(MogwaiEngine engine)
         {
-            await Task.CompletedTask;
-            return EvalResult.NoError;
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }
