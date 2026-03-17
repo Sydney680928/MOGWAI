@@ -32,9 +32,6 @@ Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `l
 - Removed systematic primitive cloning during execution, resulting in a performance gain.
 - Removed all `LINK` calls during execution.
 - Optimized primitive dictionaries to improve lookup speed.
-  
-### Fixed
-
 
 ## [8.2.0] - 2026-03-09
 
