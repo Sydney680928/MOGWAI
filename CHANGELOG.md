@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added `-->` in-place pipeline operator: applies a sequence of transformations directly to a referenced variable — e.g. `(->upper butfirst butlast) --> &A`.
+  - New private primitive `PIPEREF` to support `-->`: pushes the actual value of the variable (not a copy) onto a private stack, evaluates each item in the list, then discards the private stack.
+  - `PIPEREF` is transactional: a snapshot is taken before the pipeline starts and restored automatically if any item raises an error.
+  - Quotations are valid items in the pipeline list, enabling complex inline logic mid-pipeline.
+  - Empty pipeline list is a no-op with immediate early exit.
+
 ### Changed
   
 ### Fixed
