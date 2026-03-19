@@ -485,6 +485,7 @@ namespace MOGWAI.Engine
             RegisterPrivatePrimitive(new PrimitiveSTODIVIDE(this, "STO/"), "->/");
             RegisterPrivatePrimitive(new PrimitiveSWITCH(this, "SWITCH"), "switch");
             RegisterPrivatePrimitive(new PrimitiveDECLARE(this, "DECLARE"), "=>");
+            RegisterPrivatePrimitive(new PrimitivePIPEREF(this, "PIPEREF"), "-->");
 
             _primitivesByName = _initializingPrimitivesByName.ToFrozenDictionary();
             _initializingPrimitivesByName.Clear();

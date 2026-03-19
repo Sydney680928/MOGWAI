@@ -186,6 +186,44 @@ Decrements a variable.
 
 ***
 
+### `&`
+
+Pushes a direct reference to a variable onto the stack, instead of a copy of its value. Functions that support references modify the variable directly, without creating intermediate copies.
+
+```
+"bonjour" -> 'A'
+&A ->upper
+# A now contains "BONJOUR" — modified in place
+```
+
+> Not all functions support references. If you use `&` with a function that does not support it, a `bad argument type` error is raised.
+
+***
+
+### `-->`
+
+Applies a list of transformations to a variable in place. Each item in the list is applied in sequence using the current value of the variable as input.
+
+```
+"bonjour" -> 'A'
+(->upper butfirst butlast) --> &A
+# A now contains "ONJOU"
+```
+
+Items in the list can be regular functions or quotations:
+
+```
+"hello world" -> 'A'
+(->upper { " !" + }) --> &A
+# A now contains "HELLO WORLD !"
+```
+
+The operation is **transactional**: a snapshot of the variable is taken before the pipeline starts. If any step raises an error, the variable is automatically restored to its original value and the error is propagated.
+
+An empty list `()` is a no-op: the variable is left unchanged.
+
+***
+
 ### `rcl`
 
 Pushes the value of a variable whose name is passed as parameter onto the stack.

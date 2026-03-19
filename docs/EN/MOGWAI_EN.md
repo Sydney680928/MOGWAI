@@ -7,6 +7,7 @@
 - [DISPLAYING VALUES](#displaying-values)
 - [SCREEN INPUT](#screen-input)
 - [VARIABLES](#variables)
+- [IN-PLACE VARIABLE MUTATION](#in-place-variable-mutation)
 - [CONSTANTS](#constants)
 - [TYPES](#types)
 - [THE STACK](#the-stack)
@@ -316,6 +317,88 @@ This function returns `true` if the variable name passed as parameter exists (lo
 # Places true on the stack
 ```
 
+# IN-PLACE VARIABLE MUTATION
+
+When you push a variable's value onto the stack using `A` or `@A`, you push a **copy** of its content. Any transformation you apply produces a new value that must be explicitly stored back into the variable.
+
+```
+"bonjour" -> 'A'
+A ->upper butfirst butlast -> 'A'
+# A now contains "ONJOU"
+```
+
+For simple cases this works well, but for complex objects such as large lists, pushing and rebuilding copies on every operation can become costly. **MOGWAI** provides the `&` prefix to push the **direct reference** to a variable instead of a copy.
+
+## The `&` reference prefix
+
+Prefixing a variable name with `&` pushes the variable's actual content — not a copy — onto the stack. Any function that supports references will then modify the variable directly, without creating intermediate copies.
+
+```
+"bonjour" -> 'A'
+&A ->upper
+# A now contains "BONJOUR" — modified in place
+```
+
+Not all functions support references. If you use `&` with a function that does not support it, a `bad argument type` error is raised.
+
+## The `-->` in-place pipeline operator
+
+When you need to apply a sequence of transformations to a variable in place, repeating `&` before each step is verbose:
+
+```
+"bonjour" -> 'A'
+&A ->upper  &A butfirst  &A butlast
+# A now contains "ONJOU"
+```
+
+The `-->` operator solves this by applying an entire list of transformations to a variable in a single expression:
+
+```
+"bonjour" -> 'A'
+(->upper butfirst butlast) --> &A
+# A now contains "ONJOU"
+```
+
+Each item in the list is applied in sequence, using the current value of `A` as input. The variable is updated after each step.
+
+### Using quotations in the pipeline
+
+The items in the list can be regular functions or quotations. A quotation receives the current value of the variable on its stack and can perform any operation, as long as the final result is left on the stack:
+
+```
+"hello world" -> 'A'
+(->upper { " !" + }) --> &A
+# A now contains "HELLO WORLD !"
+```
+
+### Transactional behavior
+
+The `-->` operator is **transactional**. Before the pipeline starts, a snapshot of the variable is taken. If any step raises an error, the variable is automatically restored to its original value and the error is propagated.
+
+```
+"bonjour" -> 'A'
+guard
+{
+    (->upper sqrt butlast) --> &A
+}
+else
+{
+    # An error was raised on ->sqrt (not applicable to a string)
+    # A has been restored to its original value
+    A ?  # displays "bonjour"
+}
+```
+
+### Empty pipeline
+
+An empty list `()` is a no-op: the variable is left unchanged.
+
+```
+"bonjour" -> 'A'
+() --> &A
+# A still contains "bonjour"
+```
+
 # TYPES
 
 **MOGWAI** manipulates objects with different types.
@@ -349,6 +432,7 @@ The main types manipulated by **MOGWAI** are as follows:
 | `.binary` | Binary number | BIN:110011110011 |
 | `.record` | RECORD (dictionary) | [x: 50 y: 200] |
 | `.null` | Null value | null -> 'A' |
+| `.ref` | Reference to a variable | &A |
 | `.any` | Free type (variant) | |
 
 

@@ -41,7 +41,8 @@ namespace MOGWAI.Primitives
 
                 try
                 {
-                    Engine.StackPushNumber(n1.Value + n2.Value);
+                    n2.Value = n1.Value + n2.Value;
+                    Engine.StackPush(n2);
                 }
                 catch (Exception ex)
                 {
@@ -55,7 +56,7 @@ namespace MOGWAI.Primitives
                 var n1 = Engine.StackPop();
                 var n2 = Engine.StackPopList();
 
-                n2!.AddItem(n1!);
+                n2.AddItem(n1!);
                 Engine.StackPush(n2);
             }
             else if (s[0] == typeof(MOGString) && s[1] == typeof(MOGString))
@@ -65,7 +66,8 @@ namespace MOGWAI.Primitives
                 var n1 = Engine.StackPopString();
                 var n2 = Engine.StackPopString();
 
-                Engine.StackPushString(n2.Value + n1.Value);
+                n2.Value += n1.Value;
+                Engine.StackPush(n2);
             }
             else if (s[1] == typeof(MOGString))
             {
@@ -74,7 +76,8 @@ namespace MOGWAI.Primitives
                 var n1 = Engine.StackPop();
                 var n2 = Engine.StackPopString();
 
-                Engine.StackPushString(n2.Value + n1!.ToString());
+                n2.Value += n1!.ToString();
+                Engine.StackPush(n2);
             }
             else if (s[1] == typeof(MOGData))
             {
@@ -94,11 +97,11 @@ namespace MOGWAI.Primitives
                 {
                     // data data +
 
+                    var data1 = Engine.StackPopData();
                     var data2 = Engine.StackPopData();
-                    var data = Engine.StackPopData();
 
-                    data.Items.AddRange(data2.Items);
-                    Engine.StackPush(data);
+                    data2.Items.AddRange(data1.Items);
+                    Engine.StackPush(data2);
                 }
                 else
                 {
@@ -107,13 +110,14 @@ namespace MOGWAI.Primitives
             }
             else if (s[0] == typeof(MOGBinaryNumber) && s[1] == typeof(MOGBinaryNumber))
             {
-                var bin0 = Engine.StackPopBinaryNumber();
                 var bin1 = Engine.StackPopBinaryNumber();
+                var bin2 = Engine.StackPopBinaryNumber();
 
-                for (int i = bin0.Items.Count - 1; i >= 0; i--)
-                    bin1.Items.Insert(0, bin0.Items[i]);
+                for (int i = bin1.Items.Count - 1; i >= 0; i--)
+                    bin2.Items.Insert(0, bin1.Items[i]);
 
-                Engine.StackPush(bin1);
+                Engine.StackPush(bin2);
+
                 return EvalResult.NoError;
             }
             else if (s[1] == typeof(MOGRef))

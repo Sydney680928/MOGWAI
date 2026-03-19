@@ -17,6 +17,7 @@ using MOGWAI.Objects;
 using MOGWAI.Primitives;
 using System.Globalization;
 using System.Text;
+using System.Xml.Linq;
 
 namespace MOGWAI.Engine
 {
@@ -835,6 +836,10 @@ namespace MOGWAI.Engine
                         case "->/":
                             result = UpdateForStoOperationsSugar(engine, i, word.Value);
                             break;
+
+                        case "-->":
+                            result = UpdateForPipeRefSugar(engine, i);
+                            break;  
                     }
 
                     if (!result)
@@ -1140,6 +1145,37 @@ namespace MOGWAI.Engine
 
                         return true;
                     }
+                }
+            }
+
+            return false;
+        }
+
+        private bool UpdateForPipeRefSugar(MogwaiEngine engine, int index)
+        {
+            // -1 list
+            //  0 word -->
+            //  1 ref
+            //
+            // ref list PIPEREF
+
+            if (_parsedObjects.Count - index >= 2)
+            {
+                var primitive = engine.GetPrimitive(typeof(PrimitivePIPEREF));
+
+                if (primitive != null)
+                {
+                    primitive.StartPos = _parsedObjects[index].StartPos;
+                    primitive.EndPos = _parsedObjects[index].EndPos;
+                    primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+
+                    var temp = _parsedObjects[index - 1];
+
+                    _parsedObjects[index - 1] = _parsedObjects[index + 1];
+                    _parsedObjects[index] = temp;
+                    _parsedObjects[index + 1] = primitive;
+
+                    return true;
                 }
             }
 
