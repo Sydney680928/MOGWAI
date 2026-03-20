@@ -1071,49 +1071,46 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index >= 2)
             {
-                var name = _parsedObjects[index + 1] as MOGName;
 
-                if (name != null)
+
+                MOGPrimitive? primitive = null;
+
+                switch (word)
                 {
-                    MOGPrimitive? primitive = null;
+                    case "->":
+                        primitive = engine.GetPrimitive(typeof(PrimitiveSTO));
+                        break;
 
-                    switch (word)
-                    {
-                        case "->":
-                            primitive = engine.GetPrimitive(typeof(PrimitiveSTO));
-                            break;
+                    case "->+":
+                        primitive = engine.GetPrimitive(typeof(PrimitiveSTOPLUS));
+                        break;
 
-                        case "->+":
-                            primitive = engine.GetPrimitive(typeof(PrimitiveSTOPLUS));
-                            break;
+                    case "->-":
+                        primitive = engine.GetPrimitive(typeof(PrimitiveSTOSUBSTRACT));
+                        break;
 
-                        case "->-":
-                            primitive = engine.GetPrimitive(typeof(PrimitiveSTOSUBSTRACT));
-                            break;
+                    case "->*":
+                        primitive = engine.GetPrimitive(typeof(PrimitiveSTOMULTIPLY));
+                        break;
 
-                        case "->*":
-                            primitive = engine.GetPrimitive(typeof(PrimitiveSTOMULTIPLY));
-                            break;
+                    case "->/":
+                        primitive = engine.GetPrimitive(typeof(PrimitiveSTODIVIDE));
+                        break;
 
-                        case "->/":
-                            primitive = engine.GetPrimitive(typeof(PrimitiveSTODIVIDE));
-                            break;
+                    default:
+                        return false;
+                }
 
-                        default:
-                            return false;
-                    }
+                if (primitive != null)
+                {
+                    primitive.StartPos = _parsedObjects[index].StartPos;
+                    primitive.EndPos = _parsedObjects[index].EndPos;
+                    primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
 
-                    if (primitive != null)
-                    {
-                        primitive.StartPos = _parsedObjects[index].StartPos;
-                        primitive.EndPos = _parsedObjects[index].EndPos;
-                        primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                    _parsedObjects[index] = _parsedObjects[index + 1];
+                    _parsedObjects[index + 1] = primitive;
 
-                        _parsedObjects[index] = name;
-                        _parsedObjects[index + 1] = primitive;
-
-                        return true;
-                    }
+                    return true;
                 }
             }
 
