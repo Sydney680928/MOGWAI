@@ -33,7 +33,11 @@ namespace MOGWAI.Objects
 
         public override async Task<EvalResult> UserEval()
         {
-            await Eval();
+            var result = await Eval();
+
+            if (result.IsError)
+                return result;
+
             return await base.UserEval();
         }
 
@@ -83,15 +87,27 @@ namespace MOGWAI.Objects
                                 var result = await c.Execute();
 
                                 if (result != EvalResult.NoError)
+                                {
+                                    Engine.LastParserStartErrorPosition = StartPos;
+                                    Engine.LastParserEndErrorPosition = EndPos; 
                                     return result;
+                                }
 
                                 if (Engine.StackSize != 1)
+                                {
+                                    Engine.LastParserStartErrorPosition = StartPos;
+                                    Engine.LastParserEndErrorPosition = EndPos;
                                     return EvalResult.Failure(Engine, Error.StackSizeError, "stack size differs from 1 during string eval.");
+                                }
 
                                 var obj = Engine.StackPop();
 
                                 if (obj == null)
+                                {
+                                    Engine.LastParserStartErrorPosition = StartPos;
+                                    Engine.LastParserEndErrorPosition = EndPos;
                                     return EvalResult.Failure(Engine, Error.StackSizeError, "unabled to get stack value during string eval.");
+                                }
 
                                 if (obj is MOGString s2)
                                 {

@@ -36,19 +36,31 @@ namespace MOGWAI.Objects
             return obj;
         }
 
-        public override  Task<EvalResult> EngineEval()
+        public override async Task<EvalResult> EngineEval()
         {
             var value = Engine.VarRead(Value);
 
             if (value == null)
-                return Task.FromResult(EvalResult.Failure(Engine, Error.UnknownNameError, $"var '{Value}' is not defined."));
+                return EvalResult.Failure(Engine, Error.UnknownNameError, $"var '{Value}' is not defined.");
 
             if (AutoEval)
-                return value.UserEval();
+            {
+                if (Engine.RegisterVarAutoEval(Value))
+                {
+                    var result = await value.UserEval();
+                    Engine.UnregisterVarAutoEval(Value);    
+                    return result;
+                }
+                else
+                {
+                    Engine.UnregisterVarAutoEval(Value);
+                    return EvalResult.Failure(Engine, Error.CircularReferenceError, $"circular reference detected for var '{Value}'.");
+                }
+            }
 
             Engine.StackPush(value);
 
-            return Task.FromResult(EvalResult.NoError);
+            return EvalResult.NoError;
         }
 
         public override string ToString()

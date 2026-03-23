@@ -26,6 +26,7 @@ namespace MOGWAI.Engine
         public static readonly Error PlatformNotSupportedError = RegisterError("MW.5", "platform not supported error");
         public static readonly Error UnabledToFireEventError = RegisterError("MW.6", "unabled to fire event error");
         public static readonly Error OperationNotSupportedError = RegisterError("MW.7", "operation not supported error");
+        public static readonly Error CircularReferenceError = RegisterError("MW.8", "circular reference error");
 
         public static readonly Error GenericError = RegisterError("MW.10", "generic error");
         public static readonly Error PrimitiveSearchError = RegisterError("MW.11", "primitive not found error");

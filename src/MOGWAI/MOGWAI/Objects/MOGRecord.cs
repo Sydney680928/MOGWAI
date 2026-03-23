@@ -113,7 +113,7 @@ namespace MOGWAI.Objects
             Items = dic;
         }
 
-        private async Task Eval()
+        private async Task<EvalResult> Eval()
         {
             foreach (var key in Items.Keys)
             {
@@ -123,7 +123,11 @@ namespace MOGWAI.Objects
                 var r = await item.UserEval();
 
                 if (r != EvalResult.NoError)
-                    break;
+                {
+                    Engine.LastParserStartErrorPosition = StartPos;    
+                    Engine.LastParserEndErrorPosition = EndPos;
+                    return r;
+                }
 
                 if (Engine.StackSize > stackSize)
                 {
@@ -131,6 +135,8 @@ namespace MOGWAI.Objects
                     Items[key] = value!;
                 }
             }
+
+            return EvalResult.NoError;
         }
 
         public override MOGRecord Clone()
@@ -143,15 +149,24 @@ namespace MOGWAI.Objects
         public override async Task<EvalResult> EngineEval()
         {
             if (AutoEval)
-                await Eval();
+            {
+                var result = await Eval();
+
+                if (result != EvalResult.NoError)
+                    return result;
+            }
 
             return await base.EngineEval();
         }
 
         public override async Task<EvalResult> UserEval()
         {
-            await Eval();
-            return await base.UserEval();
+            var result = await Eval();
+
+            if (result != EvalResult.NoError)
+                return result;
+
+            return await base.EngineEval();
         }
 
         public override string ToString()

@@ -73,7 +73,8 @@ namespace MOGWAI.Engine
         private Dictionary<string, FileStream> _openinFiles = [];
         private Dictionary<string, FileStream> _openoutFiles = [];
         private Dictionary<int, MogwaiExecutionContext> _includes = [];
-        private Dictionary<string, PluginInformations> _plugins = [];       
+        private Dictionary<string, PluginInformations> _plugins = [];
+        private List<string> _varsInAutoEval = new();
 
         // MOX Signature = [STX][M ][O ][G ][W ][A ][I ][28][09][19][68][ETX]
         //               = 00   01  02  03  04  05  06  07  08  09  10  11
@@ -869,8 +870,24 @@ namespace MOGWAI.Engine
 
                 if (result != EvalResult.NoError)
                 {
-                    result.StartErrorPosition = CurrentEvalObject?.StartPos ?? -1;
-                    result.EndErrorPosition = CurrentEvalObject?.EndPos ?? -1;
+                    if (CurrentEvalObject != null)
+                    {
+                        if (CurrentEvalObject.StartPos == -1 || CurrentEvalObject.EndPos == -1)
+                        {
+                            result.StartErrorPosition = LastParserStartErrorPosition;
+                            result.EndErrorPosition = LastParserEndErrorPosition;
+                        }
+                        else
+                        {
+                            result.StartErrorPosition = CurrentEvalObject.StartPos;
+                            result.EndErrorPosition = CurrentEvalObject.EndPos;
+                        }
+                    }
+                    else
+                    {
+                        result.StartErrorPosition = LastParserStartErrorPosition;
+                        result.EndErrorPosition = LastParserEndErrorPosition;
+                    }
 
                     if (IsTask)
                     {
@@ -3029,6 +3046,18 @@ namespace MOGWAI.Engine
             return true;
         }
 
+        internal bool RegisterVarAutoEval(string name)
+        {
+            if (_varsInAutoEval.Contains(name))
+                return false;
+
+            _varsInAutoEval.Add(name);
+
+            return true;
+        }
+
+        internal bool UnregisterVarAutoEval(string name) => _varsInAutoEval.Remove(name);
+
         #endregion
 
         #region PUBLIC FUNCTIONS
@@ -3118,6 +3147,10 @@ namespace MOGWAI.Engine
             // Enable interrups
 
             EnableInterrupts();
+
+            // Clear circular references list
+
+            _varsInAutoEval.Clear();    
 
             if (!keepAlive)
             {
