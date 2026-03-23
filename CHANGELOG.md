@@ -9,6 +9,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`!A` sigil — direct evaluation of a variable's content**
+  A new prefix sigil `!` can now be applied to any variable to immediately evaluate its content, without pushing the object onto the stack first.
+ 
+  This completes the variable sigil set:
+ 
+  | Notation | Behavior |
+  |----------|----------|
+  | `A`      | Reads A and pushes its value onto the stack |
+  | `&A`     | Reference to A for in-place mutation |
+  | `@A`     | Statically resolved read (compile-time) |
+  | `!A`     | Evaluates the content of A directly |
+ 
+  `!A` is universal — its effect depends on the type of the object stored in A:
+ 
+  | Type | Effect of `!A` |
+  |------|----------------|
+  | Block `{ }` | Executes the code |
+  | Function `« »` | Executes the function |
+  | String `"..."` | Interpolates embedded `{ }` blocks |
+  | List `( )` | Evaluates embedded blocks in elements |
+  | Record `[ ]` | Evaluates embedded blocks in fields |
+  | Number, boolean… | Silent no-op |
+ 
+  Examples:
+ 
+  ```mogwai
+  # block
+  100 ->A
+  { A 10 * } ->B
+  !B  # → 1000
+ 
+  # string interpolation
+  "We are in { now ->date year: get }" ->'C
+  !C # → "We are in 2026"
+  ```
+ 
+  Internally, `!A` sets the `AutoEval` flag on the object referenced by A and dispatches it directly — the object never lands on the stack as an intermediate value, making it slightly more efficient than the equivalent `A eval` sequence.
+ 
+  For non-executable types (numbers, booleans, etc.), `!A` behaves identically to `A` — it is a silent no-op, no error is raised.
+ 
+  The semantics of `!` are consistent with its existing use inside containers (`{ ! ... }`, `« ! ... »`, `( ! ... )`, `[ ! ... ]`): it always means *"resolve everything evaluable in this object"*, regardless of where it appears.
+ 
 - Added `-->` in-place pipeline operator: applies a sequence of transformations directly to a referenced variable — e.g. `(->upper butfirst butlast) --> &A`.
   - New private primitive `PIPEREF` to support `-->`: pushes the actual value of the variable (not a copy) onto a private stack, evaluates each item in the list, then discards the private stack.
   - `PIPEREF` is transactional: a snapshot is taken before the pipeline starts and restored automatically if any item raises an error.
