@@ -36,26 +36,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  
   ```mogwai
   # block
-  100 ->'A'
-  { A 10 * } ->'B'
+  100 -> 'A'
+  { A 10 * } -> 'B'
   !B    # → 1000
  
   # string interpolation
-  "We are in { ! now ->date year: get }" ->'C'
+  "We are in { ! now ->date year: get }" -> 'C'
   !C    # → "We are in 2026"
   ```
  
   **Containers are lazy.** Everything inside a container is deferred until `!` is applied — the container stores expressions, not values. This means `!A` on a composite object always evaluates with the **current state** of the program:
  
   ```mogwai
-  10 ->'A'
-  { A 200 * } ->'B'
+  10 -> 'A'
+  { A 200 * } -> 'B'
   [ x: { A 10 * }
     y: "We are in { ! now ->date year: get }"
-    z: !B ] ->'R'
+    z: !B ] -> 'R'
  
   !R       # → [ x: 100   y: "We are in 2026"   z: 2000 ]
-  20 ->'A'
+  20 -> 'A'
   !R       # → [ x: 200   y: "We are in 2026"   z: 4000 ]
   ```
  
@@ -64,6 +64,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   For non-executable types (numbers, booleans, etc.), `!A` behaves identically to `A` — it is a silent no-op, no error is raised.
  
   The semantics of `!` are consistent with its existing use inside containers (`{ ! ... }`, `« ! ... »`, `( ! ... )`, `[ ! ... ]`): it always means *"resolve everything evaluable in this object"*, regardless of where it appears.
+ 
+  **Circular reference detection** The runtime now detects circular references during evaluation and raises an error instead of looping indefinitely.
+ 
+  When `!A` is called, the variable A is registered as being evaluated. If the evaluation chain reaches `!A` again before it completes, a circular reference error is returned immediately via `EvalResult`. The variable is released as soon as the evaluation completes, whether the result is a success or an error.
+ 
+  ```mogwai
+  { !B } -> 'A'
+  { !A } -> 'B'
+  !A    # → error: circular reference detected (A → B → A)
+  ```
+ 
+  The error includes the full chain of variable names involved in the cycle.
+ 
  
 - Added `-->` in-place pipeline operator: applies a sequence of transformations directly to a referenced variable — e.g. `(->upper butfirst butlast) --> &A`.
   - New private primitive `PIPEREF` to support `-->`: pushes the actual value of the variable (not a copy) onto a private stack, evaluates each item in the list, then discards the private stack.
