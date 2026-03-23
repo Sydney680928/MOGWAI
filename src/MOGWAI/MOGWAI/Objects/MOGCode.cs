@@ -59,15 +59,13 @@ namespace MOGWAI.Objects
                     if (item.ExecutionContext != null)
                         ExecutionContextAllowDebugMode = item.ExecutionContext.AllowDebugMode;
 
-                    result = await Engine.ExecuteWaitingFireObjects();
+                    if (Engine.HasWaitingFireObjects)
+                        result = await Engine.ExecuteWaitingFireObjects();
 
                     if (result != EvalResult.NoError)
                         break;               
 
-                    if (Engine.ExitRequested || Engine.BreakRequested)
-                        break;
-
-                    if (Engine.ReturnRequested)
+                    if (Engine.ExitRequested || Engine.BreakRequested || Engine.ReturnRequested)
                         break;
 
                     if (Engine.HaltRequested)
@@ -148,7 +146,8 @@ namespace MOGWAI.Objects
                     if (result.IsError)
                         break;
 
-                    counter++;
+                    if (isBrowser)
+                        counter++;
 
                     if (isBrowser && counter % 100 == 0)
                         await Task.Delay(1);
