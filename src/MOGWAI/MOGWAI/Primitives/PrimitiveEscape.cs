@@ -29,8 +29,8 @@ namespace MOGWAI.Primitives
         {
             try
             {
-                var encoded = JsonSerializer.Serialize(@string.Value);
-                Engine.StackPushString(encoded.Trim('\"'));
+                var encoded = JsonEncodedText.Encode(@string.Value).ToString();
+                Engine.StackPushString(encoded);
                 return Task.FromResult(EvalResult.NoError);
             }
             catch (Exception ex)

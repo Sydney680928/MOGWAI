@@ -154,7 +154,8 @@ namespace MOGWAI.Engine
                         try
                         {
                             // var message = JsonConvert.DeserializeObject<ServerMessage>(request);
-                            var message = System.Text.Json.JsonSerializer.Deserialize<ServerMessage>(request);
+                            // var message = System.Text.Json.JsonSerializer.Deserialize<ServerMessage>(request);
+                            var message = System.Text.Json.JsonSerializer.Deserialize(request, MogwaiJsonContext.Default.ServerMessage);
 
                             if (message != null)
                             {
@@ -206,7 +207,9 @@ namespace MOGWAI.Engine
 
         private async Task<bool> SendToClientAsync(ServerMessage message)
         {
-            var msg = System.Text.Json.JsonSerializer.Serialize(message);
+            // var msg = System.Text.Json.JsonSerializer.Serialize(message);
+            var msg = System.Text.Json.JsonSerializer.Serialize(message, MogwaiJsonContext.Default.ServerMessage);
+
             return await SendToClientAsync(msg);
         }
 

@@ -132,7 +132,19 @@ namespace MOGWAI.Objects
 
                 try
                 {
-                    Value = JsonSerializer.Deserialize<string>($"\"{sb}\"") ?? sb.ToString();
+                    // Value = JsonSerializer.Deserialize<string>($"\"{sb}\"") ?? sb.ToString();
+
+                    try
+                    {
+                        var bytes = Encoding.UTF8.GetBytes($"\"{sb}\"");
+                        var reader = new Utf8JsonReader(bytes);
+                        reader.Read();
+                        Value = reader.GetString() ?? sb.ToString();
+                    }
+                    catch
+                    {
+                        Value = sb.ToString();
+                    }
                 }
                 catch
                 {

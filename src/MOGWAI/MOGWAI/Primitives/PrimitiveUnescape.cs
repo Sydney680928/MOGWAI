@@ -14,6 +14,7 @@
 
 using MOGWAI.Engine;
 using MOGWAI.Objects;
+using System.Text;
 using System.Text.Json;
 
 namespace MOGWAI.Primitives
@@ -31,7 +32,10 @@ namespace MOGWAI.Primitives
             try
             {
 
-                var unescaped = JsonSerializer.Deserialize<string>($"\"{@string.Value}\"");
+                var bytes = Encoding.UTF8.GetBytes($"\"{@string.Value}\"");
+                var reader = new Utf8JsonReader(bytes);
+                reader.Read();
+                var unescaped = reader.GetString();
 
                 if (unescaped != null)
                 {

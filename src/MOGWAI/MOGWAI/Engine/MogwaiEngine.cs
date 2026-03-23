@@ -17,7 +17,9 @@ using MOGWAI.Objects;
 using MOGWAI.Primitives;
 using System.Collections.Frozen;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
@@ -557,9 +559,9 @@ namespace MOGWAI.Engine
         {
             get
             {
-                System.Reflection.Assembly assembly = System.Reflection.Assembly.GetExecutingAssembly();
-                FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-                string strVersion = fvi.FileVersion ?? string.Empty;
+                var assembly = Assembly.GetExecutingAssembly();
+                var attr = assembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
+                string strVersion = attr?.Version ?? string.Empty;
                 return new Version(strVersion);
             }
         }
@@ -1924,7 +1926,8 @@ namespace MOGWAI.Engine
             try
             {
                 var s = Encoding.UTF8.GetString(data);
-                var message = JsonSerializer.Deserialize<ServerMessage>(s);
+                // var message = JsonSerializer.Deserialize<ServerMessage>(s);
+                var message = JsonSerializer.Deserialize(s, MogwaiJsonContext.Default.ServerMessage);
 
                 if (message != null && message.Source == "MOGWAI STUDIO")
                 {
@@ -1970,7 +1973,8 @@ namespace MOGWAI.Engine
             {
                 var infos = GetRuntimeInformationsForConnection();
                 var msg = new ServerMessage("MOGWAI RUNTIME", "I AM HERE", infos);
-                var mser = JsonSerializer.Serialize(msg);
+                //var mser = JsonSerializer.Serialize(msg);
+                var mser = JsonSerializer.Serialize(msg, MogwaiJsonContext.Default.ServerMessage);
                 var bytes = Encoding.UTF8.GetBytes(mser);
 
                 _datagramManager.SendDatagram(from.Address.ToString(), from.Port, bytes);
@@ -2925,6 +2929,9 @@ namespace MOGWAI.Engine
 
             return null;
         }
+
+        [UnconditionalSuppressMessage("AOT", "IL2026", Justification = "Plugin system requires dynamic assembly loading by design.")]
+        [UnconditionalSuppressMessage("AOT", "IL2072", Justification = "Plugin system requires dynamic type instantiation by design.")]
 
         internal async Task<EvalResult> Using(string path)
         {
