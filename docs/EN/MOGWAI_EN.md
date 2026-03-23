@@ -204,6 +204,33 @@ A B + -> 'C'
 @A @B + -> 'C'
 ```
 
+To immediately evaluate the content of a variable, you can use the `!` prefix sigil. This is useful when a variable contains an object that embeds executable code, such as a block, a function, a string with interpolation blocks, a list or a record.
+
+```
+# A contains a number — !A behaves exactly like A
+100 -> 'A'
+!A    # → 100
+
+# B contains a block — !B executes it immediately
+{ A 10 * } -> 'B'
+!B    # → 1000
+
+# C contains a string with an interpolation block — !C resolves it
+"The value of A is {! A}" -> 'C'
+!C    # → "The value of A is 100"
+```
+
+For plain scalar types (numbers, booleans…), `!A` behaves identically to `A` — it is a silent no-op, no error is raised.
+
+The four prefix sigils available for a variable are:
+
+| Notation | Behavior |
+|----------|----------|
+| `A`      | Reads A and pushes its value onto the stack |
+| `&A`     | Reference to A for in-place mutation |
+| `@A`     | Statically resolved read (compile-time) |
+| `!A`     | Evaluates the content of A directly |
+
 With the `rcl` function, it is possible to place the value of a variable on the stack using its name.
 
 ```
@@ -2721,6 +2748,52 @@ If we take our previous examples:
 `[! x: A y: {! A 2 *} z: {! A 3 *}]` will give `[x: 100 y: 200 z: 300]`
 
 It is no longer necessary to call the `eval` function, the evaluation is performed directly before placing the value on the stack.
+
+## Evaluating a variable with `!`
+
+When a variable contains an object that embeds executable code, using `!` as a prefix sigil evaluates it directly — without pushing it onto the stack first. This is more efficient than the equivalent `A eval` sequence and expresses intent more clearly at the call site.
+
+```
+100 -> 'A'
+{ A 200 * } -> 'B'
+"We are in {! now ->date year: get }" -> 'C'
+
+!B    # → 20000
+!C    # → "We are in 2026"
+```
+
+`!A` is universal: it works on blocks, functions, strings, lists and records. For plain scalar types (numbers, booleans…) it is a silent no-op.
+
+## Containers are lazy
+
+Everything inside a container — block, function, string, list or record — is deferred until evaluation is triggered. The container stores expressions, not values. This means `!A` on a composite object always evaluates with the **current state** of the program at the moment of the call.
+
+```
+10 -> 'A'
+{ A 200 * } -> 'B'
+[ x: { A 10 * }
+  y: "We are in {! now ->date year: get }"
+  z: !B ] -> 'R'
+
+!R    # → [ x: 100   y: "We are in 2026"   z: 2000 ]
+
+20 -> 'A'
+!R    # → [ x: 200   y: "We are in 2026"   z: 4000 ]
+```
+
+The record `R` behaves as a **live template**: it captures intent, not state. Each `!R` is a fresh evaluation.
+
+## Circular reference detection
+
+Because containers are lazy, it is possible to write code where evaluating a variable triggers the evaluation of itself, directly or through a chain of variables. **MOGWAI** detects these situations automatically and raises an error instead of looping indefinitely.
+
+```
+{ !B } -> 'A'
+{ !A } -> 'B'
+!A    # → error: circular reference detected (A → B → A)
+```
+
+The error message includes the full chain of variable names involved in the cycle, making it easy to identify the problem.
  
 # FLAGS
 
