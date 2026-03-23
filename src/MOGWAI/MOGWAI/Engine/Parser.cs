@@ -323,7 +323,24 @@ namespace MOGWAI.Engine
             {
                 var hostFunctions = engine.HostFunctions;
 
-                if (item.StartsWith("0x"))
+                var p = engine.GetPrimitive(item);
+
+                if (p != null)
+                {
+                    if (p.IsPrivate && !engine.AllowPrivatePrimitives)
+                    {
+                        engine.LastParserStartErrorPosition = _pos;
+                        engine.LastParserEndErrorPosition = _pos + item.Length;
+                        throw new MogwaiParseErrorException("private primitive not allowed");
+                    }
+
+                    p.ExecutionContext = context;
+                    p.StartPos = offsetPosition;
+                    p.EndPos = offsetPosition + p.Name.Length - 1;
+
+                    return [p];
+                }
+                else if (item.StartsWith("0x"))
                 {
                     if (item.Length > 2 && long.TryParse(item.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out long n2))
                     {
@@ -692,39 +709,18 @@ namespace MOGWAI.Engine
 
                     return [number];
                 }
+                else if (hostFunctions.Contains(item))
+                {
+                    var hfunc = new MOGHostFunction(engine, item, offsetPosition);
+                    hfunc.ExecutionContext = context;
+                    return [hfunc];
+                }
                 else
                 {
-                    var p = engine.GetPrimitive(item);
+                    var w = new MOGWord(engine, item, offsetPosition);
+                    w.ExecutionContext = context;
 
-                    if (p != null)
-                    {
-                        if (p.IsPrivate && !engine.AllowPrivatePrimitives)
-                        {
-                            engine.LastParserStartErrorPosition = _pos;
-                            engine.LastParserEndErrorPosition = _pos + item.Length;
-                            throw new MogwaiParseErrorException("private primitive not allowed");
-                        }
-
-                        p.ExecutionContext = context;
-                        p.StartPos = offsetPosition;
-                        p.EndPos = offsetPosition + p.Name.Length - 1;
-
-                        return [p];
-                    }
-                    else
-                    {
-                        if (hostFunctions.Contains(item))
-                        {
-                            var hfunc = new MOGHostFunction(engine, item, offsetPosition);
-                            hfunc.ExecutionContext = context;
-                            return [hfunc];
-                        }
-
-                        var w = new MOGWord(engine, item, offsetPosition);
-                        w.ExecutionContext = context;
-
-                        return [w];
-                    }
+                    return [w];
                 }
             }
             else
