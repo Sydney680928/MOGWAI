@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   |------|----------------|
   | Block `{ }` | Executes the code |
   | Function `« »` | Executes the function |
-  | String `"..."` | Interpolates embedded `{ }` blocks |
+  | String `"..."` | Interpolates embedded `{! }` blocks |
   | List `( )` | Evaluates embedded blocks in elements |
   | Record `[ ]` | Evaluates embedded blocks in fields |
   | Number, boolean… | Silent no-op |
@@ -41,7 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   !B    # → 1000
  
   # string interpolation
-  "We are in { now ->date year: get }" ->'C'
+  "We are in { ! now ->date year: get }" ->'C'
   !C    # → "We are in 2026"
   ```
  
@@ -51,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   10 ->'A'
   { A 200 * } ->'B'
   [ x: { A 10 * }
-    y: "We are in { now ->date year: get }"
+    y: "We are in { ! now ->date year: get }"
     z: !B ] ->'R'
  
   !R       # → [ x: 100   y: "We are in 2026"   z: 2000 ]
