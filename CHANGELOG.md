@@ -36,13 +36,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  
   ```mogwai
   # block
-  100 ->A
-  { A 10 * } ->B
-  !B  # → 1000
+  100 ->'A'
+  { A 10 * } ->'B'
+  !B    # → 1000
  
   # string interpolation
-  "We are in { now ->date year: get }" ->'C
-  !C # → "We are in 2026"
+  "We are in { now ->date year: get }" ->'C'
+  !C    # → "We are in 2026"
+  ```
+ 
+  **Containers are lazy.** Everything inside a container is deferred until `!` is applied — the container stores expressions, not values. This means `!A` on a composite object always evaluates with the **current state** of the program:
+ 
+  ```mogwai
+  10 ->'A'
+  { A 200 * } ->'B'
+  [ x: { A 10 * }
+    y: "We are in { now ->date year: get }"
+    z: !B ] ->'R'
+ 
+  !R       # → [ x: 100   y: "We are in 2026"   z: 2000 ]
+  20 ->'A'
+  !R       # → [ x: 200   y: "We are in 2026"   z: 4000 ]
   ```
  
   Internally, `!A` sets the `AutoEval` flag on the object referenced by A and dispatches it directly — the object never lands on the stack as an intermediate value, making it slightly more efficient than the equivalent `A eval` sequence.
