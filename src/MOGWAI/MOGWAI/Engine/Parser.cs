@@ -442,6 +442,33 @@ namespace MOGWAI.Engine
                         throw new MogwaiParseErrorException("empty var name not allowed");
                     }
                 }
+                else if (item.StartsWith("!") && item.Length > 1)
+                {
+                    // VAR AUTOEVAL
+
+                    var name = item.Substring(1);
+
+                    if (name.Length == 0)
+                    {
+                        engine.LastParserStartErrorPosition = offsetPosition;
+                        engine.LastParserEndErrorPosition = offsetPosition + item.Length - 1;
+                        throw new MogwaiParseErrorException($"illegal var name");
+                    }
+
+                    try
+                    {
+                        var t = new MOGVar(engine, name, offsetPosition);
+                        t.ExecutionContext = context;
+                        t.AutoEval = true;
+                        return [t];
+                    }
+                    catch
+                    {
+                        engine.LastParserStartErrorPosition = offsetPosition;
+                        engine.LastParserEndErrorPosition = offsetPosition + item.Length - 1;
+                        throw;
+                    }
+                }
                 else if (item.StartsWith("&"))
                 {
                     // REF

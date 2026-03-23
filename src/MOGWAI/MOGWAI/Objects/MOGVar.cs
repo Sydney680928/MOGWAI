@@ -43,6 +43,9 @@ namespace MOGWAI.Objects
             if (value == null)
                 return Task.FromResult(EvalResult.Failure(Engine, Error.UnknownNameError, $"var '{Value}' is not defined."));
 
+            if (AutoEval)
+                return value.UserEval();
+
             Engine.StackPush(value);
 
             return Task.FromResult(EvalResult.NoError);
@@ -50,7 +53,14 @@ namespace MOGWAI.Objects
 
         public override string ToString()
         {
-            return $"@{Value}";
+            if (AutoEval)
+            {
+                return $"!{Value}";
+            }
+            else
+            {
+                return $"@{Value}";
+            }
         }
     }
 }
