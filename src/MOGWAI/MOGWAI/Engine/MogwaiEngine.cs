@@ -775,8 +775,8 @@ namespace MOGWAI.Engine
 
                 var stopwatch = Stopwatch.StartNew();
 
-                if (IsTask)
-                    await MotherEngine!.FireEvent(MOGTask.EVENT_TASK_DID_START, new MOGName(MotherEngine!, TaskName!, 0));
+                if (MotherEngine != null && TaskName != null)
+                    await MotherEngine.FireEvent(MOGTask.EVENT_TASK_DID_START, new MOGName(MotherEngine, TaskName, 0));
 
                 if (Delegate != null)
                     await Delegate.ProgramStart(this, code);
@@ -829,9 +829,7 @@ namespace MOGWAI.Engine
                 ExitRequested = false;
                 ReturnRequested = false;
 
-                EvalResult result = EvalResult.NoError;
-
-                result = await program.Execute();
+                EvalResult result = await program.Execute();
 
                 HaltRequested = false;
                 ExitRequested = false;
@@ -839,7 +837,7 @@ namespace MOGWAI.Engine
 
                 EvalResult result2;
 
-                if (result != EvalResult.NoError)
+                if (result.IsError)
                 {
                     if (_functions.TryGetValue("MOGWAI.onError", out var onErrorFunction))
                     {
@@ -891,27 +889,27 @@ namespace MOGWAI.Engine
                         result.EndErrorPosition = LastParserEndErrorPosition;
                     }
 
-                    if (IsTask)
+                    if (MotherEngine != null && TaskName != null)
                     {
                         var failureInformations = new MOGRecord(MotherEngine!);
-                        failureInformations.Items["task"] = new MOGName(MotherEngine!, TaskName!, 0);
-                        failureInformations.Items["error"] = new MOGString(MotherEngine!, result.Error.Code, 0);
-                        failureInformations.Items["message"] = new MOGString(MotherEngine!, result.Error.Message, 0);
+                        failureInformations.Items["task"] = new MOGName(MotherEngine, TaskName, 0);
+                        failureInformations.Items["error"] = new MOGString(MotherEngine, result.Error.Code, 0);
+                        failureInformations.Items["message"] = new MOGString(MotherEngine, result.Error.Message, 0);
 
-                        await MotherEngine!.FireEvent(MOGTask.EVENT_TASK_DID_FAIL, failureInformations);
+                        await MotherEngine.FireEvent(MOGTask.EVENT_TASK_DID_FAIL, failureInformations);
                     }
 
                     await SendProgramEndWithError(result);
                 }
                 else
                 {
-                    if (IsTask)
+                    if (MotherEngine != null && TaskName != null)
                     {
-                        var endInformations = new MOGRecord(MotherEngine!);
-                        endInformations.Items["task"] = new MOGName(MotherEngine!, TaskName!, 0);
+                        var endInformations = new MOGRecord(MotherEngine);
+                        endInformations.Items["task"] = new MOGName(MotherEngine, TaskName, 0);
                         endInformations.Items["result"] = TaskResult;
 
-                        await MotherEngine!.FireEvent(MOGTask.EVENT_TASK_DID_END, endInformations);
+                        await MotherEngine.FireEvent(MOGTask.EVENT_TASK_DID_END, endInformations);
                     }
 
                     await SendProgramEndWithoutError(result);
@@ -3222,6 +3220,40 @@ namespace MOGWAI.Engine
             var c = $"HOST.{code}";
             var error = Error.RegisterError(c, message, Error.ErrorType.Using);
             return error;
+        }
+
+        public (EvalResult result, List<MOGName> funcNames) GetFuncNames(string code)
+        {
+            var defuncs = new List<MOGName>();
+
+            void ExtractDefuncs(List<MOGObject> objects)
+            {
+                for (int i = 0; i < objects.Count; i++)
+                {
+                    if (objects[i] is PrimitiveDEFUNC && i > 0 && objects[i - 1] is MOGName name)
+                    {
+                        defuncs.Add(name);
+                    }
+                    else if (objects[i] is MOGBaseItems mogItems)
+                    {
+                        ExtractDefuncs(mogItems.Items);
+                    }
+                }
+            }
+
+            try
+            {
+                var parser = new Parser();
+                parser.Parse(this, code, 0, null);
+
+                ExtractDefuncs(parser.ParsedObjects); 
+                
+                return (EvalResult.NoError, defuncs);
+            }
+            catch (Exception ex)    
+            {
+                return (EvalResult.ParseFailure(this, ex.Message), defuncs);
+            }          
         }
 
         #endregion
