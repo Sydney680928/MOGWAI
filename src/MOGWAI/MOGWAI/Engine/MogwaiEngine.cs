@@ -2194,6 +2194,10 @@ namespace MOGWAI.Engine
                         await StudioRequestTasksInformations();
                         break;
 
+                    case "?FUNCS":
+                        await StudioRequestFuncs(message.Parameters);
+                        break;
+
                     case "?INSTANCES":
                         StudioRequestInstancesInformations();
                         break;
@@ -2525,6 +2529,7 @@ namespace MOGWAI.Engine
             if (_socketServerService != null)
                 await _socketServerService.SendToClientAsync("DEBUG CLR");
         }
+        
         private async Task SendUsingExtension(IPlugin plugin)
         {
             if (_socketServerService.IsRunning)
@@ -2637,6 +2642,29 @@ namespace MOGWAI.Engine
                     lst.Add($"{t.Name}\t{t.Status}");
 
                 await _socketServerService.SendToClientAsync("TASKS", lst.ToArray());
+            }
+        }
+
+        private async Task StudioRequestFuncs(List<string> parameters)
+        {
+            // FUNCS
+            // P0 = funcname \t start \t end
+            // P1 =
+            // PN =
+
+            if (_socketServerService != null && parameters.Count > 0)
+            {    
+                var r = GetFuncNames(parameters[0]);
+
+                if (r.result.IsSuccess)
+                {
+                    var funcs = new List<string>();
+
+                    foreach (var name in r.funcNames)
+                        funcs.Add($"{name.Value}\t{name.StartPos}\t{name.EndPos}");
+
+                    await _socketServerService.SendToClientAsync("FUNCS", funcs.ToArray());
+                }
             }
         }
 
