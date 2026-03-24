@@ -44,13 +44,7 @@ namespace MOGWAI.Objects
             }
         }
 
-        public override MOGFunction Clone()
-        {
-            var obj = new MOGFunction(Engine, Items);
-            obj.Name = Name;
-            obj.UpdateFromOther(this);
-            return obj;
-        }
+        public override MOGFunction Clone() => this;
 
         public override async Task<EvalResult> Execute()
         {

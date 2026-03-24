@@ -208,12 +208,7 @@ namespace MOGWAI.Objects
             return await Execute();
         }
 
-        public override MOGCode Clone()
-        {
-            var obj = new MOGCode(Engine, Items);
-            obj.UpdateFromOther(this);
-            return obj;
-        }
+        public override MOGCode Clone() => this;
 
         public override string ToString()
         {
