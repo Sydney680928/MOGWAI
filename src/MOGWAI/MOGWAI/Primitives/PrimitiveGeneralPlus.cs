@@ -36,8 +36,8 @@ namespace MOGWAI.Primitives
             {
                 // number number +
 
-                var n2 = Engine.StackPopNumber();
                 var n1 = Engine.StackPopNumber();
+                var n2 = Engine.StackPopNumber();
 
                 try
                 {
