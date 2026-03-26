@@ -87,6 +87,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - AOT compatibility — The MOGWAI engine is now fully compatible with .NET Native AOT publishing. Removed all dynamic JSON serialization in favor of source-generated contexts, replaced reflection-based assembly access with static attribute reading, and suppressed plugin system warnings by design. No behavioral changes.
+
+- Performance improvement — Optimized the core execution loop in MOGCode.Execute(). Introduced a HasPendingFireObjects guard to avoid unnecessary async state machine allocations on each iteration, and consolidated control flow flags into a single check. ~13% speedup measured on intensive benchmarks.
   
 ### Fixed
 
