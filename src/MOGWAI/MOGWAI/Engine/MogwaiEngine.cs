@@ -1321,7 +1321,7 @@ namespace MOGWAI.Engine
             {
                 // Local var
 
-                r = _currentLocalVarsContext.Write(name, value);
+                r = _currentLocalVarsContext?.Write(name, value) ?? false;
             }
 
             if (!r)

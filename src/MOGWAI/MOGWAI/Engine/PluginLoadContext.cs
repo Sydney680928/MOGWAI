@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Runtime.Loader;
 
@@ -26,7 +27,10 @@ namespace MOGWAI.Engine
             _Resolver = new AssemblyDependencyResolver(pluginPath);
         }
 
+        [RequiresUnreferencedCode("Plugin loading is not trim-compatible by design.")]
+        #pragma warning disable IL2046 // 'RequiresUnreferencedCodeAttribute' annotations must match across all interface implementations or overrides.
         protected override Assembly? Load(AssemblyName assemblyName)
+        #pragma warning restore IL2046 // 'RequiresUnreferencedCodeAttribute' annotations must match across all interface implementations or overrides.
         {
             string? assemblyPath = _Resolver.ResolveAssemblyToPath(assemblyName);
             

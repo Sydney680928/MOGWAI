@@ -44,23 +44,17 @@
 
 		<!-- Release notes -->
 		<PackageReleaseNotes>
-		v8.3.0
+		v8.4.0
 
 		ADDED
-		- Variable reference support with &amp;varname notation. In-place mutation without pushing a copy onto the stack. Significant performance gain on large lists, records, data, and strings. Supported primitives: +, set, get, butfirst, butlast, last, first, sub, size.
-		- Host function detection at parse time, avoiding delegate dispatch overhead at runtime.
-		- New char-> primitive: returns the ASCII code of a single string character.
-		- Explicit static variable access with @varname notation. Resolved at parse time, eliminating runtime lookup overhead.
-		- foreach loop now supports iteration over string characters.
+		- !A sigil: evaluates the content of variable A directly (block, function, string, list, record). Equivalent to A eval but more efficient — the object never lands on the stack as an intermediate value. Silent no-op for non-executable types.
+		- Circular reference detection: the runtime now raises an error (with full cycle chain) instead of looping indefinitely when !A triggers a recursive evaluation chain.
+		- --> in-place pipeline operator: applies a list of transformations directly to a referenced variable — e.g. (->upper butfirst butlast) --> &amp;A. Fully transactional: a snapshot is restored automatically on error.
 
 		CHANGED
-		- Dictionary lookups now use TryGetValue instead of ContainsKey + retrieval (all runtime dictionaries).
-		- Variable and function names must now start with a letter or underscore _.
-		- Synchronous primitives refactored: spurious async/await Task.CompletedTask replaced with Task.FromResult(). No behavioral change.
-		- Removed systematic primitive cloning during execution.
-		- Removed all LINK calls during execution.
-		- Optimized primitive dictionaries for faster lookup.
-
+		- AOT compatibility: the engine is now fully compatible with .NET Native AOT publishing. No behavioral changes.
+		- ~13% speedup on the core execution loop.
+		
 		Full changelog: https://github.com/Sydney680928/mogwai/blob/main/CHANGELOG.md
 		</PackageReleaseNotes>
 			
@@ -76,7 +70,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="Primitives\PrimitiveSTO.cs" />
 		<None Include="README.md" Pack="true" PackagePath="\" />
 		<None Include="icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
