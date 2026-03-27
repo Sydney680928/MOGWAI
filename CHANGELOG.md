@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.4.0] - 2026-03-27
+
+### Added
+
 - **`!A` sigil — direct evaluation of a variable's content**
   A new prefix sigil `!` can now be applied to any variable to immediately evaluate its content, without pushing the object onto the stack first.
  
@@ -88,10 +96,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - AOT compatibility — The MOGWAI engine is now fully compatible with .NET Native AOT publishing. Removed all dynamic JSON serialization in favor of source-generated contexts, replaced reflection-based assembly access with static attribute reading, and suppressed plugin system warnings by design. No behavioral changes.
 
-- Performance improvement — Optimized the core execution loop in MOGCode.Execute(). Introduced a HasPendingFireObjects guard to avoid unnecessary async state machine allocations on each iteration, and consolidated control flow flags into a single check. ~13% speedup measured on intensive benchmarks.
+- Performance improvement — Optimized the core execution loop in MOGCode.Execute(). Avoid unnecessary async state machine allocations on each iteration, and consolidated control flow flags into a single check. ~13% speedup measured on intensive benchmarks.
   
-### Fixed
-
 ## [8.3.0] - 2026-03-17
 
 ### Added
@@ -330,7 +336,8 @@ Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `l
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.3.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.4.0...HEAD
+[8.4.0]: https://github.com/Sydney680928/mogwai/compare/v8.3.0...v8.4.0
 [8.3.0]: https://github.com/Sydney680928/mogwai/compare/v8.2.0...v8.3.0
 [8.2.0]: https://github.com/Sydney680928/mogwai/compare/v8.1.0...v8.2.0
 [8.1.0]: https://github.com/Sydney680928/mogwai/compare/v8.0.1...v8.1.0
