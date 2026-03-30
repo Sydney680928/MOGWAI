@@ -18,6 +18,7 @@ using MOGWAI.Primitives;
 using System.Collections.Frozen;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -3092,6 +3093,8 @@ namespace MOGWAI.Engine
         }
 
         internal bool UnregisterVarAutoEval(string name) => _varsInAutoEval.Remove(name);
+
+        internal bool IsJustFilename(string path) => Path.GetDirectoryName(path) == string.Empty;
 
         #endregion
 
