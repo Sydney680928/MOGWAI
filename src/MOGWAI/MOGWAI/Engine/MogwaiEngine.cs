@@ -3175,7 +3175,8 @@ namespace MOGWAI.Engine
         {
             // Clear stack
 
-            StackClear();
+            _stacks.Clear();
+            _stacks.Add(new());
 
             // Stop and Clear all timers
 
@@ -3203,7 +3204,11 @@ namespace MOGWAI.Engine
 
             // Clear circular references list
 
-            _varsInAutoEval.Clear();    
+            _varsInAutoEval.Clear();
+
+            // Troff
+
+            TronValue = 0;
 
             if (!keepAlive)
             {
@@ -3242,11 +3247,6 @@ namespace MOGWAI.Engine
                 // Clear functions
 
                 _functions.Clear();
-
-                // Clear stack
-
-                _stacks.Clear();
-                _stacks.Add(new());
             }
         }
 
