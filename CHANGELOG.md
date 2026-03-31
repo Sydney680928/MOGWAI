@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added a new `bag` primitive that pushes onto the stack the container (record or list) of the currently executing block or function. This allows a block or function stored inside a record or list to reference its own container, enabling a prototype-based programming pattern.
+bag returns null if the executing code has no container (top-level context).
+The Bag property is assigned when an item is inserted into a record or list, and cleared when it is extracted.
+  ```
+  [x: 10 y: 20 s: « ! bag x: get bag y: get + »] -> '$R'
+  !$R   # → [x: 10  y: 20  s: 30]
+  ```
+
 ### Changed
 
 ### Fixed
