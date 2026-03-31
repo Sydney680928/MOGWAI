@@ -24,6 +24,13 @@ namespace MOGWAI.Primitives
 
         }
 
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveToUInt16(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
         public override Task<EvalResult> EngineEval()
         {
             // DATA:1 ->uint8    ----> .number

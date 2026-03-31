@@ -24,6 +24,13 @@ namespace MOGWAI.Primitives
 
         }
 
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveMogwaiReset(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
         public override async Task<EvalResult> EngineEval()
         {
             await Engine.Reset(false);

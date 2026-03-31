@@ -24,6 +24,13 @@ namespace MOGWAI.Primitives
 
         }
 
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveErrorThrow(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
         public override Task<EvalResult> PerformOperation(MOGString @string)
         {
             var error = Error.GetError(@string.Value);

@@ -323,7 +323,7 @@ namespace MOGWAI.Engine
             {
                 var hostFunctions = engine.HostFunctions;
 
-                var p = engine.GetPrimitive(item);
+                var p = engine.GetPrimitive(item, true);
 
                 if (p != null)
                 {
@@ -626,7 +626,7 @@ namespace MOGWAI.Engine
                     var item2 = new MOGKey(engine, fields[1], offsetPosition + fields[0].Length + "->".Length);
                     item2.ExecutionContext = context;
 
-                    var primitive = engine.GetPrimitive(typeof(PrimitiveGet));
+                    var primitive = engine.GetPrimitive(typeof(PrimitiveGet), true);
 
                     if (primitive == null)
                     {
@@ -663,7 +663,7 @@ namespace MOGWAI.Engine
                     var item2 = new MOGKey(engine, fields[1], offsetPosition + fields[0].Length + "<-".Length);
                     item2.ExecutionContext = context;
 
-                    var primitive = engine.GetPrimitive(typeof(PrimitiveSet));
+                    var primitive = engine.GetPrimitive(typeof(PrimitiveSet), true);
 
                     if (primitive == null)
                     {
@@ -908,13 +908,14 @@ namespace MOGWAI.Engine
 
                         if (code != null)
                         {
-                            var primitive = engine.GetPrimitive(typeof(PrimitiveTASKDEF));
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveTASKDEF), true);
 
                             if (primitive != null)
                             {
                                 primitive.StartPos = _parsedObjects[index].StartPos;
                                 primitive.EndPos = _parsedObjects[index].EndPos;
                                 primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                primitive.Bag = _parsedObjects[index].Bag;
 
                                 _parsedObjects.RemoveRange(index, 4);
                                 _parsedObjects.InsertRange(index, [name, code.ToFunction(), primitive]);
@@ -927,13 +928,14 @@ namespace MOGWAI.Engine
                     {
                         var message = _parsedObjects[index + 3];
 
-                        var primitive = engine.GetPrimitive(typeof(PrimitiveTASKSEND));
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveTASKSEND), true);
 
                         if (primitive != null)
                         {
                             primitive.StartPos = _parsedObjects[index].StartPos;
                             primitive.EndPos = _parsedObjects[index].EndPos;
                             primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                            primitive.Bag = _parsedObjects[index].Bag;
 
                             _parsedObjects.RemoveRange(index, 4);
                             _parsedObjects.InsertRange(index, [name, message, primitive]);
@@ -951,13 +953,14 @@ namespace MOGWAI.Engine
 
                             if (parameter != null)
                             {
-                                var primitive = engine.GetPrimitive(typeof(PrimitiveTASKSTART));
+                                var primitive = engine.GetPrimitive(typeof(PrimitiveTASKSTART), true);
 
                                 if (primitive != null)
                                 {
                                     primitive.StartPos = _parsedObjects[index].StartPos;
                                     primitive.EndPos = _parsedObjects[index].EndPos;
                                     primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                    primitive.Bag = _parsedObjects[index].Bag;
 
                                     _parsedObjects.RemoveRange(index, 5);
                                     _parsedObjects.InsertRange(index, [name, parameter, primitive]);
@@ -1007,7 +1010,7 @@ namespace MOGWAI.Engine
                                 return false;
                         }
 
-                        var primitive = engine.GetPrimitive(typeof(PrimitiveSWITCH));
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveSWITCH), true);
 
                         if (primitive != null)
                         {
@@ -1016,6 +1019,7 @@ namespace MOGWAI.Engine
                             primitive.StartPos = _parsedObjects[index].StartPos;
                             primitive.EndPos = _parsedObjects[index].EndPos;
                             primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                            primitive.Bag = _parsedObjects[index].Bag;
 
                             var finalCode = new MOGCode(engine, "", 0, _parsedObjects[index].ExecutionContext);
                             finalCode.StartPos = globalCode.StartPos;
@@ -1063,13 +1067,14 @@ namespace MOGWAI.Engine
 
                     if (code != null)
                     {
-                        var primitive = engine.GetPrimitive(typeof(PrimitiveLATER));
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveLATER), true);
 
                         if (primitive != null)
                         {
                             primitive.StartPos = _parsedObjects[index].StartPos;
                             primitive.EndPos = _parsedObjects[index].EndPos;
                             primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                            primitive.Bag = _parsedObjects[index].Bag;
 
                             _parsedObjects.RemoveRange(index, 4);
                             _parsedObjects.InsertRange(index, [code.ToFunction(), interval, primitive]);
@@ -1091,30 +1096,28 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index >= 2)
             {
-
-
                 MOGPrimitive? primitive = null;
 
                 switch (word)
                 {
                     case "->":
-                        primitive = engine.GetPrimitive(typeof(PrimitiveSTO));
+                        primitive = engine.GetPrimitive(typeof(PrimitiveSTO), true);
                         break;
 
                     case "->+":
-                        primitive = engine.GetPrimitive(typeof(PrimitiveSTOPLUS));
+                        primitive = engine.GetPrimitive(typeof(PrimitiveSTOPLUS), true);
                         break;
 
                     case "->-":
-                        primitive = engine.GetPrimitive(typeof(PrimitiveSTOSUBSTRACT));
+                        primitive = engine.GetPrimitive(typeof(PrimitiveSTOSUBSTRACT), true );
                         break;
 
                     case "->*":
-                        primitive = engine.GetPrimitive(typeof(PrimitiveSTOMULTIPLY));
+                        primitive = engine.GetPrimitive(typeof(PrimitiveSTOMULTIPLY), true);
                         break;
 
                     case "->/":
-                        primitive = engine.GetPrimitive(typeof(PrimitiveSTODIVIDE));
+                        primitive = engine.GetPrimitive(typeof(PrimitiveSTODIVIDE),true);
                         break;
 
                     default:
@@ -1126,6 +1129,7 @@ namespace MOGWAI.Engine
                     primitive.StartPos = _parsedObjects[index].StartPos;
                     primitive.EndPos = _parsedObjects[index].EndPos;
                     primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                    primitive.Bag = _parsedObjects[index].Bag;
 
                     _parsedObjects[index] = _parsedObjects[index + 1];
                     _parsedObjects[index + 1] = primitive;
@@ -1147,13 +1151,14 @@ namespace MOGWAI.Engine
             {
                 var name = _parsedObjects[index + 1];
 
-                MOGPrimitive? primitive = engine.GetPrimitive(typeof(PrimitiveDECLARE));
+                MOGPrimitive? primitive = engine.GetPrimitive(typeof(PrimitiveDECLARE), true);
 
                 if (primitive != null)
                 {
                     primitive.StartPos = _parsedObjects[index].StartPos;
                     primitive.EndPos = _parsedObjects[index].EndPos;
                     primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                    primitive.Bag = _parsedObjects[index].Bag;
 
                     _parsedObjects[index] = name;
                     _parsedObjects[index + 1] = primitive;
@@ -1175,13 +1180,14 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index >= 2)
             {
-                var primitive = engine.GetPrimitive(typeof(PrimitivePIPEREF));
+                var primitive = engine.GetPrimitive(typeof(PrimitivePIPEREF), true);
 
                 if (primitive != null)
                 {
                     primitive.StartPos = _parsedObjects[index].StartPos;
                     primitive.EndPos = _parsedObjects[index].EndPos;
                     primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                    primitive.Bag = _parsedObjects[index].Bag;
 
                     var temp = _parsedObjects[index - 1];
 
@@ -1213,13 +1219,14 @@ namespace MOGWAI.Engine
                 {
                     var errorCode = _parsedObjects[index + 3];
 
-                    var primitive = engine.GetPrimitive(typeof(PrimitiveErrorGuard));
+                    var primitive = engine.GetPrimitive(typeof(PrimitiveErrorGuard), true);
 
                     if (primitive != null)
                     {
                         primitive.StartPos = _parsedObjects[index].StartPos;
                         primitive.EndPos = _parsedObjects[index].EndPos;
                         primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                        primitive.Bag = _parsedObjects[index].Bag;
 
                         _parsedObjects.RemoveRange(index, 4);
                         _parsedObjects.InsertRange(index, [code, errorCode, primitive]);
@@ -1241,13 +1248,14 @@ namespace MOGWAI.Engine
             {
                 var code = _parsedObjects[index + 1];
 
-                var primitive = engine.GetPrimitive(typeof(PrimitiveErrorTrap));
+                var primitive = engine.GetPrimitive(typeof(PrimitiveErrorTrap), true);
 
                 if (primitive != null)
                 {
                     primitive.StartPos = _parsedObjects[index].StartPos;
                     primitive.EndPos = _parsedObjects[index].EndPos;
                     primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                    primitive.Bag = _parsedObjects[index].Bag;
 
                     _parsedObjects[index] = code;
                     _parsedObjects[index + 1] = primitive;
@@ -1280,13 +1288,14 @@ namespace MOGWAI.Engine
 
                         if (code != null)
                         {
-                            var primitive = engine.GetPrimitive(typeof(PrimitiveDURING));
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveDURING), true);
 
                             if (primitive != null)
                             {
                                 primitive.StartPos = _parsedObjects[index].StartPos;
                                 primitive.EndPos = _parsedObjects[index].EndPos;
                                 primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                primitive.Bag = _parsedObjects[index].Bag;
 
                                 _parsedObjects.RemoveRange(index, 4);
                                 _parsedObjects.InsertRange(index, [number, code, primitive]);
@@ -1320,13 +1329,14 @@ namespace MOGWAI.Engine
 
                     if (code != null)
                     {
-                        var primitive = engine.GetPrimitive(typeof(PrimitiveEVENT));
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveEVENT), true);
 
                         if (primitive != null)
                         {
                             primitive.StartPos = _parsedObjects[index].StartPos;
                             primitive.EndPos = _parsedObjects[index].EndPos;
                             primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                            primitive.Bag = _parsedObjects[index].Bag;
 
                             _parsedObjects.RemoveRange(index, 4);
                             _parsedObjects.InsertRange(index, [code.ToFunction(), name, primitive]);
@@ -1375,11 +1385,11 @@ namespace MOGWAI.Engine
 
                                 if (every)
                                 {
-                                    primitive = engine.GetPrimitive(typeof(PrimitiveEVERY));
+                                    primitive = engine.GetPrimitive(typeof(PrimitiveEVERY), true);
                                 }
                                 else
                                 {
-                                    primitive = engine.GetPrimitive(typeof(PrimitiveAFTER));
+                                    primitive = engine.GetPrimitive(typeof(PrimitiveAFTER), true);
                                 }
 
                                 if (primitive != null)
@@ -1387,6 +1397,7 @@ namespace MOGWAI.Engine
                                     primitive.StartPos = _parsedObjects[index].StartPos;
                                     primitive.EndPos = _parsedObjects[index].EndPos;
                                     primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                    primitive.Bag = _parsedObjects[index].Bag;
 
                                     _parsedObjects.RemoveRange(index, 5);
                                     _parsedObjects.InsertRange(index, [code.ToFunction(), interval, name, primitive]);
@@ -1418,13 +1429,14 @@ namespace MOGWAI.Engine
 
                     if (code != null)
                     {
-                        var primitive = engine.GetPrimitive(typeof(PrimitiveFOREVER));
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveFOREVER), true);
 
                         if (primitive != null)
                         {
                             primitive.StartPos = _parsedObjects[index].StartPos;
                             primitive.EndPos = _parsedObjects[index + 1].EndPos;
                             primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                            primitive.Bag = _parsedObjects[index].Bag;
 
                             _parsedObjects.RemoveRange(index, 3);
                             _parsedObjects.InsertRange(index, [code, primitive]);
@@ -1440,7 +1452,7 @@ namespace MOGWAI.Engine
 
         private bool UpdateForDefuncSugar(MogwaiEngine engine, int index)
         {
-            var primitiveDEFUNC = engine.GetPrimitive(typeof(PrimitiveDEFUNC));
+            var primitiveDEFUNC = engine.GetPrimitive(typeof(PrimitiveDEFUNC), true);
 
             if (primitiveDEFUNC == null)
                 return false;
@@ -1465,6 +1477,7 @@ namespace MOGWAI.Engine
                         primitiveDEFUNC.StartPos = _parsedObjects[index].StartPos;
                         primitiveDEFUNC.EndPos = _parsedObjects[index].EndPos;
                         primitiveDEFUNC.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                        primitiveDEFUNC.Bag = _parsedObjects[index].Bag;
 
                         _parsedObjects.RemoveRange(index, 4);
 
@@ -1500,16 +1513,18 @@ namespace MOGWAI.Engine
 
                         if (code != null)
                         {
-                            var primitiveStackToSafeVars = engine.GetPrimitive(typeof(PrimitiveStackToSafeVars));
+                            var primitiveStackToSafeVars = engine.GetPrimitive(typeof(PrimitiveStackToSafeVars), true);
 
                             if (primitiveStackToSafeVars != null)
                             {
                                 primitiveDEFUNC.StartPos = _parsedObjects[index].StartPos;
                                 primitiveDEFUNC.EndPos = _parsedObjects[index].EndPos;
                                 primitiveDEFUNC.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                primitiveDEFUNC.Bag = _parsedObjects[index].Bag;
 
                                 primitiveStackToSafeVars.PauseAllowed = false;
                                 primitiveStackToSafeVars.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                primitiveStackToSafeVars.Bag = _parsedObjects[index].Bag;
 
                                 _parsedObjects.RemoveRange(index, 6);
 
@@ -1551,16 +1566,18 @@ namespace MOGWAI.Engine
 
                         if (code != null)
                         {
-                            var primitiveStackToParams = engine.GetPrimitive(typeof(PrimitiveStackToParams));
+                            var primitiveStackToParams = engine.GetPrimitive(typeof(PrimitiveStackToParams), true);
 
                             if (primitiveStackToParams != null)
                             {
                                 primitiveDEFUNC.StartPos = _parsedObjects[index].StartPos;
                                 primitiveDEFUNC.EndPos = _parsedObjects[index].EndPos;
                                 primitiveDEFUNC.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                primitiveDEFUNC.Bag = _parsedObjects[index].Bag;
 
                                 primitiveStackToParams.PauseAllowed = false;
                                 primitiveStackToParams.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                primitiveStackToParams.Bag = _parsedObjects[index].Bag;
 
                                 _parsedObjects.RemoveRange(index, 6);
 
@@ -1602,13 +1619,14 @@ namespace MOGWAI.Engine
 
                         if (code != null)
                         {
-                            var primitiveCheck = engine.GetPrimitive(typeof(PrimitiveStackCheck));
+                            var primitiveCheck = engine.GetPrimitive(typeof(PrimitiveStackCheck), true);
 
                             if (primitiveCheck != null)
                             {
                                 primitiveDEFUNC.StartPos = _parsedObjects[index].StartPos;
                                 primitiveDEFUNC.EndPos = _parsedObjects[index].EndPos;
                                 primitiveDEFUNC.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                primitiveDEFUNC.Bag = _parsedObjects[index].Bag;
 
                                 _parsedObjects.RemoveRange(index, 6);
 
@@ -1662,20 +1680,22 @@ namespace MOGWAI.Engine
 
                             if (code != null)
                             {
-                                var primitiveStackToSafeVars = engine.GetPrimitive(typeof(PrimitiveStackToSafeVars));
+                                var primitiveStackToSafeVars = engine.GetPrimitive(typeof(PrimitiveStackToSafeVars), true);
 
                                 if (primitiveStackToSafeVars != null)
                                 {
-                                    var primitiveCheck = engine.GetPrimitive(typeof(PrimitiveStackCheck));
+                                    var primitiveCheck = engine.GetPrimitive(typeof(PrimitiveStackCheck), true);
 
                                     if (primitiveCheck != null)
                                     {
                                         primitiveDEFUNC.StartPos = _parsedObjects[index].StartPos;
                                         primitiveDEFUNC.EndPos = _parsedObjects[index].EndPos;
                                         primitiveDEFUNC.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                        primitiveDEFUNC.Bag = _parsedObjects[index].Bag;
 
                                         primitiveStackToSafeVars.PauseAllowed = false;
                                         primitiveStackToSafeVars.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                        primitiveStackToSafeVars.Bag = _parsedObjects[index].Bag;
 
                                         _parsedObjects.RemoveRange(index, 8);
 
@@ -1732,20 +1752,22 @@ namespace MOGWAI.Engine
 
                             if (code != null)
                             {
-                                var primitiveStackToParams = engine.GetPrimitive(typeof(PrimitiveStackToParams));
+                                var primitiveStackToParams = engine.GetPrimitive(typeof(PrimitiveStackToParams), true);
 
                                 if (primitiveStackToParams != null)
                                 {
-                                    var primitiveCheck = engine.GetPrimitive(typeof(PrimitiveStackCheck));
+                                    var primitiveCheck = engine.GetPrimitive(typeof(PrimitiveStackCheck), true);
 
                                     if (primitiveCheck != null)
                                     {
                                         primitiveDEFUNC.StartPos = _parsedObjects[index].StartPos;
                                         primitiveDEFUNC.EndPos = _parsedObjects[index].EndPos;
                                         primitiveDEFUNC.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                        primitiveDEFUNC.Bag = _parsedObjects[index].Bag;
 
                                         primitiveStackToParams.PauseAllowed = false;
                                         primitiveStackToParams.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                        primitiveStackToParams.Bag = _parsedObjects[index].Bag;
 
                                         _parsedObjects.RemoveRange(index, 8);
 
@@ -1798,13 +1820,14 @@ namespace MOGWAI.Engine
 
                         if (condition != null)
                         {
-                            var primitive = engine.GetPrimitive(typeof(PrimitiveDOWHILE));
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveDOWHILE), true);
 
                             if (primitive != null)
                             {
                                 primitive.StartPos = _parsedObjects[index].StartPos;
                                 primitive.EndPos = _parsedObjects[index].EndPos;
                                 primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                primitive.Bag = _parsedObjects[index].Bag;
 
                                 _parsedObjects.RemoveRange(index, 3);
                                 _parsedObjects.InsertRange(index, [condition.ToCode(), code, primitive]);
@@ -1840,13 +1863,14 @@ namespace MOGWAI.Engine
 
                         if (code != null)
                         {
-                            var primitive = engine.GetPrimitive(typeof(PrimitiveWHILE));
+                            var primitive = engine.GetPrimitive(typeof(PrimitiveWHILE), true);
 
                             if (primitive != null)
                             {
                                 primitive.StartPos = _parsedObjects[index].StartPos;
                                 primitive.EndPos = _parsedObjects[index].EndPos;
                                 primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                primitive.Bag = _parsedObjects[index].Bag;
 
                                 _parsedObjects.RemoveRange(index, 4);
                                 _parsedObjects.InsertRange(index, [condition.ToCode(), code, primitive]);
@@ -1872,13 +1896,14 @@ namespace MOGWAI.Engine
 
                 if (code != null)
                 {
-                    var primitive = engine.GetPrimitive(typeof(PrimitiveREPEAT));
+                    var primitive = engine.GetPrimitive(typeof(PrimitiveREPEAT), true);
 
                     if (primitive != null)
                     {
                         primitive.StartPos = _parsedObjects[index].StartPos;
                         primitive.EndPos = _parsedObjects[index].EndPos;
                         primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                        primitive.Bag = _parsedObjects[index].Bag;
 
                         _parsedObjects.RemoveRange(index, 2);
                         _parsedObjects.InsertRange(index, [code, primitive]);
@@ -1910,13 +1935,14 @@ namespace MOGWAI.Engine
 
                     if (code != null)
                     {
-                        var primitive = engine.GetPrimitive(typeof(PrimitiveFOREACH));
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveFOREACH), true);
 
                         if (primitive != null)
                         {
                             primitive.StartPos = _parsedObjects[index].StartPos;
                             primitive.EndPos = _parsedObjects[index].EndPos;
                             primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                            primitive.Bag = _parsedObjects[index].Bag;
 
                             _parsedObjects.RemoveRange(index, 4);
                             _parsedObjects.InsertRange(index, [name, code, primitive]);
@@ -1937,13 +1963,14 @@ namespace MOGWAI.Engine
 
                     if (code != null)
                     {
-                        var primitive = engine.GetPrimitive(typeof(PrimitiveFOREACHTRANSFORM));
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveFOREACHTRANSFORM), true);
 
                         if (primitive != null)
                         {
                             primitive.StartPos = _parsedObjects[index].StartPos;
                             primitive.EndPos = _parsedObjects[index].EndPos;
                             primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                            primitive.Bag = _parsedObjects[index].Bag;
 
                             _parsedObjects.RemoveRange(index, 4);
                             _parsedObjects.InsertRange(index, [name, code, primitive]);
@@ -2008,13 +2035,14 @@ namespace MOGWAI.Engine
                                     // 4 else
                                     // 5 {codeFalse}
 
-                                    var primitive = engine.GetPrimitive(typeof(PrimitiveIFELSE));
+                                    var primitive = engine.GetPrimitive(typeof(PrimitiveIFELSE), true);
 
                                     if (primitive != null)
                                     {
                                         primitive.StartPos = _parsedObjects[index].StartPos;
                                         primitive.EndPos = _parsedObjects[index].EndPos;
                                         primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                        primitive.Bag = _parsedObjects[index].Bag;
 
                                         // On retire 6 éléments à partir de l'index
 
@@ -2049,13 +2077,14 @@ namespace MOGWAI.Engine
                                     // 2 then
                                     // 3 {code}
 
-                                    var primitive = engine.GetPrimitive("IF");
+                                    var primitive = engine.GetPrimitive(typeof(PrimitiveIF), true);
 
                                     if (primitive != null)
                                     {
                                         primitive.StartPos = _parsedObjects[index].StartPos;
                                         primitive.EndPos = _parsedObjects[index].EndPos;
                                         primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                        primitive.Bag = _parsedObjects[index].Bag;
 
                                         // On retire 4 éléments à partir de l'index
 
@@ -2114,13 +2143,14 @@ namespace MOGWAI.Engine
 
                     if (code != null)
                     {
-                        var primitive = engine.GetPrimitive(typeof(PrimitiveFOR));
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveFOR), true);
 
                         if (primitive != null)
                         {
                             primitive.StartPos = _parsedObjects[index].StartPos;
                             primitive.EndPos = _parsedObjects[index].EndPos;
                             primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                            primitive.Bag = _parsedObjects[index].Bag;
 
                             // On enlève les 4 éléments
 
@@ -2153,13 +2183,14 @@ namespace MOGWAI.Engine
 
                             if (code != null)
                             {
-                                var primitive = engine.GetPrimitive(typeof(PrimitiveFORSTEP));
+                                var primitive = engine.GetPrimitive(typeof(PrimitiveFORSTEP), true);
 
                                 if (primitive != null)
                                 {
                                     primitive.StartPos = _parsedObjects[index].StartPos;
                                     primitive.EndPos = _parsedObjects[index].EndPos;
                                     primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                                    primitive.Bag = _parsedObjects[index].Bag;
 
                                     // On enlève les 6 éléments
 

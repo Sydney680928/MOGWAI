@@ -24,6 +24,13 @@ namespace MOGWAI.Primitives
 
         }
 
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveMin(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
         public override Task<EvalResult> PerformOperation(MOGList list)
         {
             if (list.Items.Count == 0)

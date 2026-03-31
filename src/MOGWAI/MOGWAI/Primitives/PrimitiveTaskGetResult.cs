@@ -24,6 +24,13 @@ namespace MOGWAI.Primitives
 
         }
 
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveTaskGetResult(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
         public override Task<EvalResult> PerformOperation(MOGName name)
         {
 

@@ -15,6 +15,13 @@ namespace MOGWAI.Primitives
 
         }
 
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveMathNegate(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
         public override Task<EvalResult> PerformOperation(MOGNumber number)
         {
             Engine.StackPushNumber(-number.Value);

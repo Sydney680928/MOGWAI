@@ -37,5 +37,12 @@ namespace MOGWAI.Primitives
 
             return Task.FromResult(EvalResult.NoError);
         }
+
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveBAG(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
     }
 }

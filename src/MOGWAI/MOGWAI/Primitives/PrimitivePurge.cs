@@ -24,6 +24,13 @@ namespace MOGWAI.Primitives
 
         }
 
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitivePurge(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
         public override async Task<EvalResult> EngineEval()
         {
             // 'A' purge

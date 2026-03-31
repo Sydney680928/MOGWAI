@@ -24,6 +24,13 @@ namespace MOGWAI.Primitives
 
         }
 
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitivePIPEREF(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
         public override async Task<EvalResult> EngineEval()
         {
             // ref list PIPEREF

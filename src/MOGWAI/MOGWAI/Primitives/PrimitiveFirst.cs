@@ -24,6 +24,13 @@ namespace MOGWAI.Primitives
 
         }
 
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveFirst(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
         public override async Task<EvalResult> EngineEval()
         {
             // string first

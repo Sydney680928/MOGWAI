@@ -24,9 +24,15 @@ namespace MOGWAI.Primitives
 
         }
 
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveToPrimitive(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
         public override Task<EvalResult> EngineEval()
         {
-
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
@@ -35,7 +41,7 @@ namespace MOGWAI.Primitives
             if (s[0] == typeof(MOGString))
             {
                 var @string = Engine.StackPopString();
-                var primitive = Engine.GetPrimitive(@string.Value);
+                var primitive = Engine.GetPrimitive(@string.Value, true);
 
                 if (primitive != null)
                 {

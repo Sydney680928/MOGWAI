@@ -24,6 +24,13 @@ namespace MOGWAI.Primitives
 
         }
 
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveConsoleSetBackgroundColor(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
         public override async Task<EvalResult> PerformOperation(MOGName name)
         {
             if (Engine.Delegate != null)

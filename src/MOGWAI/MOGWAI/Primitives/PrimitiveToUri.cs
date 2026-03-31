@@ -24,6 +24,13 @@ namespace MOGWAI.Primitives
 
         }
 
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveToUri(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
         public override Task<EvalResult> PerformOperation(MOGRecord record)
         {
             // [url: "https://cloude.olnica.com" path: "api/v0/login" query: [id: "50" name: "SIBUE"]] ->uri

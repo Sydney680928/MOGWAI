@@ -64,21 +64,25 @@ namespace MOGWAI
 
         public override void UpdateFromOther(MOGObject other)
         {
-            var p = (other as MOGPrimitive)!;
-
-            FriendlyName = p.FriendlyName;
-            Category = p.Category;
-            IsPrivate = p.IsPrivate;
-            AutoEval = p.AutoEval;  
-            PauseAllowed = p.PauseAllowed;
-            ExecutionContext = p.ExecutionContext;  
-            StartPos = p.StartPos;
-            EndPos = p.EndPos;
-        }
+            if (other is MOGPrimitive p)
+            {
+                FriendlyName = p.FriendlyName;
+                Category = p.Category;
+                IsPrivate = p.IsPrivate;
+                AutoEval = p.AutoEval;
+                PauseAllowed = p.PauseAllowed;
+                ExecutionContext = p.ExecutionContext;
+                StartPos = p.StartPos;
+                EndPos = p.EndPos;
+                Bag = p.Bag;    
+            }
+        }         
 
         public override MOGObject Clone()
         {
             return this;
         }
+
+        public abstract MOGPrimitive Duplicate();
     }
 }

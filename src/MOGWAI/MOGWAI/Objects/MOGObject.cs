@@ -46,6 +46,7 @@ namespace MOGWAI.Objects
 
         public virtual void UpdateFromOther(MOGObject other)
         {
+            Type = other.Type;
             StartPos = other.StartPos;
             EndPos = other.EndPos;
             AutoEval = other.AutoEval;

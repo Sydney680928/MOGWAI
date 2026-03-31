@@ -594,18 +594,28 @@ namespace MOGWAI.Engine
 
         public bool AllowPrivatePrimitives { get; set; } = false;
 
-        public MOGPrimitive? GetPrimitive(string name)
+        public MOGPrimitive? GetPrimitive(string name, bool duplicate)
         {
             if (_primitivesByName.TryGetValue(name, out var primitive))
+            {
+                if (duplicate)
+                    return primitive.Duplicate();
+
                 return primitive;
+            }
 
             return null;
         }
 
-        public MOGPrimitive? GetPrimitive(Type type)
+        public MOGPrimitive? GetPrimitive(Type type, bool duplicate)
         {
             if (_primitivesByType.TryGetValue(type, out var primitive))
+            {
+                if (duplicate)
+                    return primitive.Duplicate();
+                
                 return primitive;
+            }
 
             return null;
         }
@@ -1624,7 +1634,7 @@ namespace MOGWAI.Engine
 
                 if (_events.TryGetValue(name, out var @event))
                 {
-                    var primitiveSTO = GetPrimitive(typeof(PrimitiveSTO));
+                    var primitiveSTO = GetPrimitive(typeof(PrimitiveSTO), false);
 
                     if (primitiveSTO != null)
                     {
@@ -3163,6 +3173,10 @@ namespace MOGWAI.Engine
 
         public async Task Reset(bool keepAlive)
         {
+            // Clear stack
+
+            StackClear();
+
             // Stop and Clear all timers
 
             ClearTimers();

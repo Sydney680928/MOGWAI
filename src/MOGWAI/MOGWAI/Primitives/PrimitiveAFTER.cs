@@ -44,5 +44,12 @@ namespace MOGWAI.Primitives
 
             return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
         }
+
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveAFTER(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
     }
 }

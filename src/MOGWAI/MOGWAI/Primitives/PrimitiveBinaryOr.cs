@@ -30,5 +30,12 @@ namespace MOGWAI.Primitives
             Engine.StackPushNumber(v);
             return Task.FromResult(EvalResult.NoError);
         }
+
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveBinaryOr(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
     }
 }
