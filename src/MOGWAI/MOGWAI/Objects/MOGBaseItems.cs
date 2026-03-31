@@ -36,13 +36,19 @@ namespace MOGWAI.Objects
             ExecutionContext = context;
             StartPos = originPosition - 1;
             EndPos = StartPos + content.Length + 1;
+
+            foreach (var item in Items)
+                item.Bag = this;
         }
 
         public MOGBaseItems(MogwaiEngine engine, List<MOGObject> items) : base(engine)
         {
             foreach (var item in items)
             {
-                Items.Add(item.Clone());
+                var newItem = item.Clone();
+                newItem.Bag = this;
+
+                Items.Add(newItem);
             }
         }
 
@@ -59,11 +65,16 @@ namespace MOGWAI.Objects
             if (index < 0 || index >= Items.Count)
                 return EvalResult.Failure(Engine, Error.BadArgumentValueError);
 
+            item.Bag = this;
             Items[index] = item;
             return EvalResult.NoError;
         }
 
-        public void AddItem(MOGObject item) => Items.Add(item);
+        public void AddItem(MOGObject item)
+        {
+            item.Bag = this;
+            Items.Add(item);
+        }
 
         public EvalResult RemoveItem(int index)
         {
@@ -79,6 +90,7 @@ namespace MOGWAI.Objects
             if (index < 0 || index >= Items.Count)
                 return EvalResult.Failure(Engine, Error.BadArgumentValueError);
 
+            item.Bag = this;
             Items.Insert(index, item);
             return EvalResult.NoError;
         }

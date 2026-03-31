@@ -20,6 +20,12 @@ namespace MOGWAI.Objects
     {
         public string Name { get; internal set; } = Guid.NewGuid().ToString();
 
+        public MOGFunction(MogwaiEngine engine) : base(engine)
+        {
+            Type = engine.GetType(typeof(MOGFunction));
+            PauseAllowed = false;
+        }
+
         public MOGFunction(MogwaiEngine engine, string content, int originPosition, MogwaiExecutionContext? context) : base(engine, content, originPosition, context)
         {
             Type = engine.GetType(typeof(MOGFunction));
@@ -44,7 +50,21 @@ namespace MOGWAI.Objects
             }
         }
 
-        public override MOGFunction Clone() => this;
+        public override MOGFunction Clone()
+        {
+            var obj = new MOGFunction(Engine);
+            obj.UpdateFromOther(this);
+
+            foreach (var item in Items)
+            {
+                var newItem = item.Clone();
+                newItem.Bag = this;
+
+                obj.Items.Add(newItem);
+            }
+
+            return obj;
+        }
 
         public override async Task<EvalResult> Execute()
         {

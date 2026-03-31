@@ -19,6 +19,12 @@ namespace MOGWAI.Objects
 {
     public class MOGCode : MOGBaseItems
     {
+        public MOGCode(MogwaiEngine engine) : base(engine)
+        {        
+            Type = engine.GetType(typeof(MOGCode));
+            PauseAllowed = false;
+        }
+
         public MOGCode(MogwaiEngine engine, string content, int originPosition, MogwaiExecutionContext? context) : base(engine, content, originPosition, context)
         {
             Type = engine.GetType(typeof(MOGCode));
@@ -208,7 +214,21 @@ namespace MOGWAI.Objects
             return await Execute();
         }
 
-        public override MOGCode Clone() => this;
+        public override MOGCode Clone()
+        {
+            var obj = new MOGCode(Engine);
+            obj.UpdateFromOther(this);
+
+            foreach (var item in Items)
+            {
+                var newItem = item.Clone();
+                newItem.Bag = this;
+
+                obj.Items.Add(newItem);
+            }
+
+            return obj;
+        }
 
         public override string ToString()
         {

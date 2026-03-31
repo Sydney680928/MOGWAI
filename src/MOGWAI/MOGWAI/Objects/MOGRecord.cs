@@ -46,28 +46,30 @@ namespace MOGWAI.Objects
         public MOGRecord(MogwaiEngine engine, Dictionary<string, MOGObject> items) : this(engine)
         {
             foreach (var key in items.Keys)
-            {
                 Items[key] = items[key].Clone();
-            }
         }
 
-        public void SetItem(string key, MOGObject value) => Items[key] = value;
+        public void SetItem(string key, MOGObject value)
+        {
+            value.Bag = this;
+            Items[key] = value;
+        }
 
-        public void SetString(string key, string value) => Items[key] = new MOGString(Engine, value);  
+        public void SetString(string key, string value) => SetItem(key, new MOGString(Engine, value));  
         
-        public void SetName(string key, string value) => Items[key] = new MOGName(Engine, value);   
+        public void SetName(string key, string value) => SetItem(key,new MOGName(Engine, value));   
 
-        public void SetWord(string key, string value) => Items[key] = new MOGWord(Engine, value);   
+        public void SetWord(string key, string value) => SetItem(key, new MOGWord(Engine, value));   
 
-        public void SetNumber(string key, double value) => Items[key] = new MOGNumber(Engine, value);   
+        public void SetNumber(string key, double value) => SetItem(key, new MOGNumber(Engine, value));   
 
-        public void SetBoolean(string key, bool value) => Items[key] = new MOGBoolean(Engine, value);
+        public void SetBoolean(string key, bool value) => SetItem(key, new MOGBoolean(Engine, value));
 
-        public void SetNull(string key) => Items[key] = new MOGNull(Engine);    
+        public void SetNull(string key) => SetItem(key, new MOGNull(Engine));    
 
-        public void SetEmpty(string key) => Items[key] = new MOGEmpty(Engine);  
+        public void SetEmpty(string key) => SetItem(key, new MOGEmpty(Engine));  
 
-        public void SetKey(string key, string value) => Items[key] = new MOGKey(Engine, value); 
+        public void SetKey(string key, string value) => SetItem(key, new MOGKey(Engine, value)); 
 
         public MOGObject? GetItem(string key)
         {
@@ -103,6 +105,7 @@ namespace MOGWAI.Objects
                 if (items[i] is MOGKey key)
                 {
                     dic[key.Value] = items[i + 1];
+                    items[i + 1].Bag = this;
                 }
                 else
                 {
@@ -141,8 +144,15 @@ namespace MOGWAI.Objects
 
         public override MOGRecord Clone()
         {
-            var obj = new MOGRecord(Engine, Items);
+            var obj = new MOGRecord(Engine);
             obj.UpdateFromOther(this);
+
+            foreach (var key in Items.Keys)
+            {
+                obj.Items[key] = Items[key].Clone();
+                obj.Items[key].Bag = obj;
+            }
+
             return obj;
         }
 

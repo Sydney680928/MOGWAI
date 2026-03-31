@@ -190,6 +190,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveFuncs(this, "funcs"));
             RegisterPublicPrimitive(new PrimitiveGetGlobalVars(this, "vars"));
             RegisterPublicPrimitive(new PrimitiveGetLocalVars(this, "lvars"));
+            RegisterPublicPrimitive(new PrimitiveBAG(this, "bag"));
 
             // Conversion Function
 
@@ -465,7 +466,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveHttpGet(this, "http.get"));
             RegisterPublicPrimitive(new PrimitiveHttpPost(this, "http.post"));
 
-            // Logic functions
+            // Private primitivesreturn Task.FromResult(EvalResult.NoError);
 
             RegisterPrivatePrimitive(new PrimitiveSTO(this, "STO"), "->");
             RegisterPrivatePrimitive(new PrimitiveDEFUNC(this, "DEFUNC"), "to");

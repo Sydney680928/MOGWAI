@@ -34,6 +34,8 @@ namespace MOGWAI.Objects
 
         public MogwaiExecutionContext? ExecutionContext { get; set; }
 
+        public MOGObject? Bag { get; set; } 
+
         public MOGObject(MogwaiEngine engine)
         {
             Engine = engine;
@@ -49,6 +51,7 @@ namespace MOGWAI.Objects
             AutoEval = other.AutoEval;
             PauseAllowed = other.PauseAllowed;
             ExecutionContext = other.ExecutionContext;
+            Bag = other.Bag;
         }
 
         public virtual Task<EvalResult> EngineEval()
