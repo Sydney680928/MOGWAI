@@ -60,6 +60,9 @@ namespace MOGWAI.Primitives
                 var key = Engine.StackPopKey();
                 var record = Engine.StackPopRecord();
 
+                if (key == null)
+                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, "expected key"); 
+
                 record.SetItem(key.Value, value!);
                 Engine.StackPush(record);
                 return EvalResult.NoError;
