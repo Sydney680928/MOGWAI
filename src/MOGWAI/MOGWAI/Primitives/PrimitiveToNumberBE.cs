@@ -17,23 +17,23 @@ using MOGWAI.Objects;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveToNumberLE : MOGPrimitive
+    internal class PrimitiveToNumberBE : MOGPrimitive
     {
-        public PrimitiveToNumberLE(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveToNumberBE(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveToNumberLE(Engine, Name);
+            var obj = new PrimitiveToNumberBE(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
 
         public override Task<EvalResult> EngineEval()
         {
-            // data number ->numLE
+            // data number ->numBE
 
             var n = Engine.StackSign(2);
 
@@ -55,7 +55,7 @@ namespace MOGWAI.Primitives
 
                 try
                 {
-                    var value = EndianHelper.FromDataLE(data.Items.ToArray(), number.IntValue);
+                    var value = EndianHelper.FromDataBE(data.Items.ToArray(), number.IntValue);
                     Engine.StackPushNumber(value);
                     return Task.FromResult(EvalResult.NoError);
                 }

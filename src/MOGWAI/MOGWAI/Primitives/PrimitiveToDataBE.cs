@@ -17,46 +17,41 @@ using MOGWAI.Objects;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveToNumberLE : MOGPrimitive
+    internal class PrimitiveToDataBE : MOGPrimitive
     {
-        public PrimitiveToNumberLE(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveToDataBE(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveToNumberLE(Engine, Name);
+            var obj = new PrimitiveToDataBE(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
 
         public override Task<EvalResult> EngineEval()
         {
-            // data number ->numLE
+            // number number ->dataBE
 
             var n = Engine.StackSign(2);
 
             if (n.Count == 0)
                 return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
-            if (n[0] == typeof(MOGNumber) && n[1] == typeof(MOGData))
+            if (n[0] == typeof(MOGNumber) && n[1] == typeof(MOGNumber))
             {
                 var number = Engine.StackPopNumber();
-                var data = Engine.StackPopData();   
+                var value = Engine.StackPopNumber();   
 
                 if (number.IntValue != 8 && number.IntValue != 16 && number.IntValue != 24 && number.IntValue != 32 && number.IntValue != 48 && number.IntValue != 64)
                     return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "only 8, 16, 24, 32, 48, 64 sizes are allowed"));
-
-                var size = number.IntValue / 8.0;
-                
-                if (data.Items.Count < size)
-                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "data is too small"));
-
+          
                 try
                 {
-                    var value = EndianHelper.FromDataLE(data.Items.ToArray(), number.IntValue);
-                    Engine.StackPushNumber(value);
+                    var bytes = EndianHelper.ToDataBE(value.LongValue, number.IntValue);
+                    Engine.StackPushData(bytes);
                     return Task.FromResult(EvalResult.NoError);
                 }
                 catch (Exception ex)

@@ -269,6 +269,9 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveToDataBE48(this, "->dataBE48"));
             RegisterPublicPrimitive(new PrimitiveToDataBE64(this, "->dataBE64"));
 
+            RegisterPublicPrimitive(new PrimitiveToDataBE(this, "->dataBE"));
+            RegisterPublicPrimitive(new PrimitiveToDataLE(this, "->dataLE"));
+
             RegisterPublicPrimitive(new PrimitiveToNumberLE8(this, "->numLE8"));
             RegisterPublicPrimitive(new PrimitiveToNumberLE16(this, "->numLE16"));
             RegisterPublicPrimitive(new PrimitiveToNumberLE24(this, "->numLE24"));
@@ -282,6 +285,9 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveToNumberBE32(this, "->numBE32"));
             RegisterPublicPrimitive(new PrimitiveToNumberBE48(this, "->numBE48"));
             RegisterPublicPrimitive(new PrimitiveToNumberBE64(this, "->numBE64"));
+
+            RegisterPublicPrimitive(new PrimitiveToNumberLE(this, "->numLE"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE(this, "->numBE"));
 
             // Output screen functions
 

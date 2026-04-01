@@ -94,7 +94,9 @@ Returns `true` if the runtime is a child task (see task management).
 ***
 
 ### `mogwai.sendMessage`
+
 Sends a message to the host. The message is a record containing at least the `type:` key.
+
 ```
 "MY_EVENT" 567 mogwai.sendMessage
 # Sends the following message to the host by the MessageReceivedFromRuntime delegate function.
@@ -792,11 +794,13 @@ Returns a data that is the result of decompressing a data passed as parameter. T
 ***
 
 ### `->pack`
+
 Serializes an object passed as parameter and returns the result as a data.
 
 ***
 
 ### `->unpack`
+
 Deserializes a data passed as parameter and returns the result as an object. The data passed as parameter is normally the result of the `->pack` function.
 
 ***
@@ -1047,7 +1051,9 @@ y=HELLO
 ***
 
 ### `check`
+
 Verifies that the n first elements of the stack are of the expected type.
+
 ```
 10 "EEE" 20 4 (.number .number .string .number) check
 # No error is raised because the 4 first elements of the stack are of the expected type.
@@ -1056,7 +1062,7 @@ Verifies that the n first elements of the stack are of the expected type.
 # An error is raised :
 # stack corruption error (MW.24)
 # stack types expected (.string .number .string .number) but actually (.number .number .string .number)
-``` 
+```
 
 ***
 
@@ -1068,11 +1074,13 @@ If impossible, an error is raised.
 ***
 
 ### `->char`
+
 Converts a number to a character according to the Unicode standard.
 
 ***
 
 ### `char->`
+
 Converts a single string character to this unicode strandard code.
 
 ***
@@ -1223,7 +1231,9 @@ Converts a string to a **MOGWAI** primitive.
 ***
 
 ### `->code`
+
 Converts a list or a string to a code block. The code block is not executed, it is just pushed onto the stack. To execute it, you must use the eval function.
+
 ```
 ( 2 2 + ) ->code
 # Pushes { 2 2 + } onto the stack
@@ -1287,6 +1297,82 @@ The result is returned as a data.
 
 Converts a number to a signed 64-bit integer. 
 The result is returned as a data.
+
+***
+
+### `->dataLE8` / `->dataLE16` / `->dataLE24` / `->dataLE32` / `->dataLE48` / `->dataLE64`
+
+Converts a number to a DATA in **Little Endian** byte order, with the specified size in bits.
+
+```
+42 ->dataLE32   # → D:2A000000
+42 ->dataLE16   # → D:2A00
+42 ->dataLE48   # → D:2A0000000000
+```
+
+If the value is too large for the requested size, the most significant bytes are silently truncated.
+
+***
+
+### `->dataBE8` / `->dataBE16` / `->dataBE24` / `->dataBE32` / `->dataBE48` / `->dataBE64`
+
+Converts a number to a DATA in **Big Endian** byte order, with the specified size in bits.
+
+```
+42 ->dataBE32   # → D:0000002A
+42 ->dataBE16   # → D:002A
+42 ->dataBE48   # → D:0000000000002A
+```
+
+If the value is too large for the requested size, the most significant bytes are silently truncated.
+
+***
+
+### `->numLE8` / `->numLE16` / `->numLE24` / `->numLE32` / `->numLE48` / `->numLE64`
+
+Converts a DATA to a number, interpreting the bytes in **Little Endian** byte order, with the specified size in bits.
+
+```
+D:2A000000 ->numLE32   # → 42
+D:2A00 ->numLE16       # → 42
+```
+
+***
+
+### `->numBE8` / `->numBE16` / `->numBE24` / `->numBE32` / `->numBE48` / `->numBE64`
+
+Converts a DATA to a number, interpreting the bytes in **Big Endian** byte order, with the specified size in bits.
+
+```
+D:0000002A ->numBE32   # → 42
+D:002A ->numBE16       # → 42
+```
+
+***
+
+### `->dataLE` / `->dataBE`
+
+Dynamic-size variants of `->dataLEx` / `->dataBEx`. The size (in bits) is taken from the stack along with the number.
+
+Supported sizes: 8, 16, 24, 32, 48, 64. Any other value raises a `BadArgumentTypeError`.
+
+```
+42 32 ->dataLE   # → D:2A000000
+42 32 ->dataBE   # → D:0000002A
+```
+
+***
+
+### `->numLE` / `->numBE`
+
+Dynamic-size variants of `->numLEx` / `->numBEx`. The size (in bits) is taken from the stack along with the DATA.
+
+Supported sizes: 8, 16, 24, 32, 48, 64. Any other value raises a `BadArgumentTypeError`.
+
+```
+D:2A000000 32 ->numLE   # → 42
+D:0000002A 32 ->numBE   # → 42
+```
 
 ***
 
@@ -1364,7 +1450,7 @@ The hash is provided as a data.
 
 ***
 
-### `>>` and `<<'
+### `>>` and `<<`
 
 Performs a bit shift on a number or binary object. 
 The shift is passed as parameter. 
@@ -1506,6 +1592,7 @@ Returns the square root of the number passed as parameter.
 ### `floor`
 
 Returns the largest integral value less than or equal to the number passed as parameter.
+
 ***
 
 ### `ceil`
@@ -1832,25 +1919,27 @@ now ->date
 ***
 
 ### `date->`
+
 Converts date and time components to a numeric date. The record passed as parameter contains the same keys as the record returned by the `->date` function.
 
 ```
 [day: 21 month: 10 year: 2025 hour: 11 minute: 51 second: 29] date->
 # Pushes 6.38966438969E+17 onto the stack
 ```
+
 ***
 
 ### `->duration`
 
 Returns a duration as a record composed of the following keys:
 
-| Key             | Usage                           |
-| --------------- | ------------------------------- |
-| `days:`         | Number of days elapsed.         |
-| `hours:`        | Number of hours elapsed.        |
-| `minutes:`      | Number of minutes elapsed.      |
-| `seconds:`      | Number of seconds elapsed.      |
-| `ms:` | Number of milliseconds elapsed. |
+| Key        | Usage                           |
+| ---------- | ------------------------------- |
+| `days:`    | Number of days elapsed.         |
+| `hours:`   | Number of hours elapsed.        |
+| `minutes:` | Number of minutes elapsed.      |
+| `seconds:` | Number of seconds elapsed.      |
+| `ms:`      | Number of milliseconds elapsed. |
 
 Typically, to calculate the time elapsed between 2 moments, you can store the `now` at the start, then at the end subtract the start `now` from the current `now`, then use the `->duration` function to get the time elapsed between these 2 moments.
 
@@ -1864,7 +1953,9 @@ now 2500 wait now - abs ->duration
 ***
 
 ### `duration->`
+
 Converts a duration record (see `->duration`) to a number of milliseconds.
+
 ```
 [days: 0 hours: 0 minutes: 0 seconds: 2 ms: 507] duration->
 # Pushes 25070000 onto the stack
@@ -1873,7 +1964,9 @@ Converts a duration record (see `->duration`) to a number of milliseconds.
 ***
 
 ### `->durations`
+
 Converts a number of milliseconds to a list of durations in different units (ms, seconds, minutes, hours, days).
+
 ```
 25070000 ->durations
 # Pushes [totalDays: 2.9016203703703704E-05 totalHours: 0.0006963888888888889 totalMinutes: 0.04178333333333333 totalSeconds: 2.507 totalMs: 2507]) onto the stack
@@ -2048,6 +2141,7 @@ Returns the standard programs folder path.
 path.programs ?
 # Returns: "C:\Users\Username\Documents\MOGWAI.8\Programs"
 ```
+
 ***
 
 ### `path.files`
@@ -2058,6 +2152,7 @@ Returns the standard files folder path.
 path.files ?
 # Returns: "C:\Users\Username\Documents\MOGWAI.8\Files"
 ```
+
 ***
 
 ### `path.usings`
@@ -2068,46 +2163,55 @@ Returns the standard extension libraries folder path.
 path.usings ?
 # Returns: "C:\Users\Username\Documents\MOGWAI.8\Usings"
 ```
+
 ***
 
 ### `path.desktop`
 
 Returns the current user's desktop folder.
+
 ***
 
 ### `path.documents`
 
 Returns the current user's documents folder.
+
 ***
 
 ### `path.music`
 
 Returns the folder where the current user's music files are stored.
+
 ***
 
 ### `path.videos`
 
 Returns the folder where the current user's videos are stored.
+
 ***
 
 ### `path.pictures`
 
 Returns the folder where the current user's pictures are stored.
+
 ***
 
 ### `path.programData`
 
 Returns the system's 'ProgramData' folder.
+
 ***
 
 ### `path.tempDirectory`
 
 Returns the temporary files folder.
+
 ***
 
 ### `path.tempFilename`
 
 Returns a complete path to a new temporary file created by the system.
+
 ***
 
 ### `path.make`
@@ -2122,6 +2226,7 @@ Pass a list of path segments as parameter. The list can use auto-evaluation with
 
 (path.files "MyFolder" "report.txt") eval path.make
 ```
+
 ***
 
 ### `path.setPrograms`
@@ -2131,6 +2236,7 @@ Customizes the default programs folder path.
 ```
 "C:\MyPrograms" path.setPrograms
 ```
+
 ***
 
 ### `path.setFiles`
@@ -2140,6 +2246,7 @@ Customizes the default files folder path.
 ```
 "D:\MyData" path.setFiles
 ```
+
 ***
 
 ### `path.setUsings`
@@ -2149,6 +2256,7 @@ Customizes the default extension libraries folder path.
 ```
 "C:\MyLibraries" path.setUsings
 ```
+
 ***
 
 ### Directory Management
@@ -2160,6 +2268,7 @@ Returns `true` if the folder exists at the specified path.
 ```
 "C:\Temp" dir.exists
 ```
+
 ***
 
 ### `dir.create`
@@ -2169,6 +2278,7 @@ Creates a new folder at the specified path. Creates parent directories recursive
 ```
 "C:\Temp\MyFolder\SubFolder" dir.create
 ```
+
 ***
 
 ### `dir.purge`
@@ -2178,6 +2288,7 @@ Deletes a folder and all its contents at the specified path.
 ```
 "C:\Temp\MyFolder" dir.purge
 ```
+
 ***
 
 ### `dir.rename`
@@ -2187,6 +2298,7 @@ Renames a folder. Pass old path and new path as parameters.
 ```
 "C:\Temp\OldName" "C:\Temp\NewName" dir.rename
 ```
+
 ***
 
 ### `dir.current`
@@ -2197,6 +2309,7 @@ Returns the current working folder path.
 dir.current ?
 # Returns: "C:\Projects"
 ```
+
 ***
 
 ### `dir.setCurrent`
@@ -2206,6 +2319,7 @@ Sets the current working folder.
 ```
 "C:\Projects" dir.setCurrent
 ```
+
 ***
 
 ### `dir.directories`
@@ -2218,6 +2332,7 @@ Returns the list of subfolders in the specified folder path.
 
 path.files dir.directories
 ```
+
 ***
 
 ### `dir.files`
@@ -2230,6 +2345,7 @@ Returns the list of files in the specified folder path.
 
 path.files dir.files
 ```
+
 ***
 
 ### File Management - Complete Read/Write
@@ -2244,6 +2360,7 @@ Pass the complete file path as parameter.
 "C:\data.bin" file.data.read
 (! path.files "image.png") path.make file.data.read
 ```
+
 ***
 
 ### `file.data.write`
@@ -2258,6 +2375,7 @@ Pass the complete file path and the DATA as parameters.
 
 imageData (! path.files "copy.png") path.make file.data.write
 ```
+
 ***
 
 ### File Management - Sequential Operations with Handles
@@ -2272,6 +2390,7 @@ Opens a file for reading and returns a handle.
 "data.txt" file.open -> 'handle'
 (! path.files "report.txt") path.make file.open -> 'h'
 ```
+
 ***
 
 ### `file.create`
@@ -2282,6 +2401,7 @@ Opens a file for writing (clears the file if it exists) and returns a handle.
 "report.txt" file.create -> 'handle'
 (! path.files "output.txt") path.make file.create -> 'h'
 ```
+
 ***
 
 ### `file.append`
@@ -2294,6 +2414,7 @@ Used for log files or adding content to existing files.
 "log.txt" file.append -> 'handle'
 (! path.files "debug.log") path.make file.append -> 'h'
 ```
+
 ***
 
 ### `file.read`
@@ -2306,6 +2427,7 @@ Pass the handle and size as parameters.
 handle 1024 file.read
 # Reads up to 1024 bytes from the file
 ```
+
 ***
 
 ### `file.readLine`
@@ -2320,6 +2442,7 @@ handle file.readLine
 
 handle file.readLine utf8-> -> 'line'
 ```
+
 ***
 
 ### `file.write`
@@ -2334,6 +2457,7 @@ Pass the DATA and handle as parameters. To write lines, manually add line break 
 
 "Line without break" ->utf8 handle file.write
 ```
+
 ***
 
 ### `file.size`
@@ -2346,6 +2470,7 @@ Pass the handle as parameter.
 handle file.size -> 'fileSize'
 "File size: {! fileSize} bytes" eval ?
 ```
+
 ***
 
 ### `file.eof`
@@ -2360,6 +2485,7 @@ while (handle file.eof not) do
     handle file.readLine utf8-> ?
 }
 ```
+
 ***
 
 ### `file.close`
@@ -2371,6 +2497,7 @@ Pass the handle as parameter.
 ```
 handle file.close
 ```
+
 ***
 
 ### File Manipulation
@@ -2383,6 +2510,7 @@ Returns `true` if the file exists at the specified path, `false` otherwise.
 "data.txt" file.exists
 (! path.files "config.txt") path.make file.exists
 ```
+
 ***
 
 ### `file.info`
@@ -2393,19 +2521,19 @@ Pass the file path as parameter.
 
 The record contains the following keys:
 
-| Key | Type | Description |
-|-----|------|-------------|
-| `name:` | String | File name with extension |
-| `fullName:` | String | Full absolute file path |
-| `directoryName:` | String | Path of the folder containing the file |
-| `extension:` | String | File extension |
-| `modifiedTime:` | Number | Last modification date (.NET ticks) |
-| `lastAccessTime:` | Number | Last access date (.NET ticks) |
-| `length:` | Number | File size in bytes |
-| `isReadOnly:` | Boolean | Read-only file |
-| `isArchive:` | Boolean | Archive attribute (Windows) |
-| `isHidden:` | Boolean | Hidden file |
-| `isSystem:` | Boolean | System file |
+| Key               | Type    | Description                            |
+| ----------------- | ------- | -------------------------------------- |
+| `name:`           | String  | File name with extension               |
+| `fullName:`       | String  | Full absolute file path                |
+| `directoryName:`  | String  | Path of the folder containing the file |
+| `extension:`      | String  | File extension                         |
+| `modifiedTime:`   | Number  | Last modification date (.NET ticks)    |
+| `lastAccessTime:` | Number  | Last access date (.NET ticks)          |
+| `length:`         | Number  | File size in bytes                     |
+| `isReadOnly:`     | Boolean | Read-only file                         |
+| `isArchive:`      | Boolean | Archive attribute (Windows)            |
+| `isHidden:`       | Boolean | Hidden file                            |
+| `isSystem:`       | Boolean | System file                            |
 
 ```
 "data.txt" file.info -> 'info'
@@ -2419,6 +2547,7 @@ info modifiedTime: get ->date -> 'dateModif'
 **Note**: Timestamps are in .NET ticks (number of 100-nanosecond intervals since 01/01/0001). Use the `->date` function to convert to a date record with `day:`, `month:`, `year:`, etc.
 
 **Important**: If the file does not exist, `file.info` raises an error. Use `file.exists` to check existence before calling `file.info`.
+
 ***
 
 ### `file.copy`
@@ -2431,6 +2560,7 @@ Copies a file. Pass source path and destination path as parameters.
 (! path.files "copy.txt") path.make 
 file.copy
 ```
+
 ***
 
 ### `file.rename`
@@ -2443,6 +2573,7 @@ Renames a file. Pass old path and new path as parameters.
 (! path.files "backup.txt") path.make
 file.rename
 ```
+
 ***
 
 ### `file.purge`
@@ -2453,6 +2584,7 @@ Deletes a file at the specified path.
 "temp.txt" file.purge
 (! path.files "old_data.bin") path.make file.purge
 ```
+
 ***
 
 ### Data Conversion Functions
@@ -2467,6 +2599,7 @@ Converts a DATA to a string with UTF-8 encoding.
 data utf8->
 handle file.readLine utf8-> -> 'line'
 ```
+
 ***
 
 ### `ascii->`
@@ -2477,6 +2610,7 @@ Converts a DATA to a string with ASCII encoding.
 data ascii->
 handle file.readLine ascii-> -> 'line'
 ```
+
 ***
 
 ### `ascii7->`
@@ -2486,6 +2620,7 @@ Converts a DATA to a string with ASCII 7-bit encoding.
 ```
 data ascii7->
 ```
+
 ***
 
 ### `->utf8`
@@ -2498,6 +2633,7 @@ Used before writing text to a file.
 "Hello" ->utf8
 "Français: éèêë" ->utf8 D:0D0A + handle file.write
 ```
+
 ***
 
 ### `->ascii`
@@ -2508,6 +2644,7 @@ Converts a string to DATA with ASCII encoding.
 "Hello" ->ascii
 "English: Hello" ->ascii D:0D0A + handle file.write
 ```
+
 ***
 
 ### `->ascii7`
@@ -2518,6 +2655,7 @@ Converts a string to DATA with ASCII 7-bit encoding.
 "Basic" ->ascii7
 "ABC123" ->ascii7 D:0D0A + handle file.write
 ```
+
 ***
 
 ### Line Break Constants
@@ -2532,4 +2670,5 @@ When writing text files, line breaks must be added manually:
 ```
 
 The `+` operator concatenates DATA to create a single byte array.
+
 ***

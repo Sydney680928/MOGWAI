@@ -19,6 +19,7 @@
 - [LISTS](#lists)
 - [RECORDS](#records)
 - [BYTE ARRAYS](#byte-arrays)
+- [ENDIANNESS CONVERSION](#endianness-conversion)
 - [BINARY NUMBERS](#binary-numbers)
 - [TIME MANAGEMENT](#time-management)
 - [FUNCTION DECLARATION](#function-declaration)
@@ -1787,6 +1788,122 @@ if (R state: get) then
 	
 	C ->decompress size ?
 }
+```
+
+# ENDIANNESS CONVERSION
+
+In IoT and BLE contexts, payloads exchanged with hardware devices require explicit control of byte order (endianness). **MOGWAI** provides a complete set of primitives to convert numbers to `DATA` with a specific byte order, and vice versa.
+
+Two byte orders are supported:
+- **Little Endian (LE)**: the least significant byte comes first. Used by most BLE profiles and x86/x64 architectures.
+- **Big Endian (BE)**: the most significant byte comes first. Used by some hardware protocols and network standards.
+
+Supported sizes: **8, 16, 24, 32, 48 and 64 bits**.
+
+> If the value is too large for the requested number of bits, the most significant bytes are silently truncated — consistent with C# numeric cast behavior.
+
+---
+
+## Fixed-size conversion — Number to DATA
+
+These primitives take a number from the stack and return the corresponding `DATA` in the specified byte order and size.
+
+### Little Endian
+
+| Primitive | Example | Result |
+|---|---|---|
+| `->dataLE8` | `42 ->dataLE8` | `D:2A` |
+| `->dataLE16` | `42 ->dataLE16` | `D:2A00` |
+| `->dataLE24` | `42 ->dataLE24` | `D:2A0000` |
+| `->dataLE32` | `42 ->dataLE32` | `D:2A000000` |
+| `->dataLE48` | `42 ->dataLE48` | `D:2A0000000000` |
+| `->dataLE64` | `42 ->dataLE64` | `D:2A00000000000000` |
+
+### Big Endian
+
+| Primitive | Example | Result |
+|---|---|---|
+| `->dataBE8` | `42 ->dataBE8` | `D:2A` |
+| `->dataBE16` | `42 ->dataBE16` | `D:002A` |
+| `->dataBE24` | `42 ->dataBE24` | `D:00002A` |
+| `->dataBE32` | `42 ->dataBE32` | `D:0000002A` |
+| `->dataBE48` | `42 ->dataBE48` | `D:0000000000002A` |
+| `->dataBE64` | `42 ->dataBE64` | `D:000000000000002A` |
+
+---
+
+## Fixed-size conversion — DATA to Number
+
+These primitives take a `DATA` from the stack and return the corresponding number, interpreting the bytes in the specified byte order and size.
+
+### Little Endian
+
+| Primitive | Example | Result |
+|---|---|---|
+| `->numLE8` | `D:2A ->numLE8` | `42` |
+| `->numLE16` | `D:2A00 ->numLE16` | `42` |
+| `->numLE24` | `D:2A0000 ->numLE24` | `42` |
+| `->numLE32` | `D:2A000000 ->numLE32` | `42` |
+| `->numLE48` | `D:2A0000000000 ->numLE48` | `42` |
+| `->numLE64` | `D:2A00000000000000 ->numLE64` | `42` |
+
+### Big Endian
+
+| Primitive | Example | Result |
+|---|---|---|
+| `->numBE8` | `D:2A ->numBE8` | `42` |
+| `->numBE16` | `D:002A ->numBE16` | `42` |
+| `->numBE24` | `D:00002A ->numBE24` | `42` |
+| `->numBE32` | `D:0000002A ->numBE32` | `42` |
+| `->numBE48` | `D:0000000000002A ->numBE48` | `42` |
+| `->numBE64` | `D:000000000000002A ->numBE64` | `42` |
+
+---
+
+## Dynamic-size conversion
+
+When the size is not known at script-writing time, you can use the dynamic variants. The size (in bits) is taken from the stack along with the number or `DATA`.
+
+### Number to DATA
+
+| Primitive | Stack signature | Example | Result |
+|---|---|---|---|
+| `->dataLE` | `number size →` | `42 32 ->dataLE` | `D:2A000000` |
+| `->dataBE` | `number size →` | `42 32 ->dataBE` | `D:0000002A` |
+
+### DATA to Number
+
+| Primitive | Stack signature | Example | Result |
+|---|---|---|---|
+| `->numLE` | `DATA size →` | `D:2A000000 32 ->numLE` | `42` |
+| `->numBE` | `DATA size →` | `D:0000002A 32 ->numBE` | `42` |
+
+If a size other than 8, 16, 24, 32, 48 or 64 is provided, a `BadArgumentTypeError` is raised.
+
+---
+
+## Practical examples
+
+```
+# Round-trip verification
+90000 ->dataBE32 ->numBE32
+# → 90000 ✓
+
+# Building a BLE command payload
+# Header (1 byte) + value (32-bit LE) + checksum (1 byte)
+D:AA -> '$payload'
+1234 ->dataLE32 -> '$value'
+$payload $value + 0xFF + -> '$payload'
+# → D:AAD2040000FF
+
+# Reading a 48-bit MAC address
+D:AABBCCDDEEFF ->numLE48
+# → numeric value of the MAC address
+
+# Dynamic size from a configuration variable
+32 -> 'bits'
+90000 bits ->dataLE
+# → D:905F0100... (same as ->dataLE32)
 ```
 
 # BINARY NUMBERS

@@ -53,13 +53,15 @@ namespace MOGWAI.Engine
         public static long FromDataBE(byte[] data, int bits)
         {
             var bytes = new byte[8];
+
+            int byteCount = bits / 8;
             
-            Array.Copy(data, bytes, bits / 8);
+            Array.Copy(data, 0, bytes, 8 - byteCount, byteCount);
             Array.Reverse(bytes);
             
             if (!BitConverter.IsLittleEndian)
                 Array.Reverse(bytes);
-            
+
             return BitConverter.ToInt64(bytes, 0);
         }
     }
