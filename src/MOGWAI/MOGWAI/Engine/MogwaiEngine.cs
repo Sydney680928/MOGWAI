@@ -269,6 +269,20 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveToDataBE48(this, "->dataBE48"));
             RegisterPublicPrimitive(new PrimitiveToDataBE64(this, "->dataBE64"));
 
+            RegisterPublicPrimitive(new PrimitiveToNumberLE8(this, "->numLE8"));
+            RegisterPublicPrimitive(new PrimitiveToNumberLE16(this, "->numLE16"));
+            RegisterPublicPrimitive(new PrimitiveToNumberLE24(this, "->numLE24"));
+            RegisterPublicPrimitive(new PrimitiveToNumberLE32(this, "->numLE32"));
+            RegisterPublicPrimitive(new PrimitiveToNumberLE48(this, "->numLE48"));
+            RegisterPublicPrimitive(new PrimitiveToNumberLE64(this, "->numLE64"));
+
+            RegisterPublicPrimitive(new PrimitiveToNumberBE8(this, "->numBE8"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE16(this, "->numBE16"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE24(this, "->numBE24"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE32(this, "->numBE32"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE48(this, "->numBE48"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE64(this, "->numBE64"));
+
             // Output screen functions
 
             RegisterPublicPrimitive(new PrimitivePrintLn(this, "?"));
