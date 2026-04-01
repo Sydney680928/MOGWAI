@@ -22,6 +22,8 @@ namespace MOGWAI.Objects
 
         public int IntValue => (int)Value;
 
+        public long LongValue => (long)Value;
+
         public MOGNumber(MogwaiEngine engine, double value) : base(engine)
         {
             Type = engine.GetType(typeof(MOGNumber));

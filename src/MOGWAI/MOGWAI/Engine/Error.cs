@@ -39,6 +39,7 @@ namespace MOGWAI.Engine
 
         public static readonly Error DivisionByZeroError = RegisterError("MW.30", "division by zero error");
         public static readonly Error MathematicalError = RegisterError("MW.31", "mathematical error");
+        public static readonly Error ConvertError = RegisterError("MW.32", "convert error");
 
         public static readonly Error UnknownNameError = RegisterError("MW.40", "unknown name error");
         public static readonly Error NameAlreadyExistsError = RegisterError("MW.41", "name already exits error");
