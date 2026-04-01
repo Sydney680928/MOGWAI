@@ -16,6 +16,16 @@ The Bag property is assigned when an item is inserted into a record or list, and
   [x: 10 y: 20 s: « ! bag x: get bag y: get + »] -> '$R'
   !$R   # → [x: 10  y: 20  s: 30]
   ```
+#### New primitives — Endianness conversion
+- Added `->dataLE8/16/24/32/48/64` and `->dataBE8/16/24/32/48/64` (number → DATA, fixed size)
+- Added `->numLE8/16/24/32/48/64` and `->numBE8/16/24/32/48/64` (DATA → number, fixed size)
+- Added `->dataLE` and `->dataBE` (number size → DATA, dynamic size)
+- Added `->numLE` and `->numBE` (DATA size → number, dynamic size)
+- Added `LongValue` property to MOGNumber for 64-bit integer access
+
+Supported sizes: 8, 16, 24, 32, 48, 64 bits.
+Overflow is silently truncated (consistent with C# numeric cast behavior).
+These primitives allow explicit endianness control when generating or parsing BLE/IoT payloads.
 
 ### Changed
 
