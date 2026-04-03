@@ -293,25 +293,25 @@ Includes and immediately executes code from a file.
 
 ***
 
-### `using`
+### `mogwai.using`
 
 Imports an extension library in ***MOGWAI*** format.
 
 If the extension is in the `path.usings` directory, you can just specify its name (with a name object) without the path and extension.
 
 ```
-'MOGWA_SERIAL' using
+'MOGWA_SERIAL' mogwai.using
 ```
 
 If the extension is not in the `path.usings` directory, you must specify its full name with path and extension (with a string object). 
 
 ```
-"my extensions/MOGWA_SERIAL.dll" using
+"my extensions/MOGWA_SERIAL.dll" mogwai.using
 ```
 
 ***
 
-### `usings`
+### `mogwai.usings`
 
 Lists the usings performed and available.
 
@@ -1328,24 +1328,24 @@ If the value is too large for the requested size, the most significant bytes are
 
 ***
 
-### `->numLE8` / `->numLE16` / `->numLE24` / `->numLE32` / `->numLE48` / `->numLE64`
+### `dataLE8->` / `dataLE16->` / `dataLE24->` / `dataLE32->` / `dataLE48->` / `dataLE64->`
 
 Converts a DATA to a number, interpreting the bytes in **Little Endian** byte order, with the specified size in bits.
 
 ```
-D:2A000000 ->numLE32   # → 42
-D:2A00 ->numLE16       # → 42
+D:2A000000 dataLE32->   # -> 42
+D:2A00 dataLE16->       # -> 42
 ```
 
 ***
 
-### `->numBE8` / `->numBE16` / `->numBE24` / `->numBE32` / `->numBE48` / `->numBE64`
+### `dataBE8->` / `dataBE16->` / `dataBE24->` / `dataBE32->` / `dataBE48->` / `dataBE64->`
 
 Converts a DATA to a number, interpreting the bytes in **Big Endian** byte order, with the specified size in bits.
 
 ```
-D:0000002A ->numBE32   # → 42
-D:002A ->numBE16       # → 42
+D:0000002A dataBE32->   # -> 42
+D:002A dataBE16->       # -> 42
 ```
 
 ***
@@ -1357,21 +1357,55 @@ Dynamic-size variants of `->dataLEx` / `->dataBEx`. The size (in bits) is taken 
 Supported sizes: 8, 16, 24, 32, 48, 64. Any other value raises a `BadArgumentTypeError`.
 
 ```
-42 32 ->dataLE   # → D:2A000000
-42 32 ->dataBE   # → D:0000002A
+42 32 ->dataLE   # -> D:2A000000
+42 32 ->dataBE   # -> D:0000002A
 ```
 
 ***
 
-### `->numLE` / `->numBE`
+### `dataLE->` / `dataBE->`
 
-Dynamic-size variants of `->numLEx` / `->numBEx`. The size (in bits) is taken from the stack along with the DATA.
+Dynamic-size variants of `dataLEx->` / `dataBEx->`. The size (in bits) is taken from the stack along with the DATA.
 
 Supported sizes: 8, 16, 24, 32, 48, 64. Any other value raises a `BadArgumentTypeError`.
 
 ```
-D:2A000000 32 ->numLE   # → 42
-D:0000002A 32 ->numBE   # → 42
+D:2A000000 32 dataLE->   # -> 42
+D:0000002A 32 dataBE->   # -> 42
+```
+
+***
+
+### `->dataLE32F` / `->dataBE32F` / `->dataLE64F` / `->dataBE64F`
+
+Converts a floating-point number to a DATA following the **IEEE 754** standard, in the specified byte order and size.
+
+- `32F` variants use single precision (4 bytes).
+- `64F` variants use double precision (8 bytes).
+
+```
+1.0 ->dataLE32F   # -> D:0000803F
+1.0 ->dataBE32F   # -> D:3F800000
+1.0 ->dataLE64F   # -> D:000000000000F03F
+1.0 ->dataBE64F   # -> D:3FF0000000000000
+```
+
+***
+
+### `dataLE32F->` / `dataBE32F->` / `dataLE64F->` / `dataBE64F->`
+
+Converts a DATA to a floating-point number following the **IEEE 754** standard, interpreting the bytes in the specified byte order and size.
+
+- `32F` variants expect at least 4 bytes.
+- `64F` variants expect at least 8 bytes.
+
+If the DATA is too small, a `BadArgumentValueError` is raised.
+
+```
+D:0000803F dataLE32F->   # -> 1.0
+D:3F800000 dataBE32F->   # -> 1.0
+D:000000000000F03F dataLE64F->   # -> 1.0
+D:3FF0000000000000 dataBE64F->   # -> 1.0
 ```
 
 ***

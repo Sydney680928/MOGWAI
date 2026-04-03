@@ -10,26 +10,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added a new `bag` primitive that pushes onto the stack the container (record or list) of the currently executing block or function. This allows a block or function stored inside a record or list to reference its own container, enabling a prototype-based programming pattern.
-bag returns null if the executing code has no container (top-level context).
-The Bag property is assigned when an item is inserted into a record or list, and cleared when it is extracted.
+  `bag` returns `null` if the executing code has no container (top-level context).
+  The `Bag` property is assigned when an item is inserted into a record or list, and cleared when it is extracted.
   ```
   [x: 10 y: 20 s: « ! bag x: get bag y: get + »] -> '$R'
   !$R   # → [x: 10  y: 20  s: 30]
   ```
-#### New primitives — Endianness conversion
-- Added `->dataLE8/16/24/32/48/64` and `->dataBE8/16/24/32/48/64` (number → DATA, fixed size)
-- Added `->numLE8/16/24/32/48/64` and `->numBE8/16/24/32/48/64` (DATA → number, fixed size)
-- Added `->dataLE` and `->dataBE` (number size → DATA, dynamic size)
-- Added `->numLE` and `->numBE` (DATA size → number, dynamic size)
-- Added `LongValue` property to MOGNumber for 64-bit integer access
 
-Supported sizes: 8, 16, 24, 32, 48, 64 bits.
-Overflow is silently truncated (consistent with C# numeric cast behavior).
-These primitives allow explicit endianness control when generating or parsing BLE/IoT payloads.
+#### New primitives — Endianness conversion (integer)
+- Added `->dataLE8/16/24/32/48/64` and `->dataBE8/16/24/32/48/64` — convert a number to `DATA` in Little or Big Endian byte order, fixed size.
+- Added `dataLE8/16/24/32/48/64->` and `dataBE8/16/24/32/48/64->` — convert a `DATA` to a number, interpreting bytes in Little or Big Endian byte order, fixed size.
+- Added `->dataLE` and `->dataBE` — dynamic-size variants (number + size in bits → DATA).
+- Added `dataLE->` and `dataBE->` — dynamic-size variants (DATA + size in bits → number).
+- Added `LongValue` property to `MOGNumber` for 64-bit integer access.
+
+Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (consistent with C# numeric cast behavior).
+
+#### New primitives — Endianness conversion (float)
+- Added `->dataLE32F` and `->dataBE32F` — convert a number to `DATA` as IEEE 754 single-precision float (4 bytes), in Little or Big Endian byte order.
+- Added `->dataLE64F` and `->dataBE64F` — convert a number to `DATA` as IEEE 754 double-precision float (8 bytes), in Little or Big Endian byte order.
+- Added `dataLE32F->` and `dataBE32F->` — convert a `DATA` to a number, interpreting bytes as IEEE 754 single-precision float.
+- Added `dataLE64F->` and `dataBE64F->` — convert a `DATA` to a number, interpreting bytes as IEEE 754 double-precision float.
+
+#### New primitives — Typed integer conversion
+- Added `->i8`, `->i16`, `->i32`, `->i64` — bidirectional conversion between number and `DATA` as signed integers (Little Endian). If the argument is a number, returns a `DATA`. If the argument is a `DATA`, returns a number.
+- Added `->u8`, `->u16`, `->u32`, `->u64` — same as above for unsigned integers.
+
+#### New error
+- Added `ConvertError` (MW.32) raised when a type conversion fails.
 
 ### Changed
 
+- Renamed `using` to `mogwai.using` and `usings` to `mogwai.usings` for consistency with the `mogwai.*` namespace convention.
+
 ### Fixed
+
+- Fixed incorrect byte order in `->i16`, `->i32`, `->i64`, `->u16`, `->u32`, `->u64`. These primitives were producing Big Endian output instead of Little Endian. The fix uses `BinaryPrimitives.WriteInt*/WriteUInt*LittleEndian` explicitly, making the behavior correct and portable across all architectures.
 
 ## [8.4.0] - 2026-03-27
 

@@ -1,0 +1,36 @@
+﻿using MOGWAI.Engine;
+using MOGWAI.Objects;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MOGWAI.Primitives
+{
+    internal class PrimitiveToDataFromFloatBE64 : PrimitiveParamsNumber
+    {
+        public PrimitiveToDataFromFloatBE64(MogwaiEngine engine, string name) : base(engine, name)
+        {
+
+        }
+
+        public override MOGPrimitive Duplicate()
+        {
+            var obj = new PrimitiveToDataFromFloatBE64(Engine, Name);
+            obj.UpdateFromOther(this);
+            return obj;
+        }
+
+        public override Task<EvalResult> PerformOperation(MOGNumber number)
+        {
+            var d = new MOGData(Engine);
+            byte[] bytes = EndianHelper.ToDataBEFloat64(number.Value);
+            d.Items.AddRange(bytes);
+
+            Engine.StackPush(d);
+
+            return Task.FromResult(EvalResult.NoError);
+        }
+    }
+}

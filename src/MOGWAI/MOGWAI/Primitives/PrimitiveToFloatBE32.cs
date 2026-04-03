@@ -17,7 +17,7 @@ using MOGWAI.Objects;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveToFloatBE32 : MOGPrimitive
+    internal class PrimitiveToFloatBE32 : PrimitiveParamsData
     {
         public PrimitiveToFloatBE32(MogwaiEngine engine, string name) : base(engine, name)
         {
@@ -31,51 +31,17 @@ namespace MOGWAI.Primitives
             return obj;
         }
 
-        public override Task<EvalResult> EngineEval()
+        public override Task<EvalResult> PerformOperation(MOGData data)
         {
+            if (data.Items.Count < 4)
+                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ".data too small."));
 
-            var s = Engine.StackSign(1);
+            var bytes = new byte[] { data.Items[0], data.Items[1], data.Items[2], data.Items[3] };
+            var x = EndianHelper.FromDataBEFloat32(bytes);
 
-            if (s.Count == 0)
-                return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
+            Engine.StackPushNumber(x);
 
-            var n0 = Engine.StackPop();
-
-            if (n0 is MOGData data)
-            {
-                if (data.Items.Count < 4)
-                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ".data too small."));
-
-                var bytes = new byte[] { data.Items[0], data.Items[1], data.Items[2], data.Items[3] };
-                var x = EndianHelper.FromDataBEFloat32(bytes);  
-                
-                Engine.StackPushNumber(x);
-
-                return Task.FromResult(EvalResult.NoError);
-            }
-            else if (n0 is MOGNumber number)
-            {
-                Single b = 0;
-
-                try
-                {
-                    b = (Single)number.Value;
-                }
-                catch (Exception ex)
-                {
-                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ex.Message));
-                }
-
-                var d = new MOGData(Engine);
-                byte[] bytes = EndianHelper.ToDataBEFloat32(b);
-                d.Items.AddRange(bytes);    
-
-                Engine.StackPush(d);
-
-                return Task.FromResult(EvalResult.NoError);
-            }
-
-            return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name));
+            return Task.FromResult(EvalResult.NoError);
         }
     }
 }

@@ -36,7 +36,6 @@ namespace MOGWAI.Primitives
             // DATA:1 ->uint8    ----> .number
             // .number ->uint8   ----> DATA:1
 
-
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
@@ -47,7 +46,7 @@ namespace MOGWAI.Primitives
             if (n0 is MOGData data)
             {
                 if (data.Items.Count == 0)
-                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ".data is empty."));
+                    return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ".data is empty"));
 
                 Engine.StackPushNumber(data.Items[0]);
                 return Task.FromResult(EvalResult.NoError);

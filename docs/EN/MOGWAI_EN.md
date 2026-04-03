@@ -1836,27 +1836,29 @@ These primitives take a number from the stack and return the corresponding `DATA
 
 These primitives take a `DATA` from the stack and return the corresponding number, interpreting the bytes in the specified byte order and size.
 
+The naming convention follows the **MOGWAI** direction rule: `->` as a prefix means *produce this type*, `->` as a suffix means *consume this type*. So `dataLE32->` reads a 32-bit Little Endian `DATA` and returns a number.
+
 ### Little Endian
 
 | Primitive | Example | Result |
 |---|---|---|
-| `->numLE8` | `D:2A ->numLE8` | `42` |
-| `->numLE16` | `D:2A00 ->numLE16` | `42` |
-| `->numLE24` | `D:2A0000 ->numLE24` | `42` |
-| `->numLE32` | `D:2A000000 ->numLE32` | `42` |
-| `->numLE48` | `D:2A0000000000 ->numLE48` | `42` |
-| `->numLE64` | `D:2A00000000000000 ->numLE64` | `42` |
+| `dataLE8->` | `D:2A dataLE8->` | `42` |
+| `dataLE16->` | `D:2A00 dataLE16->` | `42` |
+| `dataLE24->` | `D:2A0000 dataLE24->` | `42` |
+| `dataLE32->` | `D:2A000000 dataLE32->` | `42` |
+| `dataLE48->` | `D:2A0000000000 dataLE48->` | `42` |
+| `dataLE64->` | `D:2A00000000000000 dataLE64->` | `42` |
 
 ### Big Endian
 
 | Primitive | Example | Result |
 |---|---|---|
-| `->numBE8` | `D:2A ->numBE8` | `42` |
-| `->numBE16` | `D:002A ->numBE16` | `42` |
-| `->numBE24` | `D:00002A ->numBE24` | `42` |
-| `->numBE32` | `D:0000002A ->numBE32` | `42` |
-| `->numBE48` | `D:0000000000002A ->numBE48` | `42` |
-| `->numBE64` | `D:000000000000002A ->numBE64` | `42` |
+| `dataBE8->` | `D:2A dataBE8->` | `42` |
+| `dataBE16->` | `D:002A dataBE16->` | `42` |
+| `dataBE24->` | `D:00002A dataBE24->` | `42` |
+| `dataBE32->` | `D:0000002A dataBE32->` | `42` |
+| `dataBE48->` | `D:0000000000002A dataBE48->` | `42` |
+| `dataBE64->` | `D:000000000000002A dataBE64->` | `42` |
 
 ---
 
@@ -1875,19 +1877,51 @@ When the size is not known at script-writing time, you can use the dynamic varia
 
 | Primitive | Stack signature | Example | Result |
 |---|---|---|---|
-| `->numLE` | `DATA size →` | `D:2A000000 32 ->numLE` | `42` |
-| `->numBE` | `DATA size →` | `D:0000002A 32 ->numBE` | `42` |
+| `dataLE->` | `DATA size →` | `D:2A000000 32 dataLE->` | `42` |
+| `dataBE->` | `DATA size →` | `D:0000002A 32 dataBE->` | `42` |
 
 If a size other than 8, 16, 24, 32, 48 or 64 is provided, a `BadArgumentTypeError` is raised.
+
+---
+
+## Float conversion
+
+These primitives convert between `DATA` and floating-point numbers following the IEEE 754 standard. Two sizes are supported: **32 bits** (single precision) and **64 bits** (double precision).
+
+The `F` suffix in the primitive name indicates a floating-point type, as opposed to the integer primitives above.
+
+### Number to DATA (float)
+
+| Primitive | Example | Result |
+|---|---|---|
+| `->dataLE32F` | `1.0 ->dataLE32F` | `D:0000803F` |
+| `->dataBE32F` | `1.0 ->dataBE32F` | `D:3F800000` |
+| `->dataLE64F` | `1.0 ->dataLE64F` | `D:000000000000F03F` |
+| `->dataBE64F` | `1.0 ->dataBE64F` | `D:3FF0000000000000` |
+
+### DATA to Number (float)
+
+| Primitive | Example | Result |
+|---|---|---|
+| `dataLE32F->` | `D:0000803F dataLE32F->` | `1.0` |
+| `dataBE32F->` | `D:3F800000 dataBE32F->` | `1.0` |
+| `dataLE64F->` | `D:000000000000F03F dataLE64F->` | `1.0` |
+| `dataBE64F->` | `D:3FF0000000000000 dataBE64F->` | `1.0` |
+
+> If the `DATA` passed to a float conversion primitive is too small (less than 4 bytes for 32-bit, less than 8 bytes for 64-bit), a `BadArgumentValueError` is raised.
 
 ---
 
 ## Practical examples
 
 ```
-# Round-trip verification
-90000 ->dataBE32 ->numBE32
+# Round-trip verification (integer)
+90000 ->dataBE32 dataBE32->
 # → 90000 ✓
+
+# Round-trip verification (float)
+3.14 ->dataLE32F dataLE32F->
+# → 3.14 ✓ (rounded to single precision)
 
 # Building a BLE command payload
 # Header (1 byte) + value (32-bit LE) + checksum (1 byte)
@@ -1896,8 +1930,12 @@ D:AA -> '$payload'
 $payload $value + 0xFF + -> '$payload'
 # → D:AAD2040000FF
 
+# Reading a temperature sensor value (IEEE 754 float, Little Endian)
+D:0000803F dataLE32F->
+# → 1.0
+
 # Reading a 48-bit MAC address
-D:AABBCCDDEEFF ->numLE48
+D:AABBCCDDEEFF dataLE48->
 # → numeric value of the MAC address
 
 # Dynamic size from a configuration variable
@@ -2425,42 +2463,45 @@ List of main errors:
 
 | Code   | Label                  |
 |--------|--------------------------|
-| MW.0      | no error.                |
-| MW.1      | parse error.       |
-| MW.2      | halt encounted error.       |
-| MW.3      | empty code error.             |
-| MW.4      | internal error. |
-| MW.5      | platform not supported error.            |
-| MW.6      | unabled to fire event error.                |
-| MW.10      | generic error.                 |
-| MW.11      | primitive not found error.            |
-| MW.20     | too few arguments error.      |
-| MW.21     | bad argument type error.         |
-| MW.22     | bad argument value error.             |
-| MW.23     | stack size error.             |
-| MW.24     | stack corruption error.      |
-| MW.30     | division by zero error.          |
-| MW.31     | mathematical error.              |
-| MW.40     | unknown name error.          |
-| MW.41     | name already exits error.          |
-| MW.42     | function already exists error.            |
-| MW.43     | name already used by function error.       |
-| MW.44     | name already used by var error.      |
-| MW.45     | unknown key error.          |
-| MW.46     | invalid name error.            |
-| MW.47     | unabled to write value in var.     |
-| MW.48     | unabled to write value in undeclared var.            |
-| MW.50    | unknown word error.      |
-| MW.60    | task creation error. |
-| MW.61    | unabled to start task error.        |
-| MW.62    | invalid outside of a task error.    |
-| MW.70    | invalid path error.  |
-| MW.71    | path does not exists error. |
-| MW.72    | file operation error. |
-| MW.73    | unknown file error. |
-| MW.80    | using error. |
-| MW.81    | using already exists error. |
-| MW.!!!    | fatal error. |
+| MW.0   | no error.                                         |
+| MW.1   | parse error.                                      |
+| MW.2   | halt encounted error.                             |
+| MW.3   | empty code error.                                 |
+| MW.4   | internal error.                                   |
+| MW.5   | platform not supported error.                     |
+| MW.6   | unabled to fire event error.                      |
+| MW.7   | operation not supported error.                    |
+| MW.8   | circular reference error.                         |
+| MW.10  | generic error.                                    |
+| MW.11  | primitive not found error.                        |
+| MW.20  | too few arguments error.                          |
+| MW.21  | bad argument type error.                          |
+| MW.22  | bad argument value error.                         |
+| MW.23  | stack size error.                                 |
+| MW.24  | stack corruption error.                           |
+| MW.30  | division by zero error.                           |
+| MW.31  | mathematical error.                               |
+| MW.32  | convert error.                                    |
+| MW.40  | unknown name error.                               |
+| MW.41  | name already exits error.                         |
+| MW.42  | function already exists error.                    |
+| MW.43  | name already used by function error.              |
+| MW.44  | name already used by var error.                   |
+| MW.45  | unknown key error.                                |
+| MW.46  | invalid name error.                               |
+| MW.47  | unabled to write value in var.                    |
+| MW.48  | unabled to write value in undeclared var.         |
+| MW.50  | unknown word error.                               |
+| MW.60  | task creation error.                              |
+| MW.61  | unabled to start task error.                      |
+| MW.62  | invalid outside of a task error.                  |
+| MW.70  | invalid path error.                               |
+| MW.71  | path does not exists error.                       |
+| MW.72  | file operation error.                             |
+| MW.73  | unknown file error.                               |
+| MW.80  | using error.                                      |
+| MW.81  | using already exists error.                       |
+| MW.!!! | fatal error.                                      |
 
 # MAKING A PAUSE
 

@@ -205,14 +205,6 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveToHex(this, "->hex"));
             RegisterPublicPrimitive(new PrimitiveFromHexToNumber(this, "hex->"));
             RegisterPublicPrimitive(new PrimitiveToString(this, "->str"));
-            RegisterPublicPrimitive(new PrimitiveToUInt8(this, "->u8"));
-            RegisterPublicPrimitive(new PrimitiveToUInt16(this, "->u16"));
-            RegisterPublicPrimitive(new PrimitiveToUInt32(this, "->u32"));
-            RegisterPublicPrimitive(new PrimitiveToUInt64(this, "->u64"));
-            RegisterPublicPrimitive(new PrimitiveToInt8(this, "->i8"));
-            RegisterPublicPrimitive(new PrimitiveToInt16(this, "->i16"));
-            RegisterPublicPrimitive(new PrimitiveToInt32(this, "->i32"));
-            RegisterPublicPrimitive(new PrimitiveToInt64(this, "->i64"));
             RegisterPublicPrimitive(new PrimitiveToUTF8(this, "->utf8"));
             RegisterPublicPrimitive(new PrimitiveUTF8ToString(this, "utf8->"));
             RegisterPublicPrimitive(new PrimitiveToBase64(this, "->base64"));
@@ -247,6 +239,16 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveUnescape(this, "->unescape"));
             RegisterPublicPrimitive(new PrimitiveToChar(this, "->char"));
             RegisterPublicPrimitive(new PrimitiveFromChar(this, "char->"));
+
+            RegisterPublicPrimitive(new PrimitiveToUInt8(this, "->u8"));
+            RegisterPublicPrimitive(new PrimitiveToUInt16(this, "->u16"));
+            RegisterPublicPrimitive(new PrimitiveToUInt32(this, "->u32"));
+            RegisterPublicPrimitive(new PrimitiveToUInt64(this, "->u64"));
+            RegisterPublicPrimitive(new PrimitiveToInt8(this, "->i8"));
+            RegisterPublicPrimitive(new PrimitiveToInt16(this, "->i16"));
+            RegisterPublicPrimitive(new PrimitiveToInt32(this, "->i32"));
+            RegisterPublicPrimitive(new PrimitiveToInt64(this, "->i64"));
+
             RegisterPublicPrimitive(new PrimitiveToBinaryNumber(this, "->bin"));
             RegisterPublicPrimitive(new PrimitiveToBinaryNumber8(this, "->bin8"));
             RegisterPublicPrimitive(new PrimitiveToBinaryNumber16(this, "->bin16"));
@@ -272,30 +274,34 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveToDataBE(this, "->dataBE"));
             RegisterPublicPrimitive(new PrimitiveToDataLE(this, "->dataLE"));
 
-            RegisterPublicPrimitive(new PrimitiveToNumberLE8(this, "->numLE8"));
-            RegisterPublicPrimitive(new PrimitiveToNumberLE16(this, "->numLE16"));
-            RegisterPublicPrimitive(new PrimitiveToNumberLE24(this, "->numLE24"));
-            RegisterPublicPrimitive(new PrimitiveToNumberLE32(this, "->numLE32"));
-            RegisterPublicPrimitive(new PrimitiveToNumberLE48(this, "->numLE48"));
-            RegisterPublicPrimitive(new PrimitiveToNumberLE64(this, "->numLE64"));
+            RegisterPublicPrimitive(new PrimitiveToNumberLE8(this, "dataLE8->"));
+            RegisterPublicPrimitive(new PrimitiveToNumberLE16(this, "dataLE16->"));
+            RegisterPublicPrimitive(new PrimitiveToNumberLE24(this, "dataLE24->"));
+            RegisterPublicPrimitive(new PrimitiveToNumberLE32(this, "dataLE32->"));
+            RegisterPublicPrimitive(new PrimitiveToNumberLE48(this, "dataLE48->"));
+            RegisterPublicPrimitive(new PrimitiveToNumberLE64(this, "dataLE64->"));
 
-            RegisterPublicPrimitive(new PrimitiveToNumberBE8(this, "->numBE8"));
-            RegisterPublicPrimitive(new PrimitiveToNumberBE16(this, "->numBE16"));
-            RegisterPublicPrimitive(new PrimitiveToNumberBE24(this, "->numBE24"));
-            RegisterPublicPrimitive(new PrimitiveToNumberBE32(this, "->numBE32"));
-            RegisterPublicPrimitive(new PrimitiveToNumberBE48(this, "->numBE48"));
-            RegisterPublicPrimitive(new PrimitiveToNumberBE64(this, "->numBE64"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE8(this, "dataBE8->"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE16(this, "dataBE16->"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE24(this, "dataBE24->"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE32(this, "dataBE32->"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE48(this, "dataBE48->"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE64(this, "dataBE64->"));
 
-            RegisterPublicPrimitive(new PrimitiveToNumberLE(this, "->numLE"));
-            RegisterPublicPrimitive(new PrimitiveToNumberBE(this, "->numBE"));
+            RegisterPublicPrimitive(new PrimitiveToNumberLE(this, "dataLE->"));
+            RegisterPublicPrimitive(new PrimitiveToNumberBE(this, "dataBE->"));
 
-            RegisterPublicPrimitive(new PrimitiveToFloatLE32(this, "->f32LE"));
-            RegisterPublicPrimitive(new PrimitiveToFloatBE32(this, "->f32BE"));
+            RegisterPublicPrimitive(new PrimitiveToFloatLE32(this, "dataLE32F->"));
+            RegisterPublicPrimitive(new PrimitiveToFloatBE32(this, "dataBE32F->"));
 
-            RegisterPublicPrimitive(new PrimitiveToFloatLE64(this, "->f64LE"));
-            RegisterPublicPrimitive(new PrimitiveToFloatBE64(this, "->f64BE"));
+            RegisterPublicPrimitive(new PrimitiveToFloatLE64(this, "dataLE64F->"));
+            RegisterPublicPrimitive(new PrimitiveToFloatBE64(this, "dataBE64F->"));
 
+            RegisterPublicPrimitive(new PrimitiveToDataFromFloatLE32(this, "->dataLE32F"));
+            RegisterPublicPrimitive(new PrimitiveToDataFromFloatBE32(this, "->dataBE32F"));
 
+            RegisterPublicPrimitive(new PrimitiveToDataFromFloatLE64(this, "->dataLE64F"));
+            RegisterPublicPrimitive(new PrimitiveToDataFromFloatBE64(this, "->dataBE64F"));
 
             // Output screen functions
 

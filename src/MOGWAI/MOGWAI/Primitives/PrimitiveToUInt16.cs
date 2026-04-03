@@ -14,6 +14,7 @@
 
 using MOGWAI.Engine;
 using MOGWAI.Objects;
+using System.Buffers.Binary;
 
 namespace MOGWAI.Primitives
 {
@@ -36,7 +37,6 @@ namespace MOGWAI.Primitives
             // DATA:1 ->uint8    ----> .number
             // .number ->uint8   ----> DATA:1
 
-
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
@@ -51,9 +51,7 @@ namespace MOGWAI.Primitives
                 if (data.Items.Count < 2)
                     return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ".data too small."));
 
-                var bytes = new byte[] { data.Items[1], data.Items[0] };
-                var x = BitConverter.ToUInt16(bytes);
-
+                var x = BinaryPrimitives.ReadUInt16LittleEndian(data.Items.ToArray());
                 Engine.StackPushNumber(x);
 
                 return Task.FromResult(EvalResult.NoError);
@@ -73,13 +71,11 @@ namespace MOGWAI.Primitives
                     return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, ex.Message));
                 }
 
-                byte[] bytes = BitConverter.GetBytes(b);
+                byte[] bytes = new byte[2];
+                BinaryPrimitives.WriteUInt16LittleEndian(bytes, b);
 
                 var d = new MOGData(Engine);
-
-                for (int i = bytes.Length - 1; i >= 0; i--)
-                    d.Items.Add(bytes[i]);
-
+                d.Items.AddRange(bytes);    
                 Engine.StackPush(d);
 
                 return Task.FromResult(EvalResult.NoError);
