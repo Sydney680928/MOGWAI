@@ -54,11 +54,11 @@ namespace MOGWAI.Primitives
             }
             else if (n0 is MOGNumber number)
             {
-                UInt64 b = 0;
+                Int64 b = 0;
 
                 try
                 {
-                    b = (UInt64)number.IntValue;
+                    b = (Int64)number.IntValue;
                 }
                 catch (Exception ex)
                 {

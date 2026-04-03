@@ -57,11 +57,11 @@ namespace MOGWAI.Primitives
             {
                 // 56 ->uint16
 
-                UInt16 b = 0;
+                Int16 b = 0;
 
                 try
                 {
-                    b = (UInt16)number.IntValue;
+                    b = (Int16)number.IntValue;
                 }
                 catch (Exception ex)
                 {
