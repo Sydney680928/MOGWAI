@@ -289,6 +289,14 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveToNumberLE(this, "->numLE"));
             RegisterPublicPrimitive(new PrimitiveToNumberBE(this, "->numBE"));
 
+            RegisterPublicPrimitive(new PrimitiveToFloatLE32(this, "->f32LE"));
+            RegisterPublicPrimitive(new PrimitiveToFloatBE32(this, "->f32BE"));
+
+            RegisterPublicPrimitive(new PrimitiveToFloatLE64(this, "->f64LE"));
+            RegisterPublicPrimitive(new PrimitiveToFloatBE64(this, "->f64BE"));
+
+
+
             // Output screen functions
 
             RegisterPublicPrimitive(new PrimitivePrintLn(this, "?"));
