@@ -2033,6 +2033,22 @@ B:11000111 not
 # Places B:00111000 on the stack
 ```
 
+The `bit?` function tests whether a specific bit is set (1) in a binary number. You must give it the number of the bit to test (the 1st bit has number 0). It returns `true` if the bit is 1, `false` otherwise:
+
+```
+# We test bit 1 of B:110011
+
+B:110011 1 bit?
+
+# Places true on the stack
+
+# We test bit 2
+
+B:110011 2 bit?
+
+# Places false on the stack
+```
+
 To convert a binary number to a regular number you must use the `->num` function:
 
 ```

@@ -36,6 +36,13 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 - Added `->i8`, `->i16`, `->i32`, `->i64` — bidirectional conversion between number and `DATA` as signed integers (Little Endian). If the argument is a number, returns a `DATA`. If the argument is a `DATA`, returns a number.
 - Added `->u8`, `->u16`, `->u32`, `->u64` — same as above for unsigned integers.
 
+#### New primitive — Bit testing
+- Added `bit?` — returns `true` if the bit at the specified position of a binary object (`B:`) is set. Position is zero-based, starting from the rightmost bit.
+  ```
+  B:110011 1 bit?   # → true
+  B:110011 2 bit?   # → false
+  ```
+
 #### New error
 - Added `ConvertError` (MW.32) raised when a type conversion fails.
 

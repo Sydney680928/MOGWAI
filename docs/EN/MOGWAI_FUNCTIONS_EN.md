@@ -1549,6 +1549,23 @@ B:110101 2 down
 
 ***
 
+### `bit?`
+
+Returns `true` if the bit at the specified position of a binary object is set (1), `false` otherwise. The position is zero-based, starting from the rightmost bit.
+
+```
+B:110011 0 bit?
+# Pushes true onto the stack (rightmost bit is 1)
+
+B:110011 1 bit?
+# Pushes true onto the stack
+
+B:110011 2 bit?
+# Pushes false onto the stack
+```
+
+***
+
 ### `sin`
 
 Returns the sine of an angle passed as parameter. The angle is in radians.
