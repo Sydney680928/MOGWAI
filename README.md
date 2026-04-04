@@ -19,7 +19,7 @@ MOGWAI is a modern implementation of RPN (Reverse Polish Notation) for the .NET 
 - **240+ Built-in Functions** - Math, strings, lists, files, HTTP, BLE, and more
 - **Async/Await Support** - Modern asynchronous execution
 - **IoT Ready** - Bluetooth Low Energy, serial ports, GPIO
-- **Industrial Grade** - 3 years in production environments
+- **Battle-Tested** - 10+ years of real-world usage
 - **Extensible** - Easy integration with .NET applications
 - **Cross-Platform** - Windows, Linux, macOS, Android, iOS
 - **Visual Debugging** - MOGWAI STUDIO integration (coming soon)
@@ -265,20 +265,28 @@ You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
 - .NET 9.0 support
 - Complete documentation
 
-### Version 8.1 (In Progress)
+### Version 8.4 (Latest)
+
+- Plugin abstraction layer (`MOGWAI.Plugin.Abstractions`)
+- AOT compatibility (`IsAotCompatible`)
+- Major performance optimizations (O(1) primitive lookup, LINQ removal in hot paths)
+- `bag` primitive
+- `!A` auto-eval sigil
+- `-->` in-place pipeline operator
+- Binary data primitives (DATA/BIN families)
+
+### Version 8.5 (In Progress)
 
 - MOGWAI STUDIO IDE (beta)
 - Enhanced debugging protocol
-- Plugin system improvements
-- Additional examples
+- Additional examples and documentation
 
 ### Future Plans
 
 - MOGWAI STUDIO official release
 - Community plugins marketplace
 - Additional language integrations
-- Performance optimizations
-- Extended IoT function library
+- Extended function library
 
 ---
 
@@ -327,8 +335,7 @@ Created in 2015 to simulate Bluetooth Low Energy devices for IoT testing. Over 1
 
 ### Battle-Tested
 
-- **3 years in production** - Industrial environments
-- **Real-world IoT** - Astronomical clocks for public lighting
+- **10+ years of real-world usage** - From prototyping to industrial environments
 - **Thousands of scripts** - Executed in field deployments
 
 ### HP Calculator Heritage
