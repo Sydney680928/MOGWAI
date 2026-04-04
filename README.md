@@ -11,7 +11,7 @@
 ---
 ## What is MOGWAI?
 
-MOGWAI is a modern implementation of RPN (Reverse Polish Notation) designed for industrial automation, IoT applications, and embedded systems. Inspired by the legendary HP calculators (HP 28S, HP 48), MOGWAI brings the elegance and power of stack-based programming to the .NET ecosystem.
+MOGWAI is a modern implementation of RPN (Reverse Polish Notation) for the .NET ecosystem. Inspired by the legendary HP calculators (HP 28S, HP 48), it brings the elegance and power of stack-based, concatenative programming to your applications — whether you're scripting complex workflows, embedding a runtime in a desktop or mobile app, designing a custom DSL, or automating IoT pipelines.
 
 ### Key Features
 
