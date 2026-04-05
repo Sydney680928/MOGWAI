@@ -8,7 +8,9 @@
 [![NuGet](https://img.shields.io/nuget/v/MOGWAI.svg)](https://www.nuget.org/packages/MOGWAI/)
 
 **Embeddable, extensible, production-ready.** **From IoT automation to desktop scripting, one elegant RPN runtime for your .NET apps.**
+
 ---
+
 ## What is MOGWAI?
 
 MOGWAI is a modern implementation of RPN (Reverse Polish Notation) for the .NET ecosystem. Inspired by the legendary HP calculators (HP 28S, HP 48), it brings the elegance and power of stack-based, concatenative programming to your applications — whether you're scripting complex workflows, embedding a runtime in a desktop or mobile app, designing a custom DSL, or automating IoT pipelines.
@@ -16,9 +18,9 @@ MOGWAI is a modern implementation of RPN (Reverse Polish Notation) for the .NET 
 ### Key Features
 
 - **Stack-Based RPN Syntax** - Clean, unambiguous, no operator precedence
-- **240+ Built-in Functions** - Math, strings, lists, files, HTTP, BLE, and more
+- **280+ Built-in Functions** - Math, strings, lists, files, HTTP, and more
 - **Async/Await Support** - Modern asynchronous execution
-- **IoT Ready** - Bluetooth Low Energy, serial ports, GPIO
+- **Plugin System** - Clean plugin contract via `MOGWAI.IPlugin` — official plugins in development
 - **Battle-Tested** - 10+ years of real-world usage
 - **Extensible** - Easy integration with .NET applications
 - **Cross-Platform** - Windows, Linux, macOS, Android, iOS
@@ -49,7 +51,7 @@ Command-line interface for running MOGWAI scripts and interactive REPL sessions.
 Visual IDE for MOGWAI development with debugging, breakpoints, and code editing.
 
 - **License:** Proprietary (Freemium model)
-- **Status:** In active development
+- **Status:** Early private development — not yet publicly available
 - **Features:** Visual debugger, syntax highlighting, project management
 - **Release:** TBA
 
@@ -109,6 +111,42 @@ if (answer 40 >) then
 }
 ```
 
+> **Note on variables:** Variables prefixed with `$` are **global**. When the engine is instantiated with `keepAlive: true`, global variables persist across multiple script executions — making them the natural choice for interactive sessions like the REPL or the [Blazor playground](https://sydney680928.github.io/MOGWAI/). Local variables (without `$`) are scoped to a single execution and are the recommended approach for one-shot embedding scenarios.
+> ```csharp
+> // Global variables persist across executions
+> var engine = new MogwaiEngine("MyApp", keepAlive: true, useDefaultFolders: false);
+>
+> // Global variables are reset on each execution (default)
+> var engine = new MogwaiEngine("MyApp");
+> ```
+
+---
+
+## Why MOGWAI instead of Lua, Python, or JavaScript?
+
+This is a fair question. Here's the honest comparison:
+
+| | MOGWAI | Lua | IronPython | Jint (JS) |
+|---|---|---|---|---|
+| Paradigm | Stack-based RPN | Infix | Infix | Infix |
+| .NET native | ✅ | Binding layer | Partial | ✅ |
+| NativeAOT | ✅ | ❌ | ❌ | ❌ |
+| Plugin system | ✅ | ❌ | ❌ | ❌ |
+| Bundle size | Minimal | Small | Heavy | Medium |
+| Learning curve | Different | Low | Low | Low |
+
+**Choose MOGWAI if:**
+- You want **zero operator precedence ambiguity** — the stack is the truth
+- You're embedding in a **.NET NativeAOT** application
+- You appreciate the **concatenative programming** model (Forth, Factor, PostScript, HP RPL)
+- You need a **lightweight, extensible runtime** with a clean plugin contract
+
+**Choose Lua/JS if:**
+- Your team is already fluent in infix syntax
+- You need a large existing ecosystem of scripts
+
+MOGWAI isn't trying to replace general-purpose scripting — it's the right tool when **stack semantics and .NET-native embedding** matter.
+
 ---
 
 ## Build from Source
@@ -141,24 +179,39 @@ The compiled assembly will be in `src/MOGWAI/MOGWAI/bin/Release/net9.0/`.
 
 ```
 mogwai/
-├── src/
-│   └── MOGWAI/
-│       ├── MOGWAI.sln          # Main solution
-│       └── MOGWAI/
-│           ├── Engine/         # Core runtime engine
-│           ├── Objects/        # MOGWAI object types
-│           ├── Primitives/     # Built-in functions (240+ primitives)
-│           ├── Interfaces/     # Public interfaces (IDelegate, IPlugin)
-│           └── Exceptions/     # Exception types
+├── .github/
+│   └── workflows/                  # GitHub Actions (CI, GitHub Pages deployment)
 ├── docs/
 │   └── EN/
-│       ├── MOGWAI_EN.md                      # Language reference
-│       ├── MOGWAI_FUNCTIONS_EN.md            # Function reference
-│       └── MOGWAI_INTEGRATION_GUIDE_EN.md    # Integration guide
-├── images/                     # Screenshots and media
-├── LICENSE                     # Apache 2.0 license
-├── NOTICE                      # Copyright notice
-└── README.md                   # This file
+│       ├── use-cases/              # Use case articles
+│       ├── MOGWAI_EN.md            # Language reference
+│       ├── MOGWAI_FUNCTIONS_EN.md  # Function reference
+│       └── MOGWAI_INTEGRATION_GUIDE_EN.md  # Integration guide
+├── examples/
+│   ├── Blazor/
+│   │   └── MogwaiPlayground/       # Blazor WASM interactive playground
+│   ├── Console/
+│   │   └── ConsoleExample/
+│   │       └── MOGWAI_CLI/         # Command-line interface and REPL
+│   ├── MAUI/
+│   │   └── MauiExample/            # Cross-platform mobile app
+│   └── WinForms/
+│       └── WinFormsExample/        # Turtle graphics demo
+├── images/                         # Screenshots and media
+├── src/
+│   └── MOGWAI/
+│       ├── MOGWAI.sln              # Main solution
+│       ├── MOGWAI/
+│       │   ├── Engine/             # Core runtime engine
+│       │   ├── Objects/            # MOGWAI object types
+│       │   ├── Primitives/         # Built-in functions (280+ primitives)
+│       │   ├── Interfaces/         # Public interfaces (IDelegate, IPlugin)
+│       │   └── Exceptions/         # Exception types
+│       ├── MOGWAI.Tests/           # Unit tests
+│       └── MOGWAI_TEST/            # Lightweight CLI runner for in-solution testing
+├── LICENSE                         # Apache 2.0 license
+├── NOTICE                          # Copyright notice
+└── README.md                       # This file
 ```
 
 ---
@@ -168,12 +221,12 @@ mogwai/
 ### Complete Guides
 
 - **[Language Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_EN.md)** - Complete MOGWAI language guide
-- **[Function Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 240+ built-in functions
+- **[Function Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 280+ built-in functions
 - **[Integration Guide](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI in your .NET apps
 
 ### Examples
 
-Examples are available :
+Examples are available:
 
 - **[MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/Console)** - Command-line interface and REPL
 - **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinForms)** - Turtle graphics with MOGWAI
@@ -192,7 +245,7 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
 
 ![MOGWAI](./images/img04.png)
 
-MOGWAI STUDIO is a visual IDE for MOGWAI development currently in active development.
+MOGWAI STUDIO v2 is a visual IDE for MOGWAI 8, currently in early private development. A previous version of MOGWAI STUDIO exists but targets MOGWAI 6 and is now obsolete.
 
 ### Planned Features
 
@@ -206,10 +259,10 @@ MOGWAI STUDIO is a visual IDE for MOGWAI development currently in active develop
 
 ### Availability
 
-**Status:** In development  
-**Release Model:** Freemium (Free version + Pro version)  
-**Price:** Pro version planned at €29 (one-time purchase)  
-**Distribution:** Gumroad + installer package  
+**Status:** Early private development — not yet publicly available
+**Release Model:** Freemium (Free version + Pro version)
+**Price:** Pro version planned at €29 (one-time purchase)
+**Distribution:** Gumroad + installer package
 
 Stay tuned for updates on [mogwai.eu.com](https://www.mogwai.eu.com)!
 
@@ -220,7 +273,7 @@ Stay tuned for updates on [mogwai.eu.com](https://www.mogwai.eu.com)!
 ### Industrial IoT Automation
 
 ```mogwai
-# Read sensor via BLE
+# Read sensor via BLE (requires MOGWAI_BLE plugin — coming soon)
 "AA:BB:CC:DD:EE:FF" ble.connect -> 'device'
 device "temperature" ble.read -> 'temp'
 
@@ -230,6 +283,8 @@ if (temp 25 >) then
     "fan" gpio.on
 }
 ```
+
+> *Note: Official MOGWAI plugins (BLE, Serial...) are currently in development and not yet publicly available. Third-party plugins can already be built today by implementing the `MOGWAI.IPlugin` interface.*
 
 ![MOGWAI](./images/img07.png)
 
@@ -252,6 +307,7 @@ if (temp 25 >) then
 ![MOGWAI](./images/img08.png)
 
 You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
+
 ---
 
 ## Roadmap
@@ -267,7 +323,7 @@ You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
 
 ### Version 8.4 (Latest)
 
-- Plugin abstraction layer (`MOGWAI.Plugin.Abstractions`)
+- Plugin contract via `MOGWAI.IPlugin` interface
 - AOT compatibility (`IsAotCompatible`)
 - Major performance optimizations (O(1) primitive lookup, LINQ removal in hot paths)
 - `bag` primitive
@@ -277,13 +333,14 @@ You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
 
 ### Version 8.5 (In Progress)
 
-- MOGWAI STUDIO IDE (beta)
+- MOGWAI STUDIO v2 (early private development — rebuilt from scratch for MOGWAI 8)
 - Enhanced debugging protocol
+- 280+ built-in primitives (approaching 300)
 - Additional examples and documentation
 
 ### Future Plans
 
-- MOGWAI STUDIO official release
+- MOGWAI STUDIO v2 public release
 - Community plugins marketplace
 - Additional language integrations
 - Extended function library
@@ -319,11 +376,12 @@ Found a bug or have a feature request? Please open an issue on GitHub:
 
 ### Testing
 
-While we don't have formal unit tests, please ensure:
+MOGWAI includes a `MOGWAI.Tests` project covering core engine behavior. When contributing:
 
-- Your changes compile without warnings
-- Existing examples still work
-- Add example scripts demonstrating new features
+- Run the existing unit tests to verify nothing is broken
+- Add unit tests for new primitives or engine features when possible
+- Ensure your changes compile without warnings
+- Verify existing examples still work correctly
 
 ---
 
