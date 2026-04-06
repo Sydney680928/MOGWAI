@@ -214,6 +214,10 @@
             {
                 _lines.Add(new TerminalLine($"⚠ {result}", LineKind.Error));
             }
+            else
+            {
+                _lines.Add(new TerminalLine($"✓ {result}", LineKind.System));
+            }
         }
         catch (Exception ex)
         {
@@ -278,6 +282,10 @@
             "  Type MOGWAI code and press Enter.",
             "  Use ↑ ↓ to navigate through history.",
             "  Click an example to run it.",
+            "",
+            "  💡 Variables prefixed with $ are global and",
+            "     persist between commands (e.g. 42 -> '$x').",
+            "     Local variables are reset after each execution.",
             "",
         };
         foreach (var l in lines)
