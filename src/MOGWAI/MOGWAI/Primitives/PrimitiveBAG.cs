@@ -28,7 +28,7 @@ namespace MOGWAI.Primitives
         {
             if (Bag != null && Bag.Bag != null)
             {
-                Engine.StackPush(Bag.Bag);
+                Engine.StackPush(Bag.Bag.Clone());
             }
             else
             {
