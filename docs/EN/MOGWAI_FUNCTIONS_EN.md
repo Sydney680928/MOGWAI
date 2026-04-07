@@ -532,6 +532,42 @@ Forces exit from a for, while, foreach, forever and during loop.
 
 ***
 
+### `foreach...transform`
+
+Iterates each element of a list, applies a transformation block to it, and returns a new list of the transformed elements.
+
+The block executes on its **own isolated stack**, separate from the main stack. It has access to local and global variables, but cannot read from or write to the main stack. The value left on the block's stack at the end of each iteration becomes the corresponding element in the result list.
+
+The loop variable name is specified between the `foreach` and `transform` keywords.
+
+```
+(1 2 3 4 5) foreach 'item' transform { item 2 * }
+# Returns (2 4 6 8 10)
+
+("L1" "L2" "L3") foreach 'item' transform { "-" item + }
+# Returns ("-L1" "-L2" "-L3")
+```
+
+***
+
+### `foreach...filter`
+
+Iterates each element of a list, applies a predicate block to it, and returns a new list containing only the elements for which the block evaluates to `true`.
+
+The block executes on its **own isolated stack**, separate from the main stack. It has access to local and global variables, but cannot read from or write to the main stack.
+
+The loop variable name is specified between the `foreach` and `filter` keywords.
+
+```
+(1 2 3 4 5 6 7 8 9 10) foreach 'i' filter { i 5 >= i 8 <= and }
+# Returns (5 6 7 8)
+
+(1 2 3 4 5 6 7 8 9 10) foreach 'item' filter { item 2 mod 0 == }
+# Returns (2 4 6 8 10)
+```
+
+***
+
 ### `return`
 
 Forces exit from a function.

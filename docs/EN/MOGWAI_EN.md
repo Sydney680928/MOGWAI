@@ -724,30 +724,54 @@ To use an automatically managed loop counter, you must use `for`.
 
 To iterate each element of a list or a data, you must use `foreach...do`.
 
+The block executes on the **main stack**: it has full access to whatever is already on the stack, and anything it leaves on the stack remains there after the loop.
+
 ```
 # We display each element of the list
 
-("L1" "L2" "L3" "L4" "L5" "L6" "L7") foreach 'item' do {item ?} 
+("L1" "L2" "L3" "L4" "L5" "L6" "L7") foreach 'item' do { item ? } 
 
 # We display each element of the data
 
-D:01020304 foreach 'item' do {item ?} 
+D:01020304 foreach 'item' do { item ? } 
 ```
 
 ## `foreach...transform` loop
 
 To transform each element of a list, you must use `foreach...transform`.
 
+The block executes on its **own isolated stack**, separate from the main stack. It has access to local and global variables, but cannot read from or write to the main stack. The value left on the block's stack at the end of each iteration becomes the transformed element in the result list.
+
 ```
 # We transform each element of the list
 
-("L1" "L2" "L3" "L4" "L5" "L6" "L7") foreach 'item' transform {"-" item +} 
+("L1" "L2" "L3" "L4" "L5" "L6" "L7") foreach 'item' transform { "-" item + } 
 # Returns the list ("-L1" "-L2" "-L3" "-L4" "-L5" "-L6" "-L7")
 
-(1 2 3 4 5) foreach 'item' transform {item 2 *} 
+(1 2 3 4 5) foreach 'item' transform { item 2 * } 
 # Returns the list (2 4 6 8 10)
 ```
- 
+
+## `foreach...filter` loop
+
+To filter the elements of a list, you must use `foreach...filter`.
+
+The block executes on its **own isolated stack**, separate from the main stack. It has access to local and global variables, but cannot read from or write to the main stack. The block must leave a boolean value on its stack: only the elements for which the block returns `true` are collected into a new list, which is pushed onto the main stack.
+
+```
+# We keep only the even numbers
+
+(1 2 3 4 5 6 7 8 9 10) foreach 'item' filter { item 2 mod 0 == }
+# Returns the list (2 4 6 8 10)
+
+# We keep only the elements between 5 and 8 inclusive
+
+(1 2 3 4 5 6 7 8 9 10) foreach 'i' filter { i 5 >= i 8 <= and }
+# Returns the list (5 6 7 8)
+```
+
+The same result can be achieved with `foreach...do` by managing an accumulator manually, but `foreach...filter` expresses the intent more directly and concisely.
+
 ## `forever` loop
 
 To execute a loop indefinitely, you must use `forever`.

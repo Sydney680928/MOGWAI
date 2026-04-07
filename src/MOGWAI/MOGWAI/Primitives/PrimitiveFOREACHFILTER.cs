@@ -17,16 +17,16 @@ using MOGWAI.Objects;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveFOREACHTRANSFORM : MOGPrimitive
+    internal class PrimitiveFOREACHFILTER : MOGPrimitive
     {
-        public PrimitiveFOREACHTRANSFORM(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveFOREACHFILTER(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveFOREACHTRANSFORM(Engine, Name);
+            var obj = new PrimitiveFOREACHFILTER(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
@@ -58,10 +58,10 @@ namespace MOGWAI.Primitives
                         return r;
                 }
 
-                var transformItems = new List<MOGObject>();
+                var newItems = new List<MOGObject>();
 
-                Engine.CreateBreakRequest();
                 Engine.AddNewStack();
+                Engine.CreateBreakRequest();
 
                 foreach (var item in items!.Items)
                 {
@@ -81,18 +81,28 @@ namespace MOGWAI.Primitives
                     if (Engine.StackSize != 1)
                     {
                         // Only one item pushed onto the stack ! 
+                        // Must be a boolean value to know if the item must be kept or not.
 
-                        result = EvalResult.Failure(Engine, Error.StackCorruptionError, this, "the transformation code must push only one result onto the stack");
+                        result = EvalResult.Failure(Engine, Error.StackCorruptionError, this, "the filter code must push only one boolean result onto the stack");
                         break;
                     }
 
-                    transformItems.Add(Engine.StackPop()!);
+                    var b = Engine.StackPopBoolean();
+
+                    if (b == null)
+                    {
+                        result = EvalResult.Failure(Engine, Error.BadArgumentTypeError, this, "the filter code must push a boolean result onto the stack");
+                        break;
+                    }   
+
+                    if (b.Value)
+                        newItems.Add(item.Clone());
                 }
 
                 Engine.RemoveBreakRequest();
                 Engine.RemoveLastStack();
 
-                var resultList = new MOGList(Engine, transformItems);
+                var resultList = new MOGList(Engine, newItems);
                 Engine.StackPush(resultList);
 
                 return result;

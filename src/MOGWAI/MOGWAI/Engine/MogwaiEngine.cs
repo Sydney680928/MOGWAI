@@ -521,8 +521,9 @@ namespace MOGWAI.Engine
             RegisterPrivatePrimitive(new PrimitiveDEFUNC(this, "DEFUNC"), "to");
             RegisterPrivatePrimitive(new PrimitiveIF(this, "IF"), "if");
             RegisterPrivatePrimitive(new PrimitiveIFELSE(this, "IFELSE"), "if...else");
-            RegisterPrivatePrimitive(new PrimitiveFOREACH(this, "FOREACH"), "foreach");
-            RegisterPrivatePrimitive(new PrimitiveFOREACHTRANSFORM(this, "FOREACHTRANSFORM"), "foreach");
+            RegisterPrivatePrimitive(new PrimitiveFOREACH(this, "FOREACH"), "foreach...do");
+            RegisterPrivatePrimitive(new PrimitiveFOREACHTRANSFORM(this, "FOREACHTRANSFORM"), "foreach...tansform");
+            RegisterPrivatePrimitive(new PrimitiveFOREACHFILTER(this, "FOREACHFILTER"), "foreach...filter");
             RegisterPrivatePrimitive(new PrimitiveFOR(this, "FOR"), "for");
             RegisterPrivatePrimitive(new PrimitiveFORSTEP(this, "FORSTEP"), "for");
             RegisterPrivatePrimitive(new PrimitiveREPEAT(this, "REPEAT"), "repeat");

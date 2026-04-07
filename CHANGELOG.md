@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.5.0] - 2026-04-07
+
+### Added
+
+- Added `foreach...filter` loop: filters elements of a list by applying a predicate block to each element. Only the elements for which the block returns `true` are collected into a new list, which is pushed onto the stack.
+  ```
+  (1 2 3 4 5 6 7 8 9 10) foreach 'i' filter { i 5 >= i 8 <= and }
+  # Returns (5 6 7 8)
+  ```
+
 - Added a new `bag` primitive that pushes onto the stack the container (record or list) of the currently executing block or function. This allows a block or function stored inside a record or list to reference its own container, enabling a prototype-based programming pattern.
   `bag` returns `null` if the executing code has no container (top-level context).
   The `Bag` property is assigned when an item is inserted into a record or list, and cleared when it is extracted.
@@ -377,7 +391,8 @@ Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `l
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.4.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.5.0...HEAD
+[8.5.0]: https://github.com/Sydney680928/mogwai/compare/v8.4.0...v8.5.0
 [8.4.0]: https://github.com/Sydney680928/mogwai/compare/v8.3.0...v8.4.0
 [8.3.0]: https://github.com/Sydney680928/mogwai/compare/v8.2.0...v8.3.0
 [8.2.0]: https://github.com/Sydney680928/mogwai/compare/v8.1.0...v8.2.0

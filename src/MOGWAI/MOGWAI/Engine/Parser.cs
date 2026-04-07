@@ -1980,6 +1980,33 @@ namespace MOGWAI.Engine
                     }
                 }
             }
+            else if (engine.CheckCodeFootprint(_parsedObjects, index, "foreach", null, "filter", null))
+            {
+                var name = _parsedObjects[index + 1] as MOGName;
+
+                if (name != null)
+                {
+                    var code = _parsedObjects[index + 3] as MOGCode;
+
+                    if (code != null)
+                    {
+                        var primitive = engine.GetPrimitive(typeof(PrimitiveFOREACHFILTER), true);
+
+                        if (primitive != null)
+                        {
+                            primitive.StartPos = _parsedObjects[index].StartPos;
+                            primitive.EndPos = _parsedObjects[index].EndPos;
+                            primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                            primitive.Bag = _parsedObjects[index].Bag;
+
+                            _parsedObjects.RemoveRange(index, 4);
+                            _parsedObjects.InsertRange(index, [name, code, primitive]);
+
+                            return true;
+                        }
+                    }
+                }
+            }
 
             return false;
         }
