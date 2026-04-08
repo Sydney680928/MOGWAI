@@ -340,6 +340,108 @@ namespace MOGWAI.Engine
 
                     return [p];
                 }
+                else if (item.Contains("->") && !item.StartsWith("->") && !item.EndsWith("->"))
+                {
+                    var fields = item.Split("->");
+
+                    if (fields.Length != 2)
+                    {
+                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
+                        engine.LastParserEndErrorPosition = _pos;
+                        throw new MogwaiParseErrorException("invalid record->key notation");
+                    }
+
+                    if (!engine.IsValidName(fields[1]))
+                    {
+                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
+                        engine.LastParserEndErrorPosition = _pos;
+                        throw new MogwaiParseErrorException("invalid name for key in record->key notation");
+                    }
+              
+                    var items = ParseBasicWord(engine, fields[0], offsetPosition, context);
+
+                    if (items.Count != 1)
+                    {
+                        engine.LastParserStartErrorPosition = _pos - fields[0].Length + 1;
+                        engine.LastParserEndErrorPosition = _pos;
+                        throw new MogwaiParseErrorException("internal error with record definition in record->key notation");
+                    }
+
+                    var item2 = new MOGKey(engine, fields[1], offsetPosition + fields[0].Length + "->".Length);
+                    item2.ExecutionContext = context;
+
+                    var primitive = engine.GetPrimitive(typeof(PrimitiveGet), true);
+
+                    if (primitive == null)
+                    {
+                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
+                        engine.LastParserEndErrorPosition = _pos;
+                        throw new MogwaiParseErrorException("internal error with get primitive in record->key notation");
+                    }
+
+                    primitive.ExecutionContext = context;
+
+                    return [items[0], item2, primitive];
+                }
+                else if (item.Contains("<-") && !item.StartsWith("<-") && !item.EndsWith("<-"))
+                {
+                    var fields = item.Split("<-");
+
+                    if (fields.Length != 2)
+                    {
+                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
+                        engine.LastParserEndErrorPosition = _pos;
+                        throw new MogwaiParseErrorException("invalid record<-key notation");
+                    }
+
+                    if (!engine.IsValidName(fields[1]))
+                    {
+                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
+                        engine.LastParserEndErrorPosition = _pos;
+                        throw new MogwaiParseErrorException("invalid name for key in record<-key notation");
+                    }
+
+                    //var item1 = new MOGWord(engine, fields[0], offsetPosition);
+                    //item1.ExecutionContext = context;
+
+                    var items = ParseBasicWord(engine, fields[0], offsetPosition, context);
+
+                    if (items.Count != 1)
+                    {
+                        engine.LastParserStartErrorPosition = _pos - fields[0].Length + 1;
+                        engine.LastParserEndErrorPosition = _pos;
+                        throw new MogwaiParseErrorException("internal error with record definition in record<-key notation");
+                    }
+
+                    var item2 = new MOGKey(engine, fields[1], offsetPosition + fields[0].Length + "<-".Length);
+                    item2.ExecutionContext = context;
+
+                    var primitive = engine.GetPrimitive(typeof(PrimitiveSet), true);
+
+                    if (primitive == null)
+                    {
+                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
+                        engine.LastParserEndErrorPosition = _pos;
+                        throw new MogwaiParseErrorException("internal error with set primitive in record<-key notation");
+                    }
+
+                    primitive.ExecutionContext = context;
+
+                    if (_parsedObjects.Count > 0)
+                    {
+                        var index = _parsedObjects.Count - 1;
+                        var value = _parsedObjects[index];
+                        _parsedObjects.RemoveAt(index);
+
+                        return [items[0], item2, value, primitive];
+                    }
+                    else
+                    {
+                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
+                        engine.LastParserEndErrorPosition = _pos;
+                        throw new MogwaiParseErrorException("missing value for record<-key notation");
+                    }
+                }
                 else if (item.StartsWith("0x"))
                 {
                     if (item.Length > 2 && long.TryParse(item.Substring(2), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out long n2))
@@ -600,93 +702,6 @@ namespace MOGWAI.Engine
                         engine.LastParserStartErrorPosition = offsetPosition;
                         engine.LastParserEndErrorPosition = offsetPosition + item.Length - 1;
                         throw new MogwaiParseErrorException("empty type name not allowed");
-                    }
-                }
-                else if (item.Contains("->") && !item.StartsWith("->") && !item.EndsWith("->"))
-                {
-                    var fields = item.Split("->");
-
-                    if (fields.Length != 2)
-                    {
-                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
-                        engine.LastParserEndErrorPosition = _pos;
-                        throw new MogwaiParseErrorException("invalid record->key notation");
-                    }
-
-                    if (!engine.IsValidName(fields[1]))
-                    {
-                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
-                        engine.LastParserEndErrorPosition = _pos;
-                        throw new MogwaiParseErrorException("invalid name for key in record->key notation");
-                    }
-
-                    var item1 = new MOGWord(engine, fields[0], offsetPosition);
-                    item1.ExecutionContext = context;
-
-                    var item2 = new MOGKey(engine, fields[1], offsetPosition + fields[0].Length + "->".Length);
-                    item2.ExecutionContext = context;
-
-                    var primitive = engine.GetPrimitive(typeof(PrimitiveGet), true);
-
-                    if (primitive == null)
-                    {
-                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
-                        engine.LastParserEndErrorPosition = _pos;
-                        throw new MogwaiParseErrorException("internal error with get primitive in record->key notation");
-                    }
-
-                    primitive.ExecutionContext = context;
-
-                    return [item1, item2, primitive];
-                }
-                else if (item.Contains("<-") && !item.StartsWith("<-") && !item.EndsWith("<-"))
-                {
-                    var fields = item.Split("<-");
-
-                    if (fields.Length != 2)
-                    {
-                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
-                        engine.LastParserEndErrorPosition = _pos;
-                        throw new MogwaiParseErrorException("invalid record<-key notation");
-                    }
-
-                    if (!engine.IsValidName(fields[1]))
-                    {
-                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
-                        engine.LastParserEndErrorPosition = _pos;
-                        throw new MogwaiParseErrorException("invalid name for key in record<-key notation");
-                    }
-
-                    var item1 = new MOGWord(engine, fields[0], offsetPosition);
-                    item1.ExecutionContext = context;
-
-                    var item2 = new MOGKey(engine, fields[1], offsetPosition + fields[0].Length + "<-".Length);
-                    item2.ExecutionContext = context;
-
-                    var primitive = engine.GetPrimitive(typeof(PrimitiveSet), true);
-
-                    if (primitive == null)
-                    {
-                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
-                        engine.LastParserEndErrorPosition = _pos;
-                        throw new MogwaiParseErrorException("internal error with set primitive in record<-key notation");
-                    }
-
-                    primitive.ExecutionContext = context;
-
-                    if (_parsedObjects.Count > 0)
-                    {
-                        var index = _parsedObjects.Count - 1;
-                        var value = _parsedObjects[index];
-                        _parsedObjects.RemoveAt(index);
-
-                        return [item1, item2, value, primitive];
-                    }
-                    else
-                    {
-                        engine.LastParserStartErrorPosition = _pos - item.Length + 1;
-                        engine.LastParserEndErrorPosition = _pos;
-                        throw new MogwaiParseErrorException("missing value for record<-key notation");
                     }
                 }
                 else if (item.EndsWith(":") && item.Length > 1)
