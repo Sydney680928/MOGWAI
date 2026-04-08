@@ -57,6 +57,22 @@ Visual IDE for MOGWAI development with debugging, breakpoints, and code editing.
 
 ---
 
+## Blog Articles
+
+A curated list of English articles about MOGWAI on [coding4phone.com](https://coding4phone.com):
+
+- [MOGWAI in Production: How a Scripting Language Powers an Industrial Test Bench](https://coding4phone.com/?p=1990&lang=en)
+- [MOGWAI Under the Hood: Syntactic Sugar and the RPN Canonical Form](https://coding4phone.com/?p=2003&lang=en)
+- [MOGWAI — The `-->` Operator: Transforming a Variable In Place, Cleanly](https://coding4phone.com/?p=2010&lang=en)
+- [Dynamic Variable Assignment in MOGWAI](https://coding4phone.com/?p=2026&lang=en)
+- [Loops in MOGWAI](https://coding4phone.com/?p=2041&lang=en)
+- [Timers in MOGWAI](https://coding4phone.com/?p=2060&lang=en)
+- [MOGWAI — The Origin Story](https://coding4phone.com/?p=2066&lang=en)
+- [Events in MOGWAI](https://coding4phone.com/?p=2080&lang=en)
+- [Tasks in MOGWAI](https://coding4phone.com/?p=2194&lang=en)
+
+---
+
 ## Quick Start
 
 ### Installation
