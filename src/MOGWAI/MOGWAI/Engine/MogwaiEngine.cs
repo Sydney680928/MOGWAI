@@ -192,6 +192,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveGetGlobalVars(this, "vars"));
             RegisterPublicPrimitive(new PrimitiveGetLocalVars(this, "lvars"));
             RegisterPublicPrimitive(new PrimitiveBAG(this, "bag"));
+            RegisterPublicPrimitive(new PrimitiveBAGREF(this, "&bag"));
 
             // Conversion Function
 
