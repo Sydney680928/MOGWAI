@@ -153,14 +153,13 @@ namespace MOGWAI.Objects
                         break;
 
                     if (isBrowser)
+                    {
                         counter++;
 
-                    if (isBrowser && counter % 100 == 0)
-                        await Task.Delay(1);
+                        if (counter % 100 == 0)
+                            await Task.Delay(1);
+                    }
                 }
-
-                if (isBrowser && counter % 100 != 0)
-                    await Task.Delay(1);
 
                 return result;
             }
@@ -222,7 +221,7 @@ namespace MOGWAI.Objects
             foreach (var item in Items)
             {
                 var newItem = item.Clone();
-                newItem.Bag = this;
+                newItem.Bag = obj;
 
                 obj.Items.Add(newItem);
             }

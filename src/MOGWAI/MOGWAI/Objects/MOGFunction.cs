@@ -58,7 +58,7 @@ namespace MOGWAI.Objects
             foreach (var item in Items)
             {
                 var newItem = item.Clone();
-                newItem.Bag = this;
+                newItem.Bag = obj;
 
                 obj.Items.Add(newItem);
             }

@@ -36,8 +36,8 @@ namespace MOGWAI.Engine
 
         private string _name;
         private int _debugPort;
-        private List<Stack<MOGObject>> _stacks = [];
-        private Stack<MOGObject> _currentStack;
+        private List<MogwaiStack> _stacks = [];
+        private MogwaiStack _currentStack;
         private IDelegate? _delegate;
 
         private FrozenDictionary<string, MOGPrimitive> _primitivesByName;
@@ -77,7 +77,7 @@ namespace MOGWAI.Engine
         private Dictionary<string, FileStream> _openoutFiles = [];
         private Dictionary<int, MogwaiExecutionContext> _includes = [];
         private Dictionary<string, PluginInformations> _plugins = [];
-        private List<string> _varsInAutoEval = new();
+        private List<string> _varsInAutoEval = new();     
 
         // MOX Signature = [STX][M ][O ][G ][W ][A ][I ][28][09][19][68][ETX]
         //               = 00   01  02  03  04  05  06  07  08  09  10  11
@@ -192,7 +192,6 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveGetGlobalVars(this, "vars"));
             RegisterPublicPrimitive(new PrimitiveGetLocalVars(this, "lvars"));
             RegisterPublicPrimitive(new PrimitiveBAG(this, "bag"));
-            RegisterPublicPrimitive(new PrimitiveBAGREF(this, "&bag"));
 
             // Conversion Function
 
@@ -1213,25 +1212,9 @@ namespace MOGWAI.Engine
             return _currentStack.Pop();
         }
 
-        public List<Type> StackSign(int size)
-        {
-            List<Type> types = new();
+        public List<Type> StackSign(int size) => _currentStack.Sign(size);
 
-            if (_currentStack.Count >= size)
-            {
-                MOGObject[] arr = _currentStack.ToArray();
-
-                for (int i = 0; i < size; i++)
-                    types.Add(arr[i].GetType());
-            }
-
-            return types;
-        }
-
-        public void StackClear()
-        {
-            _currentStack.Clear();
-        }
+        public void StackClear() => _currentStack.Clear();
 
         public MOGObject[] StackArray() => _currentStack.ToArray();
 
@@ -1489,7 +1472,7 @@ namespace MOGWAI.Engine
             _varsContext.Add(_currentLocalVarsContext);
 
         }
-
+        
         public void VarPopContext()
         {
             if (_varsContext.Count > 1)

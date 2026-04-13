@@ -88,7 +88,7 @@ namespace MOGWAI.Primitives
 
                     if (index.IntValue >= 0 && index.IntValue < data.Items.Count)
                     {
-                        data!.Items[index.IntValue] = (byte)value.IntValue;
+                        data.Items[index.IntValue] = (byte)value.IntValue;
                         Engine.StackPush(data);
                         return EvalResult.NoError;
                     }
