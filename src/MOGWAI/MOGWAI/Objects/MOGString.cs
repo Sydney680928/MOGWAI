@@ -27,8 +27,11 @@ namespace MOGWAI.Objects
 
         public MOGString(MogwaiEngine engine, string value, int originPosition) : this(engine, value)
         {
-            StartPos = originPosition;
-            EndPos = originPosition + Value.Length + 1;
+            if (originPosition > -1)
+            {
+                StartPos = originPosition;
+                EndPos = originPosition + Value.Length + 1;
+            }
         }
 
         public override async Task<EvalResult> UserEval()
@@ -190,6 +193,9 @@ namespace MOGWAI.Objects
                         return null;
 
                     var code = new MOGCode(Engine, currentItem.ToString(), 0, ExecutionContext);
+                    
+                    if (Bag != null && Bag is MOGCode code2)
+                        code.Instance = code2.Instance;
 
                     foreach (var item in code.Items)
                         item.RemoveFromDebugMechanism();

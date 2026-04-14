@@ -77,7 +77,7 @@ namespace MOGWAI.Engine
         private Dictionary<string, FileStream> _openoutFiles = [];
         private Dictionary<int, MogwaiExecutionContext> _includes = [];
         private Dictionary<string, PluginInformations> _plugins = [];
-        private List<string> _varsInAutoEval = new();     
+        private List<string> _varsInAutoEval = new();           
 
         // MOX Signature = [STX][M ][O ][G ][W ][A ][I ][28][09][19][68][ETX]
         //               = 00   01  02  03  04  05  06  07  08  09  10  11
@@ -144,6 +144,7 @@ namespace MOGWAI.Engine
             RegisterType(typeof(MOGRef), "ref");
             RegisterType(typeof(MOGVar), "var");
             RegisterType(typeof(MOGHostFunction), "hfunc");
+            RegisterType(typeof(MOGObjectReference), "objref");
 
             #endregion
 
@@ -350,6 +351,8 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveMax(this, "max"));
             RegisterPublicPrimitive(new PrimitiveEnvMachineName(this, "env.machineName"));
             RegisterPublicPrimitive(new PrimitiveProcessStart(this, "process.start"));
+            RegisterPublicPrimitive(new PrimitiveNew(this, "new"));
+            RegisterPublicPrimitive(new PrimitiveFree(this, "free"));
 
             // Stack functions
 
@@ -540,7 +543,8 @@ namespace MOGWAI.Engine
             RegisterPrivatePrimitive(new PrimitiveSTODIVIDE(this, "STO/"), "->/");
             RegisterPrivatePrimitive(new PrimitiveSWITCH(this, "SWITCH"), "switch");
             RegisterPrivatePrimitive(new PrimitiveDECLARE(this, "DECLARE"), "=>");
-            RegisterPrivatePrimitive(new PrimitivePIPEREF(this, "PIPEREF"), "-->");
+            RegisterPrivatePrimitive(new PrimitivePIPEREF(this, "PIPEREF"), "-->");          
+            RegisterPrivatePrimitive(new PrimitiveDEFCLASS(this, "DEFCLASS"), "class");
 
             _primitivesByName = _initializingPrimitivesByName.ToFrozenDictionary();
             _initializingPrimitivesByName.Clear();
@@ -784,6 +788,12 @@ namespace MOGWAI.Engine
         internal MogwaiExecutionContext? LastParserExecutionContext { get; set; }
 
         internal bool IsSocketServerServiceRunning => _socketServerService != null && _socketServerService.IsRunning;
+
+        internal Dictionary<string, MOGClass> Classes { get; } = new();
+
+        internal int CurrentInstance { get; set; } = 0;
+
+        internal Dictionary<int, MOGInstance> ObjectReferences { get; } = new();
 
         #endregion
 
@@ -1188,21 +1198,23 @@ namespace MOGWAI.Engine
 
         public void StackPush(MOGObject obj) => _currentStack.Push(obj);
 
-        public void StackPushString(string str) => _currentStack.Push(new MOGString(this, str, 0));
+        public void StackPushString(string str) => _currentStack.Push(new MOGString(this, str, -1));
 
-        public void StackPushNumber(double number) => _currentStack.Push(new MOGNumber(this, number, 0));
+        public void StackPushNumber(double number) => _currentStack.Push(new MOGNumber(this, number, -1));
 
-        public void StackPushName(string name) => _currentStack.Push(new MOGName(this, name, 0));
+        public void StackPushName(string name) => _currentStack.Push(new MOGName(this, name, -1));
 
-        public void StackPushKey(string key) => _currentStack.Push(new MOGKey(this, key, 0));
+        public void StackPushKey(string key) => _currentStack.Push(new MOGKey(this, key, -1));
 
-        public void StackPushWord(string word) => _currentStack.Push(new MOGWord(this, word, 0));
+        public void StackPushWord(string word) => _currentStack.Push(new MOGWord(this, word, -1));
 
-        public void StackPushBoolean(bool b) => _currentStack.Push(new MOGBoolean(this, b, 0));
+        public void StackPushBoolean(bool b) => _currentStack.Push(new MOGBoolean(this, b, -1));
 
-        public void StackPushNull() => _currentStack.Push(new MOGNull(this, 0));
+        public void StackPushNull() => _currentStack.Push(new MOGNull(this, -1));
 
         public void StackPushData(byte[] bytes) => _currentStack.Push(new MOGData(this, bytes));
+
+        public void StackPushObjectReference(int reference) => _currentStack.Push(new MOGObjectReference(this, reference, -1));
 
         public MOGObject? StackPop()
         {
@@ -1303,6 +1315,8 @@ namespace MOGWAI.Engine
         public MOGData StackPopData() => (StackPop() as MOGData)!;
 
         public MOGRef StackPopRef() => (StackPop() as MOGRef)!;
+
+        public MOGObjectReference StackPopObjectReference() => (StackPop() as MOGObjectReference)!;
 
         public MOGBinaryNumber StackPopBinaryNumber() => (StackPop() as MOGBinaryNumber)!;
 
@@ -1586,6 +1600,17 @@ namespace MOGWAI.Engine
                 task.Stop();
 
             _tasks.Clear();
+        }
+
+        internal void ClearObjectReferences()
+        {
+            ObjectReferences.Clear();
+            CurrentInstance = 0;
+        }
+
+        internal void ClearClasses()
+        {
+            Classes.Clear();
         }
 
         internal void RegisterFireObject(MOGFireObject fireObject)
@@ -3219,6 +3244,14 @@ namespace MOGWAI.Engine
             // Clear all events
 
             ClearEvents();
+
+            // Clear all object references
+
+            ClearObjectReferences();
+
+            // Clear classes
+
+            ClearClasses();
 
             // Stop and Clear all tasks
 

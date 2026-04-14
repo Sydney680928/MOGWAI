@@ -32,8 +32,11 @@ namespace MOGWAI.Objects
 
         public MOGNumber(MogwaiEngine engine, double value, int originPosition) : this(engine, value)
         {
-            StartPos = originPosition;
-            EndPos = originPosition + value.ToString(System.Globalization.CultureInfo.InvariantCulture).Length - 1;
+            if (originPosition > -1)
+            {
+                StartPos = originPosition;
+                EndPos = originPosition + value.ToString(System.Globalization.CultureInfo.InvariantCulture).Length - 1;
+            }
         }
 
         public override MOGNumber Clone()

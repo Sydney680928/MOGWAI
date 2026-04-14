@@ -64,7 +64,7 @@ namespace MOGWAI.Primitives
                     }
                     else
                     {
-                       return  await value.EngineEval();
+                        return await value.EngineEval();
                     }
 
                     return EvalResult.NoError;
@@ -222,6 +222,27 @@ namespace MOGWAI.Primitives
                     return EvalResult.Failure(Engine, Error.BadArgumentValueError);
                 }
             }
+            else if (s[1] == typeof(MOGObjectReference) && s[0] == typeof(MOGKey))
+            {
+                // objref key get
+
+                var key = Engine.StackPopKey();
+                var objref = Engine.StackPopObjectReference();
+
+                int instance = 0;
+
+                if (Bag is MOGCode code)
+                    instance = code.Instance;
+
+                if (Engine.ObjectReferences.TryGetValue(objref.Value, out var obj))
+                {
+                    return await obj.GetPropertyAsync(key.Value, instance);
+                }
+                else
+                {
+                    return EvalResult.Failure(Engine, Error.UnknownInstanceError);
+                }
+            }
             else if (s[1] == typeof(MOGRef))
             {
                 var n0 = Engine.StackPop();
@@ -240,7 +261,7 @@ namespace MOGWAI.Primitives
                     Engine.StackPush(value);
                     Engine.StackPush(n0!);
 
-                    return await EngineEval();                  
+                    return await EngineEval();
                 }
                 else
                 {

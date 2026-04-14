@@ -623,6 +623,42 @@ namespace MOGWAI.Engine
                         throw new MogwaiParseErrorException("empty reference name not allowed");
                     }
                 }
+                else if (item.StartsWith("§"))
+                {
+                    // OBJECT REFERENCE
+
+                    if (item.Length > 1)
+                    {
+                        var value = item.Substring(1);
+
+                        if (value.Length == 0)
+                        {
+                            engine.LastParserStartErrorPosition = offsetPosition;
+                            engine.LastParserEndErrorPosition = offsetPosition + item.Length - 1;
+                            throw new MogwaiParseErrorException($"illegal object reference");
+                        }
+
+                        try
+                        {
+                            var v = int.Parse(value, CultureInfo.InvariantCulture);
+                            var t = new MOGObjectReference(engine, v, offsetPosition);
+                            t.ExecutionContext = context;
+                            return [t];
+                        }
+                        catch
+                        {
+                            engine.LastParserStartErrorPosition = offsetPosition;
+                            engine.LastParserEndErrorPosition = offsetPosition + item.Length - 1;
+                            throw;
+                        }
+                    }
+                    else
+                    {
+                        engine.LastParserStartErrorPosition = offsetPosition;
+                        engine.LastParserEndErrorPosition = offsetPosition + item.Length - 1;
+                        throw new MogwaiParseErrorException("empty reference name not allowed");
+                    }
+                }
                 else if (item == "null")
                 {
                     try
@@ -878,6 +914,10 @@ namespace MOGWAI.Engine
                         case "-->":
                             result = UpdateForPipeRefSugar(engine, i);
                             break;
+
+                        case "class":
+                            result = UpdateForClassSugar(engine, i); 
+                            break; 
                     }
 
                     if (!result)
@@ -985,6 +1025,64 @@ namespace MOGWAI.Engine
                             }
                         }
                     }
+                }
+            }
+
+            return false;
+        }
+
+        private bool UpdateForClassSugar(MogwaiEngine engine, int index)
+        {
+            var primitiveDEFCLASS = engine.GetPrimitive(typeof(PrimitiveDEFCLASS), true);
+
+            if (primitiveDEFCLASS == null)
+                return false;
+
+            if (engine.CheckCodeFootprint(_parsedObjects, index, "class", null, "do", null))
+            {
+                // 0 class
+                // 1 name
+                // 2 do
+                // 3 code
+
+                var name = _parsedObjects[index + 1];
+
+                var code = _parsedObjects[index + 3] as MOGCode;
+
+                if (code != null)
+                {
+                    // Le code doit être transformé en record
+                    
+                    MOGRecord? defRecord;
+                    
+                    try
+                    {
+                        defRecord = code.ToRecord();
+                    }
+                    catch
+                    {
+                        return false;
+                    }
+
+                    // Toutes les clés portant du code doivent être transformées en RECORD 
+
+                    foreach (var key in defRecord.Items.Keys)
+                    {
+                        var value = defRecord.Items[key];
+                        
+                        if (value is MOGCode codeValue)
+                            defRecord.Items[key] = codeValue.ToRecord();
+                    }
+
+                    primitiveDEFCLASS.StartPos = _parsedObjects[index].StartPos;
+                    primitiveDEFCLASS.EndPos = _parsedObjects[index].EndPos;
+                    primitiveDEFCLASS.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                    primitiveDEFCLASS.Bag = _parsedObjects[index].Bag;
+
+                    _parsedObjects.RemoveRange(index, 4);
+                    _parsedObjects.InsertRange(index, [name, defRecord, primitiveDEFCLASS]);
+
+                    return true;
                 }
             }
 

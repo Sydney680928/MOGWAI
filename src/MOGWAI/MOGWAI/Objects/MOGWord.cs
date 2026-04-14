@@ -25,8 +25,11 @@ namespace MOGWAI.Objects
 
         public MOGWord(MogwaiEngine engine, string value, int originPosition) : this(engine, value)
         {
-            StartPos = originPosition;
-            EndPos = originPosition + Value.Length - 1;
+            if (originPosition > -1)
+            {
+                StartPos = originPosition;
+                EndPos = originPosition + Value.Length - 1;
+            }
         }
 
         public override async Task<EvalResult> EngineEval()

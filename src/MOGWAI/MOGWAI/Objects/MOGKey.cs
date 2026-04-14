@@ -25,8 +25,11 @@ namespace MOGWAI.Objects
 
         public MOGKey(MogwaiEngine engine, string value, int originPosition) : this(engine, value)
         {
-            StartPos = originPosition;
-            EndPos = originPosition + Value.Length;
+            if (originPosition > -1)
+            {
+                StartPos = originPosition;
+                EndPos = originPosition + Value.Length;
+            }
         }
 
         public override MOGKey Clone()

@@ -20,5 +20,10 @@ namespace MOGWAI.Exceptions
         {
 
         }
+
+        public MogwaiClasseDefinitionException(string message) : base(message)
+        {
+
+        }
     }
 }

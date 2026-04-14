@@ -28,8 +28,11 @@ namespace MOGWAI.Objects
 
         public MOGBoolean(MogwaiEngine engine, bool value, int originPosition) : this(engine, value)
         {
-            StartPos = originPosition;
-            EndPos = originPosition + (value ? "true".Length : "false".Length) - 1;
+            if (originPosition > -1)
+            {
+                StartPos = originPosition;
+                EndPos = originPosition + (value ? "true".Length : "false".Length) - 1;
+            }
         }
 
         public override MOGBoolean Clone()

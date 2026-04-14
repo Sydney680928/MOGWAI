@@ -16,42 +16,37 @@ using MOGWAI.Engine;
 
 namespace MOGWAI.Objects
 {
-    public class MOGName : MOGBaseString
+    public class MOGObjectReference : MOGObject
     {
-        public MOGName(MogwaiEngine engine) : base(engine)
+        public int Value { get; set; }
+
+        public MOGObjectReference(MogwaiEngine engine, int value) : base(engine)
         {
-            Type = engine.GetType(typeof(MOGName));
+            Type = engine.GetType(typeof(MOGObjectReference));
+            Value = value;
         }
 
-        public MOGName(MogwaiEngine engine, string value) : base(engine, value)
+        public MOGObjectReference(MogwaiEngine engine, int value, int originPosition) : this(engine, value)
         {
-            Type = engine.GetType(typeof(MOGName));
+            StartPos = originPosition;
+            EndPos = originPosition + value.ToString(System.Globalization.CultureInfo.InvariantCulture).Length;
         }
 
-        public MOGName(MogwaiEngine engine, string value, int originPosition) : this(engine, value)
+        public override MOGObjectReference Clone()
         {
-            if (originPosition > -1)
-            {
-                StartPos = originPosition;
-                EndPos = originPosition + Value.Length + 1;
-            }
-        }
-
-        public override MOGName Clone()
-        {
-            var obj = new MOGName(Engine, Value);
+            var obj = new MOGObjectReference(Engine, Value, StartPos);
             obj.UpdateFromOther(this);
             return obj;
         }
 
         public override string ToString()
         {
-            return $"'{Value}'";
+            return $"§{Value}";
         }
 
         public override string ToJson()
         {
-            return $"\"'{Value}'\"";
+            return $"§{Value}";
         }
     }
 }

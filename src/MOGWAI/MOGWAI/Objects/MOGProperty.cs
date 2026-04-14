@@ -16,30 +16,21 @@ using MOGWAI.Engine;
 
 namespace MOGWAI.Objects
 {
-    public class MOGNull : MOGObject
+    public class MOGProperty
     {
-        public MOGNull(MogwaiEngine engine) : base(engine)
-        {
-            Type = engine.GetType(typeof(MOGNull));
-        }
+        public string Name { get; init; }
 
-        public MOGNull(MogwaiEngine engine, int originPosition) : this(engine)
-        {
-            if (originPosition > -1)
-            {
-                StartPos = originPosition;
-                EndPos = originPosition + "null".Length - 1;
-            }
-        }
+        public MOGType Type { get; init; }
 
-        public override MOGNull Clone()
-        {
-            return new MOGNull(Engine, StartPos);
-        }
+        public MogwaiEngine Engine { get; init; }
 
-        public override string ToString()
+        public MOGObject? Value { get; set; }
+
+        public MOGProperty(MogwaiEngine engine, string name, MOGType type)
         {
-            return "null";
+            Engine = engine;
+            Name = name;
+            Type = type;           
         }
     }
 }

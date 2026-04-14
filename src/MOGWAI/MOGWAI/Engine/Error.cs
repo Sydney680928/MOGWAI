@@ -65,6 +65,12 @@ namespace MOGWAI.Engine
         public static readonly Error UsingError = RegisterError("MW.80", "using error");
         public static readonly Error UsingAlreadyExistsError = RegisterError("MW.81", "using already exists error");
 
+        public static readonly Error ClassDefinitionError = RegisterError("MW.90", "class definition error");
+        public static readonly Error UnknownClassError = RegisterError("MW.91", "unknown class error");
+        public static readonly Error InstanceCreationError = RegisterError("MW.92", "instance creation error");
+        public static readonly Error UnknownInstanceError = RegisterError("MW.93", "unknown instance error");
+        public static readonly Error UnknownPropertyError = RegisterError("MW.94", "unknown property error");
+
         public static readonly Error FatalError = RegisterError("MW.!!!", "fatal error");
 
         public enum ErrorType

@@ -53,7 +53,9 @@ namespace MOGWAI.Objects
         public override MOGFunction Clone()
         {
             var obj = new MOGFunction(Engine);
+            
             obj.UpdateFromOther(this);
+            obj.Instance = Instance;    
 
             foreach (var item in Items)
             {

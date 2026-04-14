@@ -68,7 +68,7 @@ namespace MOGWAI.Primitives
                 var record = Engine.StackPopRecord();
 
                 if (key == null)
-                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, "expected key"); 
+                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, "expected key");
 
                 record.SetItem(key.Value, value!);
                 Engine.StackPush(record);
@@ -119,12 +119,34 @@ namespace MOGWAI.Primitives
                     }
                 }
             }
+            else if (s[2] == typeof(MOGObjectReference) && s[1] == typeof(MOGKey))
+            {
+                // objref key value set
+
+                var value = Engine.StackPop();
+                var key = Engine.StackPopKey(); 
+                var objref = Engine.StackPopObjectReference();
+
+                int instance = 0;
+
+                if (Bag is MOGCode code)
+                    instance = code.Instance;
+
+                if (Engine.ObjectReferences.TryGetValue(objref.Value, out var obj))
+                {
+                    return obj.SetProperty(key.Value, value!, instance);
+                }
+                else
+                {
+                    return EvalResult.Failure(Engine, Error.UnknownInstanceError);
+                }
+            }
             else if (s[2] == typeof(MOGRef))
             {
                 var n0 = Engine.StackPop();
                 var n1 = Engine.StackPop();
 
-                var reference = Engine.StackPopRef();   
+                var reference = Engine.StackPopRef();
                 var value = Engine.VarRead(reference.Value, false);
 
                 if (value == null)

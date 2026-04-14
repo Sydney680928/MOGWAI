@@ -19,6 +19,26 @@ namespace MOGWAI.Objects
 {
     public class MOGCode : MOGBaseItems
     {
+        private int _instance;
+
+        public int Instance 
+        { 
+            get => _instance;   
+
+            set
+            {
+                _instance = value;
+
+                // On transmet à tous les items de type code ou fonction l'instance mère
+
+                foreach (var item in Items)
+                {
+                    if (item is MOGCode code)
+                        code.Instance = _instance;
+                }
+            }
+        }
+     
         public MOGCode(MogwaiEngine engine) : base(engine)
         {        
             Type = engine.GetType(typeof(MOGCode));
@@ -217,6 +237,7 @@ namespace MOGWAI.Objects
         {
             var obj = new MOGCode(Engine);
             obj.UpdateFromOther(this);
+            obj.Instance = Instance;
 
             foreach (var item in Items)
             {
@@ -238,6 +259,12 @@ namespace MOGWAI.Objects
         {
             var obj = new MOGFunction(Engine, Items);
             obj.UpdateFromOther(this);
+            return obj;
+        }
+
+        public MOGRecord ToRecord()
+        {
+            var obj = new MOGRecord(Engine, Items);
             return obj;
         }
 
