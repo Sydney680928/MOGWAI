@@ -35,21 +35,26 @@ namespace MOGWAI.Primitives
         public override async Task<EvalResult> EngineEval()
         {
             // (1 2 3) 0 50 set ---> (50 2 3)
-            // [id: 5 x: 9] x: 500 put ----> [id: 5 x: 500]
+            // [id: 5 x: 9] x: 500 set ----> [id: 5 x: 500]
             // D:FF0510 0 0x0 set ----> D:000510
+
+            // 50 (1 2 3) 0 set ---> (50 2 3)
+            // 500 [id: 5 x: 9] x: set ----> [id: 5 x: 500]
+            // 0x00 D:FF0510 0 set ----> D:000510
+            // 100 §0345 x: set ----> §0300.x = 100
 
             var s = Engine.StackSign(3);
 
             if (s.Count == 0)
                 return EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name);
 
-            if (s[2] == typeof(MOGList))
+            if (s[1] == typeof(MOGList))
             {
                 // List
-
-                var value = Engine.StackPop();
+               
                 var index = Engine.StackPopNumber();
                 var list = Engine.StackPopList();
+                var value = Engine.StackPop();
 
                 var result = list.SetItem(index.IntValue, value!);
 
@@ -59,13 +64,13 @@ namespace MOGWAI.Primitives
                 Engine.StackPush(list);
                 return EvalResult.NoError;
             }
-            else if (s[2] == typeof(MOGRecord))
+            else if (s[1] == typeof(MOGRecord))
             {
                 // Record
-
-                var value = Engine.StackPop();
+              
                 var key = Engine.StackPopKey();
                 var record = Engine.StackPopRecord();
+                var value = Engine.StackPop();
 
                 if (key == null)
                     return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, "expected key");
@@ -74,17 +79,17 @@ namespace MOGWAI.Primitives
                 Engine.StackPush(record);
                 return EvalResult.NoError;
             }
-            else if (s[2] == typeof(MOGData) && s[1] == typeof(MOGNumber))
+            else if (s[1] == typeof(MOGData) && s[0] == typeof(MOGNumber))
             {
                 // Data
 
-                if (s[0] == typeof(MOGNumber))
+                if (s[2] == typeof(MOGNumber))
                 {
                     // data number number set
-
-                    var value = Engine.StackPopNumber();
+                    
                     var index = Engine.StackPopNumber();
                     var data = Engine.StackPopData();
+                    var value = Engine.StackPopNumber();
 
                     if (index.IntValue >= 0 && index.IntValue < data.Items.Count)
                     {
@@ -97,13 +102,13 @@ namespace MOGWAI.Primitives
                         return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name);
                     }
                 }
-                else if (s[0] == typeof(MOGData))
+                else if (s[2] == typeof(MOGData))
                 {
                     // data number data
-
-                    var value = Engine.StackPopData();
+                   
                     var index = Engine.StackPopNumber();
                     var data = Engine.StackPopData();
+                    var value = Engine.StackPopData();
 
                     if (index.IntValue >= 0 && index.IntValue < data.Items.Count && index.IntValue + value.Items.Count <= data.Items.Count)
                     {
@@ -119,13 +124,13 @@ namespace MOGWAI.Primitives
                     }
                 }
             }
-            else if (s[2] == typeof(MOGObjectReference) && s[1] == typeof(MOGKey))
+            else if (s[1] == typeof(MOGObjectReference) && s[0] == typeof(MOGKey))
             {
                 // objref key value set
-
-                var value = Engine.StackPop();
+               
                 var key = Engine.StackPopKey(); 
                 var objref = Engine.StackPopObjectReference();
+                var value = Engine.StackPop();
 
                 int instance = 0;
 
@@ -141,12 +146,12 @@ namespace MOGWAI.Primitives
                     return EvalResult.Failure(Engine, Error.UnknownInstanceError);
                 }
             }
-            else if (s[2] == typeof(MOGRef))
-            {
-                var n0 = Engine.StackPop();
+            else if (s[1] == typeof(MOGRef))
+            {               
                 var n1 = Engine.StackPop();
-
                 var reference = Engine.StackPopRef();
+                var n0 = Engine.StackPop();
+
                 var value = Engine.VarRead(reference.Value, false);
 
                 if (value == null)
@@ -157,9 +162,9 @@ namespace MOGWAI.Primitives
 
                 if (value is MOGList || value is MOGRecord || value is MOGData)
                 {
-                    Engine.StackPush(value);
-                    Engine.StackPush(n1!);
                     Engine.StackPush(n0!);
+                    Engine.StackPush(value);
+                    Engine.StackPush(n1!);                   
 
                     var r = await EngineEval();
 
