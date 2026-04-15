@@ -20,7 +20,7 @@ namespace MOGWAI.Objects
     {
         public MogwaiEngine Engine { get; init; }
 
-        public string Code { get; init; } = string.Empty;
+        public string Code { get; set; } = string.Empty;
 
         public bool AutoEval { get; set; }
 
@@ -47,6 +47,7 @@ namespace MOGWAI.Objects
         public virtual void UpdateFromOther(MOGObject other)
         {
             Type = other.Type;
+            Code = other.Code;
             StartPos = other.StartPos;
             EndPos = other.EndPos;
             AutoEval = other.AutoEval;

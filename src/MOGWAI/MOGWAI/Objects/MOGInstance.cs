@@ -25,11 +25,13 @@ namespace MOGWAI.Objects
 
         public int Instance { get; init; }
 
-        public Dictionary<string, MOGProperty> Privates { get; } = new();
+        public Dictionary<string, MOGProperty> PrivateProperties { get; } = new();
 
-        public Dictionary<string, MOGProperty> Properties { get; } = new();
+        public Dictionary<string, MOGProperty> PublicProperties { get; } = new();
 
-        public Dictionary<string, MOGFunction> Funcs { get; } = new();
+        public Dictionary<string, MOGFunction> PrivateFunctions { get; } = new();
+
+        public Dictionary<string, MOGFunction> PublicFunctions { get; } = new();
 
         public MOGInstance(MogwaiEngine engine, MOGClass @class, int instance)
         {
@@ -37,61 +39,101 @@ namespace MOGWAI.Objects
             ClassName = @class.Name;
             Instance = instance;
 
-            // Section privates
+            var parser = new Parser();
 
-            foreach (var key in @class.Privates.Keys)
+            // Private Properties
+
+            foreach (var key in @class.PrivateProperties.Keys)
             {
-                var p = @class.Privates[key];
+                var p = @class.PrivateProperties[key];
                 var prop = new MOGProperty(@class.Engine, key, p);
 
-                Privates.Add(key, prop);
+                PrivateProperties.Add(key, prop);
             }
 
-            // Section props
+            // Public Properties
 
-            foreach (var key in @class.Properties.Keys)
+            foreach (var key in @class.PublicProperties.Keys)
             {
-                var p = @class.Properties[key];
+                var p = @class.PublicProperties[key];
                 var prop = new MOGProperty(@class.Engine, key, p);
 
-                Properties.Add(key, prop);
+                PublicProperties.Add(key, prop);
             }
 
-            // Section funcs
+            // Private Functions
 
-            foreach (var key in @class.Funcs.Keys)
+            foreach (var key in @class.PrivateFunctions.Keys)
             {
-                var func = @class.Funcs[key].Clone();
-                func.Instance = instance;
+                var func = @class.PrivateFunctions[key];
+                var code = "«" + func.Code + "»";   
 
-                var r = new MOGObjectReference(Engine, instance);
-                r.PauseAllowed = false;
+                parser.Parse(engine, code, func.StartPos, null);
 
-                var sto = Engine.GetPrimitive(typeof(PrimitiveSTO), false);
-                
-                if (sto == null)
-                    throw new Exception("the primitive STO is not registered in the engine");
+                if (parser.ParsedObjects.Count > 0 && parser.ParsedObjects[0] is MOGFunction function)
+                {
+                    function.Instance = instance;
 
-                sto.PauseAllowed = false;
+                    var r = new MOGObjectReference(Engine, instance);
+                    r.PauseAllowed = false;
 
-                var name = new MOGName(Engine, "self");
-                name.PauseAllowed = false;
+                    var sto = Engine.GetPrimitive(typeof(PrimitiveSTO), true);
 
-                func.Items.InsertRange(0, [r, name, sto]);
+                    if (sto == null)
+                        throw new Exception("the primitive STO is not registered in the engine");
 
-                Funcs.Add(key, func);
+                    sto.PauseAllowed = false;
+
+                    var name = new MOGName(Engine, "self");
+                    name.PauseAllowed = false;
+
+                    function.Items.InsertRange(0, [r, name, sto]);
+
+                    PrivateFunctions.Add(key, function);
+                }
+            }
+
+            // Public Functions
+
+            foreach (var key in @class.PublicFunctions.Keys)
+            {
+                var func = @class.PublicFunctions[key];
+                var code = "«" + func.Code + "»";
+
+                parser.Parse(engine, code, func.StartPos, null);
+
+                if (parser.ParsedObjects.Count > 0 && parser.ParsedObjects[0] is MOGFunction function)
+                {
+                    function.Instance = instance;
+
+                    var r = new MOGObjectReference(Engine, instance, -1);
+                    r.PauseAllowed = false;
+
+                    var sto = Engine.GetPrimitive(typeof(PrimitiveSTO), true);
+
+                    if (sto == null)
+                        throw new Exception("the primitive STO is not registered in the engine");
+
+                    sto.PauseAllowed = false;
+
+                    var name = new MOGName(Engine, "self", -1);
+                    name.PauseAllowed = false;
+
+                    function.Items.InsertRange(0, [r, name, sto]);
+
+                    PublicFunctions.Add(key, function);
+                }
             }
         }
 
         public async Task<EvalResult> GetPropertyAsync(string name, int instance = 0)
         {
-            if (Properties.TryGetValue(name, out var prop))
+            if (PublicProperties.TryGetValue(name, out var prop))
             {
                 Engine.StackPush(prop.Value ?? new MOGEmpty(Engine));
                 return EvalResult.NoError;
             }
-
-            if (Privates.TryGetValue(name, out var privateProp))
+            else if (PrivateProperties.TryGetValue(name, out var privateProp))
             {
                 if (Instance == instance)
                 {
@@ -99,43 +141,53 @@ namespace MOGWAI.Objects
                     return EvalResult.NoError;
                 }
 
-                // On demande une propriété privée hors du code interne de l'instance
-                // Interdit
-
-                return EvalResult.Failure(Engine, Error.UnknownPropertyError, name);
+                return EvalResult.Failure(Engine, Error.UnknownPropertyError, $"{name} property is private");
             }
-
-            if (Funcs.TryGetValue(name, out var func))
+            else if (PublicFunctions.TryGetValue(name, out var publicFunc))
             {
                 // On execute la fonction
 
-                return await func.Execute();
+                return await publicFunc.Execute();
+            }
+            else if (PrivateFunctions.TryGetValue(name, out var privateFunc))
+            {
+                if (Instance == instance)
+                {
+                    // On execute la fonction
+
+                    return await privateFunc.Execute();
+                }
+
+                return EvalResult.Failure(Engine, Error.UnknownPropertyError, $"{name} function is private");
             }
 
             return EvalResult.Failure(Engine, Error.UnknownPropertyError, name);
+
         }
 
         public EvalResult SetProperty(string name, MOGObject value, int instance = 0)
         {
-            if (Properties.TryGetValue(name, out var prop))
+            if (PublicProperties.TryGetValue(name, out var publicProp))
             {
-                if (prop.Type.Value != value.Type.Value && prop.Type.Value != "any")
-                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError);
+                if (publicProp.Type.Value != value.Type.Value && publicProp.Type.Value != "any")
+                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, $"type {publicProp.Type} expected");
 
-                prop.Value = value;
+                publicProp.Value = value;
                 return EvalResult.NoError;
             }
 
-            if (Privates.TryGetValue(name, out var privateProp))
+            if (PrivateProperties.TryGetValue(name, out var privateProp))
             {
                 if (Instance == instance)
                 {
                     if (privateProp.Type.Value != value.Type.Value && privateProp.Type.Value != "any")
-                        return EvalResult.Failure(Engine, Error.BadArgumentTypeError);
+                        return EvalResult.Failure(Engine, Error.BadArgumentTypeError, $"type {privateProp.Type} expected");
 
                     privateProp.Value = value;
                     return EvalResult.NoError;
                 }
+
+                return EvalResult.Failure(Engine, Error.UnknownPropertyError, $"{name} property is private");
             }
 
             return EvalResult.Failure(Engine, Error.UnknownPropertyError, name);

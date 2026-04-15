@@ -351,9 +351,9 @@ namespace MOGWAI.Engine
                         throw new MogwaiParseErrorException("invalid x->y notation");
                     }
 
-                    var items = ParseBasicWord(engine, fields[0], offsetPosition, context);
+                    var items1 = ParseBasicWord(engine, fields[0], offsetPosition, context);
 
-                    if (items.Count != 1)
+                    if (items1.Count != 1)
                     {
                         engine.LastParserStartErrorPosition = _pos - fields[0].Length + 1;
                         engine.LastParserEndErrorPosition = _pos;
@@ -380,7 +380,16 @@ namespace MOGWAI.Engine
 
                     primitive.ExecutionContext = context;
 
-                    return [items[0], items2[0], primitive];
+                    items1[0].StartPos = offsetPosition;
+                    items1[0].EndPos = offsetPosition + item.Length - 1;
+
+                    items2[0].StartPos = primitive.StartPos = items1[0].StartPos;
+                    items2[0].EndPos = primitive.EndPos = items1[0].EndPos;
+
+                    items1[0].PauseAllowed = false;
+                    items2[0].PauseAllowed = false;
+
+                    return [items1[0], items2[0], primitive];
                 }
                 else if (item.Contains("<-") && !item.StartsWith("<-") && !item.EndsWith("<-"))
                 {
@@ -421,6 +430,15 @@ namespace MOGWAI.Engine
                     }
 
                     primitive.ExecutionContext = context;
+
+                    items1[0].StartPos = offsetPosition;
+                    items1[0].EndPos = offsetPosition + item.Length - 1;
+
+                    items2[0].StartPos = primitive.StartPos = items1[0].StartPos;
+                    items2[0].EndPos = primitive.EndPos = items1[0].EndPos;
+
+                    items1[0].PauseAllowed = false;
+                    items2[0].PauseAllowed = false;
 
                     return [items1[0], items2[0], primitive];
                 }

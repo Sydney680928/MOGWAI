@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using MOGWAI.Engine;
+using System.Diagnostics;
 using System.Text;
 
 namespace MOGWAI.Objects
@@ -101,6 +102,8 @@ namespace MOGWAI.Objects
                     }
 
                     Engine.CurrentEvalObject = item.Clone();
+
+                    Debug.WriteLine($"CurrentEvalObject={Engine.CurrentEvalObject}");
 
                     if (Engine.DebugMode && ExecutionContextAllowDebugMode)
                     {

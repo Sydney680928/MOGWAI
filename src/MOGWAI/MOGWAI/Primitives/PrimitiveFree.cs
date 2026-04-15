@@ -36,7 +36,7 @@ namespace MOGWAI.Primitives
                 
                 if (Engine.ObjectReferences.TryGetValue(@ref.Value, out var obj))
                 {
-                    var r = await obj.GetPropertyAsync("onFree");
+                    var r = await obj.GetPropertyAsync("onFree", @ref.Value);
 
                     if (r.Error != Error.UnknownPropertyError)
                         return r;

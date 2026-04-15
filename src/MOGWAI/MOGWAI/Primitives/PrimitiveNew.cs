@@ -34,7 +34,7 @@ namespace MOGWAI.Primitives
                     Engine.ObjectReferences[next] = instance;               
                     Engine.CurrentInstance = next;
                     
-                    var r = await instance.GetPropertyAsync("onInit");
+                    var r = await instance.GetPropertyAsync("onInit", next);
 
                     if (r.IsError && r.Error != Error.UnknownPropertyError)
                         return r;

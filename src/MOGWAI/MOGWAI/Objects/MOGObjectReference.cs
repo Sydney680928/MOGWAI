@@ -28,8 +28,11 @@ namespace MOGWAI.Objects
 
         public MOGObjectReference(MogwaiEngine engine, int value, int originPosition) : this(engine, value)
         {
-            StartPos = originPosition;
-            EndPos = originPosition + value.ToString(System.Globalization.CultureInfo.InvariantCulture).Length;
+            if (originPosition > -1)
+            {
+                StartPos = originPosition;
+                EndPos = originPosition + value.ToString(System.Globalization.CultureInfo.InvariantCulture).Length;
+            }
         }
 
         public override MOGObjectReference Clone()

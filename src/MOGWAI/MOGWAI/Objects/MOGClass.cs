@@ -23,109 +23,76 @@ namespace MOGWAI.Objects
 
         public string Name { get; init; }
 
-        public Dictionary<string, MOGType> Privates { get; } = new();
+        public Dictionary<string, MOGType> PrivateProperties { get; } = new();
 
-        public Dictionary<string, MOGType> Properties { get; } = new();
+        public Dictionary<string, MOGType> PublicProperties { get; } = new();
 
-        public Dictionary<string, MOGFunction> Funcs { get; } = new();
+        public Dictionary<string, MOGFunction> PrivateFunctions { get; } = new();
+
+        public Dictionary<string, MOGFunction> PublicFunctions { get; } = new();
 
         public MOGClass(MogwaiEngine engine, string name, MOGRecord defRecord)
         {
             Engine = engine;    
             Name = name;
 
-            // Section Properties:  
+            var names = new List<string>();
 
-            var propertiesRecord = defRecord.GetItem("props");
+            // Section Privates  
 
-            if (propertiesRecord != null)
+            var record = defRecord.GetItem("private");
+
+            if (record is MOGRecord privatesRecord)
             {
-                if (propertiesRecord is MOGRecord properties)
-                {
-                    foreach (var key in properties.Items.Keys)
-                    {
-                        var item = properties.Items[key];
+                foreach (var key in privatesRecord.Items.Keys)
+                {                 
+                    var value = privatesRecord.Items[key];
 
-                        if (item is MOGType type)
-                        {
-                            Properties.Add(key, type);
-                        }
-                        else
-                        {
-                            throw new MogwaiClasseDefinitionException($"the 'properties' section of a class definition must only contain types");
-                        }
+                    if (value is MOGType type)
+                    {
+                        if (names.Contains(key))
+                            throw new MogwaiClasseDefinitionException($"duplicate name: {key}");
+
+                        PrivateProperties.Add(key, type);
+                        names.Add(key); 
                     }
-                }
-                else
-                {
-                    throw new MogwaiClasseDefinitionException($"the 'properties' section of a class definition must be a record");
+                    else if (value is MOGCode code)
+                    {
+                        if (names.Contains(key))
+                            throw new MogwaiClasseDefinitionException($"duplicate name: {key}");
+
+                        PrivateFunctions.Add(key, code.ToFunction());
+                        names.Add(key);
+                    }
                 }
             }
 
-            // Section Privates:
-            // Les noms des propriétés privées d'une classe sont uniques, et ne peuvent pas être les mêmes que les noms des propriétés de la classe.
+            // Section Publics  
 
-            var privatesRecord = defRecord.GetItem("privates"); 
+            record = defRecord.GetItem("public");
 
-            if (privatesRecord != null)
+            if (record is MOGRecord publicsRecord)
             {
-                if (privatesRecord is MOGRecord privates)
+                foreach (var key in publicsRecord.Items.Keys)
                 {
-                    foreach (var key in privates.Items.Keys)
+                    var value = publicsRecord.Items[key];
+
+                    if (value is MOGType type)
                     {
-                        if (Properties.ContainsKey(key))
-                            throw new MogwaiClasseDefinitionException($"the name '{key}' is already used as a property name in the class definition, it cannot be used as a private property name");
+                        if (names.Contains(key))
+                            throw new MogwaiClasseDefinitionException($"duplicate name: {key}");
 
-                        var item = privates.Items[key]; 
-
-                        if (item is MOGType type)
-                        {                        
-                            Privates.Add(key, type);
-                        }
-                        else
-                        {
-                            throw new MogwaiClasseDefinitionException($"the 'privates' section of a class definition must only contain types");
-                        }
+                        PublicProperties.Add(key, type);
+                        names.Add(key);
                     }
-                }
-                else
-                {
-                    throw new MogwaiClasseDefinitionException($"the 'privates' section of a class definition must be a record");
-                }
-            }
-
-            // Section Funcs:
-            // Les noms des fonctions d'une classe sont uniques, et ne peuvent pas être les mêmes que les noms des propriétés ou des propriétés privées de la classe.   
-
-            var funcsRecord = defRecord.GetItem("funcs");
-
-            if (funcsRecord != null)
-            {
-                if (funcsRecord is MOGRecord funcs)
-                {
-                    foreach (var key in funcs.Items.Keys)
+                    else if (value is MOGCode code)
                     {
-                        if (Properties.ContainsKey(key))
-                            throw new MogwaiClasseDefinitionException($"the name '{key}' is already used as a property name in the class definition, it cannot be used as a function name");
+                        if (names.Contains(key))
+                            throw new MogwaiClasseDefinitionException($"duplicate name: {key}");
 
-                        if (Privates.ContainsKey(key))
-                            throw new MogwaiClasseDefinitionException($"the name '{key}' is already used as a private property name in the class definition, it cannot be used as a function name");
-
-                        var item = funcs.Items[key];
-
-                        if (item is MOGCode code)
-                        {
-                            Funcs.Add(key, code.ToFunction());
-                        }
-                        else
-                        {
-                            throw new MogwaiClasseDefinitionException($"the 'funcs' section of a class definition must only contain code");
-                        }
+                        PublicFunctions.Add(key, code.ToFunction());
+                        names.Add(key);
                     }
-                }
-                else
-                {
-                    throw new MogwaiClasseDefinitionException($"the 'funcs' section of a class definition must be a record");
                 }
             }
         }
