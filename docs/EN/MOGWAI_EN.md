@@ -2565,6 +2565,7 @@ List of main errors:
 | MW.6   | unabled to fire event error.                      |
 | MW.7   | operation not supported error.                    |
 | MW.8   | circular reference error.                         |
+| MW.9   | assert error.                                     |
 | MW.10  | generic error.                                    |
 | MW.11  | primitive not found error.                        |
 | MW.20  | too few arguments error.                          |
@@ -2594,6 +2595,11 @@ List of main errors:
 | MW.73  | unknown file error.                               |
 | MW.80  | using error.                                      |
 | MW.81  | using already exists error.                       |
+| MW.90  | class definition error.                           |
+| MW.91  | unknown class error.                              |
+| MW.92  | instance creation error.                          |
+| MW.93  | unknown instance error.                           |
+| MW.94  | unknown property error.                           |
 | MW.!!! | fatal error.                                      |
 
 # MAKING A PAUSE
@@ -2617,7 +2623,7 @@ With the `wait` function, the program is suspended for the number of millisecond
  
 # EXITING A FUNCTION, A LOOP OR THE PROGRAM
 
-The flow of a program can be "broken" by the 4 functions `mogwai.exit`, `mogwai.halt`, `break` and `return`.
+The flow of a program can be "broken" by the 5 functions `mogwai.exit`, `mogwai.halt`, `mogwai.assert`, `break` and `return`.
  
 ## The `mogwai.exit` function
 
@@ -2661,7 +2667,7 @@ forever do
 
 The `mogwai.halt` function behaves exactly like the `mogwai.exit` function, but it raises error "MW.2", "halt encounted error" instead of saying nothing at all. So it's an error stop.
 
-When a program terminates on an error (`mogwai.halt` raises an error), the reserved function `MOGWAI.onError` is automatically executed by **MOGWAI**. If it is defined in your code it will be called automatically:
+When a program terminates on an error (`mogwai.halt` raises an error), the reserved function `MOGWAI.onError` is automatically executed by **MOGWAI**. If it is defined in your code it will be called automatically. Inside `MOGWAI.onError`, `error.last` returns the code of the error that triggered the stop — it is the only runtime information available at that point:
 
 ```
 # We define the function that will be executed
@@ -2669,7 +2675,7 @@ When a program terminates on an error (`mogwai.halt` raises an error), the reser
 
 to 'MOGWAI.onError' do 
 {
-    "An error has occurred!" ?
+    "An error has occurred: " ?? error.last ?
 }
 
 # We perform an infinite task
@@ -2693,6 +2699,39 @@ forever do
 # But the MOGWAI.onError function will be automatically executed
 
 "Death code!" ?
+```
+
+## The `mogwai.assert` function
+
+`mogwai.assert` verifies that a condition is true. If it is false, it raises error `MW.9` (`assert error`) and stops execution. If `MOGWAI.onError` is defined, it will be called automatically.
+
+`mogwai.assert` takes two parameters: a condition and a message.
+
+The condition can be:
+- A **list** — it is automatically evaluated. After execution, `mogwai.assert` verifies that exactly one value was pushed onto the stack by the test code (`MW.24` stack corruption error if not), and that this value is a boolean (`MW.21` bad argument type if not).
+- A **boolean** already on the stack — used directly.
+
+Any other type raises `MW.21` (bad argument type).
+
+The message is a string displayed alongside the error. It is not accessible programmatically — `error.last` returns `MW.9`.
+
+```
+# Using a list — the condition is evaluated by mogwai.assert
+(a 10 ==) "a must equal 10" mogwai.assert
+
+# Using a boolean already on the stack
+a 0 >  "a must be positive" mogwai.assert
+a islist "a must be a list" mogwai.assert
+```
+
+`mogwai.assert` is particularly useful for validating preconditions in functions, or for writing in-script tests:
+
+```
+to 'divide' with [x: .number y: .number] do
+{
+    (y 0 !=) "divisor must not be zero" mogwai.assert
+    x y /
+}
 ```
 
 ## The `break` function

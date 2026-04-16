@@ -67,6 +67,26 @@ Forces the runtime to stop the current execution and raises error MW.2 "halt enc
 
 ***
 
+### `mogwai.assert`
+
+Asserts that a condition is true. If the condition is false, raises error MW.9 (`assert error`) and stops execution. If `MOGWAI.onError` is defined, it is called automatically.
+
+Takes two parameters: a condition and a message string.
+
+The condition can be a **list** (automatically evaluated; after execution, exactly one value must have been pushed onto the stack — `MW.24` if not — and it must be a boolean — `MW.21` if not) or a **boolean** already on the stack. Any other type raises `MW.21` (bad argument type).
+
+The message is used in the error display. It is not accessible programmatically — `error.last` returns `MW.9`.
+
+```
+# Condition as a list — evaluated by mogwai.assert
+(a 10 ==) "a must equal 10" mogwai.assert
+
+# Condition as a boolean already on the stack
+a 0 >  "a must be positive" mogwai.assert
+```
+
+***
+
 ### `mogwai.cclear`
 
 Clears the cache of procedures included via the `include` command.

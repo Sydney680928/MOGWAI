@@ -9,6 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`mogwai.assert` primitive** — asserts that a condition is true. If the condition is false, raises error MW.9 (`assert error`) and stops execution. If `MOGWAI.onError` is defined, it will be called automatically.
+
+  `mogwai.assert` accepts two forms for the condition argument:
+
+  - A **list** — automatically evaluated. After execution, `mogwai.assert` verifies that exactly one value was pushed onto the stack (`MW.24` stack corruption if not) and that it is a boolean (`MW.21` bad argument type if not).
+  - A **boolean** — used directly.
+
+  Anything else raises `MW.21` (bad argument type).
+
+  ```
+  # Using a list (condition evaluated by assert)
+  (a 10 ==) "a must equal 10" mogwai.assert
+
+  # Using a boolean already on the stack
+  a 10 ==  "a must equal 10" mogwai.assert
+  ```
+
+  The message is used in the error display. It is not accessible programmatically — `error.last` returns `MW.9`.
+
 - **Object-Oriented Programming — class system**
 
   **MOGWAI** now supports a basic but complete class system. Classes group typed properties and methods, with explicit lifecycle management and no garbage collector.

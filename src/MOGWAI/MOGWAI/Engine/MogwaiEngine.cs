@@ -386,6 +386,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveEI(this, "EI"), MOGPrimitive.CATEGORY_RUNTIME);
             RegisterPublicPrimitive(new PrimitiveMogwaiInclude(this, "mogwai.include"), MOGPrimitive.CATEGORY_RUNTIME);
             RegisterPublicPrimitive(new PrimitiveMogwaiStrict(this, "mogwai.strict"), MOGPrimitive.CATEGORY_RUNTIME);
+            RegisterPublicPrimitive(new PrimitiveMogwaiAssert(this, "mogwai.assert"), MOGPrimitive.CATEGORY_RUNTIME);
 
             // Compare functions
 
