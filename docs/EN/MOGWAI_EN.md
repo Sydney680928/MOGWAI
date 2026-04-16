@@ -3920,9 +3920,9 @@ class 'User' do
             id self<-id:
             name self<-name:
 
-            {! rand 100 * ->int} self<-x:
-            {! rand 100 * ->int} self<-y:
-            {! rand 100 * ->int} self<-z:
+            rand 100 * ->int self<-x:
+            rand 100 * ->int self<-y:
+            rand 100 * ->int self<-z:
         }
 
         onFree:
