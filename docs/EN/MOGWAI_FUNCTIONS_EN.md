@@ -319,7 +319,7 @@ Lists the usings performed and available.
 
 ### `get`
 
-Returns the value of a key in a record, an element of a list or a data
+Returns the value of a key in a record or class instance, an element of a list or a byte array.
 
 | Action                          | Result                 |
 | ------------------------------- | ---------------------- |
@@ -327,18 +327,30 @@ Returns the value of a key in a record, an element of a list or a data
 | `[x: 10 y: 20] x: get`          | will return 10         |
 | `[x: 10 l: (1 2 3)] (l: 1) get` | will return 2          |
 | `D:FFEA10 1 get`                | will return 234 (0xEA) |
+| `$U1 name: get`                 | will return the value of the `name:` property of instance `$U1` |
+
+When called on a class instance, `get` also executes the method if the key refers to a method rather than a property.
+
+See also the compact `->` notation in [RECORDS](#records).
 
 ***
 
 ### `set`
 
-Modifies the value of a key in a record, list or data:
+Modifies the value of a key in a record or class instance, an element of a list or a byte array.
 
-| Action                     | Result                       |
-| -------------------------- | ---------------------------- |
-| `(1 2 3 4) 0 10 set`       | will return `(10 2 3 4)`     |
-| `[x: 10 y: 20] x: 100 set` | will return `[x: 100 y: 20]` |
-| `D:FFEA10 0 0xAA set`      | will return `D:AAEA10`       |
+> **Breaking change (v8.6):** The parameter order has been updated for RPN consistency. The value to write is now the **first** parameter: `value container key: set`. Code using the previous order (`container key: value set`) must be updated.
+
+| Action                      | Result                       |
+| --------------------------- | ---------------------------- |
+| `10 (1 2 3 4) 0 set`        | will return `(10 2 3 4)`     |
+| `100 [x: 10 y: 20] x: set`  | will return `[x: 100 y: 20]` |
+| `0xAA D:FFEA10 0 set`       | will return `D:AAEA10`       |
+| `"DUPONT" &$U1 name: set`   | writes `"DUPONT"` into the `name:` property of instance `$U1` |
+
+When writing to a class instance, `set` only accepts keys declared in the `public:` or `private:` sections of the class. Attempting to write to an undeclared key raises an error.
+
+See also the compact `<-` notation in [RECORDS](#records).
 
 ***
 
@@ -2757,5 +2769,95 @@ When writing text files, line breaks must be added manually:
 ```
 
 The `+` operator concatenates DATA to create a single byte array.
+
+***
+
+## CLASS MANAGEMENT FUNCTIONS
+
+### `class`
+
+Sugar keyword used to define a class. Must be followed by the class name as a string, the `do` keyword, and a block containing `private:` and `public:` sections.
+
+```
+class 'Counter' do
+{
+    private:
+    {
+        _step: .number
+    }
+
+    public:
+    {
+        value: .number
+
+        onInit:
+        {
+            [step: (.number 1)] ->params
+            self->reset:
+            step self<-_step:
+        }
+
+        increment:
+        {
+            self->value: self->_step: + self<-value:
+        }
+
+        reset:
+        {
+            0 self<-value:
+        }
+    }
+}
+```
+
+Within a section, a name followed by a type sigil declares a **property** (initialized to `empty`). A name followed by a code block declares a **method**.
+
+The `private:` section is accessible only from within the class. The `public:` section is accessible from outside.
+
+Two special method names are reserved as optional lifecycle hooks: `onInit:` (called automatically on `new` if defined) and `onFree:` (called automatically on `free` if defined). They can be placed in either section.
+
+***
+
+### `new`
+
+Creates a new instance of a class. If the class defines an `onInit:` method, it is called automatically with any value present on the stack. `onInit:` is optional.
+
+```
+# Without parameters
+'Counter' new -> '$C'
+
+# With named parameters (when onInit: uses ->params)
+[step: 10] 'Counter' new -> '$C'
+```
+
+Each instance is assigned a unique internal handle noted `§N` (e.g. `§1`, `§2`). This number is never reused during the lifetime of the engine.
+
+***
+
+### `free`
+
+Destroys a class instance. If the class defines an `onFree:` method, it is called automatically before destruction.
+
+```
+$C free
+```
+
+After `free`, any variable still holding a reference to the destroyed instance becomes invalid. Any attempt to use it raises an error.
+
+***
+
+### `self`
+
+Available inside any class method. Pushes the current instance reference onto the stack.
+
+```
+display:
+{
+    "USER={! self}" eval ?
+    self->name: ?
+}
+```
+
+Using `self` outside of a class method raises an error.
 
 ***

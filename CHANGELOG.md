@@ -9,7 +9,84 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Object-Oriented Programming — class system**
+
+  **MOGWAI** now supports a basic but complete class system. Classes group typed properties and methods, with explicit lifecycle management and no garbage collector.
+
+  A class is defined with the `class ... do` sugar:
+
+  ```
+  class 'User' do
+  {
+      private:
+      {
+          x: .number
+          y: .number
+      }
+
+      public:
+      {
+          id: .number
+          name: .string
+
+          display:
+          {
+              "ID={! self->id:} NAME={! self->name:}" eval ?
+          }
+      }
+  }
+  ```
+
+  - `private:` section — properties and methods accessible only from within the class.
+  - `public:` section — properties and methods accessible from outside the class.
+  - Within each section, a name followed by a type sigil declares a **property** (initialized to `empty`); a name followed by a code block declares a **method**.
+  - Two optional lifecycle hooks: `onInit:` (called automatically on `new` if defined) and `onFree:` (called automatically on `free` if defined). They can be placed in either section.
+
+- **`new` primitive** — creates an instance of a named class. If `onInit:` is defined, it is called automatically.
+
+  ```
+  # Without onInit:
+  'User' new -> '$U1'
+
+  # With onInit: using ->params — pass a named record on the stack
+  [id: 10 name: "SIBUE"] 'User' new -> '$U1'
+  ```
+
+  Each instance receives a unique internal handle noted `§N` (e.g. `§1`, `§2`). This number is never reused during the lifetime of the engine.
+
+- **`free` primitive** — destroys a class instance. If `onFree:` is defined, it is called automatically before destruction. Any variable still holding a reference to the destroyed instance becomes invalid; attempting to use it raises an error.
+
+  ```
+  $U1 free
+  ```
+
+- **`self` variable** — automatically injected into every class method at execution time. Holds a reference to the current instance. Raises an error if used outside a class method.
+
+- **Unified `->` / `<-` compact notation** — extended to all container types. The selector type determines the container:
+
+  | Selector | Container | Example |
+  |----------|-----------|---------|
+  | `key:` | Record / Class instance | `$U1->name:` |
+  | `number` | List / Byte array | `$L->2` |
+  | `$variable` | Any | `$R->$K` |
+
+  Writing with `<-` requires the `&` sigil for in-place mutation: `"DUPONT" &$U1<-name:`.
+  For computed values, use a `{! }` block: `{! rand 100 * ->int} &$U1<-x:`.
+
 ### Changed
+
+- **Breaking change — `set` parameter order updated.**
+  The value to write is now the **first** parameter, before the container and the key, for consistency with RPN conventions:
+
+  ```
+  # New order (v8.6+)
+  100 [x: 10 y: 20] x: set   # → [x: 100 y: 20]
+
+  # Previous order (v8.5 and earlier) — no longer valid
+  [x: 10 y: 20] x: 100 set
+  ```
+
+  This affects all uses of `set` on records, lists, byte arrays, and class instances. The compact `<-` notation is unaffected.
 
 ### Fixed
 

@@ -32,6 +32,7 @@
 - [FILE MANAGEMENT](#file-management)
 - [TIMERS](#timers)
 - [EVENTS](#events)
+- [OBJECT-ORIENTED PROGRAMMING](#object-oriented-programming)
 - [TASKS](#tasks)
 
 
@@ -1453,32 +1454,84 @@ The `purge` function allows you to delete a key. It takes as parameters the reco
 # This instruction will place [y: 20] on the stack
 ```
 
-## "Shorter" notation for keys
+## "Shorter" notation for get and set
 
-**MOGWAI** allows a more compact notation for keys passed as parameters when using the `get` and `set` functions using the `->` and `<-` symbols.
+**MOGWAI** provides a compact notation for reading and writing values in any container — records, lists, byte arrays, and class instances — using the `->` and `<-` symbols.
 
-This notation is only accepted with a variable name, not directly with a record.
+This notation is only accepted with a variable name on the left side, not directly with a literal value.
+
+The selector placed on the right side of `->` or `<-` determines both the operation and the type of container:
+
+| Selector | Container | Operation |
+|----------|-----------|-----------|
+| `key:` | Record / Class instance | Read or write a named field |
+| `number` | List / Byte array | Read or write by index (0-based) |
+| `$variable` | Any | Dynamic read or write using a key or index stored in a variable |
+
+### Reading with `->`
 
 ```
-# We place a record in a variable and retrieve the value of the y key
+# Record: retrieve the value of y:
+[x: 10 y: 20] -> '$R'
+$R->y: ?
+# Equivalent to: $R y: get ?
+# Places 20 on the stack
 
-[x: 10 y: 20] -> 'A'
+# List: retrieve item at index 2
+(10 20 30) -> '$L'
+$L->2 ?
+# Equivalent to: $L 2 get ?
+# Places 30 on the stack
 
-A->y ?
+# Byte array: retrieve byte at index 1
+D:FFAAEE -> '$D'
+$D->1 ?
+# Equivalent to: $D 1 get ?
+# Places 0xAA on the stack
 
-# This instruction places the value 20 on the stack
-# This instruction is the compact version of A y: get ?
-
-# We place a record in a variable and add a key to it
-
-[x: 10 y: 20] -> 'A'
-
-500 A<-z
-
-# This instruction places [x: 10 y: 20 z: 500] on the stack
-# This instruction is the compact version of A z: 500 set
-# Warning: the variable A is not modified.
+# Dynamic key stored in a variable
+z: -> '$K'
+[x: 10 y: 20 z: 30] -> '$R'
+$R->$K ?
+# Places 30 on the stack
 ```
+
+### Writing with `<-`
+
+The value to write must be placed on the stack before the `<-` expression. For simple values, this is straightforward. For computed values, use a `{! }` block.
+
+```
+# Record: write a value to an existing key
+[x: 10 y: 20] -> '$R'
+1000 &$R<-y:
+$R ?
+# Places [x: 10 y: 1000] on the stack
+# Equivalent to: 1000 &$R y: set
+
+# Record: add a new key (upsert)
+500 &$R<-z:
+$R ?
+# Places [x: 10 y: 1000 z: 500] on the stack
+
+# List: write a value at index 1
+(10 20 30) -> '$L'
+2000 &$L<-1
+$L ?
+# Places (10 2000 30) on the stack
+
+# Byte array: write a byte at index 1
+D:FFFFFFFF -> '$D'
+0xAA &$D<-1
+$D ?
+# Places D:FFAAFFFF on the stack
+
+# Computed value: use a {! } block
+{! rand 100 * ->int} &$R<-x:
+```
+
+> **Note:** The `&` sigil before the variable name indicates an in-place mutation. Without `&`, the modified copy is placed on the stack and the original variable is not changed.
+
+> **Breaking change (v8.6):** The parameter order of the verbose `set` function has been updated for consistency with RPN conventions. The value to write is now the **first** parameter, before the container and the key: `value container key: set`. Code written for **MOGWAI** 6 or 7 using the previous order (`container key: value set`) must be updated.
 
 # BYTE ARRAYS
 
@@ -3648,6 +3701,255 @@ event 'MY_EVENT' do
 	
     if (i 20 ==) then { EI }
 }
+```
+
+# OBJECT-ORIENTED PROGRAMMING
+
+**MOGWAI** provides a basic but complete object-oriented programming system. It allows you to define classes that group data and behavior, create instances from those classes, and manage their lifecycle explicitly.
+
+This system is intentionally kept simple: no inheritance, no garbage collector. You are in full control of instance creation and destruction.
+
+## Defining a Class
+
+A class is defined with the `class` keyword, followed by its name as a string, the `do` keyword, and a block containing two sections:
+
+- `private:` — private properties and methods, accessible only from within the class
+- `public:` — public properties and methods, accessible from outside the class
+
+Properties are declared with a name followed by a type (`.number`, `.string`, `.bool`, `.any`, etc.). Methods are declared with a name followed by a code block `{ }`.
+
+```
+class 'Counter' do
+{
+    private:
+    {
+        _step: .number
+    }
+
+    public:
+    {
+        value: .number
+
+        onInit:
+        {
+            [step: (.number 1)] ->params
+
+            self->reset:
+            step self<-_step:
+        }
+
+        increment:
+        {
+            self->value: self->_step: + self<-value:
+        }
+
+        reset:
+        {
+            0 self<-value:
+        }
+    }
+}
+```
+
+## Properties and Methods
+
+Within a section, **MOGWAI** distinguishes properties from methods by their declared value:
+
+- A **type sigil** (`.number`, `.string`, etc.) declares a property. It will be initialized to `empty` regardless of its type. The type annotation is used for validation when a value is assigned. You can check whether a property has been initialized using `isEmpty`.
+- A **code block** `{ }` declares a method.
+
+## Lifecycle Hooks
+
+Two special methods are automatically called by the engine if they are defined. They can be placed in either `private:` or `public:`:
+
+- `onInit:` is called automatically when a new instance is created with `new`. It receives the named parameters passed at creation.
+- `onFree:` is called automatically just before an instance is destroyed with `free`.
+
+## Creating and Destroying Instances
+
+Use `new` to create an instance and `free` to destroy it.
+
+```
+# Create an instance, onInit: is called automatically
+[id: 10 name: "SIBUE"] 'User' new -> '$U1'
+
+# Destroy the instance, onFree: is called automatically
+$U1 free
+```
+
+Each instance is assigned a unique internal handle (noted `§453` for instance number 453). This number is never reused during the lifetime of the engine — a destroyed instance handle is permanently invalid.
+
+Multiple variables can hold a reference to the same instance. If the instance is destroyed, all variables pointing to it become invalid. Any attempt to use them will raise an error.
+
+## Accessing Properties and Methods
+
+Public properties and methods are accessed with the `->` and `<-` compact notation, or with the verbose `get` and `set` forms:
+
+```
+# Read a public property
+$U1->name: ?
+# Equivalent to: $U1 name: get ?
+
+# Write a public property
+"DUPONT" &$U1<-name:
+# Equivalent to: "DUPONT" &$U1 name: set
+
+# Call a public method
+$U1->display:
+# Equivalent to: $U1 display: get
+```
+
+Attempting to access a `private:` member from outside the class raises an error.
+
+## The `self` Variable
+
+Inside any method, the variable `self` is automatically available and holds a reference to the current instance. It can be used to read or write the instance's own properties and to call its other methods:
+
+```
+display:
+{
+    "USER={! self}" eval ?
+    self->show:         # calls a private method
+}
+```
+
+Using `self` outside of a method raises an error.
+
+## Validating Method Parameters
+
+Any method can validate its inputs in three ways depending on the level of safety required.
+
+**`->vars`** is the simplest option. It extracts values from the stack or from a record and automatically assigns them to local variables, without any type validation:
+
+```
+setCoords:
+{
+    ('x' 'y') ->vars
+
+    x self<-x:
+    y self<-y:
+}
+```
+
+If there are not enough elements on the stack to fill all the listed variables, `->vars` raises an error.
+
+**`->safeVars`** works like `->vars` but also validates the number and type of stack values. An error is raised immediately if the values do not match:
+
+```
+setCoords:
+{
+    [.number .number] ->safeVars 'x' 'y'
+
+    x self<-x:
+    y self<-y:
+}
+```
+
+**`->params`** expects a named parameter record on the stack. It validates names, types, and optional default values. This is the natural choice for `onInit:` since instances are created with a named record:
+
+```
+onInit:
+{
+    [id: .number name: .string index: (.number 0)] ->params
+
+    id self<-id:
+    name self<-name:
+    index self<-index:
+}
+```
+
+If the record does not match the declared parameter names and types, `->params` raises an error immediately.
+
+## Complete Example
+
+```
+mogwai.reset
+console.clear
+
+class 'User' do
+{
+    private:
+    {
+        x: .number
+        y: .number
+        z: .number
+
+        onInit:
+        {
+            [id: .number name: .string] ->params
+
+            id self<-id:
+            name self<-name:
+
+            {! rand 100 * ->int} self<-x:
+            {! rand 100 * ->int} self<-y:
+            {! rand 100 * ->int} self<-z:
+        }
+
+        onFree:
+        {
+            "FREE {! self}" eval ?
+        }
+
+        show:
+        {
+            "ID={! self->id:}" eval ?
+            "NAME={! self->name:}" eval ?
+            self->show2:
+        }
+
+        show2:
+        {
+            "X={! self->x:}" eval ?
+            "Y={! self->y:}" eval ?
+            "Z={! self->z:}" eval ?
+        }
+    }
+
+    public:
+    {
+        id: .number
+        name: .string
+
+        display:
+        {
+            "USER={! self}" eval ?
+            self->show:
+        }
+    }
+}
+
+[id: 10 name: "SIBUE"] 'User' new -> '$U1'
+[id: 20 name: "DUPONT"] 'User' new -> '$U2'
+
+$U1->display:
+" " ?
+$U2->display:
+" " ?
+
+$U1 free
+$U2 free
+```
+
+The output of this program will look like this:
+
+```
+USER §1
+ID=10
+NAME=SIBUE
+X=42
+Y=67
+Z=13
+
+USER §2
+ID=20
+NAME=DUPONT
+X=88
+Y=5
+Z=71
+
+FREE §1
+FREE §2
 ```
 
 # TASKS
