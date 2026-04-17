@@ -71,6 +71,7 @@ namespace MOGWAI.Engine
         public static readonly Error InstanceCreationError = RegisterError("MW.92", "instance creation error");
         public static readonly Error UnknownInstanceError = RegisterError("MW.93", "unknown instance error");
         public static readonly Error UnknownPropertyError = RegisterError("MW.94", "unknown property error");
+        public static readonly Error ReservedPropertyError = RegisterError("MW.95", "reserved property error");
 
         public static readonly Error FatalError = RegisterError("MW.!!!", "fatal error");
 

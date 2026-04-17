@@ -38,6 +38,9 @@ namespace MOGWAI.Objects
 
             var names = new List<string>();
 
+            // className property is implicit
+            // but we add it to the list of names to avoid duplicates with user defined properties or functions
+
             // Section Privates  
 
             var record = defRecord.GetItem("private");
@@ -45,7 +48,10 @@ namespace MOGWAI.Objects
             if (record is MOGRecord privatesRecord)
             {
                 foreach (var key in privatesRecord.Items.Keys)
-                {                 
+                {     
+                    if (key == "className")
+                        throw new MogwaiClasseDefinitionException($"className is a reserved property name");
+
                     var value = privatesRecord.Items[key];
 
                     if (value is MOGType type)
@@ -75,6 +81,9 @@ namespace MOGWAI.Objects
             {
                 foreach (var key in publicsRecord.Items.Keys)
                 {
+                    if (key == "className")
+                        throw new MogwaiClasseDefinitionException($"className is a reserved property name");
+
                     var value = publicsRecord.Items[key];
 
                     if (value is MOGType type)

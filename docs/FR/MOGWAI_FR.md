@@ -2600,6 +2600,7 @@ Liste des principales erreurs :
 | MW.92  | instance creation error.                          |
 | MW.93  | unknown instance error.                           |
 | MW.94  | unknown property error.                           |
+| MW.95  | reserved property error.                          |
 | MW.!!! | fatal error.                                      |
 
 # FAIRE UNE PAUSE
@@ -3809,6 +3810,8 @@ Dans une section, **MOGWAI** distingue les propriétés des méthodes par leur v
 - Un **sigil de type** (`.number`, `.string`, etc.) déclare une propriété. Elle sera initialisée à `empty` quel que soit son type. L'annotation de type est utilisée pour la validation lors de l'affectation d'une valeur. Vous pouvez vérifier si une propriété a été initialisée avec `isEmpty`.
 - Un **bloc de code** `{ }` déclare une méthode.
 
+Le nom `className:` est réservé et ne peut pas être utilisé comme nom de propriété ou de méthode dans une définition de classe. Toute tentative de le déclarer lève l'erreur MW.95 (propriété réservée).
+
 ## Hooks de cycle de vie
 
 Deux méthodes spéciales sont appelées automatiquement par le moteur si elles sont définies. Elles peuvent être placées dans `private:` ou `public:` :
@@ -3851,6 +3854,14 @@ $U1->display:
 ```
 
 Tenter d'accéder à un membre `private:` depuis l'extérieur de la classe lève une erreur.
+
+La propriété `className:` est une propriété publique réservée en lecture seule, automatiquement disponible sur chaque instance. Elle retourne le nom de la classe à laquelle appartient l'instance :
+
+```
+$U1->className: ?   # → 'User'
+```
+
+Tenter d'écrire dans `className:` ou de la déclarer dans une définition de classe lève l'erreur MW.95 (propriété réservée).
 
 ## La variable `self`
 

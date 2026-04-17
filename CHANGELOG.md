@@ -10,30 +10,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **`mogwai.assert` primitive** — asserts that a condition is true. If the condition is false, raises error MW.9 (`assert error`) and stops execution. If `MOGWAI.onError` is defined, it will be called automatically.
-
+  
   `mogwai.assert` accepts two forms for the condition argument:
-
+  
   - A **list** — automatically evaluated. After execution, `mogwai.assert` verifies that exactly one value was pushed onto the stack (`MW.24` stack corruption if not) and that it is a boolean (`MW.21` bad argument type if not).
   - A **boolean** — used directly.
-
+  
   Anything else raises `MW.21` (bad argument type).
-
+  
   ```
   # Using a list (condition evaluated by assert)
   (a 10 ==) "a must equal 10" mogwai.assert
-
+  
   # Using a boolean already on the stack
   a 10 ==  "a must equal 10" mogwai.assert
   ```
-
+  
   The message is used in the error display. It is not accessible programmatically — `error.last` returns `MW.9`.
 
 - **Object-Oriented Programming — class system**
-
+  
   **MOGWAI** now supports a basic but complete class system. Classes group typed properties and methods, with explicit lifecycle management and no garbage collector.
-
+  
   A class is defined with the `class ... do` sugar:
-
+  
   ```
   class 'User' do
   {
@@ -42,12 +42,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
           x: .number
           y: .number
       }
-
+  
       public:
       {
           id: .number
           name: .string
-
+  
           display:
           {
               "ID={! self->id:} NAME={! self->name:}" eval ?
@@ -55,40 +55,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       }
   }
   ```
-
+  
   - `private:` section — properties and methods accessible only from within the class.
   - `public:` section — properties and methods accessible from outside the class.
   - Within each section, a name followed by a type sigil declares a **property** (initialized to `empty`); a name followed by a code block declares a **method**.
   - Two optional lifecycle hooks: `onInit:` (called automatically on `new` if defined) and `onFree:` (called automatically on `free` if defined). They can be placed in either section.
 
 - **`new` primitive** — creates an instance of a named class. If `onInit:` is defined, it is called automatically.
-
+  
   ```
   # Without onInit:
   'User' new -> '$U1'
-
+  
   # With onInit: using ->params — pass a named record on the stack
   [id: 10 name: "SIBUE"] 'User' new -> '$U1'
   ```
-
+  
   Each instance receives a unique internal handle noted `§N` (e.g. `§1`, `§2`). This number is never reused during the lifetime of the engine.
 
 - **`free` primitive** — destroys a class instance. If `onFree:` is defined, it is called automatically before destruction. Any variable still holding a reference to the destroyed instance becomes invalid; attempting to use it raises an error.
-
+  
   ```
   $U1 free
   ```
 
 - **`self` variable** — automatically injected into every class method at execution time. Holds a reference to the current instance. Raises an error if used outside a class method.
 
+- **`className:` reserved property** — a read-only public property automatically available on every class instance. Returns the class name as a string.
+  
+  ```
+  $U1->className: ?   # → 'User'
+  ```
+
+- Added MW.95 — raised when a reserved property (`className:`) is written to or declared in a class definition.
+
 - **Unified `->` / `<-` compact notation** — extended to all container types. The selector type determines the container:
-
-  | Selector | Container | Example |
-  |----------|-----------|---------|
-  | `key:` | Record / Class instance | `$U1->name:` |
-  | `number` | List / Byte array | `$L->2` |
-  | `$variable` | Any | `$R->$K` |
-
+  
+  | Selector    | Container               | Example      |
+  | ----------- | ----------------------- | ------------ |
+  | `key:`      | Record / Class instance | `$U1->name:` |
+  | `number`    | List / Byte array       | `$L->2`      |
+  | `$variable` | Any                     | `$R->$K`     |
+  
   Writing with `<-` requires the `&` sigil for in-place mutation: `"DUPONT" &$U1<-name:`.
   For computed values, use a `{! }` block: `{! rand 100 * ->int} &$U1<-x:`.
 
@@ -96,15 +104,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Breaking change — `set` parameter order updated.**
   The value to write is now the **first** parameter, before the container and the key, for consistency with RPN conventions:
-
+  
   ```
   # New order (v8.6+)
   100 [x: 10 y: 20] x: set   # → [x: 100 y: 20]
-
+  
   # Previous order (v8.5 and earlier) — no longer valid
   [x: 10 y: 20] x: 100 set
   ```
-
+  
   This affects all uses of `set` on records, lists, byte arrays, and class instances. The compact `<-` notation is unaffected.
 
 ### Fixed
@@ -114,6 +122,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added `foreach...filter` loop: filters elements of a list by applying a predicate block to each element. Only the elements for which the block returns `true` are collected into a new list, which is pushed onto the stack.
+  
   ```
   (1 2 3 4 5 6 7 8 9 10) foreach 'i' filter { i 5 >= i 8 <= and }
   # Returns (5 6 7 8)
@@ -122,12 +131,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added a new `bag` primitive that pushes onto the stack the container (record or list) of the currently executing block or function. This allows a block or function stored inside a record or list to reference its own container, enabling a prototype-based programming pattern.
   `bag` returns `null` if the executing code has no container (top-level context).
   The `Bag` property is assigned when an item is inserted into a record or list, and cleared when it is extracted.
+  
   ```
   [x: 10 y: 20 s: « ! bag x: get bag y: get + »] -> '$R'
   !$R   # → [x: 10  y: 20  s: 30]
   ```
 
 #### New primitives — Endianness conversion (integer)
+
 - Added `->dataLE8/16/24/32/48/64` and `->dataBE8/16/24/32/48/64` — convert a number to `DATA` in Little or Big Endian byte order, fixed size.
 - Added `dataLE8/16/24/32/48/64->` and `dataBE8/16/24/32/48/64->` — convert a `DATA` to a number, interpreting bytes in Little or Big Endian byte order, fixed size.
 - Added `->dataLE` and `->dataBE` — dynamic-size variants (number + size in bits → DATA).
@@ -137,23 +148,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (consistent with C# numeric cast behavior).
 
 #### New primitives — Endianness conversion (float)
+
 - Added `->dataLE32F` and `->dataBE32F` — convert a number to `DATA` as IEEE 754 single-precision float (4 bytes), in Little or Big Endian byte order.
 - Added `->dataLE64F` and `->dataBE64F` — convert a number to `DATA` as IEEE 754 double-precision float (8 bytes), in Little or Big Endian byte order.
 - Added `dataLE32F->` and `dataBE32F->` — convert a `DATA` to a number, interpreting bytes as IEEE 754 single-precision float.
 - Added `dataLE64F->` and `dataBE64F->` — convert a `DATA` to a number, interpreting bytes as IEEE 754 double-precision float.
 
 #### New primitives — Typed integer conversion
+
 - Added `->i8`, `->i16`, `->i32`, `->i64` — bidirectional conversion between number and `DATA` as signed integers (Little Endian). If the argument is a number, returns a `DATA`. If the argument is a `DATA`, returns a number.
 - Added `->u8`, `->u16`, `->u32`, `->u64` — same as above for unsigned integers.
 
 #### New primitive — Bit testing
+
 - Added `bit?` — returns `true` if the bit at the specified position of a binary object (`B:`) is set. Position is zero-based, starting from the rightmost bit.
+  
   ```
   B:110011 1 bit?   # → true
   B:110011 2 bit?   # → false
   ```
 
 #### New error
+
 - Added `ConvertError` (MW.32) raised when a type conversion fails.
 
 ### Changed
@@ -170,73 +186,72 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 - **`!A` sigil — direct evaluation of a variable's content**
   A new prefix sigil `!` can now be applied to any variable to immediately evaluate its content, without pushing the object onto the stack first.
- 
+  
   This completes the variable sigil set:
- 
-  | Notation | Behavior |
-  |----------|----------|
+  
+  | Notation | Behavior                                    |
+  | -------- | ------------------------------------------- |
   | `A`      | Reads A and pushes its value onto the stack |
-  | `&A`     | Reference to A for in-place mutation |
-  | `@A`     | Statically resolved read (compile-time) |
-  | `!A`     | Evaluates the content of A directly |
- 
+  | `&A`     | Reference to A for in-place mutation        |
+  | `@A`     | Statically resolved read (compile-time)     |
+  | `!A`     | Evaluates the content of A directly         |
+  
   `!A` is universal — its effect depends on the type of the object stored in A:
- 
-  | Type | Effect of `!A` |
-  |------|----------------|
-  | Block `{ }` | Executes the code |
-  | Function `« »` | Executes the function |
-  | String `"..."` | Interpolates embedded `{! }` blocks |
-  | List `( )` | Evaluates embedded blocks in elements |
-  | Record `[ ]` | Evaluates embedded blocks in fields |
-  | Number, boolean… | Silent no-op |
- 
+  
+  | Type             | Effect of `!A`                        |
+  | ---------------- | ------------------------------------- |
+  | Block `{ }`      | Executes the code                     |
+  | Function `« »`   | Executes the function                 |
+  | String `"..."`   | Interpolates embedded `{! }` blocks   |
+  | List `( )`       | Evaluates embedded blocks in elements |
+  | Record `[ ]`     | Evaluates embedded blocks in fields   |
+  | Number, boolean… | Silent no-op                          |
+  
   Examples:
- 
+  
   ```mogwai
   # block
   100 -> 'A'
   { A 10 * } -> 'B'
   !B    # → 1000
- 
+  
   # string interpolation
   "We are in { ! now ->date year: get }" -> 'C'
   !C    # → "We are in 2026"
   ```
- 
+  
   **Containers are lazy.** Everything inside a container is deferred until `!` is applied — the container stores expressions, not values. This means `!A` on a composite object always evaluates with the **current state** of the program:
- 
+  
   ```mogwai
   10 -> 'A'
   { A 200 * } -> 'B'
   [ x: { A 10 * }
     y: "We are in { ! now ->date year: get }"
     z: !B ] -> 'R'
- 
+  
   !R       # → [ x: 100   y: "We are in 2026"   z: 2000 ]
   20 -> 'A'
   !R       # → [ x: 200   y: "We are in 2026"   z: 4000 ]
   ```
- 
+  
   Internally, `!A` sets the `AutoEval` flag on the object referenced by A and dispatches it directly — the object never lands on the stack as an intermediate value, making it slightly more efficient than the equivalent `A eval` sequence.
- 
+  
   For non-executable types (numbers, booleans, etc.), `!A` behaves identically to `A` — it is a silent no-op, no error is raised.
- 
+  
   The semantics of `!` are consistent with its existing use inside containers (`{ ! ... }`, `« ! ... »`, `( ! ... )`, `[ ! ... ]`): it always means *"resolve everything evaluable in this object"*, regardless of where it appears.
- 
+  
   **Circular reference detection** The runtime now detects circular references during evaluation and raises an error instead of looping indefinitely.
- 
+  
   When `!A` is called, the variable A is registered as being evaluated. If the evaluation chain reaches `!A` again before it completes, a circular reference error is returned immediately via `EvalResult`. The variable is released as soon as the evaluation completes, whether the result is a success or an error.
- 
+  
   ```mogwai
   { !B } -> 'A'
   { !A } -> 'B'
   !A    # → error: circular reference detected (A → B → A)
   ```
- 
+  
   The error includes the full chain of variable names involved in the cycle.
- 
- 
+
 - Added `-->` in-place pipeline operator: applies a sequence of transformations directly to a referenced variable — e.g. `(->upper butfirst butlast) --> &A`.
   - New private primitive `PIPEREF` to support `-->`: pushes the actual value of the variable (not a copy) onto a private stack, evaluates each item in the list, then discards the private stack.
   - `PIPEREF` is transactional: a snapshot is taken before the pipeline starts and restored automatically if any item raises an error.
@@ -248,13 +263,13 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 - AOT compatibility — The MOGWAI engine is now fully compatible with .NET Native AOT publishing. Removed all dynamic JSON serialization in favor of source-generated contexts, replaced reflection-based assembly access with static attribute reading, and suppressed plugin system warnings by design. No behavioral changes.
 
 - Performance improvement — Optimized the core execution loop in MOGCode.Execute(). Avoid unnecessary async state machine allocations on each iteration, and consolidated control flow flags into a single check. ~13% speedup measured on intensive benchmarks.
-  
+
 ## [8.3.0] - 2026-03-17
 
 ### Added
 
 - Added variable reference support with `&varname` notation. It is now possible to mutate variable content without pushing a copy onto the stack. The performance gain is significant with large lists, records, data, and strings.
-Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `last`, `first`, `sub`, and `size`.
+  Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `last`, `first`, `sub`, and `size`.
 - Added host function detection by the parser to avoid delegate calls at runtime, improving execution performance.
 - Added new `char->` primitive that returns the ASCII code from a single string character.
 - Added explicit variable access with `@varname` notation. The performance gain is significant with frequent variable access.
@@ -293,39 +308,51 @@ Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `l
 ### Added
 
 - Primitive '+/-' to negate a number (e.g. 5 +/- ==> -5)
+
 - Added new error : OperationNotSupportedError (MW.7)
+
 - Added convenience methods to MOGBaseItems for adding typed objects:
-  - `AddString(string value)` - Add MOGString
-  - `AddNumber(double value)` - Add MOGNumber 
-  - `AddName(string value)` - Add MOGName
-  - `AddKey(string value)` - Add MOGKey
-  - `AddWord(string value)` - Add MOGWord
-  - `AddBoolean(bool value)` - Add MOGBool
-  - `AddNull()` - Add MOGNull
-  - `AddEmpty()` - Add MOGEmpty
-
-   These methods simplify object creation by not requiring an explicit Engine reference
-
- - Added convenience methods to MOGRecord for adding typed objects:
-   - `SetString(string key, string value)` - Add MOGString
-   - `SetNumber(string key, double value)` - Add MOGNumber 
-   - `SetName(string key, string value)` - Add MOGName
-   - `SetKey(string key, string value)` - Add MOGKey
-   - `SetWord(string key, string value)` - Add MOGWord
-   - `SetBoolean(string key, bool value)` - Add MOGBool
-   - `SetNull(string key)` - Add MOGNull
-   - `SetEmpty(string key)` - Add MOGEmpty
   
-   These methods simplify object creation by not requiring an explicit Engine reference
-
- - Added new `foreach` usage that allows transforming items while iterating:
-   - `(1 2 3 4) foreach 'item' transform { item 2 * }` returns `(2 4 6 8)`
-   - `(1 2 3 4) foreach 'item' transform { item 2 * ->str }` returns `("2" "4" "6" "8")`
+  - `AddString(string value)` - Add MOGString
+  
+  - `AddNumber(double value)` - Add MOGNumber 
+  
+  - `AddName(string value)` - Add MOGName
+  
+  - `AddKey(string value)` - Add MOGKey
+  
+  - `AddWord(string value)` - Add MOGWord
+  
+  - `AddBoolean(bool value)` - Add MOGBool
+  
+  - `AddNull()` - Add MOGNull
+  
+  - `AddEmpty()` - Add MOGEmpty
+    
+    These methods simplify object creation by not requiring an explicit Engine reference
+  
+  - Added convenience methods to MOGRecord for adding typed objects:
+    
+    - `SetString(string key, string value)` - Add MOGString
+    - `SetNumber(string key, double value)` - Add MOGNumber 
+    - `SetName(string key, string value)` - Add MOGName
+    - `SetKey(string key, string value)` - Add MOGKey
+    - `SetWord(string key, string value)` - Add MOGWord
+    - `SetBoolean(string key, bool value)` - Add MOGBool
+    - `SetNull(string key)` - Add MOGNull
+    - `SetEmpty(string key)` - Add MOGEmpty
+    
+    These methods simplify object creation by not requiring an explicit Engine reference
+  
+  - Added new `foreach` usage that allows transforming items while iterating:
+    
+    - `(1 2 3 4) foreach 'item' transform { item 2 * }` returns `(2 4 6 8)`
+    - `(1 2 3 4) foreach 'item' transform { item 2 * ->str }` returns `("2" "4" "6" "8")`
 
 ### Changed
 
-  - Changed `get` primitive on MOGRecord to return MOGNull instead of throwing error when key is not found
-  - Changed keys named after reserved words (primitives, host functions, extended functions) are allowed
+- Changed `get` primitive on MOGRecord to return MOGNull instead of throwing error when key is not found
+- Changed keys named after reserved words (primitives, host functions, extended functions) are allowed
 
 ### Fixed
 

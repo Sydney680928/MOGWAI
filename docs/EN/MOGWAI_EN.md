@@ -2600,6 +2600,7 @@ List of main errors:
 | MW.92  | instance creation error.                          |
 | MW.93  | unknown instance error.                           |
 | MW.94  | unknown property error.                           |
+| MW.95  | reserved property error.                          |
 | MW.!!! | fatal error.                                      |
 
 # MAKING A PAUSE
@@ -3797,6 +3798,8 @@ Within a section, **MOGWAI** distinguishes properties from methods by their decl
 - A **type sigil** (`.number`, `.string`, etc.) declares a property. It will be initialized to `empty` regardless of its type. The type annotation is used for validation when a value is assigned. You can check whether a property has been initialized using `isEmpty`.
 - A **code block** `{ }` declares a method.
 
+The name `className:` is reserved and cannot be used as a property or method name in a class definition. Attempting to declare it raises error MW.95 (reserved property).
+
 ## Lifecycle Hooks
 
 Two special methods are automatically called by the engine if they are defined. They can be placed in either `private:` or `public:`:
@@ -3839,6 +3842,14 @@ $U1->display:
 ```
 
 Attempting to access a `private:` member from outside the class raises an error.
+
+The property `className:` is a reserved read-only public property automatically available on every instance. It returns the name of the class the instance belongs to:
+
+```
+$U1->className: ?   # → 'User'
+```
+
+Attempting to write to `className:`, or to declare it explicitly in a class definition, raises error MW.95 (reserved property).
 
 ## The `self` Variable
 

@@ -128,6 +128,14 @@ namespace MOGWAI.Objects
 
         public async Task<EvalResult> GetPropertyAsync(string name, int instance = 0)
         {
+            // className is a reserved property that returns the name of the class of the instance, it is not stored in the properties dictionaries and is always public
+            
+            if (name == "className")
+            {
+                Engine.StackPushName(ClassName);
+                return EvalResult.NoError;
+            }
+
             if (PublicProperties.TryGetValue(name, out var prop))
             {
                 Engine.StackPush(prop.Value ?? new MOGEmpty(Engine));
@@ -167,6 +175,11 @@ namespace MOGWAI.Objects
 
         public EvalResult SetProperty(string name, MOGObject value, int instance = 0)
         {
+            // className is not used here because the instance is already linked to a class and we don't want to allow changing the class of an instance by setting a property with the same name as the class
+
+            if (name == "className")
+                return EvalResult.Failure(Engine, Error.ReservedPropertyError, name);
+
             if (PublicProperties.TryGetValue(name, out var publicProp))
             {
                 if (publicProp.Type.Value != value.Type.Value && publicProp.Type.Value != "any")

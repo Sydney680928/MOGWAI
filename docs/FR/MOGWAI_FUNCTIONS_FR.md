@@ -2892,3 +2892,14 @@ Utiliser `self` en dehors d'une méthode de classe lève une erreur.
 
 ***
 
+### `className:` (propriété réservée)
+
+Propriété publique réservée en lecture seule, automatiquement disponible sur chaque instance de classe. Retourne le nom de la classe à laquelle appartient l'instance.
+
+```
+$U1->className: ?   # → 'User'
+```
+
+Tenter d'écrire dans `className:`, ou de la déclarer dans une définition de classe, lève l'erreur MW.95 (propriété réservée).
+
+***

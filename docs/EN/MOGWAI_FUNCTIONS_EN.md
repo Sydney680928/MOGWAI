@@ -2881,3 +2881,15 @@ display:
 Using `self` outside of a class method raises an error.
 
 ***
+
+### `className:` (reserved property)
+
+A read-only public property automatically available on every class instance. Returns the name of the class the instance belongs to.
+
+```
+$U1->className: ?   # → 'User'
+```
+
+Attempting to write to `className:`, or to declare it explicitly in a class definition, raises error MW.95 (reserved property).
+
+***
