@@ -198,11 +198,16 @@ mogwai/
 ├── .github/
 │   └── workflows/                  # GitHub Actions (CI, GitHub Pages deployment)
 ├── docs/
-│   └── EN/
-│       ├── use-cases/              # Use case articles
-│       ├── MOGWAI_EN.md            # Language reference
-│       ├── MOGWAI_FUNCTIONS_EN.md  # Function reference
-│       └── MOGWAI_INTEGRATION_GUIDE_EN.md  # Integration guide
+│   ├── EN/
+│   │   ├── use-cases/              # Use case articles
+│   │   ├── MOGWAI_EN.md            # Language reference
+│   │   ├── MOGWAI_FUNCTIONS_EN.md  # Function reference
+│   │   └── MOGWAI_INTEGRATION_GUIDE_EN.md  # Integration guide
+│   └── FR/
+│       ├── cas d'usage/            # Use case articles in french
+│       ├── MOGWAI_FR.md            # Language reference in french
+│       ├── MOGWAI_FUNCTIONS_FR.md  # Function reference in french
+│       └── MOGWAI_INTEGRATION_GUIDE_FR.md  # Integration guide in french
 ├── examples/
 │   ├── Blazor/
 │   │   └── MogwaiPlayground/       # Blazor WASM interactive playground
