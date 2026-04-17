@@ -462,6 +462,7 @@ The main types manipulated by **MOGWAI** are as follows:
 | `.record` | RECORD (dictionary) | [x: 50 y: 200] |
 | `.null` | Null value | null -> 'A' |
 | `.ref` | Reference to a variable | &A |
+| `.objref` | Reference to a class instance | §56 |
 | `.any` | Free type (variant) | |
 
 

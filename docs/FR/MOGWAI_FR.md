@@ -462,6 +462,7 @@ Les principaux types manipulés par **MOGWAI** sont les suivants :
 | `.record` | ENREGISTREMENT (dictionnaire) | [x: 50 y: 200] |
 | `.null` | Valeur nulle | null -> 'A' |
 | `.ref` | Référence à une variable | &A |
+| `.objref` | Référence à une instance de classe | §56 |
 | `.any` | Type libre (variant) | |
 
 
