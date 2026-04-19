@@ -70,6 +70,7 @@ A curated list of English articles about MOGWAI on [coding4phone.com](https://co
 - [MOGWAI — The Origin Story](https://coding4phone.com/?p=2066&lang=en)
 - [Events in MOGWAI](https://coding4phone.com/?p=2080&lang=en)
 - [Tasks in MOGWAI](https://coding4phone.com/?p=2194&lang=en)
+- [Bytes aren’t scary. Manipulating binary data with MOGWAI](https://coding4phone.com/?p=2251&lang=en)
 
 ---
 
