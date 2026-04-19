@@ -259,7 +259,7 @@ Examples are available:
 
 See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
 
-**Latest Release:** [v8.4.0](https://github.com/Sydney680928/mogwai/releases/tag/v8.4.0)
+**Latest Release:** [v8.5.0](https://github.com/Sydney680928/mogwai/releases/tag/v8.5.0)
 
 ---
 
@@ -343,7 +343,7 @@ You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
 - .NET 9.0 support
 - Complete documentation
 
-### Version 8.4 (Latest)
+### Version 8.4
 
 - Plugin contract via `MOGWAI.IPlugin` interface
 - AOT compatibility (`IsAotCompatible`)
@@ -353,12 +353,16 @@ You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
 - `-->` in-place pipeline operator
 - Binary data primitives (DATA/BIN families)
 
-### Version 8.5 (In Progress)
+### Version 8.5 (Latest)
 
-- MOGWAI STUDIO v2 (early private development — rebuilt from scratch for MOGWAI 8)
 - Enhanced debugging protocol
 - 280+ built-in primitives (approaching 300)
 - Additional examples and documentation
+
+### Version 8.6 (In progress)
+
+- Basic POO support
+- MOGWAI STUDIO v2 (early private development — rebuilt from scratch for MOGWAI 8)
 
 ### Future Plans
 
