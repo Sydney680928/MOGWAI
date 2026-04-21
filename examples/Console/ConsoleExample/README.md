@@ -9,6 +9,7 @@ A command-line interface and REPL (Read-Eval-Print-Loop) for interactive MOGWAI 
 ## Features
 
 - **Interactive REPL** - Execute MOGWAI commands interactively
+- **Built-in Editor** - Full-screen TUI code editor with syntax-aware shortcuts
 - **Script Execution** - Load and run `.mog` files
 - **STUDIO Integration** - Connect to MOGWAI STUDIO for debugging
 - **Persistent Variables** - Variables persist between commands
@@ -62,6 +63,41 @@ MOGWAI > answer 2 / ?
 21
 ```
 
+### Built-in Editor
+
+Type `edit` to open the full-screen TUI editor:
+
+```
+MOGWAI > edit
+```
+
+The editor opens with line numbers, a dynamic title bar and a status bar showing the current line and column.
+
+#### Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `F5` | Run the current code |
+| `Ctrl+W` | Save |
+| `Ctrl+A` | Save as… |
+| `Ctrl+O` | Open a file |
+| `Ctrl+N` | New file |
+| `Ctrl+Q` | Quit the editor |
+
+#### Editor Features
+
+- **Line numbers** — displayed in the left gutter, updated in real time
+- **Dirty indicator** — the title shows `●` when there are unsaved changes
+- **Status bar** — shows current line, column and file path
+- **Session persistence** — unsaved code is preserved when you quit the editor and reopen it with `edit`
+- **Run workflow** — pressing `F5` closes the editor, runs the code in the console, then reopens the editor automatically
+
+#### Notes
+
+> The editor runs on the main thread to ensure correct terminal behaviour under Windows Terminal. MOGWAI CLI uses [Terminal.Gui](https://github.com/gui-cs/Terminal.Gui) 1.x for the TUI layer.
+
+> On AZERTY keyboards, `AltGr` combinations (e.g. `}`, `]`, `@`) are fully supported in the editor.
+
 ### Execute Script File
 
 ```
@@ -86,11 +122,14 @@ Once connected, you can:
 
 ### Built-in Commands
 
-- `bye` - Exit the CLI
-- `studio` - Enable MOGWAI STUDIO connection
-- `mogwai.reset` - Reset the engine state
-- `vars ?d` - List all variables
-- `funcs ?d` - List all functions
+| Command | Description |
+|---------|-------------|
+| `edit` | Open the built-in TUI code editor |
+| `bye` | Exit the CLI (warns if the editor has unsaved changes) |
+| `studio` | Enable MOGWAI STUDIO connection |
+| `mogwai.reset` | Reset the engine state |
+| `vars ?d` | List all variables |
+| `funcs ?d` | List all functions |
 
 ---
 
@@ -292,6 +331,7 @@ Greater!
 - **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinForms/WinFormsExample/)** - Turtle graphics with MOGWAI
 - **[MAUI Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MAUI/MauiExample)** - Cross-platform mobile app
 - **[Blazor Example](https://github.com/Sydney680928/mogwai/tree/main/examples/Blazor)** - Blazor WASM app
+
 ---
 
 ## License
