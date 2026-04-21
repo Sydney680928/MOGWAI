@@ -11,9 +11,9 @@
 		<OutputType>Library</OutputType>
 
 		<!-- Versioning -->
-		<Version>8.5.0</Version>
-		<FileVersion>8.5.0.0</FileVersion>
-		<AssemblyVersion>8.5.0.0</AssemblyVersion>
+		<Version>8.6.0</Version>
+		<FileVersion>8.6.0.0</FileVersion>
+		<AssemblyVersion>8.6.0.0</AssemblyVersion>
 
 		<!-- Métadonnées minimales pour le package local -->
 		<PackageId>MOGWAI</PackageId>
@@ -44,46 +44,13 @@
 
 		<!-- Release notes -->
 		<PackageReleaseNotes>
-			MOGWAI 8.5.0
+			MOGWAI 8.6.0
 			
 			ADDED
 
-			- foreach...filter loop: filters elements of a list by applying a predicate block to each element. Only elements for which the block returns true are collected into a new list pushed onto the stack.
-			Example: (1 2 3 4 5 6 7 8 9 10) foreach 'i' filter { i 5 >= i 8 &lt;= and }  # Returns (5 6 7 8)
-
-			- bag primitive: pushes onto the stack the container (record or list) of the currently executing block or function, enabling prototype-based programming. Returns null if there is no container (top-level context).
-
-			Endianness conversion — integers:
-			- ->dataLE8/16/24/32/48/64 and ->dataBE8/16/24/32/48/64: convert a number to DATA in Little or Big Endian byte order (fixed size).
-			- dataLE8/16/24/32/48/64-> and dataBE8/16/24/32/48/64->: convert DATA to a number in Little or Big Endian byte order (fixed size).
-			- ->dataLE and ->dataBE: dynamic-size variants (number + size in bits -> DATA).
-			- dataLE-> and dataBE->: dynamic-size variants (DATA + size in bits -> number).
-			- LongValue property added to MOGNumber for 64-bit integer access.
-			Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated.
-
-			Endianness conversion — floats:
-			- ->dataLE32F / ->dataBE32F: convert a number to DATA as IEEE 754 single-precision float (4 bytes).
-			- ->dataLE64F / ->dataBE64F: convert a number to DATA as IEEE 754 double-precision float (8 bytes).
-			- dataLE32F-> / dataBE32F->: convert DATA to a number as IEEE 754 single-precision float.
-			- dataLE64F-> / dataBE64F->: convert DATA to a number as IEEE 754 double-precision float.
-
-			Typed integer conversion:
-			- ->i8, ->i16, ->i32, ->i64: bidirectional conversion between number and DATA as signed integers (Little Endian).
-			- ->u8, ->u16, ->u32, ->u64: same for unsigned integers.
-
-			Bit testing:
-			- bit?: returns true if the bit at the specified position of a binary object (B:) is set. Position is zero-based from the rightmost bit.
-
-			New error:
-			- ConvertError (MW.32): raised when a type conversion fails.
-
 			CHANGED
 
-			- Renamed using to mogwai.using and usings to mogwai.usings for consistency with the mogwai.* namespace convention.
-
 			FIXED
-
-			- Fixed incorrect byte order in ->i16, ->i32, ->i64, ->u16, ->u32, ->u64. These primitives were producing Big Endian output instead of Little Endian. Now uses BinaryPrimitives.WriteInt*/WriteUInt*LittleEndian explicitly, ensuring correct and portable behavior.
 
 			Full changelog: https://github.com/Sydney680928/mogwai/blob/main/CHANGELOG.md
 			
