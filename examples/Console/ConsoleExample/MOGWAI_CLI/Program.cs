@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,83 +13,115 @@
 // limitations under the License.
 
 using MOGWAI.Engine;
+using MOGWAI_CLI;
 using System.Globalization;
 
-namespace MOGWAI_CLI
+CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-US");
+
+Console.Title = "MOGWAI CLI";
+Console.Clear();
+
+Console.WriteLine("█   █   ███    ████  █     █   ███   ███");
+Console.WriteLine("██ ██  █   █  █      █  █  █  █   █   █");
+Console.WriteLine("█ █ █  █   █  █  ██  █  █  █  █████   █");
+Console.WriteLine("█   █  █   █  █   █  ██ █ ██  █   █   █");
+Console.WriteLine("█   █   ███    ████   █   █   █   █  ███");
+Console.WriteLine();
+Console.WriteLine(MogwaiEngine.RuntimePrompt);
+Console.WriteLine();
+Console.WriteLine("Type 'edit' to open the code editor, 'studio' to start network communication, or 'bye' to exit.");
+Console.WriteLine();
+
+var engine = new MogwaiEngine("MOGWAI CLI", true, true);
+var engineDelegate = new EngineDelegate(engine);
+engine.Delegate = engineDelegate;
+
+// L'éditeur est géré ici, sur le thread principal, comme BYE et STUDIO.
+// Terminal.Gui DOIT tourner sur le thread principal
+
+var editor = new MogwaiEditor(engine, engineDelegate);
+
+Console.CancelKeyPress += (_, e) =>
 {
-    internal class Program
+    if (e.SpecialKey == ConsoleSpecialKey.ControlC)
     {
-        private static readonly MogwaiEngine _engine = new MogwaiEngine("MOGWAI CLI", true, true);
+        engine.Halt();
+        e.Cancel = true;
+    }
+};
 
-        static async Task Main(string[] args)
+if (args.Length > 0)
+{
+    try
+    {
+        var filename = Path.GetFileName(args[0]);
+        Console.WriteLine($"Running {filename}...");
+
+        await Task.Delay(2000);
+
+        var code   = File.ReadAllText(args[0]);
+        var result = await engine.RunAsync(code, false);
+
+        Console.WriteLine();
+        Console.WriteLine(result);
+        Console.ReadLine();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+
+    return;
+}
+
+while (true)
+{
+    Console.WriteLine();
+    Console.Write("MOGWAI > ");
+
+    var input = Console.ReadLine() ?? string.Empty;
+    var cmd   = input.Trim().ToUpper();
+
+    if (cmd == "BYE")
+    {
+        // Avertissement si l'éditeur contient du code non sauvegardé
+
+        if (editor.HasUnsavedChanges)
         {
-            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-US");
-
-            Console.Title = "MOGWAI CLI";
-            Console.Clear();
-       
-            Console.WriteLine("█   █   ███    ████  █     █   ███   ███");
-            Console.WriteLine("██ ██  █   █  █      █  █  █  █   █   █");
-            Console.WriteLine("█ █ █  █   █  █  ██  █  █  █  █████   █");
-            Console.WriteLine("█   █  █   █  █   █  ██ █ ██  █   █   █");
-            Console.WriteLine("█   █   ███    ████   █   █   █   █  ███");
             Console.WriteLine();
-            Console.WriteLine(MogwaiEngine.RuntimePrompt);
-            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("⚠  The editor has unsaved changes.");
+            Console.ResetColor();
+            Console.Write("   Exit anyway? (y/N) ");
 
-            Console.CancelKeyPress += Console_CancelKeyPress;
+            var confirm = Console.ReadLine();
 
-            _engine.Delegate = new EngineDelegate(_engine);
+            if (!string.Equals(confirm?.Trim(), "y", StringComparison.OrdinalIgnoreCase))
+                continue;
+        }
 
-            if (args.Length > 0)
-            {             
-                try
-                {
-                    var filename = Path.GetFileName(args[0]);
-                    Console.WriteLine($"Running {filename}...");
+        break;
+    }
+    else if (cmd == "EDIT")
+    {
+        // Boucle éditeur/run : l'éditeur se rouvre automatiquement après
+        // chaque exécution F5, jusqu'à ce que l'utilisateur quitte (Ctrl+Q).
 
-                    await Task.Delay(2000);
+        do
+        {
+            editor.Open();
 
-                    var code = File.ReadAllText(args[0]);
-                    var result = await _engine.RunAsync(code, false);
+            // F5 depuis l'éditeur → PendingRunCode non-null.
+            // On exécute ici, dans la console propre (Terminal.Gui fermé).
 
-                    Console.WriteLine();
-                    Console.WriteLine(result);
-
-                    Console.ReadLine();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-
-                return;
-            }
-
-            while (true)
+            if (editor.PendingRunCode is string codeToRun)
             {
-                Console.WriteLine();
-                Console.Write("> ");
-
-                var code = Console.ReadLine() ?? string.Empty;
-
-                if (code.ToUpper() == "BYE")
-                {
-                    break;
-                }
-                else if (code.ToUpper() == "STUDIO")
-                {
-                    await _engine.StartNetworkCommunication();
-
-                    while (true)
-                    {
-                        await Task.Delay(250);
-                    }
-                }
-
                 try
                 {
-                    var task = _engine.RunAsync(code, true);
+                    Console.WriteLine();
+                    Console.WriteLine("── Run ─────────────────────────────");
+
+                    var task = engine.RunAsync(codeToRun, true);
 
                     while (task.Status != TaskStatus.RanToCompletion)
                     {
@@ -98,33 +130,61 @@ namespace MOGWAI_CLI
                             var k = Console.ReadKey(true);
 
                             if (k.Key == ConsoleKey.F10)
-                            {
-                                _engine.DebugFireNextStepSignal();
-                            }
+                                engine.DebugFireNextStepSignal();
                             else if (k.Key == ConsoleKey.F5)
-                            {
-                                _engine.DebugFireResumeSignal();
-                            }
+                                engine.DebugFireResumeSignal();
                         }
                     }
 
                     Console.WriteLine();
                     Console.WriteLine(task.Result);
+                    Console.WriteLine("────────────────────────────────────");
+                    Console.WriteLine("Returning to editor...");
+                    await Task.Delay(1200); // laisse le temps de lire le résultat
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
+                    await Task.Delay(1200);
                 }
+            }
+
+        } while (editor.PendingRunCode != null);
+
+        // PendingRunCode == null → l'utilisateur a quitté l'éditeur (Ctrl+Q / Exit)
+
+        continue;
+    }
+    else if (cmd == "STUDIO")
+    {
+        await engine.StartNetworkCommunication();
+
+        while (true)
+            await Task.Delay(250);
+    }
+
+    try
+    {
+        var task = engine.RunAsync(input, true);
+
+        while (task.Status != TaskStatus.RanToCompletion)
+        {
+            if (Console.KeyAvailable)
+            {
+                var k = Console.ReadKey(true);
+
+                if (k.Key == ConsoleKey.F10)
+                    engine.DebugFireNextStepSignal();
+                else if (k.Key == ConsoleKey.F5)
+                    engine.DebugFireResumeSignal();
             }
         }
 
-        private static void Console_CancelKeyPress(object? sender, ConsoleCancelEventArgs e)
-        {
-            if (e.SpecialKey == ConsoleSpecialKey.ControlC)
-            {
-                _engine.Halt();
-                e.Cancel = true;
-            }
-        }
+        Console.WriteLine();
+        Console.WriteLine(task.Result);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
     }
 }
