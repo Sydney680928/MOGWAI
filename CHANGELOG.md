@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.6.0] - 2026-04-21
+
+### Added
+
 - **`mogwai.assert` primitive** — asserts that a condition is true. If the condition is false, raises error MW.9 (`assert error`) and stops execution. If `MOGWAI.onError` is defined, it will be called automatically.
   
   `mogwai.assert` accepts two forms for the condition argument:
@@ -114,8 +122,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
   
   This affects all uses of `set` on records, lists, byte arrays, and class instances. The compact `<-` notation is unaffected.
-
-### Fixed
 
 ## [8.5.0] - 2026-04-07
 
@@ -514,7 +520,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.5.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.6.0...HEAD
+[8.6.0]: https://github.com/Sydney680928/mogwai/compare/v8.5.0...v8.6.0
 [8.5.0]: https://github.com/Sydney680928/mogwai/compare/v8.4.0...v8.5.0
 [8.4.0]: https://github.com/Sydney680928/mogwai/compare/v8.3.0...v8.4.0
 [8.3.0]: https://github.com/Sydney680928/mogwai/compare/v8.2.0...v8.3.0
