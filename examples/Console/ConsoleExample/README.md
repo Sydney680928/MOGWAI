@@ -3,6 +3,7 @@
 A command-line interface and REPL (Read-Eval-Print-Loop) for interactive MOGWAI scripting.
 
 ![MOGWAI](../../../images/img02.png)
+![MOGWAI](../../../images/img15.png)
 
 ---
 
