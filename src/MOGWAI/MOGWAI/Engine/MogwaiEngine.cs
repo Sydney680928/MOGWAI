@@ -1256,8 +1256,8 @@ namespace MOGWAI.Engine
             var obj1 = stack.Pop();
             var obj2 = stack.Pop();
 
-            stack.Push(obj1);
-            stack.Push((obj2));
+            stack.Push(obj1!);
+            stack.Push(obj2!);
 
             return EvalResult.NoError;
         }
@@ -1270,7 +1270,7 @@ namespace MOGWAI.Engine
                 return EvalResult.Failure(this, Error.TooFewArgumentsError, "dup");
 
             var obj = stack.Peek();
-            stack.Push(obj.Clone());
+            stack.Push(obj!.Clone());
 
             return EvalResult.NoError;
         }

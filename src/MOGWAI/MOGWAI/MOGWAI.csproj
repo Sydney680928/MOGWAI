@@ -44,16 +44,23 @@
 
 		<!-- Release notes -->
 		<PackageReleaseNotes>
-			MOGWAI 8.6.0
-			
-			ADDED
+			v8.6.0
 
-			CHANGED
+			mogwai.assert — new assertion primitive. Accepts a boolean or a list (auto-evaluated). Raises MW.9 on failure with a display-only message; error.last returns MW.9. Raises MW.24 if a list pushes more than one value, MW.21 if the result is not boolean.
 
-			FIXED
+			Object-Oriented Programming : MOGWAI now supports a complete class system
+			- class 'Name' do { ... }` defines a class with private: and public: sections.
+			- Properties declared with a type sigil (e.g. .number, .string), initialized to empty.
+			- Methods declared as named code blocks within a section.
+			- Optional lifecycle hooks: onInit: (called on new) and onFree: (called on free).
+			- new, creates an instance; each instance receives a unique internal handle (§N).
+			- free, destroys an instance and invalidates all references to it.
+			- self, automatically injected reference to the current instance inside any method.
+			- className:, read-only public property available on every instance; returns the class name as a string.
+
+			- MW.95, new error code raised when the reserved property className: is written to or declared in a class definition.
 
 			Full changelog: https://github.com/Sydney680928/mogwai/blob/main/CHANGELOG.md
-			
 		</PackageReleaseNotes>
 			
 		<!-- Pas de publication pour l'instant -->
