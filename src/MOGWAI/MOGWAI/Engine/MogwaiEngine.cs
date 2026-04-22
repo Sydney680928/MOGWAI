@@ -338,6 +338,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveLast(this, "last"));
             RegisterPublicPrimitive(new PrimitiveIsNull(this, "isnull"));
             RegisterPublicPrimitive(new PrimitiveIsEmpty(this, "isEmpty"));
+            RegisterPublicPrimitive(new PrimitiveIsAlive(this, "isAlive"));
             RegisterPublicPrimitive(new PrimitiveSplit(this, "split"));
             RegisterPublicPrimitive(new PrimitiveJoin(this, "join"));
             RegisterPublicPrimitive(new PrimitiveWhere(this, "where"));

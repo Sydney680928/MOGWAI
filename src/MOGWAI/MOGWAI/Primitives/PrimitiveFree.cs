@@ -38,7 +38,7 @@ namespace MOGWAI.Primitives
                 {
                     var r = await obj.GetPropertyAsync("onFree", @ref.Value);
 
-                    if (r.Error != Error.UnknownPropertyError)
+                    if (r.IsError && r.Error != Error.UnknownPropertyError)
                         return r;
 
                     Engine.ObjectReferences.Remove(@ref.Value);
