@@ -3852,7 +3852,7 @@ if ($U1 isAlive) then
 if ($U1 isAlive not) then { "L'instance a été libérée" ? mogwai.halt }
 ```
 
-`isAlive` effectue une recherche O(1) dans le registre des instances et retourne `true` si l'instance est toujours vivante, `false` sinon. Elle ne lève jamais d'erreur — elle est toujours sûre à appeler, quel que soit l'état de la référence. C'est le complément naturel de `isEmpty` et `isNull` pour la programmation défensive.
+`isAlive` effectue une recherche O(1) dans le registre des instances et retourne `true` si l'instance est toujours vivante, `false` sinon. Elle ne lève jamais d'erreur lorsqu'elle est appelée sur une référence d'instance — en revanche, lui passer une valeur qui n'est pas une référence d'instance lève MW.21 (bad argument type).
 
 ## Accéder aux propriétés et méthodes
 

@@ -3840,7 +3840,7 @@ if ($U1 isAlive) then
 if ($U1 isAlive not) then { "Instance has been freed" ? mogwai.halt }
 ```
 
-`isAlive` performs an O(1) lookup in the instance registry and returns `true` if the instance is still alive, `false` otherwise. It never raises an error — it is always safe to call, regardless of the state of the reference. This makes it the natural complement to `isEmpty` and `isNull` for defensive programming.
+`isAlive` performs an O(1) lookup in the instance registry and returns `true` if the instance is still alive, `false` otherwise. It never raises an error when called on an instance reference — but passing a value that is not an instance reference raises MW.21 (bad argument type).
 
 ## Accessing Properties and Methods
 

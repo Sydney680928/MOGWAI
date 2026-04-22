@@ -2889,7 +2889,7 @@ if ($U1 isAlive) then
 }
 ```
 
-`isAlive` effectue une recherche O(1) dans le registre des instances. Elle ne lève jamais d'erreur quel que soit l'état de la référence, ce qui en fait la manière sûre de tester la validité d'une instance avant de l'utiliser. C'est le complément naturel de `isEmpty` et `isNull`.
+`isAlive` effectue une recherche O(1) dans le registre des instances. Elle ne lève jamais d'erreur lorsqu'elle est appelée sur une référence d'instance — en revanche, lui passer une valeur qui n'est pas une référence d'instance lève MW.21 (bad argument type).
 
 ***
 

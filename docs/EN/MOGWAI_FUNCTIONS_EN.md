@@ -2879,7 +2879,7 @@ if ($U1 isAlive) then
 }
 ```
 
-`isAlive` performs an O(1) lookup in the instance registry. It never raises an error regardless of the state of the reference, making it the safe way to test instance validity before use. It is the natural complement of `isEmpty` and `isNull`.
+`isAlive` performs an O(1) lookup in the instance registry. It never raises an error when called on an instance reference — but passing a value that is not an instance reference raises MW.21 (bad argument type).
 
 ***
 
