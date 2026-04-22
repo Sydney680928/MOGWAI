@@ -2866,6 +2866,23 @@ After `free`, any variable still holding a reference to the destroyed instance b
 
 ***
 
+### `isAlive`
+
+Returns `true` if the instance reference on the stack is still valid (i.e. the instance has not been freed), `false` otherwise.
+
+```
+$U1 isAlive   # → true or false
+
+if ($U1 isAlive) then
+{
+    $U1->display:
+}
+```
+
+`isAlive` performs an O(1) lookup in the instance registry. It never raises an error regardless of the state of the reference, making it the safe way to test instance validity before use. It is the natural complement of `isEmpty` and `isNull`.
+
+***
+
 ### `self`
 
 Available inside any class method. Pushes the current instance reference onto the stack.

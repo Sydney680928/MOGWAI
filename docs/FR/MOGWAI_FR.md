@@ -3836,6 +3836,24 @@ Chaque instance se voit attribuer un handle interne unique (noté `§453` pour l
 
 Plusieurs variables peuvent contenir une référence à la même instance. Si l'instance est détruite, toutes les variables qui pointent vers elle deviennent invalides. Toute tentative de les utiliser lèvera une erreur.
 
+Pour tester de façon sécurisée la validité d'une référence avant de l'utiliser, employez le prédicat `isAlive` :
+
+```
+# Vérifie si une instance est toujours vivante
+$U1 isAlive   # → true ou false
+
+# Pattern de garde avant d'accéder à l'instance
+if ($U1 isAlive) then
+{
+    $U1->display:
+}
+
+# Defensive check at the start of a function
+if ($U1 isAlive not) then { "L'instance a été libérée" ? mogwai.halt }
+```
+
+`isAlive` effectue une recherche O(1) dans le registre des instances et retourne `true` si l'instance est toujours vivante, `false` sinon. Elle ne lève jamais d'erreur — elle est toujours sûre à appeler, quel que soit l'état de la référence. C'est le complément naturel de `isEmpty` et `isNull` pour la programmation défensive.
+
 ## Accéder aux propriétés et méthodes
 
 Les propriétés et méthodes publiques sont accessibles avec la notation compacte `->` et `<-`, ou avec les formes verbales `get` et `set` :

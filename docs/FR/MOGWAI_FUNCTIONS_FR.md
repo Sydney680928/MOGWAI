@@ -2876,6 +2876,23 @@ Après `free`, toute variable contenant encore une référence à l'instance dé
 
 ***
 
+### `isAlive`
+
+Retourne `true` si la référence d'instance présente sur la pile est toujours valide (c'est-à-dire que l'instance n'a pas été libérée), `false` sinon.
+
+```
+$U1 isAlive   # → true ou false
+
+if ($U1 isAlive) then
+{
+    $U1->display:
+}
+```
+
+`isAlive` effectue une recherche O(1) dans le registre des instances. Elle ne lève jamais d'erreur quel que soit l'état de la référence, ce qui en fait la manière sûre de tester la validité d'une instance avant de l'utiliser. C'est le complément naturel de `isEmpty` et `isNull`.
+
+***
+
 ### `self`
 
 Disponible à l'intérieur de toute méthode de classe. Pousse la référence à l'instance courante sur la pile.

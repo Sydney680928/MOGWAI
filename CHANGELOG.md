@@ -9,9 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`isAlive` primitive** — tests whether a class instance reference is still valid. Returns `true` if the instance is alive, `false` if it has been freed. Never raises an error regardless of the state of the reference. Complements `isEmpty` and `isNull` for defensive programming.
+
+  ```
+  $U1 isAlive   # → true or false
+
+  if ($U1 isAlive) then
+  {
+      $U1->display:
+  }
+  ```
+
 ### Changed
 
 ### Fixed
+
+- **`free` — instance not removed from registry when `onFree:` was defined.** When a class defined an `onFree:` lifecycle hook, calling `free` would execute the hook correctly but fail to remove the instance from the internal instance registry. As a result, the instance remained reachable and `isAlive` would incorrectly return `true` after the call. The instance is now properly removed in all cases.
 
 ## [8.6.0] - 2026-04-21
 

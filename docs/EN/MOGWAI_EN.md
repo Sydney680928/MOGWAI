@@ -3824,6 +3824,24 @@ Each instance is assigned a unique internal handle (noted `§453` for instance n
 
 Multiple variables can hold a reference to the same instance. If the instance is destroyed, all variables pointing to it become invalid. Any attempt to use them will raise an error.
 
+To safely test whether an instance reference is still valid before using it, use the `isAlive` predicate:
+
+```
+# Check whether an instance is still alive
+$U1 isAlive   # → true or false
+
+# Guard pattern before accessing the instance
+if ($U1 isAlive) then
+{
+    $U1->display:
+}
+
+# Defensive check at the start of a function
+if ($U1 isAlive not) then { "Instance has been freed" ? mogwai.halt }
+```
+
+`isAlive` performs an O(1) lookup in the instance registry and returns `true` if the instance is still alive, `false` otherwise. It never raises an error — it is always safe to call, regardless of the state of the reference. This makes it the natural complement to `isEmpty` and `isNull` for defensive programming.
+
 ## Accessing Properties and Methods
 
 Public properties and methods are accessed with the `->` and `<-` compact notation, or with the verbose `get` and `set` forms:
