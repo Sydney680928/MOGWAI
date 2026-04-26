@@ -103,8 +103,6 @@ namespace MOGWAI.Objects
 
                     Engine.CurrentEvalObject = item.Clone();
 
-                    Debug.WriteLine($"CurrentEvalObject={Engine.CurrentEvalObject}");
-
                     if (Engine.DebugMode && ExecutionContextAllowDebugMode)
                     {
                         if (item.PauseAllowed && Engine.DebugPauseMode)
