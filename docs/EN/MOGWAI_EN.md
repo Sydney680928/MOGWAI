@@ -3726,7 +3726,8 @@ As with timers, events can be blocked by the `DI` (disable interrupts) function.
 You can test this behavior with the following code:
 
 ```
-mogwai.reset cls
+mogwai.reset
+console.clear
 
 event 'MY_EVENT' do
 {
