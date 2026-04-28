@@ -3738,7 +3738,8 @@ Comme pour les timers, les événements peuvent être bloqués par la fonction `
 Vous pouvez tester ce comportement avec le code suivant :
 
 ```
-mogwai.reset cls
+mogwai.reset
+console.clear
 
 event 'MY_EVENT' do
 {
