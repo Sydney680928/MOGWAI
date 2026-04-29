@@ -1991,7 +1991,7 @@ namespace MOGWAI.Engine
 
             _datagramManager.ManagerDidStart -= DatagramManager_ManagerDidStart;
             _datagramManager.ManagerDidStop -= DatagramManager_ManagerDidStop;
-            _datagramManager.DatagramDidReceive += DatagramManager_DatagramDidReceive;
+            _datagramManager.DatagramDidReceive -= DatagramManager_DatagramDidReceive;
         }
 
         private void DatagramManager_DatagramDidReceive(System.Net.IPEndPoint from, byte[] data)
