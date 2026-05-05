@@ -13,23 +13,23 @@
 
 ---
 
-## ⚡ Get Started in Seconds
+## Get Started in Seconds
 
-### ▶ Download MOGWAI CLI — no build required
+### Download MOGWAI CLI — no build required
 
 Grab the ready-to-run binary for your platform and start writing MOGWAI scripts immediately. No .NET SDK needed.
 
 | Platform | Download |
 |----------|----------|
-| 🪟 Windows | [mogwai-cli-win-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
-| 🍎 macOS | [mogwai-cli-osx-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
-| 🐧 Linux | [mogwai-cli-linux-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+| Windows | [mogwai-cli-win-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+| macOS | [mogwai-cli-osx-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+| Linux | [mogwai-cli-linux-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
 
-### 🧩 VS Code Extension
+### VS Code Extension
 
 Get syntax highlighting and run your MOGWAI scripts directly from VS Code via the CLI:
 
-👉 [**Install MOGWAI Language Extension**](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language) from the VS Code Marketplace
+[**Install MOGWAI Language Extension**](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language) from the VS Code Marketplace
 
 ---
 
