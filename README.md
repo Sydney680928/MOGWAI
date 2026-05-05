@@ -70,11 +70,11 @@ Command-line interface for running MOGWAI scripts and interactive REPL sessions.
 
 **Ready-to-run binaries available** — no .NET SDK required:
 
-| Platform | Download |
-|----------|----------|
-| 🪟 Windows | [mogwai-cli-win-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
-| 🍎 macOS | [mogwai-cli-osx-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
-| 🐧 Linux | [mogwai-cli-linux-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+[Windows x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-win-x64.zip)  
+[macOS x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-osx-x64.zip)  
+[macOS arm64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-osx-arm64.zip)  
+[Linux x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-linux-x64.zip)  
+[Linux arm64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-linux-arm64.zip)  
 
 ### MOGWAI VS Code Extension (Open Source)
 
