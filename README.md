@@ -13,6 +13,23 @@
 
 ---
 
+## What is MOGWAI?
+
+MOGWAI is a modern implementation of RPN (Reverse Polish Notation) for the .NET ecosystem. Inspired by the legendary HP calculators (HP 28S, HP 48), it brings the elegance and power of stack-based, concatenative programming to your applications — whether you're scripting complex workflows, embedding a runtime in a desktop or mobile app, designing a custom DSL, or automating IoT pipelines.
+
+### Key Features
+
+- **Stack-Based RPN Syntax** - Clean, unambiguous, no operator precedence
+- **280+ Built-in Functions** - Math, strings, lists, files, HTTP, and more
+- **Async/Await Support** - Modern asynchronous execution
+- **Plugin System** - Clean plugin contract via `MOGWAI.IPlugin` — official plugins in development
+- **Battle-Tested** - 10+ years of real-world usage
+- **Extensible** - Easy integration with .NET applications
+- **Cross-Platform** - Windows, Linux, macOS, Android, iOS
+- **Visual Debugging** - MOGWAI STUDIO integration (coming soon)
+
+---
+
 ## Get Started in Seconds
 
 ### Download MOGWAI CLI — no build required
@@ -30,23 +47,6 @@ Grab the ready-to-run binary for your platform and start writing MOGWAI scripts 
 Get syntax highlighting and run your MOGWAI scripts directly from VS Code via the CLI:
 
 [**Install MOGWAI Language Extension**](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language) from the VS Code Marketplace
-
----
-
-## What is MOGWAI?
-
-MOGWAI is a modern implementation of RPN (Reverse Polish Notation) for the .NET ecosystem. Inspired by the legendary HP calculators (HP 28S, HP 48), it brings the elegance and power of stack-based, concatenative programming to your applications — whether you're scripting complex workflows, embedding a runtime in a desktop or mobile app, designing a custom DSL, or automating IoT pipelines.
-
-### Key Features
-
-- **Stack-Based RPN Syntax** - Clean, unambiguous, no operator precedence
-- **280+ Built-in Functions** - Math, strings, lists, files, HTTP, and more
-- **Async/Await Support** - Modern asynchronous execution
-- **Plugin System** - Clean plugin contract via `MOGWAI.IPlugin` — official plugins in development
-- **Battle-Tested** - 10+ years of real-world usage
-- **Extensible** - Easy integration with .NET applications
-- **Cross-Platform** - Windows, Linux, macOS, Android, iOS
-- **Visual Debugging** - MOGWAI STUDIO integration (coming soon)
 
 ---
 
