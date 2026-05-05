@@ -6,8 +6,30 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
 [![NuGet](https://img.shields.io/nuget/v/MOGWAI.svg)](https://www.nuget.org/packages/MOGWAI/)
+[![Download CLI](https://img.shields.io/github/v/release/Sydney680928/mogwai?label=CLI%20Download&logo=github&color=brightgreen)](https://github.com/Sydney680928/mogwai/releases/latest)
+[![VS Code Extension](https://img.shields.io/badge/VS%20Code-Extension-007ACC?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language)
 
 **Embeddable, extensible, production-ready.** **From IoT automation to desktop scripting, one elegant RPN runtime for your .NET apps.**
+
+---
+
+## ⚡ Get Started in Seconds
+
+### ▶ Download MOGWAI CLI — no build required
+
+Grab the ready-to-run binary for your platform and start writing MOGWAI scripts immediately. No .NET SDK needed.
+
+| Platform | Download |
+|----------|----------|
+| 🪟 Windows | [mogwai-cli-win-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+| 🍎 macOS | [mogwai-cli-osx-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+| 🐧 Linux | [mogwai-cli-linux-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+
+### 🧩 VS Code Extension
+
+Get syntax highlighting and run your MOGWAI scripts directly from VS Code via the CLI:
+
+👉 [**Install MOGWAI Language Extension**](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language) from the VS Code Marketplace
 
 ---
 
@@ -45,6 +67,22 @@ Command-line interface for running MOGWAI scripts and interactive REPL sessions.
 - **License:** Apache 2.0
 - **Repository:** [MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/Console/ConsoleExample)
 - **Status:** Functional
+
+**Ready-to-run binaries available** — no .NET SDK required:
+
+| Platform | Download |
+|----------|----------|
+| 🪟 Windows | [mogwai-cli-win-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+| 🍎 macOS | [mogwai-cli-osx-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+| 🐧 Linux | [mogwai-cli-linux-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+
+### MOGWAI VS Code Extension (Open Source)
+
+Syntax highlighting, code editing, and script execution via MOGWAI CLI — directly inside VS Code.
+
+- **License:** Apache 2.0
+- **Marketplace:** [mogwai.mogwai-language](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language)
+- **Status:** Available
 
 ### MOGWAI STUDIO (Coming Soon)
 
@@ -259,7 +297,7 @@ Examples are available:
 
 See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
 
-**Latest Release:** [v8.5.0](https://github.com/Sydney680928/mogwai/releases/tag/v8.5.0)
+**Latest Release:** [v8.6.0](https://github.com/Sydney680928/mogwai/releases/tag/v8.6.0)
 
 ---
 
@@ -353,13 +391,13 @@ You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
 - `-->` in-place pipeline operator
 - Binary data primitives (DATA/BIN families)
 
-### Version 8.5 (Latest)
+### Version 8.5
 
 - Enhanced debugging protocol
 - 280+ built-in primitives (approaching 300)
 - Additional examples and documentation
 
-### Version 8.6 (In progress)
+### Version 8.6 (Latest)
 
 - Basic POO support
 - MOGWAI STUDIO v2 (early private development — rebuilt from scratch for MOGWAI 8)
