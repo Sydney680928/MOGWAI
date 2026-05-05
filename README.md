@@ -21,9 +21,11 @@ Grab the ready-to-run binary for your platform and start writing MOGWAI scripts 
 
 | Platform | Download |
 |----------|----------|
-| Windows | [mogwai-cli-win-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
-| macOS | [mogwai-cli-osx-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
-| Linux | [mogwai-cli-linux-x64.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+| Windows x64 | [mogwai-cli.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+| macOS x64 | [mogwai-cli.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+| macOS arm64 | [mogwai-cli.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+| Linux x64 | [mogwai-cli.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+| Linux arm64 | [mogwai-cli.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
 
 ### VS Code Extension
 
