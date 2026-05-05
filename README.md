@@ -19,13 +19,11 @@
 
 Grab the ready-to-run binary for your platform and start writing MOGWAI scripts immediately. No .NET SDK needed.
 
-| Platform | Download |
-|----------|----------|
-| Windows x64 | [mogwai-cli.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
-| macOS x64 | [mogwai-cli.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
-| macOS arm64 | [mogwai-cli.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
-| Linux x64 | [mogwai-cli.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
-| Linux arm64 | [mogwai-cli.zip](https://github.com/Sydney680928/mogwai/releases/latest) |
+[Windows x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-win-x64.zip)  
+[macOS x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-osx-x64.zip)  
+[macOS arm64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-osx-arm64.zip)  
+[Linux x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-linux-x64.zip)  
+[Linux arm64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-linux-arm64.zip)  
 
 ### VS Code Extension
 
