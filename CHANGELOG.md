@@ -19,7 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       $U1->display:
   }
   ```
-
+ 
+ - Added `alive` primitive returning the list of all active instances.
+   
 ### Changed
 
 ### Fixed
