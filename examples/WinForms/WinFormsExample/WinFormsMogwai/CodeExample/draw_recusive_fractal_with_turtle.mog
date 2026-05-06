@@ -1,6 +1,9 @@
-# Recursive fractal tree
+# Recursive fractal tree
+
 mogwai.reset
-console.clear
+
+console.clear
+
 to 'tree' with [length: .number] do
 {
     if (length 5 >) then
@@ -13,8 +16,13 @@ to 'tree' with [length: .number] do
         30 turtle.turn
         length -1 * turtle.move
     }
-}
-# Clear and draw
+}
+# Clear and draw
+
 clg
-90 turtle.turn
-100 tree
+
+(0 90 180 270) foreach 'angle' do
+{
+	angle turtle.turn
+	60 tree
+}

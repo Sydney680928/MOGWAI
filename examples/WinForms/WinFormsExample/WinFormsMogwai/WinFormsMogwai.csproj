@@ -119,6 +119,9 @@
     <None Update="CodeExample\mandelbrot fractal.mog">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="CodeExample\matrix.mog">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="CodeExample\modulo.mog">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

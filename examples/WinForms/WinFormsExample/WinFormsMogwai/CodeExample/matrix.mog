@@ -1,0 +1,94 @@
+mogwai.reset
+
+
+# MATRIX Effect for MOGWAI Console
+# Adapted from MMBASIC - LH 06/2025
+
+60 -> '$W'
+25 -> '$H'
+
+to 'new_trail' do
+{
+    -> 'idx'
+    $H 2 / floor rand * floor -> 'newPos'
+    $H 2 / floor rand * floor 4 + -> 'newTrail'
+    newPos &$p idx 1 - set
+    newTrail &$t idx 1 - set
+}
+
+to 'rnd_chr' do
+{
+    90 rand * floor 33 + ->char
+}
+
+to 'matrix' do
+{
+    'black' console.setBackgroundColor
+    console.clear
+
+    $W repeat { 0 } $W ->list -> '$p'
+    $W repeat { 0 } $W ->list -> '$t'
+
+    1 $W for 'i' do
+    {
+        i new_trail
+    }
+
+    50 debug.tron
+
+    while (console.getInputKey -1 ==) do
+    {
+        1 $W for 'i' do
+        {
+            i 1 - -> 'x'
+
+            &$p x get -> 'pi'
+            &$t x get -> 'ti'
+
+            guard
+            {
+                if (pi 0 > pi $H < and) then
+                {
+                    'green' console.setForegroundColor
+                    x pi 1 - console.locate
+                    rnd_chr console.print
+                }
+
+                if (pi $H <) then
+                {
+                    'white' console.setForegroundColor
+                    x pi console.locate
+                    rnd_chr console.print
+                }
+
+                pi ti - -> 'clr_y'
+                
+                if (clr_y 0 >= clr_y $H < and) then
+                {
+                    'black' console.setForegroundColor
+                    x clr_y console.locate
+                    " " console.print
+                }
+
+                pi 1 + -> 'newPi'
+                newPi &$p x set
+
+                if (newPi ti - $H >=) then
+                {
+                    i new_trail
+                }
+            }
+            else
+            {
+                console.clear
+            }
+        }
+
+        30 wait
+    }
+
+    console.clear
+    'green' console.setForegroundColor
+}
+
+matrix
