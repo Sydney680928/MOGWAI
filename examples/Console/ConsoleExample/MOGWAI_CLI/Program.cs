@@ -18,8 +18,34 @@ using System.Globalization;
 
 CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-US");
 
+var engine = new MogwaiEngine("MOGWAI CLI", true, true);
+var engineDelegate = new EngineDelegate(engine);
+engine.Delegate = engineDelegate;
+
+
+if (args.Length > 0)
+{
+    Console.Title = "MOGWAI RUNTIME";
+
+    try
+    {
+        var filename = Path.GetFileName(args[0]);
+        var code = File.ReadAllText(args[0]);
+        var result = await engine.RunAsync(code, false);
+
+        Console.WriteLine();
+        Console.WriteLine(result);
+        Console.ReadLine();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+
+    return;
+}
+
 Console.Title = "MOGWAI CLI";
-Console.Clear();
 
 Console.WriteLine("█   █   ███    ████  █     █   ███   ███");
 Console.WriteLine("██ ██  █   █  █      █  █  █  █   █   █");
@@ -29,14 +55,6 @@ Console.WriteLine("█   █   ███    ████   █   █   █   █
 Console.WriteLine();
 Console.WriteLine(MogwaiEngine.RuntimePrompt);
 Console.WriteLine();
-Console.WriteLine("Type 'edit' to open the code editor, 'studio' to start network communication, or 'bye' to exit.");
-Console.WriteLine();
-
-FileAssociationHelper.EnsureFileAssociation();
-
-var engine = new MogwaiEngine("MOGWAI CLI", true, true);
-var engineDelegate = new EngineDelegate(engine);
-engine.Delegate = engineDelegate;
 
 // L'éditeur est géré ici, sur le thread principal, comme BYE et STUDIO.
 // Terminal.Gui DOIT tourner sur le thread principal
@@ -52,29 +70,11 @@ Console.CancelKeyPress += (_, e) =>
     }
 };
 
-if (args.Length > 0)
-{
-    try
-    {
-        var filename = Path.GetFileName(args[0]);
-        Console.WriteLine($"Running {filename}...");
+Console.WriteLine("Type 'edit' to open the code editor, 'studio' to start network communication, or 'bye' to exit.");
+Console.WriteLine();
 
-        await Task.Delay(2000);
+FileAssociationHelper.EnsureFileAssociation();
 
-        var code   = File.ReadAllText(args[0]);
-        var result = await engine.RunAsync(code, false);
-
-        Console.WriteLine();
-        Console.WriteLine(result);
-        Console.ReadLine();
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine(ex.Message);
-    }
-
-    return;
-}
 
 while (true)
 {
