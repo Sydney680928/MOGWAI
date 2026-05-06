@@ -26,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **`free` — instance not removed from registry when `onFree:` was defined.** When a class defined an `onFree:` lifecycle hook, calling `free` would execute the hook correctly but fail to remove the instance from the internal instance registry. As a result, the instance remained reachable and `isAlive` would incorrectly return `true` after the call. The instance is now properly removed in all cases.
 
+- During a runtime reset, the stack was not being cleared correctly. 
+
 ## [8.6.0] - 2026-04-21
 
 ### Added
