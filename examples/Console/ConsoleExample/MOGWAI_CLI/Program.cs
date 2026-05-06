@@ -32,6 +32,8 @@ Console.WriteLine();
 Console.WriteLine("Type 'edit' to open the code editor, 'studio' to start network communication, or 'bye' to exit.");
 Console.WriteLine();
 
+FileAssociationHelper.EnsureFileAssociation();
+
 var engine = new MogwaiEngine("MOGWAI CLI", true, true);
 var engineDelegate = new EngineDelegate(engine);
 engine.Delegate = engineDelegate;

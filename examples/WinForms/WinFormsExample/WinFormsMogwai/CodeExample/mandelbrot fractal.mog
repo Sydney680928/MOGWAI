@@ -38,8 +38,8 @@ to 'bf_run' with [code: .string] do
             {
                 &bstack &bstack size 1 - get -> 'start_idx'
                 &bstack butlast
-                &jumps start_idx @i set
-                &jumps @i @start_idx set
+                @i &jumps start_idx set
+                @start_idx &jumps @i set
             }
         }
     }
@@ -52,8 +52,8 @@ to 'bf_run' with [code: .string] do
 		_32: { ! }
 		_62: { ! 'cell_ptr' ++ }
 		_60: { ! if (@cell_ptr 0 >) then { 'cell_ptr' -- } }
-		_43: { ! &cells @cell_ptr &cells @cell_ptr get 1 + set }
-		_45: { ! &cells @cell_ptr &cells @cell_ptr get 1 - set }
+		_43: { ! &cells @cell_ptr get 1 + &cells @cell_ptr set }
+		_45: { ! &cells @cell_ptr get 1 - &cells @cell_ptr set }
 		_46: { ! &cells @cell_ptr get ->char ?? }
 		_91: { ! if (&cells @cell_ptr get 0 ==) then { &jumps @code_ptr get -> 'code_ptr' } }
 		_93: { ! if (&cells @cell_ptr get 0 !=) then { &jumps @code_ptr get -> 'code_ptr' } }

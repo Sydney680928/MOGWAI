@@ -3237,7 +3237,8 @@ namespace MOGWAI.Engine
             // Clear stack
 
             _stacks.Clear();
-            _stacks.Add(new());
+            _stacks.Add(new());  
+            _currentStack = _stacks[0];
 
             // Stop and Clear all timers
 
