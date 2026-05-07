@@ -11,6 +11,8 @@
 
 **Embeddable, extensible, production-ready.** **From IoT automation to desktop scripting, one elegant RPN runtime for your .NET apps.**
 
+> If MOGWAI looks useful to you, a ⭐ helps others discover it — thank you!
+
 ---
 
 ## What is MOGWAI?
@@ -111,6 +113,7 @@ A curated list of English articles about MOGWAI on [coding4phone.com](https://co
 - [Code editor in MOGWAI CLI](https://coding4phone.com/?p=2301&lang=en)
 - [Bytes aren’t scary. Manipulating binary data with MOGWAI](https://coding4phone.com/?p=2251&lang=en)
 - [MOGWAI v8.6 — Objects and Assertions](https://coding4phone.com/?p=2324&lang=en)
+- [One Day, One Extension — The Story of MOGWAI Language Support for VS Code](https://coding4phone.com/?p=2426&lang=en)
 
 ---
 
@@ -401,7 +404,7 @@ You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
 
 ### Version 8.6 (Latest)
 
-- Basic POO support
+- OOP support (classes, instances, properties, methods, lifecycle hooks)
 - MOGWAI STUDIO v2 (early private development — rebuilt from scratch for MOGWAI 8)
 
 ### Future Plans
