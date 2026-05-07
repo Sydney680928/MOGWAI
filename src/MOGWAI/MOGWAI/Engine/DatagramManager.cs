@@ -89,7 +89,6 @@ namespace MOGWAI.Engine
         {
             if (_udpClient != null)
             {
-                //port = 54321;
                 _udpClient.Send(data, data.Length, hostname, port);
                 return true;
             }

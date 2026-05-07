@@ -4034,6 +4034,50 @@ FREE §1
 FREE §2
 ```
 
+## Lister toutes les instances vivantes
+
+La fonction `alive` retourne une liste de toutes les références d'instances actuellement vivantes (`.objref`). Utile pour l'itération, le débogage ou le nettoyage.
+
+```
+alive ?
+# → (§1 §2 §3 ...)
+```
+
+On peut filtrer par classe avec `foreach...filter` :
+
+```
+alive foreach 'item' filter { item->className: 'User' == } -> '$users'
+```
+
+Si aucune instance n'est en vie, retourne une liste vide `()`.
+
+## Inspecter la structure d'une classe
+
+La fonction `frame` retourne un record décrivant la structure complète d'une classe — son nom, ses propriétés et méthodes publiques et privées.
+
+```
+'Counter' frame ?
+# → [className: 'Counter' props: [value: .number] _props: [_step: .number] funcs: (onInit: increment: reset:) _funcs: ()]
+```
+
+Le record retourné contient les clés suivantes :
+
+| Clé | Contenu |
+|-----|---------|
+| `className:` | Nom de la classe |
+| `props:` | Propriétés publiques avec leur type déclaré |
+| `_props:` | Propriétés privées avec leur type déclaré |
+| `funcs:` | Noms des méthodes publiques |
+| `_funcs:` | Noms des méthodes privées |
+
+```
+'Counter' frame -> '$F'
+$F->props: ?
+$F->_props: ?
+$F->funcs: ?
+$F->_funcs: ?
+```
+
 # TÂCHES
 
 **MOGWAI** facilite grandement la création de tâches parallèles.

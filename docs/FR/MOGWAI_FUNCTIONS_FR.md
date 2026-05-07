@@ -2920,3 +2920,52 @@ $U1->className: ?   # → 'User'
 Tenter d'écrire dans `className:`, ou de la déclarer dans une définition de classe, lève l'erreur MW.95 (propriété réservée).
 
 ***
+
+### `alive`
+
+Retourne une liste de toutes les références d'instances actuellement vivantes (`.objref`). Utile pour l'itération, le débogage ou le nettoyage.
+
+```
+alive ?
+# → (§1 §2 §3 ...)
+```
+
+On peut filtrer par classe avec `foreach...filter` :
+
+```
+alive foreach 'item' filter { item->className: 'User' == } -> '$users'
+```
+
+Si aucune instance n'est en vie, retourne une liste vide `()`.
+
+***
+
+### `frame`
+
+Retourne un record décrivant la structure complète d'une classe nommée — ses propriétés et méthodes publiques et privées.
+
+```
+'Counter' frame ?
+# → [className: 'Counter' props: [value: .number] _props: [_step: .number] funcs: (onInit: increment: reset:) _funcs: ()]
+```
+
+Le record retourné contient les clés suivantes :
+
+| Clé | Contenu |
+|-----|---------|
+| `className:` | Nom de la classe |
+| `props:` | Propriétés publiques avec leur type déclaré |
+| `_props:` | Propriétés privées avec leur type déclaré |
+| `funcs:` | Noms des méthodes publiques |
+| `_funcs:` | Noms des méthodes privées |
+
+```
+'Counter' frame -> '$F'
+$F->className: ?
+$F->props: ?
+$F->_props: ?
+$F->funcs: ?
+$F->_funcs: ?
+```
+
+***

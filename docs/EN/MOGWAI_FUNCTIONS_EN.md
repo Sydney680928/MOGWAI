@@ -2910,3 +2910,52 @@ $U1->className: ?   # → 'User'
 Attempting to write to `className:`, or to declare it explicitly in a class definition, raises error MW.95 (reserved property).
 
 ***
+
+### `alive`
+
+Returns a list of all currently living instance references (`.objref`). Useful for iteration, debugging, or cleanup.
+
+```
+alive ?
+# → (§1 §2 §3 ...)
+```
+
+You can filter by class using `foreach...filter`:
+
+```
+alive foreach 'item' filter { item->className: 'User' == } -> '$users'
+```
+
+If no instances are alive, returns an empty list `()`.
+
+***
+
+### `frame`
+
+Returns a record describing the full structure of a named class — its public and private properties and methods.
+
+```
+'Counter' frame ?
+# → [className: 'Counter' props: [value: .number] _props: [_step: .number] funcs: (onInit: increment: reset:) _funcs: ()]
+```
+
+The returned record contains the following keys:
+
+| Key | Content |
+|-----|---------|
+| `className:` | Class name |
+| `props:` | Public properties with their declared types |
+| `_props:` | Private properties with their declared types |
+| `funcs:` | Public method names |
+| `_funcs:` | Private method names |
+
+```
+'Counter' frame -> '$F'
+$F->className: ?
+$F->props: ?
+$F->_props: ?
+$F->funcs: ?
+$F->_funcs: ?
+```
+
+***

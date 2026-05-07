@@ -355,6 +355,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveNew(this, "new"));
             RegisterPublicPrimitive(new PrimitiveFree(this, "free"));
             RegisterPublicPrimitive(new PrimitiveAlive(this, "alive"));
+            RegisterPublicPrimitive(new PrimitiveFrame(this, "frame"));
 
             // Stack functions
 

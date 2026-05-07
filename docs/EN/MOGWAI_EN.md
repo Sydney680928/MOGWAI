@@ -4022,6 +4022,48 @@ FREE §1
 FREE §2
 ```
 
+## Listing All Live Instances
+
+The `alive` function returns a list of all currently living instance references (`.objref`). This is useful for iteration, debugging, or cleanup.
+
+```
+alive ?
+# → (§1 §2 §3 ...)
+```
+
+You can filter by class using `foreach...filter`:
+
+```
+alive foreach 'item' filter { item->className: 'User' == } -> '$users'
+```
+
+## Inspecting a Class Structure
+
+The `frame` function returns a record describing the full structure of a class — its name, public and private properties, and public and private methods.
+
+```
+'Counter' frame ?
+# → [className: 'Counter' props: [value: .number] _props: [_step: .number] funcs: (onInit: increment: reset:) _funcs: ()]
+```
+
+The returned record contains the following keys:
+
+| Key | Content |
+|-----|---------|
+| `className:` | Class name |
+| `props:` | Public properties with their declared types |
+| `_props:` | Private properties with their declared types |
+| `funcs:` | Public method names |
+| `_funcs:` | Private method names |
+
+```
+'Counter' frame -> '$F'
+$F->props: ?
+$F->_props: ?
+$F->funcs: ?
+$F->_funcs: ?
+```
+
 # TASKS
 
 **MOGWAI** makes it very easy to create parallel tasks.

@@ -20,7 +20,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   }
   ```
  
- - Added `alive` primitive returning the list of all active instances.
+ - **`alive` primitive** — returns a list of all currently living instance references (`.objref`). Returns an empty list `()` if no instances are alive.
+
+  ```
+  alive ?   # → (§1 §2 §3 ...)
+
+  # Filter by class
+  alive foreach 'item' filter { item->className: 'User' == } -> '$users'
+  ```
+
+- **`frame` primitive** — returns a record describing the full structure of a named class.
+
+  ```
+  'Counter' frame ?
+  # → [className: 'Counter' props: [value: .number] _props: [_step: .number] funcs: (onInit: increment: reset:) _funcs: ()]
+  ```
+
+  | Key | Content |
+  |-----|---------|
+  | `className:` | Class name |
+  | `props:` | Public properties with their declared types |
+  | `_props:` | Private properties with their declared types |
+  | `funcs:` | Public method names |
+  | `_funcs:` | Private method names |
    
 ### Changed
 
