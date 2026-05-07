@@ -28,6 +28,7 @@ MOGWAI is a modern implementation of RPN (Reverse Polish Notation) for the .NET 
 - **Battle-Tested** - 10+ years of real-world usage
 - **Extensible** - Easy integration with .NET applications
 - **Cross-Platform** - Windows, Linux, macOS, Android, iOS
+- **VS Code Extension** - Syntax highlighting and script execution directly from VS Code
 - **Visual Debugging** - MOGWAI STUDIO integration (coming soon)
 
 ---
