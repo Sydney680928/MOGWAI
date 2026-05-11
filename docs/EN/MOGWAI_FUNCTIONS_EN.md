@@ -1945,6 +1945,49 @@ Process information is provided via a record composed of the following keys:
 
 ***
 
+### `process.exec`
+
+Launches a process, captures its output, and returns a result record.
+Unlike `process.start`, `process.exec` always waits for the process to finish and captures `stdout` and `stderr`.
+
+Process information is provided via a record composed of the following keys:
+
+| Key                 | Usage                                                                  |
+| ------------------- | ---------------------------------------------------------------------- |
+| `filename:`         | File to execute (e.g. myservice.exe)                                   |
+| `arguments:`        | Arguments to pass to the process.                                      |
+| `workingDirectory:` | Sets the current directory for the process.                            |
+| `input:`            | Optional string sent to the process via `stdin`. Omit if not needed.   |
+
+> Only the `filename:` key is required.
+
+Pushes a result record onto the stack:
+
+| Key       | Type   | Description                                     |
+| --------- | ------ | ----------------------------------------------- |
+| `status:` | Number | Exit code returned by the process (0 = success) |
+| `output:` | String | Content written to `stdout` by the process      |
+| `error:`  | String | Content written to `stderr` by the process      |
+
+```
+[filename: "myservice.exe" arguments: "--mode calc" input: "42"] process.exec -> 'r'
+
+r status: get -> 'code'
+r output: get -> 'result'
+r error:  get -> 'err'
+
+if (code 0 ==) then
+{
+    "Result: {! result}" eval ?
+}
+else
+{
+    "Error: {! err}" eval ?
+}
+```
+
+***
+
 ## DEBUGGING FUNCTIONS (used with MOGWAI STUDIO)
 
 ### `debug.write`

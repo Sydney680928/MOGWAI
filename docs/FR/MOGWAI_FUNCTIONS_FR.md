@@ -1952,6 +1952,49 @@ Les informations du processus sont fournies via un enregistrement composé des c
 
 ***
 
+### `process.exec`
+
+Lance un processus, capture sa sortie et retourne un record résultat.
+Contrairement à `process.start`, `process.exec` attend toujours la fin du processus et capture `stdout` et `stderr`.
+
+Les informations du processus sont fournies via un record composé des clés suivantes :
+
+| Clé                 | Usage                                                                         |
+| ------------------- | ----------------------------------------------------------------------------- |
+| `filename:`         | Fichier à exécuter (ex. myservice.exe)                                        |
+| `arguments:`        | Arguments à passer au processus.                                              |
+| `workingDirectory:` | Définit le répertoire courant du processus.                                   |
+| `input:`            | Chaîne optionnelle envoyée au processus via `stdin`. Omise si non nécessaire. |
+
+> Seule la clé `filename:` est obligatoire.
+
+Pousse un record résultat sur la pile :
+
+| Clé       | Type   | Description                                          |
+| --------- | ------ | ---------------------------------------------------- |
+| `status:` | Nombre | Code de retour du processus (0 = succès)             |
+| `output:` | Chaîne | Contenu écrit sur `stdout` par le processus          |
+| `error:`  | Chaîne | Contenu écrit sur `stderr` par le processus          |
+
+```
+[filename: "myservice.exe" arguments: "--mode calc" input: "42"] process.exec -> 'r'
+
+r status: get -> 'code'
+r output: get -> 'resultat'
+r error:  get -> 'err'
+
+if (code 0 ==) then
+{
+    "Résultat : {! resultat}" eval ?
+}
+else
+{
+    "Erreur : {! err}" eval ?
+}
+```
+
+***
+
 ## FONCTIONS DE DÉBOGAGE (utilisées avec MOGWAI STUDIO)
 
 ### `debug.write`

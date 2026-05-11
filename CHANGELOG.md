@@ -44,6 +44,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   | `funcs:` | Public method names |
   | `_funcs:` | Private method names |
    
+- **`process.exec` primitive** — launches an external process, optionally sends data to its standard input (`stdin`), waits for it to finish, and captures its standard output (`stdout`) and standard error (`stderr`). Pushes a result record onto the stack.
+
+  Unlike `process.start`, `process.exec` always waits for the process to finish and always captures both output streams.
+
+  ```
+  [filename: "dotnet" arguments: "--version"] process.exec -> '$r'
+  $r status: get ?   # 0
+  $r output: get ?   # "10.0.203"
+
+  # With stdin input
+  [filename: "myservice.exe" input: "42"] process.exec -> '$r'
+
+  if ($r status: get 0 ==) then
+  {
+      $r output: get ?
+  }
+  ```
+
+  | Key | Type | Description |
+  |-----|------|-------------|
+  | `filename:` | String | Path to the executable *(required)* |
+  | `arguments:` | String | Command-line arguments *(optional)* |
+  | `workingDirectory:` | String | Working directory *(optional)* |
+  | `input:` | String | Data sent to `stdin` — stream closed after writing *(optional)* |
+
+  Result record:
+
+  | Key | Type | Description |
+  |-----|------|-------------|
+  | `status:` | Number | Exit code (0 = success) |
+  | `output:` | String | Content of `stdout` (trailing newline trimmed) |
+  | `error:` | String | Content of `stderr` (trailing newline trimmed) |
+
+  `stdout` and `stderr` are read in parallel to prevent buffer deadlocks. Both streams are UTF-8 encoded. The process always runs without a visible window.
+
+  Raises `MW.4` (internal error) if the process cannot be started.
+
 ### Changed
 
 ### Fixed

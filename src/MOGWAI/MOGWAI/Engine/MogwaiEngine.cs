@@ -352,6 +352,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveMax(this, "max"));
             RegisterPublicPrimitive(new PrimitiveEnvMachineName(this, "env.machineName"));
             RegisterPublicPrimitive(new PrimitiveProcessStart(this, "process.start"));
+            RegisterPublicPrimitive(new PrimitiveProcessExec(this, "process.exec"));
             RegisterPublicPrimitive(new PrimitiveNew(this, "new"));
             RegisterPublicPrimitive(new PrimitiveFree(this, "free"));
             RegisterPublicPrimitive(new PrimitiveAlive(this, "alive"));
