@@ -98,6 +98,16 @@ Visual IDE for MOGWAI development with debugging, breakpoints, and code editing.
 
 ---
 
+## Built with MOGWAI
+
+Open source projects powered by the MOGWAI scripting engine:
+
+| Project | Description |
+|---|---|
+| [**GIZMO**](https://gizmo.mogwai.eu.com) | Build Terminal User Interface (TUI) applications with MOGWAI scripting — cross-platform, self-contained, Apache 2.0 |
+
+---
+
 ## Blog Articles
 
 A curated list of English articles about MOGWAI on [coding4phone.com](https://coding4phone.com):
