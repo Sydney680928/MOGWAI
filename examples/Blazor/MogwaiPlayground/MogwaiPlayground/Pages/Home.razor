@@ -22,80 +22,119 @@
         </div>
     </header>
 
-    <!-- ── Corps du terminal ── -->
-    <div class="terminal-body" @ref="_terminalBody">
-        @foreach (var line in _lines)
-        {
-            @switch (line.Kind)
-            {
-                case LineKind.Input:
-                    <div class="line line-input"><span class="prompt-sign">❯</span> @line.Text</div>
-                    break;
-                case LineKind.Error:
-                    <div class="line line-error">@line.Text</div>
-                    break;
-                case LineKind.System:
-                    <div class="line line-system">@line.Text</div>
-                    break;
-                default:
-                    <div class="line line-output">@line.Text</div>
-                    break;
-            }
-        }
+    @if (_editorMode)
+    {
+        <!-- ── Panneau éditeur ── -->
+        <div class="editor-panel">
+            <div class="editor-toolbar">
+                <span class="editor-title">── EDITOR ──</span>
+                <span class="editor-hint">Tab = indent  •  Ctrl+Enter = Run</span>
+                <div class="editor-actions">
+                    <button class="editor-btn editor-btn-run" @onclick="RunFromEditor" disabled="@_isRunning">&#x25B6; Run</button>
+                    <button class="editor-btn editor-btn-close" @onclick="CloseEditor" disabled="@_isRunning">&#x2715; Close</button>
+                </div>
+            </div>
+            <textarea @ref="_editorRef"
+                      @bind="_editorCode"
+                      @bind:event="oninput"
+                      @onkeydown="OnEditorKeyDown"
+                      class="editor-textarea"
+                      spellcheck="false"
+                      autocomplete="off"
+                      autocorrect="off"
+                      autocapitalize="off"
+                      placeholder="# Write your MOGWAI code here..."></textarea>
+        </div>
 
         @if (_isRunning)
         {
-            <div class="line line-system">
-                <span class="spinner">⠋</span> Running...
+            <div class="editor-running">
+                <span class="spinner">&#x28CB;</span> Running...
             </div>
         }
-    </div>
+    }
+    else
+    {
+        <!-- ── Corps du terminal ── -->
+        <div class="terminal-body" @ref="_terminalBody">
+            @foreach (var line in _lines)
+            {
+                @switch (line.Kind)
+                {
+                    case LineKind.Input:
+                        <div class="line line-input"><span class="prompt-sign">&#x276F;</span> @line.Text</div>
+                        break;
+                    case LineKind.Error:
+                        <div class="line line-error">@line.Text</div>
+                        break;
+                    case LineKind.System:
+                        <div class="line line-system">@line.Text</div>
+                        break;
+                    default:
+                        <div class="line line-output">@line.Text</div>
+                        break;
+                }
+            }
 
-    <!-- ── Barre d'input ── -->
-    <div class="terminal-input-bar">
-        <span class="prompt-sign">❯</span>
-        <input @ref="_inputRef"
-               @bind="_currentInput"
-               @bind:event="oninput"
-               @onkeydown="OnKeyDown"
-               class="terminal-input"
-               placeholder="Type MOGWAI code here..."
-               spellcheck="false"
-               autocomplete="off"
-               autocorrect="off"
-               autocapitalize="off"
-               disabled="@_isRunning" />
-    </div>
+            @if (_isRunning)
+            {
+                <div class="line line-system">
+                    <span class="spinner">&#x28CB;</span> Running...
+                </div>
+            }
+        </div>
 
-    <!-- ── Exemples cliquables ── -->
-    <div class="examples-bar">
-        <span class="examples-label">Examples :</span>
-        @foreach (var ex in _examples)
-        {
-            <button class="example-btn" @onclick="() => RunExample(ex.Code)" title="@ex.Description">
-                @ex.Label
-            </button>
-        }
-        <button class="example-btn example-btn-halt" @onclick="Halt">HALT</button>
-        <button class="example-btn example-btn-clear" @onclick="ClearTerminal">⌫ Clear</button>
-    </div>
+        <!-- ── Barre d'input ── -->
+        <div class="terminal-input-bar">
+            <span class="prompt-sign">&#x276F;</span>
+            <input @ref="_inputRef"
+                   @bind="_currentInput"
+                   @bind:event="oninput"
+                   @onkeydown="OnKeyDown"
+                   class="terminal-input"
+                   placeholder="Type MOGWAI code here — or type 'edit' to open the editor..."
+                   spellcheck="false"
+                   autocomplete="off"
+                   autocorrect="off"
+                   autocapitalize="off"
+                   disabled="@_isRunning" />
+        </div>
+
+        <!-- ── Exemples cliquables ── -->
+        <div class="examples-bar">
+            <span class="examples-label">Examples :</span>
+            @foreach (var ex in _examples)
+            {
+                <button class="example-btn" @onclick="() => RunExample(ex.Code)" title="@ex.Description">
+                    @ex.Label
+                </button>
+            }
+            <button class="example-btn example-btn-editor" @onclick="OpenEditor">&#x270E; Edit</button>
+            <button class="example-btn example-btn-halt" @onclick="Halt">HALT</button>
+            <button class="example-btn example-btn-clear" @onclick="ClearTerminal">&#x232B; Clear</button>
+        </div>
+    }
 
 </div>
 
 @code {
 
-
-
     // ── DOM References ──────────────────────────────────────
 
     private ElementReference _terminalBody;
     private ElementReference _inputRef;
+    private ElementReference _editorRef;
 
     // ── State ───────────────────────────────────────────────
 
     private List<TerminalLine> _lines = new();
     private string _currentInput = string.Empty;
     private bool _isRunning = false;
+
+    // ── Editor ──────────────────────────────────────────────
+
+    private bool _editorMode = false;
+    private string _editorCode = string.Empty;
 
     // ── Command history ─────────────────────────────────────
 
@@ -112,7 +151,7 @@
     private readonly (string Label, string Description, string Code)[] _examples =
     [
     ("Hello World",  "Display a message",                      "\"Hello, MOGWAI!\" ?"),
-    ("Arithmetic",   "RPN calculation: (2 + 3) × 4",           "2 3 + 4 * ?"),
+    ("Arithmetic",   "RPN calculation: (2 + 3) x 4",           "2 3 + 4 * ?"),
     ("Variable",     "Store and reuse a value",                "42 -> 'x'  x 2 * ?"),
     ("Loop",         "Print 1 to 5",                           "1 5 for 'i'do { i ? }"),
     ("Fibonacci",    "Recursive Fibonacci",                    "to 'fib' do { dup if (2 <) then { return } dup 1 - fib swap 2 - fib + }\n0 fib ?\n1 fib ?\n5 fib ?\n10 fib ?"),
@@ -131,13 +170,8 @@
         _delegate.OnOutput += OnEngineOutput;
         _delegate.PromptHandler = HandlePrompt;
 
-        // keepAlive=true : variables persist between commands (REPL)
-        // useDefaultFolders=false : no file system access in WASM
-
         _engine = new MogwaiEngine("MOGWAI Playground", keepAlive: true, useDefaultFolders: false);
         _engine.Delegate = _delegate;
-
-        // Welcome message
 
         PrintWelcome();
     }
@@ -148,7 +182,14 @@
         {
             await FocusInput();
         }
-        await ScrollToBottom();
+        if (_editorMode)
+        {
+            await JS.InvokeVoidAsync("mogwaiEditor.focus", _editorRef);
+        }
+        else
+        {
+            await ScrollToBottom();
+        }
     }
 
     public void Dispose()
@@ -157,7 +198,7 @@
             _delegate.OnOutput -= OnEngineOutput;
     }
 
-    // ── Error outputs  ────────────────────────────────────────────
+    // ── Engine output ─────────────────────────────────────────────
 
     private void OnEngineOutput(TerminalLine line)
     {
@@ -172,7 +213,7 @@
         InvokeAsync(StateHasChanged);
     }
 
-    // ── input ────────────────────────────────────────────────────
+    // ── Terminal input ────────────────────────────────────────────
 
     private async Task OnKeyDown(KeyboardEventArgs e)
     {
@@ -196,6 +237,14 @@
     {
         var code = _currentInput.Trim();
         if (string.IsNullOrEmpty(code) || _engine is null) return;
+
+        // ── Intercept built-in commands ──
+        if (code.Equals("edit", StringComparison.OrdinalIgnoreCase))
+        {
+            _currentInput = string.Empty;
+            OpenEditor();
+            return;
+        }
 
         _history.Insert(0, code);
         _historyIndex = -1;
@@ -261,6 +310,71 @@
         StateHasChanged();
     }
 
+    // ── Editor ────────────────────────────────────────────────────
+
+    private void OpenEditor()
+    {
+        _editorMode = true;
+        StateHasChanged();
+    }
+
+    private async Task CloseEditor()
+    {
+        await JS.InvokeVoidAsync("mogwaiEditor.detach", _editorRef);
+        _editorMode = false;
+        _lines.Add(new TerminalLine("Editor closed — buffer preserved. Type 'edit' to reopen.", LineKind.System));
+        StateHasChanged();
+    }
+
+    private async Task RunFromEditor()
+    {
+        var code = _editorCode.Trim();
+        if (string.IsNullOrEmpty(code) || _engine is null) return;
+
+        _isRunning = true;
+        await JS.InvokeVoidAsync("mogwaiEditor.detach", _editorRef);
+        _editorMode = false;
+        StateHasChanged();
+
+        _lines.Add(new TerminalLine("▶ Running editor buffer...", LineKind.System));
+        StateHasChanged();
+
+        try
+        {
+            var result = await _engine.RunAsync(code, debugMode: false);
+
+            if (result.IsError)
+            {
+                _lines.Add(new TerminalLine($"⚠ {result}", LineKind.Error));
+            }
+            else
+            {
+                _lines.Add(new TerminalLine($"✓ {result}", LineKind.System));
+            }
+        }
+        catch (Exception ex)
+        {
+            _lines.Add(new TerminalLine($"⚠ Exception : {ex.Message}", LineKind.Error));
+        }
+        finally
+        {
+            _isRunning = false;
+            StateHasChanged();
+            await FocusInput();
+        }
+    }
+
+    private async Task OnEditorKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && e.CtrlKey)
+        {
+            await RunFromEditor();
+            return;
+        }
+
+        // Tab is handled entirely by the JS listener attached in mogwaiEditor.focus()
+    }
+
     // ── Prompt (INPUT MOGWAI) ────────────────────────────────────
 
     private async Task<string?> HandlePrompt(string message)
@@ -282,6 +396,7 @@
             "  Type MOGWAI code and press Enter.",
             "  Use ↑ ↓ to navigate through history.",
             "  Click an example to run it.",
+            "  Type 'edit' or click ✎ Edit to open the multi-line editor.",
             "",
             "  💡 Variables prefixed with $ are global and",
             "     persist between commands (e.g. 42 -> '$x').",

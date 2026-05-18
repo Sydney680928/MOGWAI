@@ -22,12 +22,48 @@
     </div>
 
     <script>
-        // Helper JS for the Blazor terminal
+        // ── Terminal helpers ─────────────────────────────────
         window.mogwaiTerminal = {
             scrollToBottom: function (element) {
                 if (element) {
                     element.scrollTop = element.scrollHeight;
                 }
+            }
+        };
+
+        // ── Editor helpers ───────────────────────────────────
+        window.mogwaiEditor = {
+
+            // Focus the textarea and attach Tab handler
+            focus: function (element) {
+                if (!element) return;
+                element.focus();
+
+                // Attach Tab handler only once
+                if (element._mogwaiTabHandler) return;
+                element._mogwaiTabHandler = function (e) {
+                    if (e.key !== 'Tab') return;
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var start  = element.selectionStart;
+                    var end    = element.selectionEnd;
+                    var spaces = '    '; // 4 spaces
+                    element.value =
+                        element.value.substring(0, start) +
+                        spaces +
+                        element.value.substring(end);
+                    element.selectionStart = start + spaces.length;
+                    element.selectionEnd   = start + spaces.length;
+                    element.dispatchEvent(new Event('input', { bubbles: true }));
+                };
+                element.addEventListener('keydown', element._mogwaiTabHandler);
+            },
+
+            // Detach Tab handler when editor closes
+            detach: function (element) {
+                if (!element || !element._mogwaiTabHandler) return;
+                element.removeEventListener('keydown', element._mogwaiTabHandler);
+                delete element._mogwaiTabHandler;
             }
         };
     </script>
