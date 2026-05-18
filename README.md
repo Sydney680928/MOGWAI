@@ -125,7 +125,7 @@ A curated list of English articles about MOGWAI on [coding4phone.com](https://co
 - [Bytes aren’t scary. Manipulating binary data with MOGWAI](https://coding4phone.com/?p=2251&lang=en)
 - [MOGWAI v8.6 — Objects and Assertions](https://coding4phone.com/?p=2324&lang=en)
 - [One Day, One Extension — The Story of MOGWAI Language Support for VS Code](https://coding4phone.com/?p=2426&lang=en)
-
+- [Embedding a scripting engine in a .NET MAUI app — dynamic logic, BLE commands, zero app updates](https://coding4phone.com/?p=2461&lang=en)
 ---
 
 ## Quick Start
