@@ -560,3 +560,90 @@ body::after {
     color: var(--cyan-sys);
     box-shadow: 0 0 8px rgba(136, 221, 255, 0.15);
 }
+
+/* ── Bannière de confirmation d'écrasement ─────────── */
+
+.editor-confirm-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.4rem 1.2rem;
+    background: #1a0d00;
+    border-bottom: 1px solid #5a3300;
+    flex-shrink: 0;
+    animation: fadeInDown 0.15s ease;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.editor-confirm-msg {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: #cc8844;
+    letter-spacing: 0.04em;
+    flex: 1;
+}
+
+.editor-btn-confirm-yes {
+    border-color: #5a3300;
+    color: #cc8844;
+}
+
+.editor-btn-confirm-yes:hover {
+    background: #2a1500;
+    border-color: #cc8844;
+    color: #ffaa66;
+    box-shadow: 0 0 8px rgba(204, 136, 68, 0.2);
+}
+
+.editor-btn-confirm-no {
+    border-color: #2a0000;
+    color: #884444;
+}
+
+.editor-btn-confirm-no:hover {
+    background: #1a0000;
+    border-color: var(--red-err);
+    color: var(--red-err);
+}
+
+/* ── Boutons Load / Save ──────────────────────────── */
+
+.editor-btn-load {
+    border-color: #001a2a;
+    color: #4488aa;
+}
+
+.editor-btn-load:hover:not(:disabled) {
+    background: #00111a;
+    border-color: #66bbdd;
+    color: #66bbdd;
+    box-shadow: 0 0 8px rgba(102, 187, 221, 0.2);
+}
+
+.editor-btn-save {
+    border-color: #0d1a00;
+    color: #668844;
+}
+
+.editor-btn-save:hover:not(:disabled) {
+    background: #0a1400;
+    border-color: #99cc55;
+    color: #99cc55;
+    box-shadow: 0 0 8px rgba(153, 204, 85, 0.2);
+}
+
+.editor-btn-saveas {
+    border-color: #0d1a00;
+    color: #557733;
+}
+
+.editor-btn-saveas:hover:not(:disabled) {
+    background: #0a1400;
+    border-color: #88aa44;
+    color: #88aa44;
+    box-shadow: 0 0 8px rgba(136, 170, 68, 0.2);
+}

@@ -26,14 +26,29 @@
     {
         <!-- ── Panneau éditeur ── -->
         <div class="editor-panel">
+
+            <!-- InputFile caché, déclenché par le bouton Load -->
+            <InputFile id="mogwai-file-input" OnChange="OnFileLoaded" accept=".mog,.txt" style="display:none" />
+
             <div class="editor-toolbar">
                 <span class="editor-title">── EDITOR ──</span>
-                <span class="editor-hint">Tab = indent  •  Ctrl+Enter = Run</span>
+                <span class="editor-hint">Tab = indent  •  Ctrl+Enter = Run  @(_currentFileName != "script.mog" ? $"  •  {_currentFileName}" : "")</span>
                 <div class="editor-actions">
+                    <button class="editor-btn editor-btn-load" @onclick="TriggerFileLoad" disabled="@_isRunning" title="Load a .mog file">&#x1F4C2; Load</button>
+                    <button class="editor-btn editor-btn-save" @onclick="SaveFile" disabled="@_isRunning" title="Save (Ctrl+S)">&#x1F4BE; Save</button>
+                    <button class="editor-btn editor-btn-saveas" @onclick="SaveFileAs" disabled="@_isRunning" title="Save As...">&#x1F4BE;&#x2026; Save As</button>
                     <button class="editor-btn editor-btn-run" @onclick="RunFromEditor" disabled="@_isRunning">&#x25B6; Run</button>
                     <button class="editor-btn editor-btn-close" @onclick="CloseEditor" disabled="@_isRunning">&#x2715; Close</button>
                 </div>
             </div>
+            @if (_confirmOverwrite)
+            {
+                <div class="editor-confirm-bar">
+                    <span class="editor-confirm-msg">&#x26A0; Buffer not empty — load example and overwrite?</span>
+                    <button class="editor-btn editor-btn-confirm-yes" @onclick="ConfirmLoadExample">Yes, overwrite</button>
+                    <button class="editor-btn editor-btn-confirm-no" @onclick="CancelLoadExample">Cancel</button>
+                </div>
+            }
             <textarea @ref="_editorRef"
                       @bind="_editorCode"
                       @bind:event="oninput"
@@ -105,7 +120,7 @@
             <span class="examples-label">Examples :</span>
             @foreach (var ex in _examples)
             {
-                <button class="example-btn" @onclick="() => RunExample(ex.Code)" title="@ex.Description">
+                <button class="example-btn" @onclick="() => LoadExampleInEditor(ex.Code)" title="@ex.Description">
                     @ex.Label
                 </button>
             }
@@ -136,6 +151,12 @@
     private bool _editorMode = false;
     private string _editorCode = string.Empty;
 
+    // Pending example load (overwrite confirmation)
+    private bool _confirmOverwrite = false;
+    private string _pendingCode = string.Empty;
+    private string _currentFileName = "script.mog";
+    private string _pendingFileName = string.Empty;
+
     // ── Command history ─────────────────────────────────────
 
     private List<string> _history = new();
@@ -152,12 +173,12 @@
     [
     ("Hello World",  "Display a message",                      "\"Hello, MOGWAI!\" ?"),
     ("Arithmetic",   "RPN calculation: (2 + 3) x 4",           "2 3 + 4 * ?"),
-    ("Variable",     "Store and reuse a value",                "42 -> 'x'  x 2 * ?"),
-    ("Loop",         "Print 1 to 5",                           "1 5 for 'i'do { i ? }"),
-    ("Fibonacci",    "Recursive Fibonacci",                    "to 'fib' do { dup if (2 <) then { return } dup 1 - fib swap 2 - fib + }\n0 fib ?\n1 fib ?\n5 fib ?\n10 fib ?"),
-    ("Stack",        "Stack manipulations",                    "1 2 3  depth ? swap ? drop"),
-    ("Strings",      "String operations",                      "\"mogwai\" dup size ? ->upper ?"),
-    ("List",         "Create and iterate a list",              "(10 20 30 40 50) -> '$lst'\n$lst size ?\n$lst 2 get ?"),
+    ("Variable",     "Store and reuse a value",                "42 -> 'x'\nx 2 * ?"),
+    ("Loop",         "Print 1 to 5",                           "1 5 for 'i' do\n{\n\ti ?\n}\n"),
+    ("Fibonacci",    "Recursive Fibonacci",                    "to 'fib' do\n{\n\tdup\n\n\tif (2 <) then\n\t{\n\t\treturn\n\t}\n\n\tdup 1 - fib swap 2 - fib +\n}\n\n0 fib ?\n\n1 fib ?\n\n5 fib ?\n\n10 fib ?\n\n"),
+    ("Stack",        "Stack manipulations",                    "1 2 3  depth ?\n\nswap ?\n\ndrop\n\n"),
+    ("Strings",      "String operations",                      "\"mogwai\" dup size ?\n\n->upper ?\n\n"),
+    ("List",         "Create and iterate a list",              "(10 20 30 40 50) -> '$lst'\n\n$lst size ?\n\n$lst 2 get ?\n\n"),
 ];
 
     // ── Lifecycle ────────────────────────────────────────────────────────────
@@ -289,12 +310,128 @@
         StateHasChanged();
     }
 
-    private async Task RunExample(string code)
+    private void LoadExampleInEditor(string code)
     {
-        foreach (var line in code.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+        _pendingCode = code;
+
+        if (!string.IsNullOrWhiteSpace(_editorCode) && !_editorMode)
         {
-            _currentInput = line.Trim();
-            await ExecuteCurrentInput();
+            // Buffer has content but editor is closed — open editor and ask
+            _editorMode = true;
+            _confirmOverwrite = true;
+            StateHasChanged();
+            return;
+        }
+
+        if (!string.IsNullOrWhiteSpace(_editorCode) && _editorMode)
+        {
+            // Editor already open with content — ask
+            _confirmOverwrite = true;
+            StateHasChanged();
+            return;
+        }
+
+        // Buffer empty — load directly
+        _editorCode = code;
+        _editorMode = true;
+        _confirmOverwrite = false;
+        StateHasChanged();
+    }
+
+    private void ConfirmLoadExample()
+    {
+        _editorCode = _pendingCode;
+        _pendingCode = string.Empty;
+        if (!string.IsNullOrEmpty(_pendingFileName))
+        {
+            _currentFileName = _pendingFileName;
+            _pendingFileName = string.Empty;
+        }
+        _confirmOverwrite = false;
+        StateHasChanged();
+    }
+
+    private void CancelLoadExample()
+    {
+        _pendingCode = string.Empty;
+        _pendingFileName = string.Empty;
+        _confirmOverwrite = false;
+        StateHasChanged();
+    }
+
+    // ── Load / Save ───────────────────────────────────────
+
+    // Result record for File System Access API open dialog
+    private record FileLoadResult(string Name, string Content);
+
+    private async Task TriggerFileLoad()
+    {
+        var hasApi = await JS.InvokeAsync<bool>("mogwaiEditor.hasFileSystemAccess");
+        if (hasApi)
+        {
+            // Chrome/Edge : vraie boîte "Ouvrir"
+            var result = await JS.InvokeAsync<FileLoadResult?>("mogwaiEditor.openFile");
+            if (result is not null)
+            {
+                await JS.InvokeVoidAsync("mogwaiEditor.clearFileHandle");
+                await QueueFileContent(result.Name, result.Content);
+            }
+        }
+        else
+        {
+            // Firefox/Safari : fallback InputFile
+            await JS.InvokeVoidAsync("mogwaiEditor.triggerFileInput");
+        }
+    }
+
+    private async Task OnFileLoaded(InputFileChangeEventArgs e)
+    {
+        // Fallback path (Firefox/Safari) via <InputFile>
+        var file = e.File;
+        if (file is null) return;
+
+        using var reader = new System.IO.StreamReader(file.OpenReadStream(maxAllowedSize: 1_048_576));
+        var text = await reader.ReadToEndAsync();
+
+        await JS.InvokeVoidAsync("mogwaiEditor.clearFileHandle");
+        await QueueFileContent(file.Name, text);
+    }
+
+    private Task QueueFileContent(string name, string text)
+    {
+        _pendingFileName = name;
+        _pendingCode     = text;
+
+        if (!string.IsNullOrWhiteSpace(_editorCode))
+        {
+            _confirmOverwrite = true;
+        }
+        else
+        {
+            _editorCode       = text;
+            _currentFileName  = name;
+            _pendingFileName  = string.Empty;
+            _pendingCode      = string.Empty;
+            _confirmOverwrite = false;
+        }
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private async Task SaveFile()
+    {
+        if (string.IsNullOrEmpty(_editorCode)) return;
+        await JS.InvokeVoidAsync("mogwaiEditor.saveFile", _currentFileName, _editorCode);
+    }
+
+    private async Task SaveFileAs()
+    {
+        if (string.IsNullOrEmpty(_editorCode)) return;
+        var newName = await JS.InvokeAsync<string?>("mogwaiEditor.saveFileAs", _currentFileName, _editorCode);
+        if (!string.IsNullOrEmpty(newName))
+        {
+            _currentFileName = newName;
+            StateHasChanged();
         }
     }
 
@@ -322,6 +459,8 @@
     {
         await JS.InvokeVoidAsync("mogwaiEditor.detach", _editorRef);
         _editorMode = false;
+        _confirmOverwrite = false;
+        _pendingCode = string.Empty;
         _lines.Add(new TerminalLine("Editor closed — buffer preserved. Type 'edit' to reopen.", LineKind.System));
         StateHasChanged();
     }
@@ -332,6 +471,8 @@
         if (string.IsNullOrEmpty(code) || _engine is null) return;
 
         _isRunning = true;
+        _confirmOverwrite = false;
+        _pendingCode = string.Empty;
         await JS.InvokeVoidAsync("mogwaiEditor.detach", _editorRef);
         _editorMode = false;
         StateHasChanged();

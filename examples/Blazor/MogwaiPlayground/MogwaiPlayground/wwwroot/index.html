@@ -34,6 +34,8 @@
         // ── Editor helpers ───────────────────────────────────
         window.mogwaiEditor = {
 
+            _fileHandle: null,  // File System Access API handle (Chrome/Edge)
+
             // Focus the textarea and attach Tab handler
             focus: function (element) {
                 if (!element) return;
@@ -64,6 +66,100 @@
                 if (!element || !element._mogwaiTabHandler) return;
                 element.removeEventListener('keydown', element._mogwaiTabHandler);
                 delete element._mogwaiTabHandler;
+            },
+
+            // Returns true if File System Access API is available (Chrome/Edge)
+            hasFileSystemAccess: function () {
+                return typeof window.showOpenFilePicker === 'function';
+            },
+
+            // Open a file via File System Access API → returns { name, content } or null
+            openFile: async function () {
+                try {
+                    var handles = await window.showOpenFilePicker({
+                        types: [{ description: 'MOGWAI scripts', accept: { 'text/plain': ['.mog', '.txt'] } }],
+                        multiple: false
+                    });
+                    var file    = await handles[0].getFile();
+                    var content = await file.text();
+                    return { name: file.name, content: content };
+                } catch (e) {
+                    if (e.name === 'AbortError') return null;
+                    throw e;
+                }
+            },
+
+            // Trigger the hidden <InputFile> (fallback for Firefox/Safari)
+            triggerFileInput: function () {
+                var input = document.getElementById('mogwai-file-input');
+                if (input) input.click();
+            },
+
+            // Clear stored file handle (call when loading a new file)
+            clearFileHandle: function () {
+                window.mogwaiEditor._fileHandle = null;
+            },
+
+            // Save via File System Access API if available, else blob download
+            // - First call (no handle): opens "Save As" picker
+            // - Subsequent calls (same session): writes directly to same file
+            saveFile: async function (filename, content) {
+                if (typeof window.showSaveFilePicker === 'function') {
+                    try {
+                        if (!window.mogwaiEditor._fileHandle) {
+                            window.mogwaiEditor._fileHandle = await window.showSaveFilePicker({
+                                suggestedName: filename,
+                                types: [{ description: 'MOGWAI scripts', accept: { 'text/plain': ['.mog'] } }]
+                            });
+                        }
+                        var writable = await window.mogwaiEditor._fileHandle.createWritable();
+                        await writable.write(content);
+                        await writable.close();
+                    } catch (e) {
+                        if (e.name === 'AbortError') return;
+                        // Unexpected error → clear handle and fall through to download
+                        window.mogwaiEditor._fileHandle = null;
+                        window.mogwaiEditor._fallbackDownload(filename, content);
+                    }
+                } else {
+                    window.mogwaiEditor._fallbackDownload(filename, content);
+                }
+            },
+
+            // Save As → always shows the picker, even if a handle already exists
+            // Returns the chosen filename, or null if cancelled
+            saveFileAs: async function (filename, content) {
+                if (typeof window.showSaveFilePicker === 'function') {
+                    try {
+                        window.mogwaiEditor._fileHandle = await window.showSaveFilePicker({
+                            suggestedName: filename,
+                            types: [{ description: 'MOGWAI scripts', accept: { 'text/plain': ['.mog'] } }]
+                        });
+                        var writable = await window.mogwaiEditor._fileHandle.createWritable();
+                        await writable.write(content);
+                        await writable.close();
+                        return window.mogwaiEditor._fileHandle.name;
+                    } catch (e) {
+                        if (e.name === 'AbortError') return null;
+                        throw e;
+                    }
+                } else {
+                    window.mogwaiEditor._fallbackDownload(filename, content);
+                    return null;
+                }
+            },
+
+            // Blob download fallback (Firefox / Safari)
+            _fallbackDownload: function (filename, content) {
+                var blob = new Blob([content], { type: 'text/plain' });
+                var url  = URL.createObjectURL(blob);
+                var a    = document.createElement('a');
+                a.href     = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
             }
         };
     </script>
