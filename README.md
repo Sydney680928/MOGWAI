@@ -126,6 +126,7 @@ A curated list of English articles about MOGWAI on [coding4phone.com](https://co
 - [MOGWAI v8.6 — Objects and Assertions](https://coding4phone.com/?p=2324&lang=en)
 - [One Day, One Extension — The Story of MOGWAI Language Support for VS Code](https://coding4phone.com/?p=2426&lang=en)
 - [Embedding a scripting engine in a .NET MAUI app — dynamic logic, BLE commands, zero app updates](https://coding4phone.com/?p=2461&lang=en)
+- [GIZMO — Build TUI Applications with MOGWAI](https://coding4phone.com/?p=2479&lang=en)
 ---
 
 ## Quick Start
