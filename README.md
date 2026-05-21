@@ -28,7 +28,7 @@ MOGWAI is a modern implementation of RPN (Reverse Polish Notation) for the .NET 
 - **Battle-Tested** - 10+ years of real-world usage
 - **Extensible** - Easy integration with .NET applications
 - **Cross-Platform** - Windows, Linux, macOS, Android, iOS
-- **VS Code Extension** - Syntax highlighting and script execution directly from VS Code
+- **VS Code Extension** - Syntax highlighting, autocompletion, run & debug directly from VS Code ([install](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language))
 - **Visual Debugging** - MOGWAI STUDIO integration (coming soon)
 
 ---
@@ -47,9 +47,17 @@ Grab the ready-to-run binary for your platform and start writing MOGWAI scripts 
 
 ### VS Code Extension
 
-Get syntax highlighting and run your MOGWAI scripts directly from VS Code via the CLI:
+Write, run, and debug MOGWAI scripts directly from **Visual Studio Code** with full language support:
 
-[**Install MOGWAI Language Extension**](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language) from the VS Code Marketplace
+- 🎨 **Syntax highlighting** — static keywords + dynamic primitives from the connected runtime
+- ✅ **Autocompletion** — all runtime primitives, color-coded by category
+- ▶️ **Run & Debug** — execute scripts and step through code without leaving VS Code
+- 📊 **Runtime panel** — live view of the stack, local and global variables
+- 🔍 **Error navigation** — jump directly to the failing instruction
+
+[**Install MOGWAI Language Support**](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language) from the VS Code Marketplace
+
+> **How to connect VS Code to the runtime:** see [MOGWAI_VSCODE.md](docs/EN/MOGWAI_VSCODE.md) for the step-by-step connection guide.
 
 ---
 
@@ -79,13 +87,14 @@ Command-line interface for running MOGWAI scripts and interactive REPL sessions.
 [Linux x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-linux-x64.zip)  
 [Linux arm64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-linux-arm64.zip)  
 
-### MOGWAI VS Code Extension (Open Source)
+### MOGWAI VS Code Extension
 
-Syntax highlighting, code editing, and script execution via MOGWAI CLI — directly inside VS Code.
+Syntax highlighting, autocompletion, runtime execution, step-by-step debugging, and live variable inspection — all directly inside VS Code.
 
-- **License:** Apache 2.0
+- **License:** Proprietary (free to use)
 - **Marketplace:** [mogwai.mogwai-language](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language)
-- **Status:** Available
+- **Documentation:** [MOGWAI_VSCODE.md](docs/EN/MOGWAI_VSCODE.md)
+- **Status:** Available — v1.0.1
 
 ### MOGWAI STUDIO (Coming Soon)
 
@@ -300,6 +309,7 @@ mogwai/
 - **[Language Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_EN.md)** - Complete MOGWAI language guide
 - **[Function Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 280+ built-in functions
 - **[Integration Guide](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI in your .NET apps
+- **[VS Code Extension Guide](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_VSCODE.md)** - How to use VS Code with the MOGWAI runtime
 
 ### Examples
 
