@@ -34,6 +34,8 @@ Launch the application that hosts the MOGWAI runtime. In the case of MOGWAI CLI,
 
 Once the host application is running, activate connection mode by typing the `studio` command. This puts the runtime in a waiting state, ready to accept incoming connections from VS Code (or MOGWAI STUDIO).
 
+<img src="../../images/vid01.gif" title="" alt="activate connection mode">
+
 **MOGWAI CLI example:**
 
 ```
@@ -52,6 +54,8 @@ Click the **`$(plug)` Connect** button in the editor toolbar (top right). VS Cod
 
 Select your runtime from the list — it will show the runtime name, IP address, MOGWAI version, OS, and .NET framework version.
 
+<img src="../../images/vid02.gif" title="" alt="activate connection mode">
+
 Once connected:
 
 - The status bar at the bottom left shows **`MOGWAI: [runtime name] v[version]`**
@@ -63,6 +67,8 @@ Once connected:
 ## Running Code
 
 With a `.mog` file open and a runtime connected, click the **▶ Run** button in the editor toolbar (or use `Ctrl+Shift+P` → **MOGWAI: Run Current File**).
+
+<img src="../../images/vid03.gif" title="" alt="activate connection mode">
 
 Execution output appears in the **MOGWAI Output Channel** (View → Output → MOGWAI):
 
@@ -77,6 +83,8 @@ Execution output appears in the **MOGWAI Output Channel** (View → Output → M
 ## Debugging
 
 Click the **🐛 Debug** button to run the current file in debug mode. In this mode, breakpoints placed in the code (`debug.halt` primitive or `¤` symbol) are honored by the runtime.
+
+<img src="../../images/vid04.gif" title="" alt="activate connection mode">
 
 ### When the runtime pauses on a breakpoint
 
@@ -102,6 +110,8 @@ When connected, a **MOGWAI** icon appears in the VS Code activity bar (left side
 - **Global Variables** — name, type, and value of all global variables
 
 This panel refreshes automatically after each execution, pause, or step. Use the **$(refresh) Refresh** button at the top of the panel to refresh manually at any time.
+
+<img src="../../images/vid05.gif" title="" alt="activate connection mode">
 
 ---
 
