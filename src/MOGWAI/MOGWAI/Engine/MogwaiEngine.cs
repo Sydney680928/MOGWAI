@@ -343,6 +343,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveJoin(this, "join"));
             RegisterPublicPrimitive(new PrimitiveWhere(this, "where"));
             RegisterPublicPrimitive(new PrimitiveCreateGUID(this, "guid"));
+            RegisterPublicPrimitive(new PrimitiveCreateGUID7(this, "guid7"));
             RegisterPublicPrimitive(new PrimitiveCreateUnique(this, "unique"));
             RegisterPublicPrimitive(new PrimitiveMathRand(this, "rand"));
             RegisterPublicPrimitive(new PrimitiveExtract(this, "extract"));
