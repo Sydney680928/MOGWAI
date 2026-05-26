@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.7.0] - 2026-05-26
+
+### Added
+
 - **`guid7` primitive** — generates a new UUID v7 and returns it as an uppercase string.
 
   Unlike `guid` (UUID v4, random), UUID v7 is time-ordered: the first 48 bits encode the current Unix timestamp in milliseconds, making it monotonically increasing and suitable for use as a sortable, database-friendly identifier.
@@ -89,8 +97,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `stdout` and `stderr` are read in parallel to prevent buffer deadlocks. Both streams are UTF-8 encoded. The process always runs without a visible window.
 
   Raises `MW.4` (internal error) if the process cannot be started.
-
-### Changed
 
 ### Fixed
 
@@ -605,7 +611,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.6.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.7.0...HEAD
+[8.7.0]: https://github.com/Sydney680928/mogwai/compare/v8.6.0...v8.7.0
 [8.6.0]: https://github.com/Sydney680928/mogwai/compare/v8.5.0...v8.6.0
 [8.5.0]: https://github.com/Sydney680928/mogwai/compare/v8.4.0...v8.5.0
 [8.4.0]: https://github.com/Sydney680928/mogwai/compare/v8.3.0...v8.4.0
