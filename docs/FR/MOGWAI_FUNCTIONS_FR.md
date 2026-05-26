@@ -648,9 +648,17 @@ Ex : « DEC378AF69F246B6A1688799F70A987A »
 
 ### `guid`
 
-Retourne un code unique au format UUID (ou GUID) sous forme de chaîne.
+Retourne un code unique au format UUID v4 (ou GUID) sous forme de chaîne. La valeur est générée aléatoirement.
 
 Ex : « 392BDA7A-9BEB-43B2-ACC7-05C8A06B0F44 »
+
+***
+
+### `guid7`
+
+Retourne un code unique au format UUID v7 sous forme de chaîne. Contrairement à `guid` (UUID v4), l'UUID v7 est ordonné dans le temps : les 48 premiers bits encodent l'horodatage Unix courant en millisecondes, ce qui le rend monotoniquement croissant et adapté à une utilisation comme identifiant triable, compatible avec les bases de données.
+
+Ex : « 4843BAB6-6A90-4138-AC9F-DB7ABE0018CB »
 
 ***
 

@@ -645,8 +645,15 @@ Returns a unique code as a string.
 
 ### `guid`
 
-Returns a unique code in UUID (or GUID) format as a string.
+Returns a unique code in UUID v4 (or GUID) format as a string. The value is randomly generated.
 <br>Ex: "392BDA7A-9BEB-43B2-ACC7-05C8A06B0F44"
+
+***
+
+### `guid7`
+
+Returns a unique code in UUID v7 format as a string. Unlike `guid` (UUID v4), UUID v7 is time-ordered: the first 48 bits encode the current Unix timestamp in milliseconds, making it monotonically increasing and suitable for use as a sortable, database-friendly identifier.
+<br>Ex: "4843BAB6-6A90-4138-AC9F-DB7ABE0018CB"
 
 ***
 

@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`guid7` primitive** — generates a new UUID v7 and returns it as an uppercase string.
+
+  Unlike `guid` (UUID v4, random), UUID v7 is time-ordered: the first 48 bits encode the current Unix timestamp in milliseconds, making it monotonically increasing and suitable for use as a sortable, database-friendly identifier.
+
+  ```
+  guid7 -> '$id'
+  $id ?   # → "4843BAB6-6A90-4138-AC9F-DB7ABE0018CB"
+  ```
+
 - **`isAlive` primitive** — tests whether a class instance reference is still valid. Returns `true` if the instance is alive, `false` if it has been freed. Never raises an error regardless of the state of the reference. Complements `isEmpty` and `isNull` for defensive programming.
 
   ```
