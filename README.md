@@ -49,11 +49,11 @@ Grab the ready-to-run binary for your platform and start writing MOGWAI scripts 
 
 Write, run, and debug MOGWAI scripts directly from **Visual Studio Code** with full language support:
 
-- 🎨 **Syntax highlighting** — static keywords + dynamic primitives from the connected runtime
-- ✅ **Autocompletion** — all runtime primitives, color-coded by category
-- ▶️ **Run & Debug** — execute scripts and step through code without leaving VS Code
-- 📊 **Runtime panel** — live view of the stack, local and global variables
-- 🔍 **Error navigation** — jump directly to the failing instruction
+- **Syntax highlighting** — static keywords + dynamic primitives from the connected runtime
+- **Autocompletion** — all runtime primitives, color-coded by category
+- **Run & Debug** — execute scripts and step through code without leaving VS Code
+- **Runtime panel** — live view of the stack, local and global variables
+- **Error navigation** — jump directly to the failing instruction
 
 [**Install MOGWAI Language Support**](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language) from the VS Code Marketplace
 
