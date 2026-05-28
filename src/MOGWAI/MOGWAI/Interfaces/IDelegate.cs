@@ -38,19 +38,25 @@ namespace MOGWAI.Interfaces
 
         Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine)
         {
-            Console.Clear();
+            if (engine.IsHostConsole)
+                Console.Clear();
+
             return Task.FromResult(EvalResult.NoError);
         }
 
         Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message)
         {
-            Console.WriteLine(message); 
+            if (engine.IsHostConsole)
+                Console.WriteLine(message); 
+
             return Task.FromResult(EvalResult.NoError);
         }
 
         Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message)
         {
-            Console.Write(message); 
+            if (engine.IsHostConsole)
+                Console.Write(message); 
+            
             return Task.FromResult(EvalResult.NoError);
         }
 
@@ -60,13 +66,18 @@ namespace MOGWAI.Interfaces
 
         Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y)
         {
-            Console.SetCursorPosition(x, y); 
+            if (engine.IsHostConsole)
+                Console.SetCursorPosition(x, y); 
+
             return Task.FromResult(EvalResult.NoError);
         }
         
         Task<(EvalResult result, int x, int y)> ConsoleGetCursorPosition(MogwaiEngine engine)
         {
-            return Task.FromResult((EvalResult.NoError, Console.CursorLeft, Console.CursorTop));
+            if (engine.IsHostConsole)
+                return Task.FromResult((EvalResult.NoError, Console.CursorLeft, Console.CursorTop));
+
+            return Task.FromResult((EvalResult.NoError, 0, 0));  
         }
 
         Task<EvalResult> ConsoleSetForegroundColor(MogwaiEngine engine, string color) => Task.FromResult(EvalResult.NoError);
@@ -75,15 +86,43 @@ namespace MOGWAI.Interfaces
 
         Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine)
         {
-            var keyInfo = Console.ReadKey(true);
-            return Task.FromResult((EvalResult.NoError, (int)keyInfo.Key));
+            int key = -1;
+
+            if (engine.IsHostConsole && Console.KeyAvailable)
+            {
+                var keyInfo = Console.ReadKey(true);
+                key = (int)keyInfo.Key;
+            }
+
+            return Task.FromResult((EvalResult.NoError, key));
         }
 
         Task<(EvalResult result, string? value)> Prompt(MogwaiEngine engine, string message)
         {
-            Console.Write(message); 
-            var input = Console.ReadLine();
-            return Task.FromResult((EvalResult.NoError, input));
+            if (!engine.IsHostConsole)
+            {
+                Console.Write(message);
+                var input = Console.ReadLine();
+                return Task.FromResult((EvalResult.NoError, input));
+            }
+
+            return Task.FromResult((EvalResult.NoError, (string?)null));
+        }
+
+        Task<int> ConsoleWidth(MogwaiEngine engine)
+        {
+            if (engine.IsHostConsole)
+                return Task.FromResult(Console.WindowWidth);
+             
+            return Task.FromResult(0);
+        }
+
+        Task<int> ConsoleHeight(MogwaiEngine engine)
+        {
+            if (engine.IsHostConsole)
+                return Task.FromResult(Console.WindowHeight);
+
+            return Task.FromResult(0);
         }
 
         #endregion

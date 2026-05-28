@@ -35,7 +35,7 @@ namespace MOGWAI.Primitives
         {
             if (Engine.Delegate == null)
             {
-                Engine.StackPush(new MOGNumber(Engine, 0));
+                Engine.StackPush(new MOGNumber(Engine, -1));
             }
             else
             {
@@ -44,7 +44,7 @@ namespace MOGWAI.Primitives
                 if (r.result != EvalResult.NoError)
                     return r.result;
 
-                Engine.StackPush(new MOGNumber(Engine, r.key));
+                Engine.StackPushNumber(r.key);
             }
 
             return EvalResult.NoError;

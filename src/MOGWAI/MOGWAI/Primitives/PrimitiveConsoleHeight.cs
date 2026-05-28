@@ -13,29 +13,36 @@
 // limitations under the License.
 
 using MOGWAI.Engine;
-using MOGWAI.Objects;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveHasSkill : PrimitiveParamsName
+    internal class PrimitiveConsoleHeight : MOGPrimitive
     {
-        public PrimitiveHasSkill(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveConsoleHeight(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveHasSkill(Engine, Name);
+            var obj = new PrimitiveConsoleHeight(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
 
-        public override Task<EvalResult> PerformOperation(MOGName name)
+        public override async Task<EvalResult> EngineEval()
         {
-            var skills = Engine.GetSkills();
-            Engine.StackPushBoolean(skills.Contains(name.Value));
-            return Task.FromResult(EvalResult.NoError);
+            if (Engine.Delegate != null)
+            {
+                var r = await Engine.Delegate.ConsoleHeight(Engine);
+                Engine.StackPushNumber(r);
+            }
+            else
+            {
+                Engine.StackPushNumber(0);
+            }
+
+            return EvalResult.NoError;
         }
     }
 }

@@ -324,6 +324,8 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveConsoleSetForegroundColor(this, "console.setForegroundColor"));
             RegisterPublicPrimitive(new PrimitiveConsoleSetBackgroundColor(this, "console.setBackgroundColor"));
             RegisterPublicPrimitive(new PrimitiveConsoleGetInputKey(this, "console.getInputKey"));
+            RegisterPublicPrimitive(new PrimitiveConsoleWidth(this, "console.width"));
+            RegisterPublicPrimitive(new PrimitiveConsoleHeight(this, "console.height"));
 
             // General functions
 
@@ -809,6 +811,25 @@ namespace MOGWAI.Engine
         internal int CurrentInstance { get; set; } = 0;
 
         internal Dictionary<int, MOGInstance> ObjectReferences { get; } = new();
+
+        public bool IsHostConsole
+        {
+            get
+            {
+                bool isConsole = true;
+                
+                try 
+                { 
+                    _ = Console.WindowHeight;
+                }
+                catch (IOException)
+                { 
+                    isConsole = false;
+                }
+
+                return isConsole;
+            }
+        }
 
         #endregion
 
