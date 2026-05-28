@@ -99,7 +99,7 @@ namespace MOGWAI.Interfaces
 
         Task<(EvalResult result, string? value)> Prompt(MogwaiEngine engine, string message)
         {
-            if (!engine.IsHostConsole)
+            if (engine.IsHostConsole)
             {
                 Console.Write(message);
                 var input = Console.ReadLine();
