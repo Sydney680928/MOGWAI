@@ -34,6 +34,8 @@ namespace MOGWAI.Engine
         private static readonly char[] _invalidCharsExtended = [' ', '\'', '{', '}', '«', '»', '(', ')', '[', ']', '"', ':', '\r', '\n', '\t'];
         private static readonly char[] _invalidChars =  [' ', '\'', '!', '{', '}', '«', '»', '(', ')', '[', ']', '"', ':', '\r', '\n', '\t'];
 
+        private static readonly string[] _skills = [];
+
         private string _name;
         private int _debugPort;
         private List<MogwaiStack> _stacks = [];
@@ -192,7 +194,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveFuncs(this, "funcs"));
             RegisterPublicPrimitive(new PrimitiveGetGlobalVars(this, "vars"));
             RegisterPublicPrimitive(new PrimitiveGetLocalVars(this, "lvars"));
-            RegisterPublicPrimitive(new PrimitiveBAG(this, "bag"));
+            RegisterPublicPrimitive(new PrimitiveBAG(this, "bag"));            
 
             // Conversion Function
 
@@ -392,6 +394,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveMogwaiInclude(this, "mogwai.include"), MOGPrimitive.CATEGORY_RUNTIME);
             RegisterPublicPrimitive(new PrimitiveMogwaiStrict(this, "mogwai.strict"), MOGPrimitive.CATEGORY_RUNTIME);
             RegisterPublicPrimitive(new PrimitiveMogwaiAssert(this, "mogwai.assert"), MOGPrimitive.CATEGORY_RUNTIME);
+            RegisterPublicPrimitive(new PrimitiveMogwaiAssertSkill(this, "mogwai.assertSkill"), MOGPrimitive.CATEGORY_RUNTIME);
 
             // Compare functions
 
@@ -421,6 +424,11 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveFlagClear(this, "flag.clear"));
             RegisterPublicPrimitive(new PrimitiveFlagIsSet(this, "flag.isSet"));
             RegisterPublicPrimitive(new PrimitiveFlagIsClear(this, "flag.isClear"));
+
+            // Skill functions
+
+            RegisterPublicPrimitive(new PrimitiveSkills(this, "skills"));
+            RegisterPublicPrimitive(new PrimitiveHasSkill(this, "hasSkill"));       
 
             // Debug functions
 
@@ -524,7 +532,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveHttpGet(this, "http.get"));
             RegisterPublicPrimitive(new PrimitiveHttpPost(this, "http.post"));
 
-            // Private primitivesreturn Task.FromResult(EvalResult.NoError);
+            // Private primitives (not accessible from MOGWAI code, but can be used in plugins)
 
             RegisterPrivatePrimitive(new PrimitiveSTO(this, "STO"), "->");
             RegisterPrivatePrimitive(new PrimitiveDEFUNC(this, "DEFUNC"), "to");
@@ -3385,6 +3393,23 @@ namespace MOGWAI.Engine
             {
                 return (EvalResult.ParseFailure(this, ex.Message), defuncs);
             }          
+        }
+
+        public List<string> GetSkills()
+        {
+            var skills = new List<string>(_skills);
+            string[] s2;
+
+            if (Delegate != null)
+            {
+                s2 = Delegate.Skills(this);
+
+                foreach (var s in s2)
+                    if (!skills.Contains(s))
+                        skills.Add(s);  
+            }       
+
+            return skills;
         }
 
         #endregion

@@ -71,6 +71,13 @@ namespace MOGWAI.Primitives
 
             record.SetItem("hostKeywords", hostKeywords);
 
+            var skills = new MOGList(Engine);
+
+            foreach (var sk in Engine.GetSkills())
+                skills.AddName(sk);
+
+            record.SetItem("skills", skills);   
+
             record.SetItem("debug", new MOGBoolean(Engine, Engine.DebugMode));
             record.SetItem("keepAlive", new MOGBoolean(Engine, Engine.KeepAlive));
             record.SetItem("isTask", new MOGBoolean(Engine, Engine.IsTask));

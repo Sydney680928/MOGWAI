@@ -96,6 +96,12 @@ namespace MOGWAI.Interfaces
 
         #endregion
 
+        #region SKILLS
+
+        string[] Skills(MogwaiEngine engine) => []; 
+
+        #endregion
+
         #region DEBUG
 
         Task<EvalResult> DebugMessage(MogwaiEngine engine, string message) => Task.FromResult(EvalResult.NoError);
