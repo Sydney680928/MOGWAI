@@ -2,10 +2,10 @@
 
 Guide complet pour intégrer le runtime MOGWAI V8 dans vos applications .NET.
 
-**Version :** 8.0  
+**Version :** 8.8  
 **Auteur :** Stéphane Sibué  
 **Licence :** Apache 2.0  
-**Dernière mise à jour :** Février 2026  
+**Dernière mise à jour :** Mai 2026  
 
 ---
 
@@ -16,11 +16,12 @@ Guide complet pour intégrer le runtime MOGWAI V8 dans vos applications .NET.
 3. [Options du constructeur](#constructor-options)
 4. [Interface IDelegate](#idelegate-interface)
 5. [Fonctions personnalisées](#custom-functions)
-6. [Manipulation de la pile](#stack-manipulation)
-7. [Gestion des erreurs](#error-handling)
-8. [Intégration MOGWAI STUDIO](#mogwai-studio-integration)
-9. [Fonctionnalités avancées](#advanced-features)
-10. [Bonnes pratiques](#best-practices)
+6. [Skills](#skills)
+7. [Manipulation de la pile](#stack-manipulation)
+8. [Gestion des erreurs](#error-handling)
+9. [Intégration MOGWAI STUDIO](#mogwai-studio-integration)
+10. [Fonctionnalités avancées](#advanced-features)
+11. [Bonnes pratiques](#best-practices)
 
 ---
 
@@ -48,11 +49,11 @@ using System.Net;          // IPAddress for SocketServerDidStart
 
 ### Application console minimale
 
+Depuis la version 8.8, toutes les méthodes de `IDelegate` ont des implémentations par défaut. Une intégration minimale ne nécessite aucune implémentation — le moteur est prêt à exécuter des scripts console sans écrire une seule ligne de délégué :
+
 ```csharp
 using MOGWAI.Engine;
 using MOGWAI.Interfaces;
-using MOGWAI.Objects;
-using System.Net;
 
 public class ConsoleApp : IDelegate
 {
@@ -60,101 +61,26 @@ public class ConsoleApp : IDelegate
 
     public ConsoleApp()
     {
-        // Create engine with default settings
         _engine = new MogwaiEngine("ConsoleApp");
         _engine.Delegate = this;
     }
 
     public async Task Run()
     {
-        // Execute a MOGWAI script
         var result = await _engine.RunAsync(@"
             'Hello from MOGWAI!' ?
             2 3 + ?
         ", debugMode: false);
 
         if (result.IsError)
-        {
             Console.WriteLine($"Error: {result}");
-        }
     }
-
-    // Minimal IDelegate implementation
-    public async Task ProgramStart(MogwaiEngine engine, string code)
-    {
-        await Task.CompletedTask;
-    }
-
-    public async Task ProgramEnd(MogwaiEngine engine, EvalResult result)
-    {
-        await Task.CompletedTask;
-    }
-
-    public async Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message)
-    {
-        Console.WriteLine(message);
-        return EvalResult.NoError;
-    }
-
-    public async Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message)
-    {
-        Console.Write(message);
-        return EvalResult.NoError;
-    }
-
-    public async Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine)
-    {
-        Console.Clear();
-        return EvalResult.NoError;
-    }
-
-    public async Task<(EvalResult result, string? value)> Prompt(
-        MogwaiEngine engine, string message)
-    {
-        Console.Write(message);
-        return (EvalResult.NoError, Console.ReadLine());
-    }
-
-    // Advanced console methods (can return NoError if not needed)
-    public async Task<EvalResult> ConsoleShow(MogwaiEngine engine) => EvalResult.NoError;
-    public async Task<EvalResult> ConsoleHide(MogwaiEngine engine) => EvalResult.NoError;
-    public async Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y) => EvalResult.NoError;
-    public async Task<(EvalResult result, int x, int y)> ConsoleGetCursorPosition(MogwaiEngine engine) 
-        => (EvalResult.NoError, 0, 0);
-    public async Task<EvalResult> ConsoleSetForegroundColor(MogwaiEngine engine, string color) => EvalResult.NoError;
-    public async Task<EvalResult> ConsoleSetBackgroundColor(MogwaiEngine engine, string color) => EvalResult.NoError;
-    public async Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine) 
-        => (EvalResult.NoError, 0);
-
-    // Custom functions
-    public string[] HostFunctions(MogwaiEngine engine) => Array.Empty<string>();
-
-    public async Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string word)
-    {
-        return EvalResult.NoExternalFunction;
-    }
-
-    // Runtime messages
-    public async Task<EvalResult> MessageReceivedFromRuntime(MogwaiEngine engine, string message, MOGObject parameter)
-    {
-        return EvalResult.NoError;
-    }
-
-    // Debug output
-    public async Task<EvalResult> DebugMessage(MogwaiEngine engine, string message) => EvalResult.NoError;
-    public async Task<EvalResult> DebugClear(MogwaiEngine engine) => EvalResult.NoError;
-
-    // Engine state
-    public async Task<EvalResult> EngineDidPause(MogwaiEngine engine) => EvalResult.NoError;
-    public async Task<EvalResult> EngineDidResume(MogwaiEngine engine) => EvalResult.NoError;
-
-    // STUDIO connection
-    public async Task<EvalResult> StudioDidConnect(MogwaiEngine engine) => EvalResult.NoError;
-    public async Task<EvalResult> StudioDidDisconnect(MogwaiEngine engine) => EvalResult.NoError;
-    public async Task<EvalResult> SocketServerDidStart(MogwaiEngine engine, IPAddress address, int port) => EvalResult.NoError;
-    public async Task<EvalResult> SocketServerDidStop(MogwaiEngine engine) => EvalResult.NoError;
 }
 ```
+
+Les implémentations par défaut utilisent automatiquement `System.Console` pour toutes les entrées/sorties console lorsque `engine.IsHostConsole` est `true` (détecté au démarrage du moteur). Pour les hôtes non-console (WinForms, MAUI), toutes les méthodes console sont des no-ops par défaut — pas d'exception, pas de crash.
+
+Ne surchargez que les méthodes qui nécessitent un comportement personnalisé pour votre application. Consultez la section [Interface IDelegate](#idelegate-interface) pour la liste complète des valeurs par défaut.
 
 ---
 
@@ -305,24 +231,24 @@ L'interface `IDelegate` est le pont entre MOGWAI et votre application.
 
 ### Interface complète
 
+Depuis la version 8.8, toutes les méthodes ont des implémentations par défaut. Ne surchargez que ce que votre application gère réellement.
+
 ```csharp
 namespace MOGWAI.Interfaces;
 
 public interface IDelegate
 {
-    // Lifecycle
+    // Lifecycle — no-op par défaut
     Task ProgramStart(MogwaiEngine engine, string code);
     Task ProgramEnd(MogwaiEngine engine, EvalResult result);
     Task<EvalResult> EngineDidPause(MogwaiEngine engine);
     Task<EvalResult> EngineDidResume(MogwaiEngine engine);
 
-    // Console I/O - Basic
+    // Console I/O — System.Console par défaut (si engine.IsHostConsole est true)
     Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message);
     Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message);
     Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine);
     Task<(EvalResult result, string? value)> Prompt(MogwaiEngine engine, string message);
-
-    // Console I/O - Advanced
     Task<EvalResult> ConsoleShow(MogwaiEngine engine);
     Task<EvalResult> ConsoleHide(MogwaiEngine engine);
     Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y);
@@ -330,25 +256,59 @@ public interface IDelegate
     Task<EvalResult> ConsoleSetForegroundColor(MogwaiEngine engine, string color);
     Task<EvalResult> ConsoleSetBackgroundColor(MogwaiEngine engine, string color);
     Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine);
+    Task<int> ConsoleWidth(MogwaiEngine engine);
+    Task<int> ConsoleHeight(MogwaiEngine engine);
 
-    // Custom Functions
+    // Fonctions personnalisées — liste vide / signal de délégation par défaut
     string[] HostFunctions(MogwaiEngine engine);
     Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string word);
 
-    // Runtime Messages
+    // Skills — liste vide par défaut
+    string[] Skills(MogwaiEngine engine);
+
+    // Messages runtime — no-op par défaut
     Task<EvalResult> MessageReceivedFromRuntime(MogwaiEngine engine, string message, MOGObject parameter);
 
-    // Debug Output
+    // Sortie debug — no-op par défaut
     Task<EvalResult> DebugMessage(MogwaiEngine engine, string message);
     Task<EvalResult> DebugClear(MogwaiEngine engine);
 
-    // MOGWAI STUDIO Connection
+    // Connexion MOGWAI STUDIO — no-op par défaut
     Task<EvalResult> StudioDidConnect(MogwaiEngine engine);
     Task<EvalResult> StudioDidDisconnect(MogwaiEngine engine);
     Task<EvalResult> SocketServerDidStart(MogwaiEngine engine, IPAddress address, int port);
     Task<EvalResult> SocketServerDidStop(MogwaiEngine engine);
 }
 ```
+
+### Implémentations par défaut et `engine.IsHostConsole`
+
+Le moteur détecte au démarrage s'il s'exécute dans un vrai contexte console (`engine.IsHostConsole`). Toutes les implémentations par défaut des méthodes console utilisent ce flag : elles appellent `System.Console` si `true`, et ne font rien si `false`.
+
+Un hôte WinForms ou MAUI qui ne surcharge aucune méthode console ne plantera pas — il obtient simplement des no-ops. Un hôte console pure obtient un comportement `System.Console` complet gratuitement.
+
+| Méthode | Comportement par défaut |
+|--------|------------------------|
+| `ConsolePrintLn` | `Console.WriteLine` si `IsHostConsole`, sinon no-op |
+| `ConsolePrint` | `Console.Write` si `IsHostConsole`, sinon no-op |
+| `ConsoleClearScreen` | `Console.Clear` si `IsHostConsole`, sinon no-op |
+| `ConsoleLocate` | `Console.SetCursorPosition` si `IsHostConsole`, sinon no-op |
+| `ConsoleGetCursorPosition` | `Console.CursorLeft/Top` si `IsHostConsole`, sinon `(0,0)` |
+| `ConsoleGetInputKey` | `Console.KeyAvailable` + `ReadKey` si `IsHostConsole`, sinon `-1` |
+| `Prompt` | `Console.Write` + `ReadLine` si `IsHostConsole`, sinon `null` |
+| `ConsoleWidth` | `Console.WindowWidth` si `IsHostConsole`, sinon `0` |
+| `ConsoleHeight` | `Console.WindowHeight` si `IsHostConsole`, sinon `0` |
+| `ConsoleShow` / `ConsoleHide` | no-op |
+| `ConsoleSetForegroundColor` / `ConsoleSetBackgroundColor` | no-op |
+| `ProgramStart` / `ProgramEnd` | no-op |
+| `EngineDidPause` / `EngineDidResume` | no-op |
+| `MessageReceivedFromRuntime` | no-op |
+| `DebugMessage` / `DebugClear` | no-op |
+| `StudioDidConnect` / `StudioDidDisconnect` | no-op |
+| `SocketServerDidStart` / `SocketServerDidStop` | no-op |
+| `HostFunctions` | `[]` (tableau vide) |
+| `ExecuteHostFunction` | `EvalResult.NoExternalFunction` (signal de délégation) |
+| `Skills` | `[]` (tableau vide) |
 
 ### Méthodes principales
 
@@ -357,14 +317,14 @@ public interface IDelegate
 ```csharp
 public async Task ProgramStart(MogwaiEngine engine, string code)
 {
-    // Called before script execution starts
+    // Appelé avant le début de l'exécution du script
     Console.WriteLine("Script starting...");
     await Task.CompletedTask;
 }
 
 public async Task ProgramEnd(MogwaiEngine engine, EvalResult result)
 {
-    // Called after script execution ends
+    // Appelé après la fin de l'exécution du script
     if (result.IsError)
         Console.WriteLine($"Script failed: {result.Error.Message}");
     else
@@ -372,139 +332,53 @@ public async Task ProgramEnd(MogwaiEngine engine, EvalResult result)
 
     await Task.CompletedTask;
 }
-
-public async Task<EvalResult> EngineDidPause(MogwaiEngine engine)
-{
-    // Called when execution is paused (breakpoint, debug)
-    Console.WriteLine("Execution paused");
-    return EvalResult.NoError;
-}
-
-public async Task<EvalResult> EngineDidResume(MogwaiEngine engine)
-{
-    // Called when execution resumes
-    Console.WriteLine("Execution resumed");
-    return EvalResult.NoError;
-}
 ```
 
 #### Entrées/Sorties console
 
-**Fonctions console de base :**
+Ne surchargez que les méthodes pertinentes pour votre hôte. Pour une application WinForms, `ConsolePrintLn` et `ConsolePrint` redirigent typiquement vers un TextBox :
 
 ```csharp
 public async Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message)
 {
-    // MOGWAI '?' or console.printLn
-    Console.WriteLine(message);
+    Invoke(() => OutputTextBox.AppendText(message + "\r\n"));
     return EvalResult.NoError;
 }
 
 public async Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message)
 {
-    // MOGWAI '??' or console.print
-    Console.Write(message);
+    Invoke(() => OutputTextBox.AppendText(message));
     return EvalResult.NoError;
-}
-
-public async Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine)
-{
-    // MOGWAI console.clear
-    Console.Clear();
-    return EvalResult.NoError;
-}
-
-public async Task<(EvalResult result, string? value)> Prompt(
-    MogwaiEngine engine, string message)
-{
-    // MOGWAI console.prompt
-    Console.Write(message);
-    string? input = Console.ReadLine();
-    return (EvalResult.NoError, input);
 }
 ```
 
-**Fonctions console avancées :**
+Pour les hôtes non-console, `ConsoleGetInputKey` doit capturer les événements clavier via une queue :
 
 ```csharp
-public async Task<EvalResult> ConsoleShow(MogwaiEngine engine)
+private readonly ConcurrentQueue<int> _keyQueue = new();
+
+// Branché sur l'événement KeyDown du formulaire
+protected override void OnKeyDown(KeyEventArgs e)
 {
-    // MOGWAI console.show - Show console window
-    // Implementation depends on platform (Windows native calls, etc.)
-    return EvalResult.NoError;
+    _keyQueue.Enqueue((int)e.KeyCode);
+    base.OnKeyDown(e);
 }
 
-public async Task<EvalResult> ConsoleHide(MogwaiEngine engine)
+public Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine)
 {
-    // MOGWAI console.hide - Hide console window
-    // Implementation depends on platform
-    return EvalResult.NoError;
-}
-
-public async Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y)
-{
-    // MOGWAI console.locate - Set cursor position
-    Console.SetCursorPosition(x, y);
-    return EvalResult.NoError;
-}
-
-public async Task<(EvalResult result, int x, int y)> ConsoleGetCursorPosition(
-    MogwaiEngine engine)
-{
-    // MOGWAI console.getCursorPosition
-    int x = Console.CursorLeft;
-    int y = Console.CursorTop;
-    return (EvalResult.NoError, x, y);
-}
-
-public async Task<EvalResult> ConsoleSetForegroundColor(
-    MogwaiEngine engine, string color)
-{
-    // MOGWAI console.setForegroundColor
-    if (Enum.TryParse<ConsoleColor>(color, true, out var consoleColor))
-    {
-        Console.ForegroundColor = consoleColor;
-        return EvalResult.NoError;
-    }
-    return EvalResult.Failure(engine, Error.BadArgumentValueError, "ConsoleSetForegroundColor");
-}
-
-public async Task<EvalResult> ConsoleSetBackgroundColor(
-    MogwaiEngine engine, string color)
-{
-    // MOGWAI console.setBackgroundColor
-    if (Enum.TryParse<ConsoleColor>(color, true, out var consoleColor))
-    {
-        Console.BackgroundColor = consoleColor;
-        return EvalResult.NoError;
-    }
-    return EvalResult.Failure(engine, Error.BadArgumentValueError, "ConsoleSetBackgroundColor");
-}
-
-public async Task<(EvalResult result, int key)> ConsoleGetInputKey(
-    MogwaiEngine engine)
-{
-    // MOGWAI console.getInputKey - Read single key press
-    var keyInfo = Console.ReadKey(intercept: true);
-    return (EvalResult.NoError, (int)keyInfo.Key);
+    int key = _keyQueue.TryDequeue(out int k) ? k : -1;
+    return Task.FromResult((EvalResult.NoError, key));
 }
 ```
 
-**Dans MOGWAI :**
+**Dans MOGWAI — polling avec `yield` pour le scheduling coopératif :**
 
-```mogwai
-# Basic I/O
-"Enter your name: " console.prompt -> 'name'
-"Hello {name}!" eval ?
-
-# Advanced console control
-10 20 console.locate
-"Red" console.setForegroundColor
-"At position 10,20 in red" ?
-
-# Read single key
-console.getInputKey -> 'key'
-"You pressed key: {key}" eval ?
+```
+# Attendre l'appui d'une touche sans affamer le scheduler
+while (console.getInputKey -1 ==) do
+{
+    yield { }
+}
 ```
 
 ---
@@ -544,6 +418,17 @@ public async Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string wo
             return EvalResult.NoExternalFunction;
     }
 }
+```
+
+### Le signal `NoExternalFunction`
+
+`EvalResult.NoExternalFunction` est un signal de délégation, pas une erreur fonctionnelle. Quand MOGWAI rencontre un mot inconnu, il interroge l'hôte via `ExecuteHostFunction`. L'hôte peut répondre de trois façons :
+
+- **`EvalResult.NoExternalFunction`** — l'hôte ne connaît pas ce mot. MOGWAI continue sa propre chaîne de résolution. Si rien ne résout le mot, MW.50 (`unknown word`) est levée.
+- **`EvalResult.NoError`** — l'hôte a reconnu et exécuté la fonction avec succès.
+- **Une erreur** — l'hôte a reconnu la fonction mais son exécution a échoué.
+
+L'implémentation par défaut retourne `NoExternalFunction`, ce qui est correct pour un hôte sans fonctions personnalisées — les mots inconnus passent simplement à la résolution interne de MOGWAI.
 ```
 
 ### Patron d'implémentation d'une fonction
@@ -615,6 +500,60 @@ private EvalResult ExecuteGreet(MogwaiEngine engine)
 
 ```mogwai
 greet ?  # Prints: Hello from custom function!
+```
+
+---
+
+## Skills
+
+Les skills sont des noms déclarés par l'hôte qui identifient des capacités disponibles dans le contexte d'exécution courant. Ils permettent aux scripts MOGWAI de vérifier au démarrage qu'ils s'exécutent dans le bon environnement.
+
+### Déclarer des skills
+
+Surchargez la méthode `Skills()` dans votre délégué :
+
+```csharp
+public string[] Skills(MogwaiEngine engine)
+{
+    return ["APP_GIZMO", "TUI", "BLE"];
+}
+```
+
+L'implémentation par défaut retourne un tableau vide — aucun skill déclaré. Le moteur fusionne les skills de l'hôte avec les skills éventuels du moteur et déduplique le résultat.
+
+### Utilisation des skills dans les scripts
+
+**Vérifier la disponibilité d'un skill :**
+
+```
+if ('APP_GIZMO' hasSkill) then
+{
+    # code spécifique à GIZMO
+}
+```
+
+**Asserter les skills requis en début de script :**
+
+```
+'APP_GIZMO' "Ce script nécessite GIZMO pour s'exécuter." mogwai.assertSkill
+'BLE' "Ce script nécessite le support BLE." mogwai.assertSkill
+
+# suite du script...
+```
+
+Si un skill requis est absent, `mogwai.assertSkill` lève MW.9 (`assert error`) et arrête l'exécution. Si `MOGWAI.onError` est défini, il est appelé automatiquement.
+
+**Lister tous les skills disponibles :**
+
+```
+skills ?   # → ('APP_GIZMO' 'TUI' 'BLE')
+```
+
+Les skills sont également accessibles via `mogwai.info` :
+
+```
+mogwai.info -> '$info'
+$info skills: get ?   # → ('APP_GIZMO' 'TUI' 'BLE')
 ```
 
 ---
@@ -1209,6 +1148,11 @@ public partial class FormMain : Form, IDelegate
     public string[] HostFunctions(MogwaiEngine engine)
     {
         return new[] { "turtle.move", "turtle.turn", "turtle.color" };
+    }
+
+    public string[] Skills(MogwaiEngine engine)
+    {
+        return ["APP_WINFORMS"];
     }
 
     public async Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string word)

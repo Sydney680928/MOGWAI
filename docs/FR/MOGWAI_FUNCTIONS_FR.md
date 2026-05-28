@@ -20,16 +20,17 @@ Affichera :
 
 ```
 name:                "MOGWAI CLI"
-version:             "8.0.0.0"
+version:             "8.8.0.0"
 platform:            "WINDOWS"
 architecture:        "X64"
 OSdescription:       "Microsoft Windows 10.0.26200"
 framework:           ".NET 9.0.13"
 runtimeID:           "win-x64"
-prompt:              "MOGWAI RUNTIME 8.0.0.0...
+prompt:              "MOGWAI RUNTIME 8.8.0.0...
 primitives:          ('+' '-' '*' '/' 'sin' 'cos' 'tan' 'asin' 'acos' '...
 externalKeywords:    ()
 hostKeywords:        ('?s' 'run' 'edit' 'file.edit' 'file.select')
+skills:              ('APP_GIZMO' 'TUI')
 debug:               true
 keepAlive:           true
 isTask:              false
@@ -48,6 +49,7 @@ isTask:              false
 | `primitives:`       | Liste des primitives disponibles.                                                                    |
 | `externalKeywords:` | Liste des mots-clés externes disponibles (fonctions fournies par les extensions).                    |
 | `hostKeywords:`     | Liste des mots-clés hôtes disponibles (fonctions fournies par l'hôte).                               |
+| `skills:`           | Liste des skills déclarés par l'hôte et le moteur (voir `skills`).                                   |
 | `debug:`            | true si le runtime est en mode debug.                                                                |
 | `extensions:`       | Liste des extensions chargées.                                                                       |
 | `keepAlive:`        | true si le runtime **MOGWAI** conserve son contexte d'exécution d'une session à l'autre.            |
@@ -83,6 +85,27 @@ Le message est utilisé dans l'affichage de l'erreur. Il n'est pas accessible pa
 
 # Condition as a boolean already on the stack
 a 0 >  "a must be positive" mogwai.assert
+```
+
+***
+
+### `mogwai.assertSkill`
+
+Vérifie qu'un skill est disponible dans le contexte d'exécution courant. Si le skill est absent, affiche le message et lève l'erreur **MW.9** (`assert error`), arrêtant l'exécution. Si `MOGWAI.onError` est défini, il est appelé automatiquement.
+
+Si le skill est présent, `mogwai.assertSkill` est un no-op.
+
+**Signature :** `name "message" mogwai.assertSkill`
+
+Le message est utilisé dans l'affichage de l'erreur. Il n'est pas accessible par programme — `error.last` retourne `MW.9`.
+
+Pattern typique en début de script pour vérifier les prérequis :
+
+```
+'APP_GIZMO' "Ce script nécessite GIZMO pour s'exécuter." mogwai.assertSkill
+'BLE' "Ce script nécessite le support BLE." mogwai.assertSkill
+
+# suite du script...
 ```
 
 ***
@@ -534,6 +557,37 @@ D:FF45AB23 (0 1 3) extract
 ### `wait`
 
 Suspend le runtime pendant une durée exprimée en millisecondes sans bloquer le traitement des messages de type événement et timer.
+
+***
+
+### `yield`
+
+Cède le contrôle au scheduler MOGWAI avant d'exécuter un bloc. Le bloc est posté dans la queue d'exécution du moteur, au même titre qu'un timer arrivant à échéance ou un événement déclenché. Tous les événements et timers en attente s'exécutent avant le bloc.
+
+**Signature :** `yield { ... }`
+
+`yield { }` avec un bloc vide est valide — utile pour céder le contrôle sans exécuter de code.
+
+Équivalent fonctionnel à `after 0 do { }`, avec une lisibilité supérieure.
+
+Le cas d'usage principal est la boucle de polling coopérative : sans `yield`, une boucle serrée prive le scheduler de temps CPU et peut empêcher la détection d'événements (comme les touches clavier). Avec `yield`, le moteur traite les événements en attente à chaque itération :
+
+```
+# Attendre l'appui d'une touche
+while (console.getInputKey -1 ==) do
+{
+    yield { }
+}
+```
+
+```
+# Céder le contrôle puis effectuer un traitement
+yield
+{
+    # s'exécute après tous les événements en attente
+    updateDisplay
+}
+```
 
 ***
 
@@ -1866,6 +1920,26 @@ Demande à l'hôte de fournir le code de la touche actuellement pressée. -1 si 
 
 ***
 
+### `console.width`
+
+Retourne la largeur de la fenêtre console en nombre de colonnes.
+
+```
+console.width ?   # → 120
+```
+
+***
+
+### `console.height`
+
+Retourne la hauteur de la fenêtre console en nombre de lignes.
+
+```
+console.height ?   # → 30
+```
+
+***
+
 ### `http.get`
 
 Effectue un http get sur une uri en spécifiant les valeurs d'en-tête nécessaires.
@@ -3017,6 +3091,38 @@ $F->props: ?
 $F->_props: ?
 $F->funcs: ?
 $F->_funcs: ?
+```
+
+***
+
+### `skills`
+
+Retourne la liste fusionnée et dédupliquée de tous les skills déclarés dans le contexte d'exécution courant (skills du moteur et skills de l'hôte). Retourne une liste vide `()` si aucun skill n'est déclaré.
+
+Les skills sont des noms qui identifient des capacités disponibles dans l'hôte qui embarque MOGWAI. Ils permettent à un script de vérifier qu'il s'exécute dans le bon environnement avant de s'exécuter.
+
+```
+skills ?   # → ('APP_GIZMO' 'TUI' 'BLE')
+```
+
+Voir aussi : `hasSkill`, `mogwai.assertSkill`, `mogwai.info` (clé `skills:`).
+
+***
+
+### `hasSkill`
+
+Teste la présence d'un skill dans le contexte d'exécution courant. Retourne `true` si le skill est disponible, `false` sinon. Ne lève jamais d'erreur.
+
+**Signature :** `name hasSkill → bool`
+
+```
+'APP_GIZMO' hasSkill   # → true ou false
+
+# Exécution conditionnelle selon la disponibilité du skill
+if ('BLE' hasSkill) then
+{
+    # code utilisant le BLE...
+}
 ```
 
 ***

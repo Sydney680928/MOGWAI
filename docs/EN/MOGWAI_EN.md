@@ -34,6 +34,7 @@
 - [EVENTS](#events)
 - [OBJECT-ORIENTED PROGRAMMING](#object-oriented-programming)
 - [TASKS](#tasks)
+- [SKILLS](#skills)
 
 
 # INTRODUCTION
@@ -113,6 +114,14 @@ There are mainly 2 functions for displaying values on the screen.
 ```
 
 To clear the screen, you must use the `console.clear` function.
+
+To get the dimensions of the console window, use `console.width` and `console.height`, which return respectively the number of columns and the number of rows:
+
+```
+console.width -> '$w'
+console.height -> '$h'
+"Console: {! $w } x {! $h }" eval ?
+```
 
 # SCREEN INPUT
 
@@ -2622,7 +2631,33 @@ With the `wait` function, the program is suspended for the number of millisecond
     250 wait
 }
 ```
- 
+
+## The `yield` function
+
+The `yield` function yields control to the MOGWAI scheduler before executing a block. The block is posted to the engine's execution queue, just like a timer reaching its deadline or a triggered event. All pending events and timers run before the block executes.
+
+Unlike `wait`, `yield` does not pause for a fixed duration — it simply gives the scheduler an opportunity to process pending work before continuing.
+
+The main use case is cooperative polling loops. Without `yield`, a tight loop starves the scheduler and may prevent event detection. With `yield`, the engine processes pending work at each iteration:
+
+```
+# Wait for a key press without blocking the scheduler
+while (console.getInputKey -1 ==) do
+{
+    yield { }
+}
+```
+
+`yield { }` with an empty block is valid — useful to yield control without executing any code. `yield` is functionally equivalent to `after 0 do { }`, with clearer intent.
+
+```
+# Yield and then perform some work
+yield
+{
+    "This runs after all pending events." ?
+}
+```
+
 # EXITING A FUNCTION, A LOOP OR THE PROGRAM
 
 The flow of a program can be "broken" by the 5 functions `mogwai.exit`, `mogwai.halt`, `mogwai.assert`, `break` and `return`.
@@ -4284,5 +4319,51 @@ TASK DID PUBLISH [task: 'T3' message: "Download duration: (807 ms)"]
 TASK DID END [task: 'T3' result: true]
 PROGRAM COMPLETED
 ```
+
+# SKILLS
+
+A *skill* is a name declared by the host application that embeds MOGWAI, identifying a capability available in that specific execution context. Skills allow a script to verify at startup that it is running in the right environment before executing.
+
+For example, an application like GIZMO (a TUI interface builder powered by MOGWAI) can declare a skill `'APP_GIZMO'`. A script written for GIZMO can then check for that skill at the top and exit cleanly with an informative message if it is missing.
+
+## Querying available skills
+
+The `skills` function returns the complete list of skills declared in the current context:
+
+```
+skills ?   # → ('APP_GIZMO' 'TUI' 'BLE')
+```
+
+The `hasSkill` function tests whether a specific skill is present and returns a boolean:
+
+```
+if ('APP_GIZMO' hasSkill) then
+{
+    # GIZMO-specific code
+}
+```
+
+## Asserting a required skill
+
+The `mogwai.assertSkill` function checks for a skill and stops execution with an error message if it is absent. It is the recommended way to declare script prerequisites:
+
+```
+'APP_GIZMO' "This script requires GIZMO to run." mogwai.assertSkill
+'BLE' "This script requires BLE support." mogwai.assertSkill
+
+# rest of the script...
+```
+
+If a required skill is missing, `mogwai.assertSkill` raises MW.9 (`assert error`) and calls `MOGWAI.onError` if it is defined. If all required skills are present, `mogwai.assertSkill` is a no-op.
+
+## Skills in `mogwai.info`
+
+The skills available in the current context are also accessible via the `skills:` key of the `mogwai.info` record:
+
+```
+mogwai.info -> '$info'
+$info skills: get ?   # → ('APP_GIZMO' 'TUI')
+```
+
 
 

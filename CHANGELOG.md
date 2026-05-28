@@ -9,6 +9,87 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Skill system** — scripts can now verify at startup that they are running in the right host environment.
+
+  A *skill* is a name declared by the host application that embeds MOGWAI, identifying a capability available in that specific execution context. The engine merges host-declared skills with any engine-level skills and deduplicates the result.
+
+  Three new primitives:
+
+  - **`skills`** — returns the merged, deduplicated list of all available skills. Returns an empty list `()` if no skills are declared.
+
+    ```
+    skills ?   # → ('APP_GIZMO' 'TUI' 'BLE')
+    ```
+
+  - **`hasSkill`** — tests whether a specific skill is present. Returns `true` or `false`. Never raises an error.
+
+    ```
+    if ('BLE' hasSkill) then
+    {
+        # BLE-specific code
+    }
+    ```
+
+  - **`mogwai.assertSkill`** — asserts that a skill is present. If absent, displays the message and raises **MW.9** (`assert error`), stopping execution. If `MOGWAI.onError` is defined, it is called automatically. No-op if the skill is present.
+
+    ```
+    'APP_GIZMO' "This script requires GIZMO to run." mogwai.assertSkill
+    'BLE' "This script requires BLE support." mogwai.assertSkill
+
+    # rest of the script...
+    ```
+
+  Skills are also exposed via the `skills:` key of `mogwai.info`.
+
+  **Host integration** — the `IDelegate` interface gains a `Skills()` method with a default implementation returning an empty array. Existing hosts require no changes.
+
+  ```csharp
+  public string[] Skills(MogwaiEngine engine) => ["APP_GIZMO", "TUI"];
+  ```
+
+- **`console.width` primitive** — returns the width of the console window in columns. Returns `0` in non-console hosts.
+
+  ```
+  console.width ?   # → 120
+  ```
+
+- **`console.height` primitive** — returns the height of the console window in rows. Returns `0` in non-console hosts.
+
+  ```
+  console.height ?   # → 30
+  ```
+
+- **`yield` primitive** — hands control back to the runtime for the duration of the block execution.
+
+  ```
+  yield
+  {
+      # this runs after pending events and timers
+  }
+  ```
+
+  `yield { }` with an empty block is valid.
+
+- **`IDelegate` default implementations** — all non-essential methods of `IDelegate` now have default implementations, making MOGWAI embeddable with zero delegate code for simple use cases.
+
+  The engine detects at startup whether it is running in a real console context (`engine.IsHostConsole`). Console-related defaults use `System.Console` when `true` and silently do nothing when `false`. Non-console hosts (WinForms, MAUI) are fully supported out of the box without any override.
+
+  | Method | Default |
+  |--------|---------|
+  | `ConsolePrintLn` / `ConsolePrint` | `Console.WriteLine` / `Write` if `IsHostConsole` |
+  | `ConsoleClearScreen` | `Console.Clear` if `IsHostConsole` |
+  | `ConsoleLocate` | `Console.SetCursorPosition` if `IsHostConsole` |
+  | `ConsoleGetCursorPosition` | `Console.CursorLeft/Top` if `IsHostConsole`, else `(0,0)` |
+  | `ConsoleGetInputKey` | `Console.KeyAvailable` + `ReadKey` if `IsHostConsole`, else `-1` |
+  | `Prompt` | `Console.Write` + `ReadLine` if `IsHostConsole`, else `null` |
+  | `ConsoleWidth` / `ConsoleHeight` | `Console.WindowWidth/Height` if `IsHostConsole`, else `0` |
+  | All other methods | no-op |
+  | `HostFunctions` | `[]` |
+  | `ExecuteHostFunction` | `EvalResult.NoExternalFunction` |
+  | `Skills` | `[]` |
+
+- **`mogwai.info` — `skills:` key added** — the record returned by `mogwai.info` now includes a `skills:` key containing the merged list of available skills, identical to the result of the `skills` primitive.
+
 ### Changed
 
 ### Fixed

@@ -34,6 +34,7 @@
 - [ÉVÉNEMENTS](#événements)
 - [PROGRAMMATION ORIENTÉE OBJET](#programmation-orientée-objet)
 - [TÂCHES](#tâches)
+- [SKILLS](#skills)
 
 
 # INTRODUCTION
@@ -113,6 +114,14 @@ Il existe principalement 2 fonctions pour afficher des valeurs à l'écran.
 ```
 
 Pour effacer l'écran, il faut utiliser la fonction `console.clear`.
+
+Pour connaître les dimensions de la fenêtre console, on utilise `console.width` et `console.height`, qui retournent respectivement le nombre de colonnes et le nombre de lignes :
+
+```
+console.width -> '$w'
+console.height -> '$h'
+"Console : {! $w } x {! $h }" eval ?
+```
 
 # SAISIE À L'ÉCRAN
 
@@ -2622,7 +2631,33 @@ Avec la fonction `wait`, le programme est suspendu pendant le nombre de millisec
     250 wait
 }
 ```
- 
+
+## La fonction `yield`
+
+La fonction `yield` cède le contrôle au scheduler MOGWAI avant d'exécuter un bloc. Le bloc est posté dans la queue d'exécution du moteur, au même titre qu'un timer arrivant à échéance ou un événement déclenché. Tous les événements et timers en attente s'exécutent avant le bloc.
+
+Contrairement à `wait`, `yield` ne fait pas de pause pour une durée fixe — il donne simplement au scheduler l'opportunité de traiter le travail en attente avant de continuer.
+
+Le cas d'usage principal est la boucle de polling coopérative. Sans `yield`, une boucle serrée prive le scheduler de temps CPU et peut empêcher la détection d'événements. Avec `yield`, le moteur traite les événements en attente à chaque itération :
+
+```
+# Attendre l'appui d'une touche sans bloquer le scheduler
+while (console.getInputKey -1 ==) do
+{
+    yield { }
+}
+```
+
+`yield { }` avec un bloc vide est valide — utile pour céder le contrôle sans exécuter de code. `yield` est fonctionnellement équivalent à `after 0 do { }`, avec une lisibilité supérieure.
+
+```
+# Céder le contrôle puis effectuer un traitement
+yield
+{
+    "Ceci s'exécute après tous les événements en attente." ?
+}
+```
+
 # SORTIR D'UNE FONCTION, D'UNE BOUCLE OU DU PROGRAMME
 
 Le flux d'un programme peut être « interrompu » par les 5 fonctions `mogwai.exit`, `mogwai.halt`, `mogwai.assert`, `break` et `return`.
@@ -4298,5 +4333,51 @@ TASK DID PUBLISH [task: 'T3' message: "Download duration: (807 ms)"]
 TASK DID END [task: 'T3' result: true]
 PROGRAM COMPLETED
 ```
+
+# SKILLS
+
+Un *skill* est un nom déclaré par l'application hôte qui embarque MOGWAI, identifiant une capacité disponible dans ce contexte d'exécution spécifique. Les skills permettent à un script de vérifier au démarrage qu'il s'exécute dans le bon environnement avant de s'exécuter.
+
+Par exemple, une application comme GIZMO (un outil de création d'interfaces TUI motorisé par MOGWAI) peut déclarer un skill `'APP_GIZMO'`. Un script écrit pour GIZMO peut alors vérifier ce skill en début de script et terminer proprement avec un message explicite s'il est absent.
+
+## Interroger les skills disponibles
+
+La fonction `skills` retourne la liste complète des skills déclarés dans le contexte courant :
+
+```
+skills ?   # → ('APP_GIZMO' 'TUI' 'BLE')
+```
+
+La fonction `hasSkill` teste la présence d'un skill spécifique et retourne un booléen :
+
+```
+if ('APP_GIZMO' hasSkill) then
+{
+    # code spécifique à GIZMO
+}
+```
+
+## Asserter un skill requis
+
+La fonction `mogwai.assertSkill` vérifie la présence d'un skill et arrête l'exécution avec un message d'erreur s'il est absent. C'est la façon recommandée de déclarer les prérequis d'un script :
+
+```
+'APP_GIZMO' "Ce script nécessite GIZMO pour s'exécuter." mogwai.assertSkill
+'BLE' "Ce script nécessite le support BLE." mogwai.assertSkill
+
+# suite du script...
+```
+
+Si un skill requis est absent, `mogwai.assertSkill` lève MW.9 (`assert error`) et appelle `MOGWAI.onError` s'il est défini. Si tous les skills requis sont présents, `mogwai.assertSkill` est un no-op.
+
+## Skills dans `mogwai.info`
+
+Les skills disponibles dans le contexte courant sont également accessibles via la clé `skills:` du record retourné par `mogwai.info` :
+
+```
+mogwai.info -> '$info'
+$info skills: get ?   # → ('APP_GIZMO' 'TUI')
+```
+
 
 
