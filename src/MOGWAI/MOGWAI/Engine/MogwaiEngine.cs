@@ -551,6 +551,7 @@ namespace MOGWAI.Engine
             RegisterPrivatePrimitive(new PrimitiveDECLARE(this, "DECLARE"), "=>");
             RegisterPrivatePrimitive(new PrimitivePIPEREF(this, "PIPEREF"), "-->");          
             RegisterPrivatePrimitive(new PrimitiveDEFCLASS(this, "DEFCLASS"), "class");
+            RegisterPrivatePrimitive(new PrimitiveYIELD(this, "YIELD"), "yield");   
 
             _primitivesByName = _initializingPrimitivesByName.ToFrozenDictionary();
             _initializingPrimitivesByName.Clear();
@@ -1737,6 +1738,16 @@ namespace MOGWAI.Engine
         }
 
         internal string[] GetEvents() => _events.Keys.ToArray();
+
+        #endregion
+
+        #region FIREOBJECTS FUNCTIONS
+
+        internal void RegisterYieldFunction(MOGFunction func)
+        {
+            var fireObject = new MOGFireObject(this, "YIELD", func);
+            RegisterFireObject(fireObject);
+        }
 
         #endregion
 

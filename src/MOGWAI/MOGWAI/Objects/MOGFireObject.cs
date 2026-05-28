@@ -16,7 +16,7 @@ using MOGWAI.Engine;
 
 namespace MOGWAI.Objects
 {
-    internal abstract class MOGFireObject : MOGObject
+    internal class MOGFireObject : MOGObject
     {
         public string Name { get; init; }
 
@@ -26,6 +26,11 @@ namespace MOGWAI.Objects
         {
             Name = name;
             Function = function;
+        }
+
+        public override MOGFireObject Clone()
+        {
+            throw new NotImplementedException();
         }
     }
 }

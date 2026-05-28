@@ -76,10 +76,5 @@ namespace MOGWAI.Objects
                 }
             }
         }
-
-        public override MOGTimer Clone()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

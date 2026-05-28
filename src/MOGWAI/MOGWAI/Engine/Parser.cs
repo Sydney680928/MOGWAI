@@ -895,6 +895,10 @@ namespace MOGWAI.Engine
                             result = UpdateForAfterSugar(engine, i);
                             break;
 
+                        case "yield":
+                            result = UpdateForYieldSugar(engine, i);
+                            break;
+
                         case "switch":
                             result = UpdateForSwitchSugar(engine, i);
                             break;
@@ -1195,6 +1199,37 @@ namespace MOGWAI.Engine
                             return true;
                         }
                     }
+                }
+            }
+
+            return false;
+        }
+
+        private bool UpdateForYieldSugar(MogwaiEngine engine, int index)
+        {
+            // 0 yield
+            // 1 code
+
+            if (_parsedObjects.Count - index >= 2)
+            {
+                var code = _parsedObjects[index + 1] as MOGCode;
+
+                if (code != null)
+                {
+                    var primitive = engine.GetPrimitive(typeof(PrimitiveYIELD), true);
+
+                    if (primitive != null)
+                    {
+                        primitive.StartPos = _parsedObjects[index].StartPos;
+                        primitive.EndPos = _parsedObjects[index].EndPos;
+                        primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
+                        primitive.Bag = _parsedObjects[index].Bag;
+
+                        _parsedObjects.RemoveRange(index, 2);
+                        _parsedObjects.InsertRange(index, [code.ToFunction(), primitive]);
+                        return true;
+                    }
+
                 }
             }
 
