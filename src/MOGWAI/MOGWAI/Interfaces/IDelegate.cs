@@ -20,53 +20,100 @@ namespace MOGWAI.Interfaces
 {
     public interface IDelegate
     {
-        Task ProgramStart(MogwaiEngine engine, string code);
+        #region PROGRAM LIFECYCLE
 
-        Task ProgramEnd(MogwaiEngine engine, EvalResult result);
+        Task ProgramStart(MogwaiEngine engine, string code) => Task.CompletedTask;
 
-        Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine);
+        Task ProgramEnd(MogwaiEngine engine, EvalResult result) => Task.CompletedTask;
 
-        Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message);
+        Task<EvalResult> EngineDidPause(MogwaiEngine engine) => Task.FromResult(EvalResult.NoError);    
 
-        Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message); 
+        Task<EvalResult> EngineDidResume(MogwaiEngine engine) => Task.FromResult(EvalResult.NoError);   
 
-        Task<EvalResult> ConsoleShow(MogwaiEngine engine);
+        Task<EvalResult> MessageReceivedFromRuntime(MogwaiEngine engine, string message, MOGObject parameter) => Task.FromResult(EvalResult.NoError);
 
-        Task<EvalResult> ConsoleHide(MogwaiEngine engine);
+        #endregion
 
-        Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y);
+        #region CONSOLE
+
+        Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine)
+        {
+            Console.Clear();
+            return Task.FromResult(EvalResult.NoError);
+        }
+
+        Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message)
+        {
+            Console.WriteLine(message); 
+            return Task.FromResult(EvalResult.NoError);
+        }
+
+        Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message)
+        {
+            Console.Write(message); 
+            return Task.FromResult(EvalResult.NoError);
+        }
+
+        Task<EvalResult> ConsoleShow(MogwaiEngine engine) => Task.FromResult(EvalResult.NoError);
+
+        Task<EvalResult> ConsoleHide(MogwaiEngine engine) => Task.FromResult(EvalResult.NoError);
+
+        Task<EvalResult> ConsoleLocate(MogwaiEngine engine, int x, int y)
+        {
+            Console.SetCursorPosition(x, y); 
+            return Task.FromResult(EvalResult.NoError);
+        }
         
-        Task<(EvalResult result, int x, int y)> ConsoleGetCursorPosition(MogwaiEngine engine);
+        Task<(EvalResult result, int x, int y)> ConsoleGetCursorPosition(MogwaiEngine engine)
+        {
+            return Task.FromResult((EvalResult.NoError, Console.CursorLeft, Console.CursorTop));
+        }
 
-        Task<EvalResult> ConsoleSetForegroundColor(MogwaiEngine engine, string color);
+        Task<EvalResult> ConsoleSetForegroundColor(MogwaiEngine engine, string color) => Task.FromResult(EvalResult.NoError);
 
-        Task<EvalResult> ConsoleSetBackgroundColor(MogwaiEngine engine, string color);
+        Task<EvalResult> ConsoleSetBackgroundColor(MogwaiEngine engine, string color) => Task.FromResult(EvalResult.NoError);
 
-        Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine);
+        Task<(EvalResult result, int key)> ConsoleGetInputKey(MogwaiEngine engine)
+        {
+            var keyInfo = Console.ReadKey(true);
+            return Task.FromResult((EvalResult.NoError, (int)keyInfo.Key));
+        }
 
-        Task<(EvalResult result, string? value)> Prompt(MogwaiEngine engine, string message);
-        
-        string[] HostFunctions(MogwaiEngine engine);
+        Task<(EvalResult result, string? value)> Prompt(MogwaiEngine engine, string message)
+        {
+            Console.Write(message); 
+            var input = Console.ReadLine();
+            return Task.FromResult((EvalResult.NoError, input));
+        }
 
-        Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string word);
+        #endregion
 
-        Task<EvalResult> MessageReceivedFromRuntime(MogwaiEngine engine, string message, MOGObject parameter);
+        #region HOST FUNCTIONS
 
-        Task<EvalResult> DebugMessage(MogwaiEngine engine, string message);
+        string[] HostFunctions(MogwaiEngine engine) => [];
 
-        Task<EvalResult> DebugClear(MogwaiEngine engine);
-        
-        Task<EvalResult> EngineDidPause(MogwaiEngine engine);
+        Task<EvalResult> ExecuteHostFunction(MogwaiEngine engine, string word) => Task.FromResult(EvalResult.NoExternalFunction);
 
-        Task<EvalResult> EngineDidResume(MogwaiEngine engine);
+        #endregion
 
-        Task<EvalResult> StudioDidConnect(MogwaiEngine engine);
+        #region DEBUG
 
-        Task<EvalResult> StudioDidDisconnect(MogwaiEngine engine);
+        Task<EvalResult> DebugMessage(MogwaiEngine engine, string message) => Task.FromResult(EvalResult.NoError);
 
-        Task<EvalResult> SocketServerDidStart(MogwaiEngine engine, IPAddress address, int port);
-        
-        Task<EvalResult> SocketServerDidStop(MogwaiEngine engine);
+        Task<EvalResult> DebugClear(MogwaiEngine engine) => Task.FromResult(EvalResult.NoError);
 
+        #endregion
+
+        #region STUDIO
+
+        Task<EvalResult> StudioDidConnect(MogwaiEngine engine) => Task.FromResult(EvalResult.NoError);  
+
+        Task<EvalResult> StudioDidDisconnect(MogwaiEngine engine) => Task.FromResult(EvalResult.NoError);   
+
+        Task<EvalResult> SocketServerDidStart(MogwaiEngine engine, IPAddress address, int port) => Task.FromResult(EvalResult.NoError); 
+
+        Task<EvalResult> SocketServerDidStop(MogwaiEngine engine) => Task.FromResult(EvalResult.NoError);   
+
+        #endregion
     }
 }
