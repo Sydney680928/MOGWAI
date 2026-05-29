@@ -8,9 +8,13 @@ public partial class PromptWindow : Window
 {
     public string? Result { get; private set; }
 
-    public PromptWindow(string message)
+    public PromptWindow()
     {
         InitializeComponent();
+    }
+
+    public PromptWindow(string message) : this()
+    {
         MessageLabel.Text = message;
         OkButton.Click += OkButton_Click;
         InputBox.KeyDown += InputBox_KeyDown;
