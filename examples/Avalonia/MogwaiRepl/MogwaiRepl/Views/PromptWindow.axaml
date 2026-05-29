@@ -1,0 +1,32 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="MogwaiRepl.Views.PromptWindow"
+        Title="Saisie" Width="400" Height="150"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner"
+        Background="#1E1E2E">
+
+  <DockPanel Margin="16">
+
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto" Margin="0,10,0,0">
+      <Button Grid.Column="1" Content="OK"
+              Background="#A6E3A1" Foreground="#1E1E2E"
+              FontWeight="Bold" Padding="20,6"
+              Name="OkButton"/>
+    </Grid>
+
+    <TextBlock Name="MessageLabel"
+               Foreground="#CDD6F4"
+               FontFamily="Cascadia Code,Consolas,monospace"
+               FontSize="13" Margin="0,0,0,8"
+               DockPanel.Dock="Top"/>
+
+    <TextBox Name="InputBox"
+             FontFamily="Cascadia Code,Consolas,monospace"
+             FontSize="13"
+             Background="#313244" Foreground="#CDD6F4"
+             CaretBrush="#CBA6F7" BorderBrush="#45475A"
+             Padding="8,6"/>
+
+  </DockPanel>
+</Window>

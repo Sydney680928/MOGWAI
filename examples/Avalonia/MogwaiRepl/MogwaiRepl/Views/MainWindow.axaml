@@ -1,0 +1,135 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:MogwaiRepl.ViewModels"
+        x:Class="MogwaiRepl.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="{Binding Title}"
+        Width="1100" Height="650"
+        Background="#1E1E2E">
+
+  <DockPanel Margin="12">
+
+    <!-- Barre du haut : titre + boutons fichiers + studio -->
+    <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto"
+          Margin="0,0,0,10">
+
+      <StackPanel Grid.Column="0" VerticalAlignment="Center">
+        <TextBlock Text="🐉 MOGWAI REPL"
+                   FontSize="20" FontWeight="Bold"
+                   Foreground="#CBA6F7"/>
+        <TextBlock Text="{Binding CurrentFilePath}"
+                   FontSize="11"
+                   Foreground="#6C7086"
+                   IsVisible="{Binding CurrentFilePath, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+      </StackPanel>
+
+      <Button Grid.Column="1" Content="🗋 New"
+              Command="{Binding NewCommand}"
+              Background="#45475A" Foreground="#CDD6F4"
+              Margin="0,0,4,0" Padding="10,5"/>
+
+      <Button Grid.Column="2" Content="📂 Open"
+              Command="{Binding OpenCommand}"
+              Background="#45475A" Foreground="#CDD6F4"
+              Margin="0,0,4,0" Padding="10,5"/>
+
+      <Button Grid.Column="3" Content="💾 Save"
+              Command="{Binding SaveCommand}"
+              Background="#45475A" Foreground="#CDD6F4"
+              Margin="0,0,4,0" Padding="10,5"/>
+
+      <Button Grid.Column="4" Content="💾 Save As"
+              Command="{Binding SaveAsCommand}"
+              Background="#45475A" Foreground="#CDD6F4"
+              Margin="0,0,4,0" Padding="10,5"/>
+
+      <Button Grid.Column="5" Content="{Binding StudioStatus}"
+              Command="{Binding ToggleStudioCommand}"
+              Background="#89B4FA" Foreground="#1E1E2E"
+              FontWeight="Bold"
+              Padding="10,5"/>
+    </Grid>
+
+    <!-- Barre du bas : Run / Stop / Clear -->
+    <Grid DockPanel.Dock="Bottom" ColumnDefinitions="*,Auto,Auto,Auto"
+          Margin="0,8,0,0">
+
+      <TextBlock Grid.Column="0"
+                 Text="Ctrl+Enter to run  •  Ctrl+↑↓ for history"
+                 Foreground="#6C7086" FontSize="11"
+                 VerticalAlignment="Center"/>
+
+      <Button Grid.Column="1" Content="▶ Run"
+              Command="{Binding RunCommand}"
+              Background="#A6E3A1" Foreground="#1E1E2E"
+              FontWeight="Bold" Margin="0,0,4,0" Padding="12,6"/>
+
+      <Button Grid.Column="2" Content="⏹ Stop"
+              Command="{Binding StopCommand}"
+              IsEnabled="{Binding IsRunning}"
+              Background="#FAB387" Foreground="#1E1E2E"
+              FontWeight="Bold" Margin="0,0,4,0" Padding="12,6"/>
+
+      <Button Grid.Column="3" Content="✕ Clear"
+              Command="{Binding ClearOutputCommand}"
+              Background="#F38BA8" Foreground="#1E1E2E"
+              FontWeight="Bold" Padding="12,6"/>
+    </Grid>
+
+    <!-- Split : éditeur gauche / sortie droite -->
+    <Grid ColumnDefinitions="*,8,*">
+
+      <!-- Éditeur -->
+      <Border Grid.Column="0"
+              Background="#313244" CornerRadius="6"
+              BorderBrush="#45475A" BorderThickness="1">
+        <TextBox Text="{Binding InputCode}"
+                 AcceptsReturn="True"
+                 AcceptsTab="True"
+                 FontFamily="Cascadia Code,Consolas,monospace"
+                 FontSize="13"
+                 Background="Transparent"
+                 Foreground="#CDD6F4"
+                 CaretBrush="#CBA6F7"
+                 BorderThickness="0"
+                 Padding="8"
+                 TextWrapping="NoWrap"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto">
+          <TextBox.KeyBindings>
+            <KeyBinding Gesture="Ctrl+Return" Command="{Binding RunCommand}"/>
+            <KeyBinding Gesture="Ctrl+Up" Command="{Binding HistoryUpCommand}"/>
+            <KeyBinding Gesture="Ctrl+Down" Command="{Binding HistoryDownCommand}"/>
+          </TextBox.KeyBindings>
+        </TextBox>
+      </Border>
+
+      <!-- Séparateur -->
+      <GridSplitter Grid.Column="1"
+                    ResizeDirection="Columns"
+                    Background="#45475A"
+                    HorizontalAlignment="Stretch"/>
+
+      <!-- Sortie -->
+      <Border Grid.Column="2"
+              Background="#313244" CornerRadius="6"
+              BorderBrush="#45475A" BorderThickness="1">
+        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
+          <ItemsControl ItemsSource="{Binding OutputLines}" Margin="8">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding}"
+                           FontFamily="Cascadia Code,Consolas,monospace"
+                           FontSize="13" Foreground="#CDD6F4"
+                           Margin="0,2"/>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </ScrollViewer>
+      </Border>
+
+    </Grid>
+
+  </DockPanel>
+</Window>
