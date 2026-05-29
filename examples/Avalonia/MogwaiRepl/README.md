@@ -83,7 +83,7 @@ Click **⏏ Disconnect from Studio** to stop the server.
 
 ```mogwai
 42 -> 'N'
-"The answer is {! $N }" ?
+"The answer is {! $N }" eval ?
 ```
 
 ### Loop
@@ -111,9 +111,9 @@ class 'Point' do
 }
 
 new 'Point' -> 'p'
-10 -> p.x
-20 -> p.y
-"Point: {! p.x }, {! p.y }" ?
+10 p<-x
+20 p<-y
+"Point: {! p->x }, {! p->y }" eval ?
 free p
 ```
 
