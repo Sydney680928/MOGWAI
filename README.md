@@ -131,13 +131,14 @@ A curated list of English articles about MOGWAI on [coding4phone.com](https://co
 - [Events in MOGWAI](https://coding4phone.com/?p=2080&lang=en)
 - [Tasks in MOGWAI](https://coding4phone.com/?p=2194&lang=en)
 - [Code editor in MOGWAI CLI](https://coding4phone.com/?p=2301&lang=en)
-- [Bytes aren’t scary. Manipulating binary data with MOGWAI](https://coding4phone.com/?p=2251&lang=en)
+- [Bytes aren't scary. Manipulating binary data with MOGWAI](https://coding4phone.com/?p=2251&lang=en)
 - [MOGWAI v8.6 — Objects and Assertions](https://coding4phone.com/?p=2324&lang=en)
 - [One Day, One Extension — The Story of MOGWAI Language Support for VS Code](https://coding4phone.com/?p=2426&lang=en)
 - [Embedding a scripting engine in a .NET MAUI app — dynamic logic, BLE commands, zero app updates](https://coding4phone.com/?p=2461&lang=en)
 - [GIZMO — Build TUI Applications with MOGWAI](https://coding4phone.com/?p=2479&lang=en)
 - [Evaluating a user-defined mathematical formula with GIZMO and MOGWAI](https://coding4phone.com/?p=2518&lang=en)
 - [MOGWAI 8.7: sorted identifiers, OOP introspection, and external processes](https://coding4phone.com/?p=2545&lang=en)
+
 ---
 
 ## Quick Start
@@ -160,7 +161,7 @@ var engine = new MogwaiEngine("MyApp");
 engine.Delegate = this; // Your class implementing IDelegate
 
 var result = await engine.RunAsync(@"
-    \"Hello from MOGWAI!\" ?
+    ""Hello from MOGWAI!"" ?
     2 3 + ?
 ", debugMode: false);
 ```
@@ -276,6 +277,8 @@ mogwai/
 │       ├── MOGWAI_FUNCTIONS_FR.md  # Function reference in french
 │       └── MOGWAI_INTEGRATION_GUIDE_FR.md  # Integration guide in french
 ├── examples/
+│   ├── Avalonia/
+│   │   └── MogwaiRepl/             # Cross-platform REPL with Avalonia UI
 │   ├── Blazor/
 │   │   └── MogwaiPlayground/       # Blazor WASM interactive playground
 │   ├── Console/
@@ -318,6 +321,7 @@ mogwai/
 Examples are available:
 
 - **[MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/Console)** - Command-line interface and REPL
+- **[Avalonia Example](https://github.com/Sydney680928/mogwai/tree/main/examples/Avalonia)** - Cross-platform REPL with Studio mode (Windows, Linux, macOS)
 - **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinForms)** - Turtle graphics with MOGWAI
 - **[MAUI Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MAUI)** - Cross-platform mobile app
 - **[Blazor Example](https://github.com/Sydney680928/mogwai/tree/main/examples/Blazor)** - Blazor WASM app
@@ -326,7 +330,7 @@ Examples are available:
 
 See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
 
-**Latest Release:** [v8.6.0](https://github.com/Sydney680928/mogwai/releases/tag/v8.6.0)
+**Latest Release:** [v8.7.0](https://github.com/Sydney680928/mogwai/releases/tag/v8.7.0)
 
 ---
 
@@ -348,10 +352,10 @@ MOGWAI STUDIO v2 is a visual IDE for MOGWAI 8, currently in early private develo
 
 ### Availability
 
-**Status:** Early private development — not yet publicly available
-**Release Model:** Freemium (Free version + Pro version)
-**Price:** Pro version planned at €29 (one-time purchase)
-**Distribution:** Gumroad + installer package
+**Status:** Early private development — not yet publicly available  
+**Release Model:** Freemium (Free version + Pro version)  
+**Price:** Pro version planned at €29 (one-time purchase)  
+**Distribution:** Gumroad + installer package  
 
 Stay tuned for updates on [mogwai.eu.com](https://www.mogwai.eu.com)!
 
@@ -397,6 +401,14 @@ if (temp 25 >) then
 
 You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
 
+### Avalonia Cross-Platform REPL
+
+![MOGWAI](./images/img16.png)
+
+A full-featured REPL and script editor running natively on Windows, Linux and macOS — with Studio mode for live VS Code debugging.
+
+[**Avalonia REPL Example →**](https://github.com/Sydney680928/mogwai/tree/main/examples/Avalonia/MogwaiRepl)
+
 ---
 
 ## Roadmap
@@ -426,10 +438,16 @@ You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
 - 280+ built-in primitives (approaching 300)
 - Additional examples and documentation
 
-### Version 8.6 (Latest)
+### Version 8.6
 
 - OOP support (classes, instances, properties, methods, lifecycle hooks)
 - MOGWAI STUDIO v2 (early private development — rebuilt from scratch for MOGWAI 8)
+
+### Version 8.7 (Latest)
+
+- Sorted identifiers
+- OOP introspection
+- External processes support
 
 ### Future Plans
 
