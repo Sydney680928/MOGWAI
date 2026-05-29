@@ -58,8 +58,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDelegate
         _historyIndex = -1;
 
         IsRunning = true;
-        AddLine($"» {InputCode.Replace("\n", " ↵ ")}");
-
+        
         try
         {
             var result = await _engine.RunAsync(InputCode, debugMode: false);

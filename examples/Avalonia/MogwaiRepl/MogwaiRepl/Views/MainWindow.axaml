@@ -7,6 +7,39 @@
         Width="1100" Height="650"
         Background="#1E1E2E">
 
+  <Window.Styles>
+
+      <!-- Boutons : hover -->
+      <Style Selector="Button:pointerover /template/ ContentPresenter">
+          <Setter Property="Background" Value="{Binding $parent[Button].Background}"/>
+          <Setter Property="Opacity" Value="0.8"/>
+      </Style>
+
+      <!-- TextBox : états normaux/hover/focus -->
+      <Style Selector="TextBox /template/ Border#PART_BorderElement">
+          <Setter Property="Background" Value="Transparent"/>
+          <Setter Property="BorderThickness" Value="0"/>
+      </Style>
+      <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
+          <Setter Property="Background" Value="Transparent"/>
+          <Setter Property="BorderThickness" Value="0"/>
+      </Style>
+      <Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+          <Setter Property="Background" Value="Transparent"/>
+          <Setter Property="BorderThickness" Value="0"/>
+      </Style>
+      <Style Selector="TextBox:focus-within /template/ Border#PART_BorderElement">
+          <Setter Property="Background" Value="Transparent"/>
+          <Setter Property="BorderThickness" Value="0"/>
+      </Style>
+
+      <Style Selector="Button:disabled /template/ ContentPresenter">
+        <Setter Property="Background" Value="{Binding $parent[Button].Background}"/>
+        <Setter Property="Opacity" Value="0.4"/>
+      </Style>
+
+  </Window.Styles>
+  
   <DockPanel Margin="12">
 
     <!-- Barre du haut : titre + boutons fichiers + studio -->
@@ -14,7 +47,7 @@
           Margin="0,0,0,10">
 
       <StackPanel Grid.Column="0" VerticalAlignment="Center">
-        <TextBlock Text="🐉 MOGWAI REPL"
+        <TextBlock Text="MOGWAI REPL"
                    FontSize="20" FontWeight="Bold"
                    Foreground="#CBA6F7"/>
         <TextBlock Text="{Binding CurrentFilePath}"
@@ -67,7 +100,7 @@
       <Button Grid.Column="2" Content="⏹ Stop"
               Command="{Binding StopCommand}"
               IsEnabled="{Binding IsRunning}"
-              Background="#FAB387" Foreground="#1E1E2E"
+              Background="#F38BA8" Foreground="#1E1E2E"
               FontWeight="Bold" Margin="0,0,4,0" Padding="12,6"/>
 
       <Button Grid.Column="3" Content="✕ Clear"
@@ -89,7 +122,7 @@
                  FontFamily="Cascadia Code,Consolas,monospace"
                  FontSize="13"
                  Background="Transparent"
-                 Foreground="#CDD6F4"
+                 Foreground="#FFFFFF"
                  CaretBrush="#CBA6F7"
                  BorderThickness="0"
                  Padding="8"
