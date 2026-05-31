@@ -18,13 +18,11 @@ using MOGWAI.Primitives;
 using System.Collections.Frozen;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
-using System.Xml.Linq;
 
 namespace MOGWAI.Engine
 
@@ -32,7 +30,7 @@ namespace MOGWAI.Engine
     public sealed class MogwaiEngine
     {
         private static readonly char[] _invalidCharsExtended = [' ', '\'', '{', '}', '«', '»', '(', ')', '[', ']', '"', ':', '\r', '\n', '\t'];
-        private static readonly char[] _invalidChars =  [' ', '\'', '!', '{', '}', '«', '»', '(', ')', '[', ']', '"', ':', '\r', '\n', '\t'];
+        private static readonly char[] _invalidChars = [' ', '\'', '!', '{', '}', '«', '»', '(', ')', '[', ']', '"', ':', '\r', '\n', '\t'];
 
         private static readonly string[] _skills = [];
 
@@ -79,7 +77,7 @@ namespace MOGWAI.Engine
         private Dictionary<string, FileStream> _openoutFiles = [];
         private Dictionary<int, MogwaiExecutionContext> _includes = [];
         private Dictionary<string, PluginInformations> _plugins = [];
-        private List<string> _varsInAutoEval = new();           
+        private List<string> _varsInAutoEval = new();
 
         // MOX Signature = [STX][M ][O ][G ][W ][A ][I ][28][09][19][68][ETX]
         //               = 00   01  02  03  04  05  06  07  08  09  10  11
@@ -122,7 +120,7 @@ namespace MOGWAI.Engine
             // Create vars context
             // Context zéro = Global vars
 
-            _varsContext.Add(new VarContext("GLOBAL"));          
+            _varsContext.Add(new VarContext("GLOBAL"));
 
             #region DEFINE TYPES
 
@@ -194,7 +192,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveFuncs(this, "funcs"));
             RegisterPublicPrimitive(new PrimitiveGetGlobalVars(this, "vars"));
             RegisterPublicPrimitive(new PrimitiveGetLocalVars(this, "lvars"));
-            RegisterPublicPrimitive(new PrimitiveBAG(this, "bag"));            
+            RegisterPublicPrimitive(new PrimitiveBAG(this, "bag"));
 
             // Conversion Function
 
@@ -430,7 +428,7 @@ namespace MOGWAI.Engine
             // Skill functions
 
             RegisterPublicPrimitive(new PrimitiveSkills(this, "skills"));
-            RegisterPublicPrimitive(new PrimitiveHasSkill(this, "hasSkill"));       
+            RegisterPublicPrimitive(new PrimitiveHasSkill(this, "hasSkill"));
 
             // Debug functions
 
@@ -495,9 +493,11 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitivePathProgramsDirectory(this, "path.programs"));
             RegisterPublicPrimitive(new PrimitivePathFilesDirectory(this, "path.files"));
             RegisterPublicPrimitive(new PrimitivePathUsingsDirectory(this, "path.usings"));
+            RegisterPublicPrimitive(new PrimitivePathHomeDirectory(this, "path.home"));
             RegisterPublicPrimitive(new PrimitivePathSetUsingsDirectory(this, "path.setUsings"));
             RegisterPublicPrimitive(new PrimitivePathSetProgramsDirectory(this, "path.setPrograms"));
             RegisterPublicPrimitive(new PrimitivePathSetFilesDirectory(this, "path.setFiles"));
+            RegisterPublicPrimitive(new PrimitivePathSetHomeDirectory(this, "path.setHome"));
 
             // Directory functions
 
@@ -559,14 +559,14 @@ namespace MOGWAI.Engine
             RegisterPrivatePrimitive(new PrimitiveSTODIVIDE(this, "STO/"), "->/");
             RegisterPrivatePrimitive(new PrimitiveSWITCH(this, "SWITCH"), "switch");
             RegisterPrivatePrimitive(new PrimitiveDECLARE(this, "DECLARE"), "=>");
-            RegisterPrivatePrimitive(new PrimitivePIPEREF(this, "PIPEREF"), "-->");          
+            RegisterPrivatePrimitive(new PrimitivePIPEREF(this, "PIPEREF"), "-->");
             RegisterPrivatePrimitive(new PrimitiveDEFCLASS(this, "DEFCLASS"), "class");
-            RegisterPrivatePrimitive(new PrimitiveYIELD(this, "YIELD"), "yield");   
+            RegisterPrivatePrimitive(new PrimitiveYIELD(this, "YIELD"), "yield");
 
             _primitivesByName = _initializingPrimitivesByName.ToFrozenDictionary();
             _initializingPrimitivesByName.Clear();
 
-            _primitivesByType = _initializingPrimitivesByType.ToFrozenDictionary(); 
+            _primitivesByType = _initializingPrimitivesByType.ToFrozenDictionary();
             _initializingPrimitivesByType.Clear();
 
             #endregion
@@ -600,6 +600,8 @@ namespace MOGWAI.Engine
                 ProgramsDirectory = Directory.GetCurrentDirectory();
                 FilesDirectory = Directory.GetCurrentDirectory();
             }
+
+            HomeDirectory = Directory.GetCurrentDirectory();
         }
 
         #endregion
@@ -659,7 +661,7 @@ namespace MOGWAI.Engine
             set
             {
                 _delegate = value;
-                _hostFunctions = _delegate?.HostFunctions(this) ?? [];  
+                _hostFunctions = _delegate?.HostFunctions(this) ?? [];
             }
         }
 
@@ -684,7 +686,7 @@ namespace MOGWAI.Engine
             {
                 if (duplicate)
                     return primitive.Duplicate();
-                
+
                 return primitive;
             }
 
@@ -770,6 +772,8 @@ namespace MOGWAI.Engine
 
         public bool KeepAlive => _keepAlive;
 
+        public string HomeDirectory { get; set; }   
+
         public string UsingsDirectory { get; set; }
 
         public string ProgramsDirectory { get; set; }
@@ -817,13 +821,13 @@ namespace MOGWAI.Engine
             get
             {
                 bool isConsole = true;
-                
-                try 
-                { 
+
+                try
+                {
                     _ = Console.WindowHeight;
                 }
                 catch (IOException)
-                { 
+                {
                     isConsole = false;
                 }
 
@@ -852,7 +856,7 @@ namespace MOGWAI.Engine
         {
             primitive.IsPrivate = true;
             primitive.FriendlyName = friendlyName;
-           
+
             _initializingPrimitivesByName[primitive.Name] = primitive;
 
             var type = primitive.GetType();
@@ -869,7 +873,7 @@ namespace MOGWAI.Engine
         }
 
         internal bool TypeExists(string name) => _typesByName.ContainsKey(name);
-        
+
         internal async Task<EvalResult> ExecuteAsync(string code, bool debugMode)
         {
             try
@@ -1269,7 +1273,7 @@ namespace MOGWAI.Engine
         public void AddNewStack()
         {
             _stacks.Add(new());
-            _currentStack = _stacks[_stacks.Count - 1]; 
+            _currentStack = _stacks[_stacks.Count - 1];
         }
 
         public void RemoveLastStack()
@@ -1299,7 +1303,7 @@ namespace MOGWAI.Engine
 
         public EvalResult StackDup()
         {
-            var stack = _currentStack;  
+            var stack = _currentStack;
 
             if (stack.Count < 1)
                 return EvalResult.Failure(this, Error.TooFewArgumentsError, "dup");
@@ -1522,7 +1526,7 @@ namespace MOGWAI.Engine
             _varsContext.Add(_currentLocalVarsContext);
 
         }
-        
+
         public void VarPopContext()
         {
             if (_varsContext.Count > 1)
@@ -1717,7 +1721,7 @@ namespace MOGWAI.Engine
         {
             if (_events.Remove(name))
                 return EvalResult.NoError;
-           
+
             return EvalResult.Failure(this, Error.UnknownNameError, $"unabled to purge unknown '{name}' event.");
         }
 
@@ -2646,7 +2650,7 @@ namespace MOGWAI.Engine
             if (_socketServerService != null)
                 await _socketServerService.SendToClientAsync("DEBUG CLR");
         }
-        
+
         private async Task SendUsingExtension(IPlugin plugin)
         {
             if (_socketServerService.IsRunning)
@@ -2770,7 +2774,7 @@ namespace MOGWAI.Engine
             // PN =
 
             if (_socketServerService != null && parameters.Count > 0)
-            {    
+            {
                 var r = GetFuncNames(parameters[0]);
 
                 if (r.result.IsSuccess)
@@ -3281,7 +3285,7 @@ namespace MOGWAI.Engine
             // Clear stack
 
             _stacks.Clear();
-            _stacks.Add(new());  
+            _stacks.Add(new());
             _currentStack = _stacks[0];
 
             // Stop and Clear all timers
@@ -3406,14 +3410,14 @@ namespace MOGWAI.Engine
                 var parser = new Parser();
                 parser.Parse(this, code, 0, null);
 
-                ExtractDefuncs(parser.ParsedObjects); 
-                
+                ExtractDefuncs(parser.ParsedObjects);
+
                 return (EvalResult.NoError, defuncs);
             }
-            catch (Exception ex)    
+            catch (Exception ex)
             {
                 return (EvalResult.ParseFailure(this, ex.Message), defuncs);
-            }          
+            }
         }
 
         public List<string> GetSkills()
@@ -3427,8 +3431,8 @@ namespace MOGWAI.Engine
 
                 foreach (var s in s2)
                     if (!skills.Contains(s))
-                        skills.Add(s);  
-            }       
+                        skills.Add(s);
+            }
 
             return skills;
         }
