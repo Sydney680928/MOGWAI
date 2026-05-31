@@ -2502,6 +2502,27 @@ Customizes the default extension libraries folder path.
 
 ***
 
+### `path.home`
+
+Returns the home directory path. Defaults to the runtime's current directory (`Directory.GetCurrentDirectory()` at construction time) unless overridden by the host application or by `path.setHome`.
+
+```
+path.home ?
+# Returns: "C:\Users\Username"
+```
+
+***
+
+### `path.setHome`
+
+Customizes the home directory path. The path is normalized via `Path.GetFullPath()`. Raises **MW.72** (`file operation error`) if the path cannot be resolved.
+
+```
+"C:\MyHome" path.setHome
+```
+
+***
+
 ### Directory Management
 
 ### `dir.exists`

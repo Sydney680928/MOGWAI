@@ -90,6 +90,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **`mogwai.info` — `skills:` key added** — the record returned by `mogwai.info` now includes a `skills:` key containing the merged list of available skills, identical to the result of the `skills` primitive.
 
+- **`path.home` primitive** — returns the home directory path as a string. Defaults to `Directory.GetCurrentDirectory()` at runtime construction time, unless overridden by the host or by `path.setHome`.
+
+  ```
+  path.home ?
+  # Returns: "C:\Users\Username"
+  ```
+
+- **`path.setHome` primitive** — customizes the home directory path. The path is normalized via `Path.GetFullPath()`. Raises **MW.72** (`file operation error`) if the path cannot be resolved.
+
+  ```
+  "C:\MyHome" path.setHome
+  ```
+
+- **`HomeDirectory` property on `MogwaiEngine`** — exposes the home directory path for host-side get and set. Setting this property is equivalent to calling `path.setHome` from script code.
+
 ### Changed
 
 ### Fixed

@@ -3177,10 +3177,11 @@ The following functions directly return the paths to these folders:
 | `path.programs` | Returns the standard programs folder.                 |
 | `path.files`    | Returns the standard files folder.                    |
 | `path.usings`   | Returns the standard extension libraries folder.      |
+| `path.home`     | Returns the home directory path.                      |
 
 Some file management functions will use these default paths if no path is specified.
 
-It is possible to customize these default paths using the `path.setPrograms`, `path.setFiles`, and `path.setUsings` functions. For example, if you want your programs to be stored in a different folder, you can use `path.setPrograms` to define the new path:
+It is possible to customize these default paths using the `path.setPrograms`, `path.setFiles`, `path.setUsings`, and `path.setHome` functions. For example, if you want your programs to be stored in a different folder, you can use `path.setPrograms` to define the new path:
 
 ```mogwai
 "C:\MyPrograms" path.setPrograms

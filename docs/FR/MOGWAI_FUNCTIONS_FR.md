@@ -2511,6 +2511,27 @@ Personnalise le chemin du dossier par défaut des bibliothèques d'extension.
 
 ***
 
+### `path.home`
+
+Retourne le chemin du dossier home. Par défaut, il est égal au répertoire courant du runtime (`Directory.GetCurrentDirectory()` au moment de la construction) sauf s'il a été redéfini par l'application hôte ou par `path.setHome`.
+
+```
+path.home ?
+# Retourne : "C:\Users\Username"
+```
+
+***
+
+### `path.setHome`
+
+Personnalise le chemin du dossier home. Le chemin est normalisé via `Path.GetFullPath()`. Lève **MW.72** (`erreur d'opération fichier`) si le chemin ne peut pas être résolu.
+
+```
+"C:\MyHome" path.setHome
+```
+
+***
+
 ### Gestion des dossiers
 
 ### `dir.exists`

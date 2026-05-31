@@ -3177,10 +3177,11 @@ Les fonctions suivantes retournent directement les chemins vers ces dossiers :
 | `path.programs` | Retourne le dossier standard des programmes.                |
 | `path.files`    | Retourne le dossier standard des fichiers.                  |
 | `path.usings`   | Retourne le dossier standard des bibliothèques d'extension. |
+| `path.home`     | Retourne le chemin du dossier home.                         |
 
 Certaines fonctions de gestion de fichiers utiliseront ces chemins par défaut si aucun chemin n'est spécifié.
 
-Il est possible de personnaliser ces chemins par défaut à l'aide des fonctions `path.setPrograms`, `path.setFiles` et `path.setUsings`. Par exemple, si vous voulez que vos programmes soient stockés dans un dossier différent, vous pouvez utiliser `path.setPrograms` pour définir le nouveau chemin :
+Il est possible de personnaliser ces chemins par défaut à l'aide des fonctions `path.setPrograms`, `path.setFiles`, `path.setUsings` et `path.setHome`. Par exemple, si vous voulez que vos programmes soient stockés dans un dossier différent, vous pouvez utiliser `path.setPrograms` pour définir le nouveau chemin :
 
 ```mogwai
 "C:\MyPrograms" path.setPrograms
