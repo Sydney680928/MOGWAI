@@ -110,11 +110,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 
 - **`HomeDirectory` property on `MogwaiEngine`** — exposes the home directory path for host-side get and set. Setting this property is equivalent to calling `path.setHome` from script code.
-
-### Changed
-
-### Fixed
-
+  
 ## [8.7.0] - 2026-05-26
 
 ### Added
