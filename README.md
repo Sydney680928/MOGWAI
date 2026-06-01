@@ -6,7 +6,6 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
 [![NuGet](https://img.shields.io/nuget/v/MOGWAI.svg)](https://www.nuget.org/packages/MOGWAI/)
-[![Download CLI](https://img.shields.io/github/v/release/Sydney680928/mogwai?label=CLI%20Download&logo=github&color=brightgreen)](https://github.com/Sydney680928/mogwai/releases/latest)
 [![VS Code Extension](https://img.shields.io/badge/VS%20Code-Extension-007ACC?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language)
 
 **Embeddable, extensible, production-ready.** **From IoT automation to desktop scripting, one elegant RPN runtime for your .NET apps.**
@@ -35,15 +34,34 @@ MOGWAI is a modern implementation of RPN (Reverse Polish Notation) for the .NET 
 
 ## Get Started in Seconds
 
-### Download MOGWAI CLI — no build required
+### Build MOGWAI CLI from source
 
-Grab the ready-to-run binary for your platform and start writing MOGWAI scripts immediately. No .NET SDK needed.
+Clone the repository and build the CLI for your platform using the .NET SDK:
 
-[Windows x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-win-x64.zip)  
-[macOS x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-osx-x64.zip)  
-[macOS arm64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-osx-arm64.zip)  
-[Linux x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-linux-x64.zip)  
-[Linux arm64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-linux-arm64.zip)  
+```bash
+git clone https://github.com/Sydney680928/mogwai.git
+cd mogwai/examples/Console/ConsoleExample
+dotnet run
+```
+
+Or publish a self-contained binary:
+
+```bash
+# Windows x64
+dotnet publish -c Release -r win-x64 --self-contained
+
+# macOS x64
+dotnet publish -c Release -r osx-x64 --self-contained
+
+# macOS arm64
+dotnet publish -c Release -r osx-arm64 --self-contained
+
+# Linux x64
+dotnet publish -c Release -r linux-x64 --self-contained
+
+# Linux arm64
+dotnet publish -c Release -r linux-arm64 --self-contained
+```
 
 ### VS Code Extension
 
@@ -79,13 +97,13 @@ Command-line interface for running MOGWAI scripts and interactive REPL sessions.
 - **Repository:** [MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/Console/ConsoleExample)
 - **Status:** Functional
 
-**Ready-to-run binaries available** — no .NET SDK required:
+**Build from source** — requires the .NET SDK:
 
-[Windows x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-win-x64.zip)  
-[macOS x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-osx-x64.zip)  
-[macOS arm64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-osx-arm64.zip)  
-[Linux x64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-linux-x64.zip)  
-[Linux arm64](https://github.com/Sydney680928/mogwai/releases/latest/download/mogwai-cli-linux-arm64.zip)  
+```bash
+git clone https://github.com/Sydney680928/mogwai.git
+cd mogwai/examples/Console/ConsoleExample
+dotnet run
+```
 
 ### MOGWAI VS Code Extension
 
@@ -444,11 +462,20 @@ A full-featured REPL and script editor running natively on Windows, Linux and ma
 - OOP support (classes, instances, properties, methods, lifecycle hooks)
 - MOGWAI STUDIO v2 (early private development — rebuilt from scratch for MOGWAI 8)
 
-### Version 8.7 (Latest)
+### Version 8.7
 
 - Sorted identifiers
 - OOP introspection
 - External processes support
+
+### Version 8.8 (Latest)
+
+- Skill system — scripts can verify at startup that they run in the right host environment (`skills`, `hasSkill`, `mogwai.assertSkill`)
+- `IDelegate` default implementations — MOGWAI is now embeddable with zero delegate code for simple use cases
+- `console.width` / `console.height` primitives
+- `post` primitive — deferred block execution after pending events and timers
+- `path.home` / `path.setHome` primitives and `HomeDirectory` property on `MogwaiEngine`
+- `mogwai.info` now includes a `skills:` key
 
 ### Future Plans
 
