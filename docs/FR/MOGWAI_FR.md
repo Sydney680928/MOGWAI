@@ -2632,27 +2632,27 @@ Avec la fonction `wait`, le programme est suspendu pendant le nombre de millisec
 }
 ```
 
-## La fonction `yield`
+## La fonction `post`
 
-La fonction `yield` cède le contrôle au scheduler MOGWAI avant d'exécuter un bloc. Le bloc est posté dans la queue d'exécution du moteur, au même titre qu'un timer arrivant à échéance ou un événement déclenché. Tous les événements et timers en attente s'exécutent avant le bloc.
+La fonction `post` poste un bloc de code dans la queue d'exécution du moteur. Le bloc s'exécute au prochain cycle du scheduler, après les événements et timers en attente — sans créer de timer intermédiaire.
 
-Contrairement à `wait`, `yield` ne fait pas de pause pour une durée fixe — il donne simplement au scheduler l'opportunité de traiter le travail en attente avant de continuer.
 
-Le cas d'usage principal est la boucle de polling coopérative. Sans `yield`, une boucle serrée prive le scheduler de temps CPU et peut empêcher la détection d'événements. Avec `yield`, le moteur traite les événements en attente à chaque itération :
+
+Le cas d'usage principal est le déclenchement différé depuis un handler d'événement — par exemple pour permettre à l'interface TUI de se rafraîchir avant un calcul long. Avec `post`, le moteur traite les événements en attente avant d'exécuter le bloc :
 
 ```
 # Attendre l'appui d'une touche sans bloquer le scheduler
 while (console.getInputKey -1 ==) do
 {
-    yield { }
+    post { }
 }
 ```
 
-`yield { }` avec un bloc vide est valide — utile pour céder le contrôle sans exécuter de code. `yield` est fonctionnellement équivalent à `after 0 do { }`, avec une lisibilité supérieure.
+`post { }` avec un bloc vide est valide — utile pour laisser le scheduler traiter les événements en attente sans exécuter de code supplémentaire. `post` est plus efficace que `after 0 do { }` : il ne crée pas de timer, il poste directement le bloc dans la file d'exécution.
 
 ```
 # Céder le contrôle puis effectuer un traitement
-yield
+post
 {
     "Ceci s'exécute après tous les événements en attente." ?
 }

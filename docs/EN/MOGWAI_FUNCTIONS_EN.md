@@ -558,29 +558,29 @@ Suspends the runtime for a time expressed in milliseconds without blocking the p
 
 ***
 
-### `yield`
+### `post`
 
-Yields control to the MOGWAI scheduler before executing a block. The block is posted to the engine's execution queue, just like a timer reaching its deadline or a triggered event. All pending events and timers run before the block executes.
+Posts a block of code to the engine's execution queue. The block executes in the next scheduler cycle, after pending events and timers — without creating an intermediate timer.
 
-**Signature:** `yield { ... }`
+**Signature:** `post { ... }`
 
-`yield { }` with an empty block is valid — useful to yield control without executing any code.
+`post { }` with an empty block is valid — useful to let the scheduler process pending events without executing any additional code.
 
 Functionally equivalent to `after 0 do { }`, with clearer intent.
 
-The main use case is cooperative polling loops: without `yield`, a tight loop starves the scheduler and may prevent event detection (such as key presses). With `yield`, the engine processes pending work at each iteration:
+The main use case is deferred execution from an event handler — for example to allow the TUI interface to refresh before a long computation. With `post`, the engine processes pending events before executing the block:
 
 ```
 # Wait for a key press
 while (console.getInputKey -1 ==) do
 {
-    yield { }
+    post { }
 }
 ```
 
 ```
-# Yield and do some work after other pending events
-yield
+# Post and do some work after other pending events
+post
 {
     # this runs after all currently pending events
     updateDisplay

@@ -17,16 +17,16 @@ using MOGWAI.Objects;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveYIELD : MOGPrimitive
+    internal class PrimitivePOST : MOGPrimitive
     {
-        public PrimitiveYIELD(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitivePOST(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveYIELD(Engine, Name);
+            var obj = new PrimitivePOST(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
@@ -41,7 +41,7 @@ namespace MOGWAI.Primitives
             if (s[0] == typeof(MOGFunction))
             {
                 var func = Engine.StackPopFunction();
-                Engine.RegisterYieldFunction(func);
+                Engine.RegisterPostFunction(func);
 
                 return Task.FromResult(EvalResult.NoError);
             }

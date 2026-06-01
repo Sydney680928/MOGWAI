@@ -895,8 +895,8 @@ namespace MOGWAI.Engine
                             result = UpdateForAfterSugar(engine, i);
                             break;
 
-                        case "yield":
-                            result = UpdateForYieldSugar(engine, i);
+                        case "post":
+                            result = UpdateForPostSugar(engine, i);
                             break;
 
                         case "switch":
@@ -1205,9 +1205,9 @@ namespace MOGWAI.Engine
             return false;
         }
 
-        private bool UpdateForYieldSugar(MogwaiEngine engine, int index)
+        private bool UpdateForPostSugar(MogwaiEngine engine, int index)
         {
-            // 0 yield
+            // 0 post
             // 1 code
 
             if (_parsedObjects.Count - index >= 2)
@@ -1216,7 +1216,7 @@ namespace MOGWAI.Engine
 
                 if (code != null)
                 {
-                    var primitive = engine.GetPrimitive(typeof(PrimitiveYIELD), true);
+                    var primitive = engine.GetPrimitive(typeof(PrimitivePOST), true);
 
                     if (primitive != null)
                     {

@@ -560,29 +560,29 @@ Suspend le runtime pendant une durée exprimée en millisecondes sans bloquer le
 
 ***
 
-### `yield`
+### `post`
 
-Cède le contrôle au scheduler MOGWAI avant d'exécuter un bloc. Le bloc est posté dans la queue d'exécution du moteur, au même titre qu'un timer arrivant à échéance ou un événement déclenché. Tous les événements et timers en attente s'exécutent avant le bloc.
+Poste un bloc de code dans la queue d'exécution du moteur. Le bloc s'exécute au prochain cycle du scheduler, après les événements et timers en attente — sans créer de timer intermédiaire.
 
-**Signature :** `yield { ... }`
+**Signature :** `post { ... }`
 
-`yield { }` avec un bloc vide est valide — utile pour céder le contrôle sans exécuter de code.
+`post { }` avec un bloc vide est valide — utile pour céder le contrôle sans exécuter de code.
 
 Équivalent fonctionnel à `after 0 do { }`, avec une lisibilité supérieure.
 
-Le cas d'usage principal est la boucle de polling coopérative : sans `yield`, une boucle serrée prive le scheduler de temps CPU et peut empêcher la détection d'événements (comme les touches clavier). Avec `yield`, le moteur traite les événements en attente à chaque itération :
+Le cas d'usage principal est le déclenchement différé depuis un handler d'événement — par exemple pour permettre à l'interface TUI de se rafraîchir avant un calcul long. Avec `post`, le moteur traite les événements en attente avant d'exécuter le bloc :
 
 ```
 # Attendre l'appui d'une touche
 while (console.getInputKey -1 ==) do
 {
-    yield { }
+    post { }
 }
 ```
 
 ```
 # Céder le contrôle puis effectuer un traitement
-yield
+post
 {
     # s'exécute après tous les événements en attente
     updateDisplay

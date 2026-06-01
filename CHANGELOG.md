@@ -59,16 +59,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   console.height ?   # → 30
   ```
 
-- **`yield` primitive** — hands control back to the runtime for the duration of the block execution.
+- **`post` primitive** — hands control back to the runtime for the duration of the block execution.
 
   ```
-  yield
+  post
   {
       # this runs after pending events and timers
   }
   ```
 
-  `yield { }` with an empty block is valid.
+  `post { }` with an empty block is valid.
 
 - **`IDelegate` default implementations** — all non-essential methods of `IDelegate` now have default implementations, making MOGWAI embeddable with zero delegate code for simple use cases.
 
@@ -491,7 +491,7 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 ### Fixed
 
 - Fixed UI freeze in Blazor WebAssembly playground when using `forever` loops.
-- Fixed blocking of the single-threaded event loop by adding cooperative yielding.
+- Fixed blocking of the single-threaded event loop by adding cooperative scheduling via `post`.
 - Fixed timers and events not working correctly alongside long-running scripts in the browser.
 - `for` loop infinite loop when start equals end. (Issues #4)
 - `->unescape` does not handle `\"` escape sequence. (Issues #5)
