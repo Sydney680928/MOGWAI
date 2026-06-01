@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.8.0] - 2026-06-01
+
 - **Skill system** — scripts can now verify at startup that they are running in the right host environment.
 
   A *skill* is a name declared by the host application that embeds MOGWAI, identifying a capability available in that specific execution context. The engine merges host-declared skills with any engine-level skills and deduplicates the result.
@@ -707,7 +713,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.7.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.8.0...HEAD
+[8.8.0]: https://github.com/Sydney680928/mogwai/compare/v8.7.0...v8.8.0
 [8.7.0]: https://github.com/Sydney680928/mogwai/compare/v8.6.0...v8.7.0
 [8.6.0]: https://github.com/Sydney680928/mogwai/compare/v8.5.0...v8.6.0
 [8.5.0]: https://github.com/Sydney680928/mogwai/compare/v8.4.0...v8.5.0
