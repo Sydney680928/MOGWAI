@@ -95,9 +95,29 @@ Click the **🐛 Debug** button to run the current file in debug mode. In this m
   - **⏭ Step** — execute the next instruction
   - **▶ Resume** — resume normal execution
 
+### Multi-file debugging
+
+When a script uses `mogwai.include` to include external code files, the debugger follows execution across files. When execution enters an included file, VS Code opens it automatically side by side and moves the instruction pointer there. When execution returns to the main file, the pointer follows.
+
+<img src="../../images/vid06.gif" title="" alt="multi-file step-by-step debugging">
+
 ### Stopping execution
 
 Click the **⏹ Halt** button at any time to stop execution immediately, whether in normal or debug mode.
+
+---
+
+## TRON Mode — Animated Execution
+
+The `debug.tron` primitive activates trace mode, which replays script execution instruction by instruction with a configurable delay between each step:
+
+```
+100 debug.tron   # trace mode with 100ms delay between instructions
+```
+
+In this mode, the extension highlights each instruction as the runtime executes it, following the code in real time — including across included files. To stop TRON mode, use `debug.troff` or `mogwai.reset`.
+
+> **Tip:** TRON mode is useful for understanding how an algorithm unfolds or tracking down a subtle bug without having to place breakpoints manually.
 
 ---
 
@@ -204,3 +224,12 @@ The extension includes snippets for all common MOGWAI structures. Type the prefi
 
 - MOGWAI **v8.0 or later** is required
 - Earlier versions of MOGWAI do not support the `studio` connection mode
+
+---
+
+## Changelog
+
+| Version | Changes |
+| ------- | ------- |
+| 1.0.3 | Multi-file step-by-step debugging, TRON mode across included files, editor focus fix, unexpected disconnection handling |
+| 1.0.0 | Initial release — syntax highlighting, snippets, runtime connection, execution, debug, Runtime panel, autocompletion |
