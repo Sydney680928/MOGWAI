@@ -41,5 +41,10 @@ namespace MOGWAI.Objects
         {
             return "null";
         }
+
+        public override string ToJson()
+        {
+            return "null";
+        }
     }
 }
