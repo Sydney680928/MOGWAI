@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **`->json` — null value serialized as `null!` instead of `null`.** When converting a null value to JSON via `->json`, the output contained a spurious `!` character (`null!`), producing invalid JSON. Null values are now correctly serialized as `null`.
 
+- **KeepAlive mode — stack was cleared between operations.** In KeepAlive mode, the stack must persist across successive operations, but it was being reset between each one, discarding any values left on the stack by previous operations. The stack is now correctly preserved between operations in KeepAlive mode.
+
 ## [8.8.0] - 2026-06-01
 
 - **Skill system** — scripts can now verify at startup that they are running in the right host environment.
