@@ -3162,7 +3162,7 @@ By default, **MOGWAI** uses a specific folder structure whose root is located in
 
 Thus on Windows, in the current user's `documents` folder you will find the following structure:
 ```
-MOGWAI.8/
+MOGWAI/
   ├─ Programs/
   ├─ Usings/
   └─ Files/
