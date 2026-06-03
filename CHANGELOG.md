@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [8.8.1] - 2026-06-04
+
+### Fixed
+
 - **`->json` — null value serialized as `null!` instead of `null`.** When converting a null value to JSON via `->json`, the output contained a spurious `!` character (`null!`), producing invalid JSON. Null values are now correctly serialized as `null`.
 
 - **KeepAlive mode — stack was cleared between operations.** In KeepAlive mode, the stack must persist across successive operations, but it was being reset between each one, discarding any values left on the stack by previous operations. The stack is now correctly preserved between operations in KeepAlive mode.
@@ -713,7 +717,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.8.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.8.1...HEAD
+[8.8.1]: https://github.com/Sydney680928/mogwai/compare/v8.8.0...v8.8.1
 [8.8.0]: https://github.com/Sydney680928/mogwai/compare/v8.7.0...v8.8.0
 [8.7.0]: https://github.com/Sydney680928/mogwai/compare/v8.6.0...v8.7.0
 [8.6.0]: https://github.com/Sydney680928/mogwai/compare/v8.5.0...v8.6.0
