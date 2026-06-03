@@ -3282,12 +3282,6 @@ namespace MOGWAI.Engine
 
         public async Task Reset(bool keepAlive)
         {
-            // Clear stack
-
-            _stacks.Clear();
-            _stacks.Add(new());
-            _currentStack = _stacks[0];
-
             // Stop and Clear all timers
 
             ClearTimers();
@@ -3330,6 +3324,12 @@ namespace MOGWAI.Engine
 
             if (!keepAlive)
             {
+                // Clear stack
+
+                _stacks.Clear();
+                _stacks.Add(new());
+                _currentStack = _stacks[0];
+
                 // Strict mode OFF
 
                 StrictMode = false;

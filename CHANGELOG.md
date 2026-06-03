@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`->json` — null value serialized as `null!` instead of `null`.** When converting a null value to JSON via `->json`, the output contained a spurious `!` character (`null!`), producing invalid JSON. Null values are now correctly serialized as `null`.
+
 ## [8.8.0] - 2026-06-01
 
 - **Skill system** — scripts can now verify at startup that they are running in the right host environment.
