@@ -475,7 +475,7 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
   Primitives with this capability are `+`, `set`, `get`, `butfirst`, `butlast`, `last`, `first`, `sub`, and `size`.
 - Added host function detection by the parser to avoid delegate calls at runtime, improving execution performance.
 - Added new `char->` primitive that returns the ASCII code from a single string character.
-- Added explicit variable access with `@varname` notation. The performance gain is significant with frequent variable access.
+- Added explicit variable access with the `@` sigil notation. The performance gain is significant with frequent variable access.
 - Added `foreach` loop over string characters.
 
 ### Changed
