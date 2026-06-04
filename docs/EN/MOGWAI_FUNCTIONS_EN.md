@@ -343,13 +343,13 @@ Imports an extension library in ***MOGWAI*** format.
 If the extension is in the `path.usings` directory, you can just specify its name (with a name object) without the path and extension.
 
 ```
-'MOGWA_SERIAL' mogwai.using
+'MOGWAI_SERIAL' mogwai.using
 ```
 
 If the extension is not in the `path.usings` directory, you must specify its full name with path and extension (with a string object). 
 
 ```
-"my extensions/MOGWA_SERIAL.dll" mogwai.using
+"my extensions/MOGWAI_SERIAL.dll" mogwai.using
 ```
 
 ***
