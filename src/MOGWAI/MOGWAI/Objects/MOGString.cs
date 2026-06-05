@@ -92,7 +92,7 @@ namespace MOGWAI.Objects
                                 if (result != EvalResult.NoError)
                                 {
                                     Engine.LastParserStartErrorPosition = StartPos;
-                                    Engine.LastParserEndErrorPosition = EndPos; 
+                                    Engine.LastParserEndErrorPosition = EndPos;
                                     return result;
                                 }
 
@@ -133,26 +133,25 @@ namespace MOGWAI.Objects
                     }
                 }
 
+                /*
+
                 try
                 {
-                    // Value = JsonSerializer.Deserialize<string>($"\"{sb}\"") ?? sb.ToString();
+                    Value = sb.ToString();
 
-                    try
-                    {
-                        var bytes = Encoding.UTF8.GetBytes($"\"{sb}\"");
-                        var reader = new Utf8JsonReader(bytes);
-                        reader.Read();
-                        Value = reader.GetString() ?? sb.ToString();
-                    }
-                    catch
-                    {
-                        Value = sb.ToString();
-                    }
+                    //var bytes = Encoding.UTF8.GetBytes($"\"{sb}\"");
+                    //var reader = new Utf8JsonReader(bytes);
+                    //reader.Read();
+                    //Value = reader.GetString() ?? sb.ToString();
                 }
                 catch
                 {
                     Value = sb.ToString();
                 }
+
+                */
+
+                Value = sb.ToString();
 
                 return EvalResult.NoError;
             }

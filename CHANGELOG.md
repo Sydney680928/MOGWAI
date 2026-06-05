@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **String interpolation — quoted content in interpolated expressions caused premature truncation.** When an interpolated expression (`{! ... }`) contained double-quote characters, the string was incorrectly truncated at that point. Quoted content inside interpolated blocks is now handled correctly.
+
 ## [8.8.1] - 2026-06-04
 
 ### Fixed
