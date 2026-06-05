@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+## [8.8.2] - 2026-06-05
+
+### Fixed
+
 - **String interpolation — quoted content in interpolated expressions caused premature truncation.** When an interpolated expression (`{! ... }`) contained double-quote characters, the string was incorrectly truncated at that point. Quoted content inside interpolated blocks is now handled correctly.
 
 ## [8.8.1] - 2026-06-04
@@ -719,7 +723,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.8.1...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.8.2...HEAD
+[8.8.2]: https://github.com/Sydney680928/mogwai/compare/v8.8.1...v8.8.2
 [8.8.1]: https://github.com/Sydney680928/mogwai/compare/v8.8.0...v8.8.1
 [8.8.0]: https://github.com/Sydney680928/mogwai/compare/v8.7.0...v8.8.0
 [8.7.0]: https://github.com/Sydney680928/mogwai/compare/v8.6.0...v8.7.0
