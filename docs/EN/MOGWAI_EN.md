@@ -4268,11 +4268,11 @@ foreach 'item' do
 		
 		if (r->state) then
 		{
-			"Download duration: ({! d->ms} ms)" eval task.publish
+			"Download duration: ({! d->ms:} ms)" eval task.publish
 			
 			guard
 			{			
-				(! path.files filename) path.make r->response file.data.write
+				(! path.files filename) path.make r->response: file.data.write
 				true task.setResult
 			}
 			else
