@@ -450,8 +450,9 @@ namespace MOGWAI.Engine
             // Task functions
 
             RegisterPrivatePrimitive(new PrimitiveTASKDEF(this, "TASK.DEF"), "task def");
-            RegisterPrivatePrimitive(new PrimitiveTASKSTART(this, "TASK.START"), "task...start");
+            RegisterPrivatePrimitive(new PrimitiveTaskStartWithParameter(this, "TASK.START"), "task...start");
             RegisterPrivatePrimitive(new PrimitiveTASKSEND(this, "TASK.SEND"), "task...send");
+            RegisterPublicPrimitive(new PrimitiveTaskStartWithoutParameter(this, "task.start"));
             RegisterPublicPrimitive(new PrimitiveTaskIsRunning(this, "task.isRunning"));
             RegisterPublicPrimitive(new PrimitiveTaskStop(this, "task.stop"));
             RegisterPublicPrimitive(new PrimitiveTaskPurge(this, "task.purge"));

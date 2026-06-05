@@ -1012,7 +1012,7 @@ namespace MOGWAI.Engine
 
                             if (parameter != null)
                             {
-                                var primitive = engine.GetPrimitive(typeof(PrimitiveTASKSTART), true);
+                                var primitive = engine.GetPrimitive(typeof(PrimitiveTaskStartWithParameter), true);
 
                                 if (primitive != null)
                                 {

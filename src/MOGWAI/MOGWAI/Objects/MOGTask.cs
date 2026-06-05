@@ -75,7 +75,7 @@ namespace MOGWAI.Objects
             };
         }
 
-        public EvalResult Start(string? parameter)
+        public EvalResult Start(string? parameter = null)
         {
             if (_taskRun != null)
                 return EvalResult.Failure(MotherEngine, Error.TaskCreationError, Name, "Task is already running.");

@@ -17,16 +17,16 @@ using MOGWAI.Objects;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveTASKSTART : MOGPrimitive
+    internal class PrimitiveTaskStartWithParameter : MOGPrimitive
     {
-        public PrimitiveTASKSTART(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveTaskStartWithParameter(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveTASKSTART(Engine, Name);
+            var obj = new PrimitiveTaskStartWithParameter(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
@@ -35,7 +35,6 @@ namespace MOGWAI.Primitives
         {
             // name object TASKSTART
             // objet is a parameter for the task's job
-
 
             var s = Engine.StackSign(2);
 
