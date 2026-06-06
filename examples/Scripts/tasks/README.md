@@ -210,4 +210,4 @@ examples/tasks/
 
 ---
 
-*For full documentation on the MOGWAI task system, refer to the [language reference](../../docs/EN/MOGWAI_EN.md).*
+*For full documentation on the MOGWAI task system, refer to the [language reference](../../../docs/EN/MOGWAI_EN.md).*
