@@ -4145,7 +4145,8 @@ To manage child tasks, a parent task has the following functions:
 | `task.list` | `task.list` | Returns the list of all defined tasks, regardless of their status. |
 | `task.purge` | `'T1' task.purge` | Deletes the task passed as parameter. If the task was running, it is stopped before being deleted. |
 | `task.result` | `'T1' task.result` | Returns the result of the task passed as parameter. The result can be of any type supported by MOGWAI. |
-| `task start with` | `task 'T1' start with object` | Executes the task passed as parameter by passing it a MOGWAI object. The object is placed on the child task's stack just before launch. This function returns immediately. |
+| `task.start` | `'T1' task.start` | Launches the task passed as parameter without passing it any parameter. This function returns immediately. |
+| `task start with` | `task 'T1' start with object` | Launches the task passed as parameter by passing it a MOGWAI object. The object is placed on the child task's stack just before launch. This function returns immediately. |
 | `task send` | `task 'T1' send object` | Sends the passed object to task 'T1'. The child task receives the object via the `TASK_DID_RECEIVE` event. |
 | `task.wait` | `'T1' task.wait` | Executes the task passed as parameter and waits until it completes before returning. |
 | `task.stop` | `'T1' task.stop` | Stops the task passed as parameter. Stopping a child task triggers the `TASK_DID_END` event in the parent task with the result value at the moment of stop. |
@@ -4167,7 +4168,9 @@ When a parent task launches a child task, it can pass it a **MOGWAI** object as 
 
 To pass parameters to a child task, simply place them in a **MOGWAI** object and pass it to the parent task's `task 'T1' start with object` function. The child task retrieves this object because it is automatically placed on the stack at the beginning of its code.
 
-Warning: if you try to launch a child task that is already running, the `task start with` function will raise an error. It is recommended to verify that the task is not already running before launching it.
+If the child task requires no parameter, use `'T1' task.start` instead.
+
+Warning: if you try to launch a child task that is already running, `task start with` and `task.start` will raise an error. It is recommended to verify that the task is not already running before launching it.
 
 ## Behavior on Unhandled Error
 
@@ -4177,7 +4180,7 @@ If a child task raises an error that is not handled by a `guard` or `trap` in it
 
 If you want to wait for a child task to complete before continuing program execution, simply use the parent task's `task.wait` function by passing it the name of the concerned child task.
 
-The child task must have been launched with `task start with` beforehand for `task.wait` to work. If the child task has not been launched, `task.wait` will return immediately.
+The child task must have been launched with `task start with` or `task.start` beforehand for `task.wait` to work. If the child task has not been launched, `task.wait` will return immediately.
 
 ## Waiting for Multiple Child Tasks to Complete
 
@@ -4185,7 +4188,7 @@ If you want to wait for multiple child tasks to complete before continuing progr
 
 ## Restarting a Completed Child Task
 
-A child task that has been launched and has completed can be restarted. Simply call it again with `task start with`, optionally passing it a new object as parameter.
+A child task that has been launched and has completed can be restarted. Simply call it again with `task start with` or `task.start`, optionally passing it a new object as parameter.
 
 ## Best Practices
 

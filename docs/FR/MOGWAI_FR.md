@@ -4159,6 +4159,7 @@ Pour gérer les tâches enfants, une tâche parente dispose des fonctions suivan
 | `task.list` | `task.list` | Retourne la liste de toutes les tâches définies, quel que soit leur état. |
 | `task.purge` | `'T1' task.purge` | Supprime la tâche passée en paramètre. Si la tâche était en cours d'exécution, elle est arrêtée avant d'être supprimée. |
 | `task.result` | `'T1' task.result` | Retourne le résultat de la tâche passée en paramètre. Le résultat peut être de n'importe quel type supporté par MOGWAI. |
+| `task.start` | `'T1' task.start` | Lance la tâche passée en paramètre sans lui passer de paramètre. Cette fonction retourne immédiatement. |
 | `task start with` | `task 'T1' start with object` | Exécute la tâche passée en paramètre en lui passant un objet MOGWAI. L'objet est placé sur la pile de la tâche enfant juste avant le lancement. Cette fonction retourne immédiatement. |
 | `task send` | `task 'T1' send object` | Envoie l'objet passé à la tâche 'T1'. La tâche enfant reçoit l'objet via l'événement `TASK_DID_RECEIVE`. |
 | `task.wait` | `'T1' task.wait` | Exécute la tâche passée en paramètre et attend qu'elle se termine avant de retourner. |
@@ -4181,7 +4182,9 @@ Quand une tâche parente lance une tâche enfant, elle peut lui passer un objet 
 
 Pour passer des paramètres à une tâche enfant, il suffit de les placer dans un objet **MOGWAI** et de le passer à la fonction `task 'T1' start with object` de la tâche parente. La tâche enfant récupère cet objet car il est automatiquement placé sur la pile au début de son code.
 
-Attention : si vous essayez de lancer une tâche enfant qui est déjà en cours d'exécution, la fonction `task start with` lèvera une erreur. Il est recommandé de vérifier que la tâche n'est pas déjà en cours d'exécution avant de la lancer.
+Si la tâche enfant ne nécessite aucun paramètre, utiliser `'T1' task.start` à la place.
+
+Attention : si vous essayez de lancer une tâche enfant qui est déjà en cours d'exécution, `task start with` et `task.start` lèveront une erreur. Il est recommandé de vérifier que la tâche n'est pas déjà en cours d'exécution avant de la lancer.
 
 ## Comportement en cas d'erreur non gérée
 
@@ -4191,7 +4194,7 @@ Si une tâche enfant lève une erreur qui n'est pas gérée par un `guard` ou `t
 
 Si vous voulez attendre la fin d'une tâche enfant avant de continuer l'exécution du programme, il suffit d'utiliser la fonction `task.wait` de la tâche parente en lui passant le nom de la tâche concernée.
 
-La tâche enfant doit avoir été lancée avec `task start with` au préalable pour que `task.wait` fonctionne. Si la tâche enfant n'a pas été lancée, `task.wait` retournera immédiatement.
+La tâche enfant doit avoir été lancée avec `task start with` ou `task.start` au préalable pour que `task.wait` fonctionne. Si la tâche enfant n'a pas été lancée, `task.wait` retournera immédiatement.
 
 ## Attendre la fin de plusieurs tâches enfants
 
@@ -4199,7 +4202,7 @@ Si vous voulez attendre la fin de plusieurs tâches enfants avant de continuer l
 
 ## Relancer une tâche enfant terminée
 
-Une tâche enfant qui a été lancée et s'est terminée peut être relancée. Il suffit de l'appeler à nouveau avec `task start with`, en lui passant optionnellement un nouvel objet en paramètre.
+Une tâche enfant qui a été lancée et s'est terminée peut être relancée. Il suffit de l'appeler à nouveau avec `task start with` ou `task.start`, en lui passant optionnellement un nouvel objet en paramètre.
 
 ## Bonnes pratiques
 

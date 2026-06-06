@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`task.start` primitive** — launches a task without parameters. Complements `task 'name' start with` for tasks that require no input.
+
+  ```
+  task 'T1' do
+  {
+      # no parameter expected
+      "Working..." ?
+      true task.setResult
+  }
+
+  'T1' task.start
+  'T1' task.wait
+  ```
+
+  Previously, launching a parameterless task required passing a dummy value (`null` or `empty`) and discarding it inside the task with `clear` or `drop`. `task.start` eliminates this workaround entirely.
+
 ### Changed
 
 ### Fixed

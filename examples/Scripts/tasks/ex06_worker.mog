@@ -1,0 +1,72 @@
+# Copyright 2015-2026 Stéphane Sibué
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# ex06_worker.mog
+# Illustrer le pattern de worker réutilisable : une tâche définie une fois, relancée plusieurs fois avec des paramètres différents.
+
+mogwai.reset
+console.clear
+
+onEvent 'TASK_DID_START' do
+{
+    DI
+    "TASK DID START {! eventData}" eval ?
+    "La tâche travaille..." ?
+    "" ?
+    EI
+}
+
+onEvent 'TASK_DID_END' do
+{
+    DI
+    "TASK DID END {! eventData}" eval ?
+    "La tâche {! eventData->task:} est terminée." eval ?
+    "Valeur de retour = {! eventData->result:}" eval ?
+    "" ?
+    EI
+}
+
+# Le worker est défini une seule fois et sera relancé autant de fois que nécessaire
+
+task 'WORKER' do 
+{
+    [wName: .string wMin: .number wMax: .number] ->params
+
+    0 -> 'r'
+    now -> 'begin'
+
+    wMin wMax for 'i' do
+    {
+        i ->+ 'r'
+        5 wait
+    }
+
+    now begin - ->duration ms: get -> 'd'
+    
+    [! Name: wName Value: r duration: d] task.setResult
+}
+
+task 'WORKER' start with [wName: "W1" wMin: 10 wMax: 50]
+'WORKER' task.wait
+
+task 'WORKER' start with [wName: "W2" wMin: 10 wMax: 50]
+'WORKER' task.wait
+
+task 'WORKER' start with [wName: "W3" wMin: 10 wMax: 50]
+'WORKER' task.wait
+
+task 'WORKER' start with [wName: "W4" wMin: 10 wMax: 50]
+'WORKER' task.wait
+
+"Programme terminé" ?

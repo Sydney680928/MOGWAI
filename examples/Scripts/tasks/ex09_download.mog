@@ -1,0 +1,127 @@
+# Copyright 2015-2026 Stéphane Sibué
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# ex09_download.mog
+# Exemple de référence complet reprenant tous les concepts, inspiré de l'exemple de la documentation officielle.
+
+mogwai.reset
+console.clear
+
+# Prepare the EX09-DOWNLOAD download folder for the demo
+# We use MOGWAI 8's standard paths for files (path.files)
+
+(! path.files "EX09-DOWNLOAD") path.make -> 'rootFolder' 
+
+if (rootFolder dir.exists not) then { rootFolder dir.create }
+
+# Declare all child task monitoring events
+
+    onEvent 'TASK_DID_START' do 
+    { 
+        DI
+        "TASK DID START {! eventData}" eval ?
+        EI
+    }
+
+    onEvent 'TASK_DID_END' do 
+    { 
+        DI
+        "TASK DID END {! eventData}" eval ?
+        EI
+    }
+
+    onEvent 'TASK_DID_FAIL' do 
+    { 
+        DI
+        "TASK DID FAIL {! eventData}" eval ?
+        EI
+    }
+
+    onEvent 'TASK_DID_PUBLISH' do 
+    { 
+        DI
+        "TASK DID PUBLISH {! eventData}" eval ?
+        EI
+    }
+
+# Prepare the information that will be provided to each download task
+# The download url
+# The file to use to save the downloaded data
+
+(
+    [name: 'T1' url: "https://www.google.fr" filename: "google.bin"]
+
+    [name: 'T2' url: "https://www.coding4phone.com" filename: "c4p.bin"]
+
+    [name: 'T3' url: "https://www.mogwai.eu.com" filename: "mogwai.bin"]
+)
+
+foreach 'item' do
+{
+    item ->vars
+
+    task name do
+    {
+        # The startup parameter (placed by task start with)
+        # is in this example a record of type [url: "..." filename: "..."]
+        # which allows it to retrieve which url to download and in which file to save the information
+
+        # ->vars will take the record and create a corresponding local variable for each key
+        # The local variables url and filename will be automatically created with the values carried by the record
+
+        ->vars
+
+        now -> 'begin'
+
+        [! http.get uri: url] -> 'r'
+
+        now begin - ->duration -> 'd'
+
+        if (r->state:) then
+        {
+            "Download duration: {! d->ms:} ms" eval task.publish
+
+            guard
+            {
+                (! path.files filename) path.make r->response: file.data.write
+                true task.setResult
+            }
+            else
+            {
+                false task.setResult
+            }
+        }
+        else
+        {
+            "Download error!" task.publish
+            false task.setResult
+        }
+    }
+
+    # We must provide the child task with the complete path
+    # A child task doesn't know MOGWAI 8's standard folders
+
+    (! rootFolder filename) path.make -> 'filename'
+
+    # We launch the task by providing it with the record containing the information
+    # it needs
+
+    task name start with [! url: url filename: filename]
+}
+
+('T1' 'T2' 'T3') task.join
+
+"Programme terminé" ?
+
+

@@ -1,0 +1,57 @@
+# Copyright 2015-2026 Stéphane Sibué
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# ex07_stop.mog
+# Montrer comment le parent peut arrêter une tâche en cours d'exécution.
+
+mogwai.reset
+console.clear
+
+onEvent 'TASK_DID_START' do
+{
+    "TASK DID START {! eventData}" eval ?
+    "La tâche travaille..." ?
+    "" ?
+}
+
+onEvent 'TASK_DID_END' do
+{
+    "TASK DID END {! eventData}" eval ?
+    "La tâche est terminée." ?
+    "" ?
+}
+
+task 'T1' do 
+{
+    0 -> 'c'
+
+    forever do 
+    { 
+        'c' ++
+        c task.setResult
+
+        rand 1000 * ->int 200 + wait
+    }
+}
+
+task 'T1' start with empty
+
+after 5000 do 
+{
+    'T1' task.stop
+}
+
+'T1' task.wait
+
+"Programme terminé" ?

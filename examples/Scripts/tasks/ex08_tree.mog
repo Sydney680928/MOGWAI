@@ -1,0 +1,103 @@
+# Copyright 2015-2026 Stéphane Sibué
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# ex08_tree.mog
+# Illustrer la composition d'arbres de tâches : une tâche enfant peut elle-même créer et gérer des tâches enfants.
+
+mogwai.reset
+console.clear
+
+onEvent 'TASK_DID_START' do
+{
+    DI
+    "FROM MAIN" ?
+    "TASK DID START {! eventData}" eval ?
+    "La tâche travaille..." ?
+    "" ?
+    EI
+}
+
+onEvent 'TASK_DID_END' do
+{
+    DI
+    "FROM MAIN" ?
+    "TASK DID END {! eventData}" eval ?
+    "La tâche est terminée." ?
+    "" ?
+    EI
+}
+
+task 'COORDINATOR' do 
+{
+    0 -> '$V1'
+    0 -> '$V2'
+
+    onEvent 'TASK_DID_START' do
+    {
+        DI
+        "FROM COORDINATOR" ?
+        "TASK DID START {! eventData}" eval ?
+        "La tâche travaille..." ?
+        "" ?
+        EI
+    }
+
+    onEvent 'TASK_DID_END' do
+    {
+        DI
+
+        "FROM COORDINATOR" ?
+        "TASK DID END {! eventData}" eval ?
+        "La tâche est terminée." ?
+        "" ?
+
+        switch 
+        {
+            (eventData->task: 'SUB1' ==) then { eventData->result: -> '$V1' }
+            
+            (eventData->task: 'SUB2' ==) then { eventData->result: -> '$V2' }
+        }
+
+        EI
+    }
+
+    task 'SUB1' do
+    { 
+        rand 3000 * ->int 2000 + -> 'v'
+        
+        v wait 
+        v task.setResult
+    }
+
+    task 'SUB2' do
+    { 
+        rand 3000 * ->int 2000 + -> 'v'
+        
+        v wait 
+        v task.setResult
+    }
+
+    'SUB1' task.start
+    'SUB2' task.start
+
+    ('SUB1' 'SUB2') task.join
+
+    [! v1: $V1 v2: $V2 sum: {! $V1 $V2 +}] task.setResult
+}
+
+task 'COORDINATOR' start with null
+
+'COORDINATOR' task.wait
+
+"Programme terminé" ?

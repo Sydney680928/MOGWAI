@@ -1,0 +1,87 @@
+# Copyright 2015-2026 Stéphane Sibué
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# ex04_error.mog
+# Montrer que les erreurs non gérées dans une tâche enfant ne font pas planter le parent.
+
+mogwai.reset
+console.clear
+
+onEvent 'TASK_DID_START' do
+{
+    DI
+    "TASK DID START {! eventData}" eval ?
+    "La tâche travaille..." ?
+    "" ?
+    EI
+}
+
+onEvent 'TASK_DID_END' do
+{
+    DI
+    "TASK DID END {! eventData}" eval ?
+    "La tâche est terminée." ?
+    "" ?
+    EI
+}
+
+onEvent 'TASK_DID_PUBLISH' do
+{
+    DI
+    "TASK DID PUBLISH {! eventData}" eval ?
+    "La tâche {! eventData->task:} exécute l'opération {! eventData->message:}" eval ?
+    "" ?
+    EI
+}
+
+onEvent 'TASK_DID_FAIL' do
+{
+    DI
+    "TASK DID FAIL {! eventData}" eval ?
+    "La tâche s'est arrêtée suite à une erreur !" ?
+    " " ?
+    EI
+}
+
+task 'T1' do 
+{
+    10 1 for 'i' step -1 do
+    {
+        100 i / "0.00" ->format -> 'r'
+        "100 / {! i} = {! r}" eval task.publish
+        1000 wait
+    }
+
+    true task.setResult
+}
+
+task 'T2' do 
+{
+    4 0 for 'i' step -1 do
+    {
+        100 i / "0.00" ->format -> 'r'
+        "100 / {! i} = {! r}" eval task.publish
+        1000 wait
+    }
+
+    true task.setResult
+}
+
+task 'T1' start with empty
+
+taxk 'T2' start with empty
+
+('T1' 'T2') task.join
+
+"Programme terminé" ?

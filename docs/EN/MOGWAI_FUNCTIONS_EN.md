@@ -2219,6 +2219,18 @@ Converts a number of milliseconds to a list of durations in different units (ms,
 
 ## TASK MANAGEMENT FUNCTIONS
 
+### `task.start`
+
+Launches the task whose name is passed as parameter without passing it any parameter. This function returns immediately.
+
+Use `task.start` when the task requires no input. For tasks that need a parameter, use `task start with` instead.
+
+```
+'T1' task.start
+```
+
+***
+
 ### `task.wait`
 
 Waits for the task whose name is passed as parameter for the end of its execution before returning.

@@ -1,0 +1,74 @@
+# Copyright 2015-2026 Stéphane Sibué
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# ex02_send.mog
+# Montrer comment le parent peut envoyer des données à une tâche en cours d'exécution.
+
+mogwai.reset
+console.clear
+
+onEvent 'TASK_DID_START' do
+{
+    "TASK DID START {! eventData}" eval ?
+    "La tâche travaille..." ?
+    "" ?
+
+    post
+    {
+        ("Bonjour !" "Comment ça va ?" "Tout va bien, merci." "STOP") foreach 'message' do
+        {
+            task 'T1' send message
+            1000 wait
+        }
+    }
+}
+
+onEvent 'TASK_DID_END' do
+{
+    "TASK DID END {! eventData}" eval ?
+    "La tâche est terminée." ?
+    "" ?
+}
+
+task 'T1' do 
+{
+    onEvent 'TASK_DID_RECEIVE' do
+    {
+        "TASK_DID_RECEIVE {! eventData}" eval ?
+        " " ?
+
+        if (eventData ->type .string ==) then
+        {
+            if (eventData "STOP" ==) then
+            {
+                'STOP_APP' flag.set
+            }
+        }
+    }
+
+    while ('STOP_APP' flag.isClear) do
+    {
+        # Attente passive : évite de consommer du CPU inutilement
+        200 wait
+    }
+
+    # On affecte le paramètre initial au résultat de la tâche
+    message  task.setResult
+}
+
+task 'T1' start with empty
+
+'T1' task.wait
+
+"Programme terminé" ?

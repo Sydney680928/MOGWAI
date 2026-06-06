@@ -2228,6 +2228,18 @@ Convertit un nombre de millisecondes en liste de durées dans différentes unit�
 
 ## FONCTIONS DE GESTION DES TÂCHES
 
+### `task.start`
+
+Lance la tâche dont le nom est passé en paramètre sans lui passer de paramètre. Cette fonction retourne immédiatement.
+
+Utiliser `task.start` quand la tâche ne nécessite aucune donnée d'entrée. Pour les tâches qui attendent un paramètre, utiliser `task start with` à la place.
+
+```
+'T1' task.start
+```
+
+***
+
 ### `task.wait`
 
 Attend la fin de l'exécution de la tâche dont le nom est passé en paramètre avant de retourner.
