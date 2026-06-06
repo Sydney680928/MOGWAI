@@ -122,6 +122,6 @@ foreach 'item' do
 
 ('T1' 'T2' 'T3') task.join
 
-"Programme terminé" ?
+"Program completed" ?
 
 

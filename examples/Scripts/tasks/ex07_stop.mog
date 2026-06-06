@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # ex07_stop.mog
-# Montrer comment le parent peut arrêter une tâche en cours d'exécution.
+# Show how the parent can stop a running task at any time.
 
 mogwai.reset
 console.clear
@@ -21,14 +21,14 @@ console.clear
 onEvent 'TASK_DID_START' do
 {
     "TASK DID START {! eventData}" eval ?
-    "La tâche travaille..." ?
+    "Task is running..." ?
     "" ?
 }
 
 onEvent 'TASK_DID_END' do
 {
     "TASK DID END {! eventData}" eval ?
-    "La tâche est terminée." ?
+    "Task completed." ?
     "" ?
 }
 
@@ -54,4 +54,4 @@ after 5000 do
 
 'T1' task.wait
 
-"Programme terminé" ?
+"Program completed" ?

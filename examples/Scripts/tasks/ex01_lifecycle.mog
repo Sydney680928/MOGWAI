@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # ex01_lifecycle.mog
-# Comprendre le cycle de vie d'une tâche enfant et les événements associés.
+# Understand the lifecycle of a child task and its associated events.
 
 mogwai.reset
 console.clear
@@ -21,26 +21,26 @@ console.clear
 onEvent 'TASK_DID_START' do
 {
     "TASK DID START {! eventData}" eval ?
-    "La tâche travaille..." ?
+    "Task is running..." ?
     "" ?
 }
 
 onEvent 'TASK_DID_END' do
 {
     "TASK DID END {! eventData}" eval ?
-    "La tâche est terminée." ?
+    "Task completed." ?
     "" ?
 }
 
 task 'T1' do 
 {
-    # On récupère le paramètre passé lors de démarrage de la tâche
+    # Retrieve the parameter passed at task startup
     -> 'message'
 
-    # On simule un traitement
+    # Simulate a processing operation
     3000 wait
 
-    # On affecte le paramètre initial au résultat de la tâche
+    # Set the initial parameter as the task result
     message  task.setResult
 }
 
@@ -48,4 +48,4 @@ task 'T1' start with "HELLO WORLD !"
 
 'T1' task.wait
 
-"Programme terminé" ?
+"Program completed" ?

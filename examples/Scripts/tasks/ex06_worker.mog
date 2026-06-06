@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # ex06_worker.mog
-# Illustrer le pattern de worker réutilisable : une tâche définie une fois, relancée plusieurs fois avec des paramètres différents.
+# Illustrate the reusable worker pattern: a task defined once, restarted multiple times with different parameters.
 
 mogwai.reset
 console.clear
@@ -22,7 +22,7 @@ onEvent 'TASK_DID_START' do
 {
     DI
     "TASK DID START {! eventData}" eval ?
-    "La tâche travaille..." ?
+    "Task is running..." ?
     "" ?
     EI
 }
@@ -31,13 +31,13 @@ onEvent 'TASK_DID_END' do
 {
     DI
     "TASK DID END {! eventData}" eval ?
-    "La tâche {! eventData->task:} est terminée." eval ?
-    "Valeur de retour = {! eventData->result:}" eval ?
+    "Task {! eventData->task:} completed." eval ?
+    "Return value = {! eventData->result:}" eval ?
     "" ?
     EI
 }
 
-# Le worker est défini une seule fois et sera relancé autant de fois que nécessaire
+# The worker is defined once and will be restarted as many times as needed
 
 task 'WORKER' do 
 {
@@ -69,4 +69,4 @@ task 'WORKER' start with [wName: "W3" wMin: 10 wMax: 50]
 task 'WORKER' start with [wName: "W4" wMin: 10 wMax: 50]
 'WORKER' task.wait
 
-"Programme terminé" ?
+"Program completed" ?

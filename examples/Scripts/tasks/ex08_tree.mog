@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # ex08_tree.mog
-# Illustrer la composition d'arbres de tâches : une tâche enfant peut elle-même créer et gérer des tâches enfants.
+# Illustrate task tree composition: a child task can itself create and manage child tasks.
 
 mogwai.reset
 console.clear
@@ -23,7 +23,7 @@ onEvent 'TASK_DID_START' do
     DI
     "FROM MAIN" ?
     "TASK DID START {! eventData}" eval ?
-    "La tâche travaille..." ?
+    "Task is running..." ?
     "" ?
     EI
 }
@@ -33,7 +33,7 @@ onEvent 'TASK_DID_END' do
     DI
     "FROM MAIN" ?
     "TASK DID END {! eventData}" eval ?
-    "La tâche est terminée." ?
+    "Task completed." ?
     "" ?
     EI
 }
@@ -48,7 +48,7 @@ task 'COORDINATOR' do
         DI
         "FROM COORDINATOR" ?
         "TASK DID START {! eventData}" eval ?
-        "La tâche travaille..." ?
+        "Task is running..." ?
         "" ?
         EI
     }
@@ -59,7 +59,7 @@ task 'COORDINATOR' do
 
         "FROM COORDINATOR" ?
         "TASK DID END {! eventData}" eval ?
-        "La tâche est terminée." ?
+        "Task completed." ?
         "" ?
 
         switch 
@@ -100,4 +100,4 @@ task 'COORDINATOR' start with null
 
 'COORDINATOR' task.wait
 
-"Programme terminé" ?
+"Program completed" ?

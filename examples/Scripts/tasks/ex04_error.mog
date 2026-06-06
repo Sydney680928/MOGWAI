@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # ex04_error.mog
-# Montrer que les erreurs non gérées dans une tâche enfant ne font pas planter le parent.
+# Show that unhandled errors in a child task do not crash the parent.
 
 mogwai.reset
 console.clear
@@ -22,7 +22,7 @@ onEvent 'TASK_DID_START' do
 {
     DI
     "TASK DID START {! eventData}" eval ?
-    "La tâche travaille..." ?
+    "Task is running..." ?
     "" ?
     EI
 }
@@ -31,7 +31,7 @@ onEvent 'TASK_DID_END' do
 {
     DI
     "TASK DID END {! eventData}" eval ?
-    "La tâche est terminée." ?
+    "Task completed." ?
     "" ?
     EI
 }
@@ -40,7 +40,7 @@ onEvent 'TASK_DID_PUBLISH' do
 {
     DI
     "TASK DID PUBLISH {! eventData}" eval ?
-    "La tâche {! eventData->task:} exécute l'opération {! eventData->message:}" eval ?
+    "Task {! eventData->task:} performed operation {! eventData->message:}" eval ?
     "" ?
     EI
 }
@@ -49,7 +49,7 @@ onEvent 'TASK_DID_FAIL' do
 {
     DI
     "TASK DID FAIL {! eventData}" eval ?
-    "La tâche s'est arrêtée suite à une erreur !" ?
+    "Task stopped due to an error!" ?
     " " ?
     EI
 }
@@ -84,4 +84,4 @@ taxk 'T2' start with empty
 
 ('T1' 'T2') task.join
 
-"Programme terminé" ?
+"Program completed" ?

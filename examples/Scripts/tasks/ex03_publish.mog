@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # ex03_publish.mog
-# Illustrer le pattern de reporting de progression depuis une tâche longue.
+# Illustrate the progress reporting pattern from a long-running task.
 
 mogwai.reset
 console.clear
@@ -21,21 +21,21 @@ console.clear
 onEvent 'TASK_DID_START' do
 {
     "TASK DID START {! eventData}" eval ?
-    "La tâche travaille..." ?
+    "Task is running..." ?
     "" ?
 }
 
 onEvent 'TASK_DID_END' do
 {
     "TASK DID END {! eventData}" eval ?
-    "La tâche est terminée." ?
+    "Task completed." ?
     "" ?
 }
 
 onEvent 'TASK_DID_PUBLISH' do
 {
     "TASK DID PUBLISH {! eventData}" eval ?
-    "Progression : {! eventData->message:}/5" eval ?
+    "Progress: {! eventData->message:}/5" eval ?
     "" ?
 }
 
@@ -56,4 +56,4 @@ task 'T1' start with empty
 
 'T1' task.wait
 
-"Programme terminé" ?
+"Program completed" ?

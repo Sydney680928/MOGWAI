@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # ex02_send.mog
-# Montrer comment le parent peut envoyer des données à une tâche en cours d'exécution.
+# Show how the parent can send data to a running task.
 
 mogwai.reset
 console.clear
@@ -21,12 +21,12 @@ console.clear
 onEvent 'TASK_DID_START' do
 {
     "TASK DID START {! eventData}" eval ?
-    "La tâche travaille..." ?
+    "Task is running..." ?
     "" ?
 
     post
     {
-        ("Bonjour !" "Comment ça va ?" "Tout va bien, merci." "STOP") foreach 'message' do
+        ("Hello!" "How are you?" "I'm fine, thank you." "STOP") foreach 'message' do
         {
             task 'T1' send message
             1000 wait
@@ -37,7 +37,7 @@ onEvent 'TASK_DID_START' do
 onEvent 'TASK_DID_END' do
 {
     "TASK DID END {! eventData}" eval ?
-    "La tâche est terminée." ?
+    "Task completed." ?
     "" ?
 }
 
@@ -59,11 +59,11 @@ task 'T1' do
 
     while ('STOP_APP' flag.isClear) do
     {
-        # Attente passive : évite de consommer du CPU inutilement
+        # Passive wait: avoids consuming CPU unnecessarily
         200 wait
     }
 
-    # On affecte le paramètre initial au résultat de la tâche
+    # Set the initial parameter as the task result
     message  task.setResult
 }
 
@@ -71,4 +71,4 @@ task 'T1' start with empty
 
 'T1' task.wait
 
-"Programme terminé" ?
+"Program completed" ?

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # ex05_parallel.mog
-# Montrer la parallélisation de traitements indépendants et la synchronisation finale.
+# Show how to parallelize independent operations and synchronize at the end.
 
 mogwai.reset
 console.clear
@@ -22,7 +22,7 @@ onEvent 'TASK_DID_START' do
 {
     DI
     "TASK DID START {! eventData}" eval ?
-    "La tâche travaille..." ?
+    "Task is running..." ?
     "" ?
     EI
 }
@@ -31,8 +31,8 @@ onEvent 'TASK_DID_END' do
 {
     DI
     "TASK DID END {! eventData}" eval ?
-    "La tâche {! eventData->task:} est terminée." eval ?
-    "Valeur de retour = {! eventData->result:}" eval ?
+    "Task {! eventData->task:} completed." eval ?
+    "Return value = {! eventData->result:}" eval ?
     "" ?
     EI
 }
@@ -62,4 +62,4 @@ task.list foreach 't' do
 
 task.list task.join
 
-"Programme terminé" ?
+"Program completed" ?
