@@ -75,9 +75,9 @@ The BLE simulator was the ideal project to launch the development of **MOGWAI**.
 
 The first version of **MOGWAI** was developed in .NET Standard with the C# language. The **MOGWAI** library was included in the simulator that was developed in UWP. Since the simulator had to take the role of a BLE peripheral, a machine equipped with a BLE chip capable of supporting this role was needed (generally BLE chips in desktop PCs only know how to support the Central BLE role). Raspberry PI 3s are equipped with a BLE chip capable of taking both roles. By installing Windows 10 IOT on a Raspberry PI 3, we were able to run the first version of the simulator without any problem, motorized by the first version of **MOGWAI**. This tool saved us a lot of time at the time.
 
-As the BLE simulator's needs grew, the **MOGWAI** engine was extended, improved, and many new features were added. Today **MOGWAI** can handle serial connections, HTTP requests, SQLite databases and has more than 200 primitives.
+As the BLE simulator's needs grew, the **MOGWAI** engine was extended, improved, and many new features were added. Today **MOGWAI** handles HTTP requests natively and has more than 200 primitives. Additional capabilities such as serial connections or SQLite databases are provided through extension libraries (called *usings* in MOGWAI terminology).
 
-I'm now at version 6, still developed in C# for .NET. This allows it to be used on Windows, but also on Linux and Mac OSX with X86, X64 and ARM architectures. For example, **MOGWAI** runs natively on a Raspberry PI 3 under Raspbian (Linux ARM).
+I'm now at version 8, still developed in C# for .NET. This allows it to be used on Windows, but also on Linux and macOS with X86, X64 and ARM architectures. For example, **MOGWAI** runs natively on a Raspberry PI 3 under Raspbian (Linux ARM).
 
 ## MOGWAI CLI to use the language in interactive mode
 
@@ -861,7 +861,7 @@ do
 | `ceil`   | Returns the value of the smallest integer greater than or equal to the specified number.                                                                                 | `56.89 ceil`   |
 | `cos`    | Returns the cosine of an angle in radians.                                                                                                                     | `0.5 cos`      |
 | `max`    | Returns the maximum value of a list.<br> Only numbers are allowed.| `(1 2 3) max`  |
-| `average`   | Returns the average of a list.<br> Only numbers are allowed.| `(1 2 3) mean` |
+| `average`   | Returns the average of a list.<br> Only numbers are allowed.| `(1 2 3) average` |
 | `min`    | Returns the minimum value of a list.<br> Only numbers are allowed.| `(1 2 3) min`  |
 | `pow`    | Returns a specified number raised to the specified power.                                                                                                   | `100 2 pow`    |
 | `rand`   | Generates a random number between 0 and 1.                                                                                                              | `rand ->'A'`   |
@@ -871,7 +871,7 @@ do
 | `sqrt`   | Returns the square root of a number.                                                                                                                        | `16 sqrt`      |
 | `sum`    | Returns the sum of a list.<br> Only numbers are taken into account.<br> Returns null if the list contains no numbers.                             | `(1 2 3) sum`  |
 | `tan`    | Returns the tangent of an angle in radians.                                                                                                                    | `0.5 tan`      |
-| `PI`     | Returns PI in degrees.                                                                                                                                         | `PI`           |
+| `PI`     | Returns the number PI.                                                                                                                                        | `PI`           |
 | `floor`  | Returns the largest integral value less than or equal to the specified number.                                                                              | `45.8 floor`   |
 | `mod`    | Returns the remainder of the integer division of one number by another.                                                                                            | `100 3 mod`    |
 
@@ -1024,14 +1024,14 @@ To convert an object to another (for example a character string to a number or v
 | `-30 ->u64`                  | D:FFFFFFFFFFFFFFE2                         |
 | `56.9865 ->int`              | 56                                            |
 | `"latitude" ->key`           | latitude:                                     |
-| `"rand" ->keyword`           | rand                                          |
+| `"rand" ->primitive`           | rand                                          |
 | `45 56 78 3 ->list`          | (45 56 78 3)                                  |
 | `D:414243 ->list`         | (65 66 67)                                    |
 | `"HELLO LE MONDE" ->lower`   | "hello le monde"                              |
 | `"hello le monde" ->upper`   | "HELLO LE MONDE"                              |
 | `D:2345E323 ->md5`        | D:0E9751A0F9AF52C737038B4F2108A907         |
 | `"latitude" ->name`          | 'latitude'                                    |
-| `(2 3 +) ->program`          | « 2 3 + »                                     |
+| `(2 3 +) ->function`          | « 2 3 + »                                     |
 | `35.3 ->rad`                 | 0.6161012259539983                            |
 | `D:12ED45FE89 ->sha1`     | D:8B1FB372469A9B52DED84498FF26CEE06C07910B |
 | `123 ->type`                 | .number                                       |
@@ -1438,7 +1438,7 @@ The `extract` function allows you to extract only certain keys from a record in 
 # This instruction will place the record [x: 100 y: 200] on the stack
 ```
 
-If you request a key that doesn't exist, a error is raised.
+If you request a key that doesn't exist, an error is raised.
 
 ## Checking that a key is present in a record
 
@@ -2057,7 +2057,7 @@ With the `->bin` function, you can create a binary number from a regular number.
 
 For example, the number 112 in binary is written as `1110000`, so the created binary number has a size of 7 bits.
 
-You car also specify the size of the created binary number with the `->bin..` functions as `->bin8`, `->bin16`, `->bin32` and `->bin64`. In this case, the created binary number will be padded with zeros on the left to reach the specified size.
+You can also specify the size of the created binary number with the `->bin..` functions as `->bin8`, `->bin16`, `->bin32` and `->bin64`. In this case, the created binary number will be padded with zeros on the left to reach the specified size.
 
 The `up` function allows you to raise a given bit, and the `down` function allows the opposite. You must give these functions the number of the bit to modify (the 1st bit has number 0):
 
@@ -2568,11 +2568,11 @@ List of main errors:
 |--------|--------------------------|
 | MW.0   | no error.                                         |
 | MW.1   | parse error.                                      |
-| MW.2   | halt encounted error.                             |
+| MW.2   | halt encountered error.                             |
 | MW.3   | empty code error.                                 |
 | MW.4   | internal error.                                   |
 | MW.5   | platform not supported error.                     |
-| MW.6   | unabled to fire event error.                      |
+| MW.6   | unable to fire event error.                      |
 | MW.7   | operation not supported error.                    |
 | MW.8   | circular reference error.                         |
 | MW.9   | assert error.                                     |
@@ -2587,17 +2587,17 @@ List of main errors:
 | MW.31  | mathematical error.                               |
 | MW.32  | convert error.                                    |
 | MW.40  | unknown name error.                               |
-| MW.41  | name already exits error.                         |
+| MW.41  | name already exists error.                         |
 | MW.42  | function already exists error.                    |
 | MW.43  | name already used by function error.              |
 | MW.44  | name already used by var error.                   |
 | MW.45  | unknown key error.                                |
 | MW.46  | invalid name error.                               |
-| MW.47  | unabled to write value in var.                    |
-| MW.48  | unabled to write value in undeclared var.         |
+| MW.47  | unable to write value in var.                    |
+| MW.48  | unable to write value in undeclared var.         |
 | MW.50  | unknown word error.                               |
 | MW.60  | task creation error.                              |
-| MW.61  | unabled to start task error.                      |
+| MW.61  | unable to start task error.                      |
 | MW.62  | invalid outside of a task error.                  |
 | MW.70  | invalid path error.                               |
 | MW.71  | path does not exists error.                       |
@@ -2702,7 +2702,7 @@ forever do
  
 ## The `mogwai.halt` function
 
-The `mogwai.halt` function behaves exactly like the `mogwai.exit` function, but it raises error "MW.2", "halt encounted error" instead of saying nothing at all. So it's an error stop.
+The `mogwai.halt` function behaves exactly like the `mogwai.exit` function, but it raises error "MW.2", "halt encountered error" instead of saying nothing at all. So it's an error stop.
 
 When a program terminates on an error (`mogwai.halt` raises an error), the reserved function `MOGWAI.onError` is automatically executed by **MOGWAI**. If it is defined in your code it will be called automatically. Inside `MOGWAI.onError`, `error.last` returns the code of the error that triggered the stop — it is the only runtime information available at that point:
 
@@ -3944,7 +3944,7 @@ If there are not enough elements on the stack to fill all the listed variables, 
 ```
 setCoords:
 {
-    [.number .number] ->safeVars 'x' 'y'
+    [x: .number y: .number] ->safeVars
 
     x self<-x:
     y self<-y:

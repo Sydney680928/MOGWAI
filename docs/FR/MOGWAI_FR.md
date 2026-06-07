@@ -75,9 +75,9 @@ Le simulateur BLE était le projet idéal pour lancer le développement de **MOG
 
 La première version de **MOGWAI** a été développée en .NET Standard avec le langage C#. La bibliothèque **MOGWAI** était incluse dans le simulateur développé en UWP. Comme le simulateur devait jouer le rôle d'un périphérique BLE, une machine équipée d'une puce BLE capable de supporter ce rôle était nécessaire (généralement, les puces BLE des PC de bureau ne savent supporter que le rôle Central BLE). Les Raspberry PI 3 sont équipés d'une puce BLE capable d'assumer les deux rôles. En installant Windows 10 IOT sur un Raspberry PI 3, nous avons pu faire fonctionner la première version du simulateur sans aucun problème, motorisé par la première version de **MOGWAI**. Cet outil nous a fait gagner beaucoup de temps à l'époque.
 
-Au fur et à mesure que les besoins du simulateur BLE grandissaient, le moteur **MOGWAI** a été étendu, amélioré, et de nombreuses nouvelles fonctionnalités ont été ajoutées. Aujourd'hui **MOGWAI** sait gérer les connexions série, les requêtes HTTP, les bases de données SQLite et dispose de plus de 200 primitives.
+Au fur et à mesure que les besoins du simulateur BLE grandissaient, le moteur **MOGWAI** a été étendu, amélioré, et de nombreuses nouvelles fonctionnalités ont été ajoutées. Aujourd'hui **MOGWAI** gère nativement les requêtes HTTP et dispose de plus de 200 primitives. Des capacités supplémentaires comme les connexions série ou les bases de données SQLite sont fournies par des bibliothèques d'extension (appelées *usings* dans la terminologie MOGWAI).
 
-Nous en sommes maintenant à la version 6, toujours développée en C# pour .NET. Cela lui permet d'être utilisé sous Windows, mais aussi sous Linux et Mac OSX avec des architectures X86, X64 et ARM. Par exemple, **MOGWAI** tourne nativement sur un Raspberry PI 3 sous Raspbian (Linux ARM).
+Nous en sommes maintenant à la version 8, toujours développée en C# pour .NET. Cela lui permet d'être utilisé sous Windows, mais aussi sous Linux et macOS avec des architectures X86, X64 et ARM. Par exemple, **MOGWAI** tourne nativement sur un Raspberry PI 3 sous Raspbian (Linux ARM).
 
 ## MOGWAI CLI pour utiliser le langage en mode interactif
 
@@ -861,7 +861,7 @@ do
 | `ceil`   | Retourne la valeur du plus petit entier supérieur ou égal au nombre spécifié.                                                                                 | `56.89 ceil`   |
 | `cos`    | Retourne le cosinus d'un angle en radians.                                                                                                                    | `0.5 cos`      |
 | `max`    | Retourne la valeur maximale d'une liste.<br> Seuls les nombres sont autorisés.| `(1 2 3) max`  |
-| `average`   | Retourne la moyenne d'une liste.<br> Seuls les nombres sont autorisés.| `(1 2 3) mean` |
+| `average`   | Retourne la moyenne d'une liste.<br> Seuls les nombres sont autorisés.| `(1 2 3) average` |
 | `min`    | Retourne la valeur minimale d'une liste.<br> Seuls les nombres sont autorisés.| `(1 2 3) min`  |
 | `pow`    | Retourne un nombre donné élevé à la puissance spécifiée.                                                                                                      | `100 2 pow`    |
 | `rand`   | Génère un nombre aléatoire entre 0 et 1.                                                                                                                      | `rand ->'A'`   |
@@ -871,7 +871,7 @@ do
 | `sqrt`   | Retourne la racine carrée d'un nombre.                                                                                                                        | `16 sqrt`      |
 | `sum`    | Retourne la somme d'une liste.<br> Seuls les nombres sont pris en compte.<br> Retourne null si la liste ne contient aucun nombre.                             | `(1 2 3) sum`  |
 | `tan`    | Retourne la tangente d'un angle en radians.                                                                                                                   | `0.5 tan`      |
-| `PI`     | Retourne PI en degrés.                                                                                                                                        | `PI`           |
+| `PI`     | Retourne le nombre PI.                                                                                                                                        | `PI`           |
 | `floor`  | Retourne la plus grande valeur entière inférieure ou égale au nombre spécifié.                                                                                | `45.8 floor`   |
 | `mod`    | Retourne le reste de la division entière d'un nombre par un autre.                                                                                            | `100 3 mod`    |
 
@@ -1024,14 +1024,14 @@ Pour convertir un objet en un autre (par exemple une chaîne de caractères en n
 | `-30 ->u64`                  | D:FFFFFFFFFFFFFFE2                         |
 | `56.9865 ->int`              | 56                                            |
 | `"latitude" ->key`           | latitude:                                     |
-| `"rand" ->keyword`           | rand                                          |
+| `"rand" ->primitive`           | rand                                          |
 | `45 56 78 3 ->list`          | (45 56 78 3)                                  |
 | `D:414243 ->list`         | (65 66 67)                                    |
 | `"HELLO LE MONDE" ->lower`   | "hello le monde"                              |
 | `"hello le monde" ->upper`   | "HELLO LE MONDE"                              |
 | `D:2345E323 ->md5`        | D:0E9751A0F9AF52C737038B4F2108A907         |
 | `"latitude" ->name`          | 'latitude'                                    |
-| `(2 3 +) ->program`          | « 2 3 + »                                     |
+| `(2 3 +) ->function`          | « 2 3 + »                                     |
 | `35.3 ->rad`                 | 0.6161012259539983                            |
 | `D:12ED45FE89 ->sha1`     | D:8B1FB372469A9B52DED84498FF26CEE06C07910B |
 | `123 ->type`                 | .number                                       |
@@ -2568,11 +2568,11 @@ Liste des principales erreurs :
 |--------|--------------------------|
 | MW.0   | no error.                                         |
 | MW.1   | parse error.                                      |
-| MW.2   | halt encounted error.                             |
+| MW.2   | halt encountered error.                             |
 | MW.3   | empty code error.                                 |
 | MW.4   | internal error.                                   |
 | MW.5   | platform not supported error.                     |
-| MW.6   | unabled to fire event error.                      |
+| MW.6   | unable to fire event error.                      |
 | MW.7   | operation not supported error.                    |
 | MW.8   | circular reference error.                         |
 | MW.9   | assert error.                                     |
@@ -2587,17 +2587,17 @@ Liste des principales erreurs :
 | MW.31  | mathematical error.                               |
 | MW.32  | convert error.                                    |
 | MW.40  | unknown name error.                               |
-| MW.41  | name already exits error.                         |
+| MW.41  | name already exists error.                         |
 | MW.42  | function already exists error.                    |
 | MW.43  | name already used by function error.              |
 | MW.44  | name already used by var error.                   |
 | MW.45  | unknown key error.                                |
 | MW.46  | invalid name error.                               |
-| MW.47  | unabled to write value in var.                    |
-| MW.48  | unabled to write value in undeclared var.         |
+| MW.47  | unable to write value in var.                    |
+| MW.48  | unable to write value in undeclared var.         |
 | MW.50  | unknown word error.                               |
 | MW.60  | task creation error.                              |
-| MW.61  | unabled to start task error.                      |
+| MW.61  | unable to start task error.                      |
 | MW.62  | invalid outside of a task error.                  |
 | MW.70  | invalid path error.                               |
 | MW.71  | path does not exists error.                       |
@@ -2702,7 +2702,7 @@ forever do
  
 ## La fonction `mogwai.halt`
 
-La fonction `mogwai.halt` se comporte exactement comme la fonction `mogwai.exit`, mais elle lève l'erreur "MW.2", "halt encounted error" au lieu de ne rien signaler. C'est donc un arrêt sur erreur.
+La fonction `mogwai.halt` se comporte exactement comme la fonction `mogwai.exit`, mais elle lève l'erreur "MW.2", "halt encountered error" au lieu de ne rien signaler. C'est donc un arrêt sur erreur.
 
 Lorsqu'un programme se termine sur une erreur (`mogwai.halt` lève une erreur), la fonction réservée `MOGWAI.onError` est automatiquement exécutée par **MOGWAI**. Si elle est définie dans votre code, elle sera appelée automatiquement. À l'intérieur de `MOGWAI.onError`, `error.last` retourne le code de l'erreur qui a déclenché l'arrêt — c'est la seule information d'exécution disponible à ce stade :
 
@@ -3956,7 +3956,7 @@ S'il n'y a pas assez d'éléments sur la pile pour remplir toutes les variables 
 ```
 setCoords:
 {
-    [.number .number] ->safeVars 'x' 'y'
+    [x: .number y: .number] ->safeVars
 
     x self<-x:
     y self<-y:

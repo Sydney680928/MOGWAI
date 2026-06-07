@@ -125,7 +125,7 @@ Si `true` est passé en paramètre, toutes les variables doivent être déclaré
 Les variables sont déclarées avec la fonction `=>` :
 
 ```
-100 'A' => # Declares variable A as .number type and assigns it the value 100.
+100 => 'A' # Declares variable A as .number type and assigns it the value 100.
 ```
 
 > Par défaut, `mogwai.strict` est désactivé.
@@ -1884,7 +1884,7 @@ Si l'hôte ne gère pas cette information, les coordonnées 0 0 sont retournées
 
 ***
 
-### `console.setForgroundColor`
+### `console.setForegroundColor`
 
 Demande à l'hôte de changer la couleur d'affichage des caractères en passant le nom de la couleur à utiliser en paramètre.
 

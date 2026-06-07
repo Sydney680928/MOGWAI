@@ -123,7 +123,7 @@ If `true` is passed as parameter, all variables must be declared before being us
 Variables are declared with the `=>` function :
 
 ```
-100 'A' => # Declares variable A as .number type and assigns it the value 100.
+100 => 'A' # Declares variable A as .number type and assigns it the value 100.
 ```
 
 > By default `mogwai.strict` is disabled. 
@@ -1877,7 +1877,7 @@ If the host does not handle this information, coordinates 0 0 are returned.
 
 ***
 
-### `console.setForgroundColor`
+### `console.setForegroundColor`
 
 Requests the host to change the character display color by passing the color name to use as parameter.
 
