@@ -160,6 +160,8 @@ namespace MOGWAI.Objects
         {
             if (AutoEval)
             {
+                AutoEval = false;
+
                 var result = await Eval();
 
                 if (result != EvalResult.NoError)

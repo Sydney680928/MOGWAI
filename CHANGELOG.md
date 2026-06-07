@@ -29,6 +29,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Auto-evaluated records and lists — `!` flag incorrectly retained after evaluation.** When a record or list marked with `!` (auto-evaluation) was evaluated, the resulting object kept the auto-evaluation flag set. The final value was correct, but the engine was forced to re-evaluate the object on every subsequent access, incurring unnecessary overhead. The flag is now cleared on the evaluated result for both records and lists.
+
+  ```
+  [ ! x: rand y: rand ]   # → evaluated record, ! flag cleared
+  (! now 50 $X)           # → evaluated list, ! flag cleared
+  ```
+
 ## [8.8.2] - 2026-06-05
 
 ### Fixed

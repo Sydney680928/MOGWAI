@@ -127,7 +127,10 @@ namespace MOGWAI.Objects
         public override async Task<EvalResult> EngineEval()
         {
             if (AutoEval)
+            {
+                AutoEval = false;
                 await Eval();
+            }
 
             return await base.EngineEval();
         }
