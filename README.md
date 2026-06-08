@@ -3,12 +3,15 @@
 # [MOGWAI](https://www.mogwai.eu.com) - A powerful stack-based RPN scripting engine for .NET
 
 ![GitHub Stars](https://img.shields.io/github/stars/Sydney680928/mogwai?style=social)
+[![Build](https://github.com/Sydney680928/mogwai/actions/workflows/ci.yml/badge.svg)](https://github.com/Sydney680928/mogwai/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
 [![NuGet](https://img.shields.io/nuget/v/MOGWAI.svg)](https://www.nuget.org/packages/MOGWAI/)
 [![VS Code Extension](https://img.shields.io/badge/VS%20Code-Extension-007ACC?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language)
 
 **Embeddable, extensible, production-ready.** **From IoT automation to desktop scripting, one elegant RPN runtime for your .NET apps.**
+
+**▶ Try it now — [run MOGWAI in your browser](https://sydney680928.github.io/MOGWAI/)** — no install, no signup, runs entirely client-side.
 
 > If MOGWAI looks useful to you, a ⭐ helps others discover it — thank you!
 
@@ -18,10 +21,24 @@
 
 MOGWAI is a modern implementation of RPN (Reverse Polish Notation) for the .NET ecosystem. Inspired by the legendary HP calculators (HP 28S, HP 48), it brings the elegance and power of stack-based, concatenative programming to your applications — whether you're scripting complex workflows, embedding a runtime in a desktop or mobile app, designing a custom DSL, or automating IoT pipelines.
 
+### The stack, in 30 seconds
+
+MOGWAI reads left to right. Values are pushed onto a stack; operators consume values from it and push the result back. There's no operator precedence and no parentheses — the order on the stack *is* the program.
+
+```
+3            →  [ 3 ]
+4            →  [ 3 4 ]
++            →  [ 7 ]
+2            →  [ 7 2 ]
+*            →  [ 14 ]
+```
+
+The same calculation on a single line — `3 4 + 2 *` — also leaves `[ 14 ]` on the stack. That's the whole idea: small pieces compose, and what you see is exactly what happens.
+
 ### Key Features
 
 - **Stack-Based RPN Syntax** - Clean, unambiguous, no operator precedence
-- **280+ Built-in Functions** - Math, strings, lists, files, HTTP, and more
+- **304 Built-in Functions** - Math, strings, lists, files, HTTP, and more
 - **Async/Await Support** - Modern asynchronous execution
 - **Plugin System** - Clean plugin contract via `MOGWAI.IPlugin` — official plugins in development
 - **Battle-Tested** - 10+ years of real-world usage
@@ -112,7 +129,7 @@ Syntax highlighting, autocompletion, runtime execution, step-by-step debugging, 
 - **License:** Proprietary (free to use)
 - **Marketplace:** [mogwai.mogwai-language](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language)
 - **Documentation:** [MOGWAI_VSCODE.md](docs/EN/MOGWAI_VSCODE.md)
-- **Status:** Available — v1.0.1
+- **Status:** Available — v1.0.3
 
 ### MOGWAI STUDIO (Coming Soon)
 
@@ -192,27 +209,44 @@ var result = await engine.RunAsync(@"
 ### MOGWAI Language Example
 
 ```mogwai
-# Variables
-42 -> '$answer'
-"Hello World" -> '$greeting'
+# 1 — Print to output with ?
+"Hello from MOGWAI!" ?      # → Hello from MOGWAI!
+2 3 + ?                     # → 5
+```
 
-# Functions
+```mogwai
+# 2 — Store and recall  ( value -> 'name' )
+42 -> '$answer'             # the $ prefix marks a global variable
+$answer ?                   # → 42
+```
+
+```mogwai
+# 3 — Define and use a function
 to 'square' with [n: .number] do
 {
     n n *
 }
 
-# Lists
+5 square ?                  # → 25
+```
+
+```mogwai
+# 4 — Transform a list
 (1 2 3 4 5) foreach 'n' transform { n square } -> '$result'
-$result ? # Outputs the list of squares (1 4 9 16 25)
+$result ?                   # → (1 4 9 16 25)
+```
 
-# Records
-[name: "MOGWAI", version: "8.0"] -> 'info'
+```mogwai
+# 5 — Structured data with records  (space-delimited — no commas)
+[name: "MOGWAI" version: "8.9.1"] -> 'info'
+info ?                      # → [name: "MOGWAI" version: "8.9.1"]
+```
 
-# Conditionals
-if (answer 40 >) then
+```mogwai
+# 6 — Conditionals
+if ($answer 40 >) then
 {
-    "Answer is greater than 40" ?
+    "The answer is greater than 40" ?
 }
 ```
 
@@ -227,30 +261,15 @@ if (answer 40 >) then
 
 ---
 
-## Why MOGWAI instead of Lua, Python, or JavaScript?
+## Is MOGWAI a Good Fit for You?
 
-This is a fair question. Here's the honest comparison:
+MOGWAI is a focused tool, not a general-purpose language. It shines when:
 
-| | MOGWAI | Lua | IronPython | Jint (JS) |
-|---|---|---|---|---|
-| Paradigm | Stack-based RPN | Infix | Infix | Infix |
-| .NET native | ✅ | Binding layer | Partial | ✅ |
-| NativeAOT | ✅ | ❌ | ❌ | ❌ |
-| Plugin system | ✅ | ❌ | ❌ | ❌ |
-| Bundle size | Minimal | Small | Heavy | Medium |
-| Learning curve | Different | Low | Low | Low |
-
-**Choose MOGWAI if:**
-- You want **zero operator precedence ambiguity** — the stack is the truth
-- You're embedding in a **.NET NativeAOT** application
-- You appreciate the **concatenative programming** model (Forth, Factor, PostScript, HP RPL)
+- You want **zero operator precedence ambiguity** — the stack is the single source of truth
+- You're embedding a scripting runtime in a **.NET** application, including **NativeAOT** builds
+- You appreciate the **concatenative programming** model in the tradition of Forth, Factor, PostScript and HP RPL
 - You need a **lightweight, extensible runtime** with a clean plugin contract
-
-**Choose Lua/JS if:**
-- Your team is already fluent in infix syntax
-- You need a large existing ecosystem of scripts
-
-MOGWAI isn't trying to replace general-purpose scripting — it's the right tool when **stack semantics and .NET-native embedding** matter.
+- You want to offer safe, hot-swappable scripting to your users — update logic without recompiling or redeploying your app
 
 ---
 
@@ -316,7 +335,7 @@ mogwai/
 │       ├── MOGWAI/
 │       │   ├── Engine/             # Core runtime engine
 │       │   ├── Objects/            # MOGWAI object types
-│       │   ├── Primitives/         # Built-in functions (280+ primitives)
+│       │   ├── Primitives/         # Built-in functions (304 primitives)
 │       │   ├── Interfaces/         # Public interfaces (IDelegate, IPlugin)
 │       │   └── Exceptions/         # Exception types
 │       ├── MOGWAI.Tests/           # Unit tests
@@ -333,7 +352,7 @@ mogwai/
 ### Complete Guides
 
 - **[Language Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_EN.md)** - Complete MOGWAI language guide
-- **[Function Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 280+ built-in functions
+- **[Function Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 304 built-in functions
 - **[Integration Guide](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI in your .NET apps
 - **[VS Code Extension Guide](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_VSCODE.md)** - How to use VS Code with the MOGWAI runtime
 
@@ -351,7 +370,7 @@ Examples are available:
 
 See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
 
-**Latest Release:** [v8.7.0](https://github.com/Sydney680928/mogwai/releases/tag/v8.7.0)
+**Latest Release:** [v8.9.1](https://github.com/Sydney680928/mogwai/releases/tag/v8.9.1)
 
 ---
 
@@ -456,7 +475,7 @@ A full-featured REPL and script editor running natively on Windows, Linux and ma
 ### Version 8.5
 
 - Enhanced debugging protocol
-- 280+ built-in primitives (approaching 300)
+- 280+ built-in primitives
 - Additional examples and documentation
 
 ### Version 8.6
@@ -470,7 +489,7 @@ A full-featured REPL and script editor running natively on Windows, Linux and ma
 - OOP introspection
 - External processes support
 
-### Version 8.8 (Latest)
+### Version 8.8
 
 - Skill system — scripts can verify at startup that they run in the right host environment (`skills`, `hasSkill`, `mogwai.assertSkill`)
 - `IDelegate` default implementations — MOGWAI is now embeddable with zero delegate code for simple use cases
@@ -478,6 +497,13 @@ A full-featured REPL and script editor running natively on Windows, Linux and ma
 - `post` primitive — deferred block execution after pending events and timers
 - `path.home` / `path.setHome` primitives and `HomeDirectory` property on `MogwaiEngine`
 - `mogwai.info` now includes a `skills:` key
+
+### Version 8.9.1 (Latest)
+
+- `task.start` primitive — launch a parameterless task cleanly, without passing and discarding a dummy value
+- Corrected public error identifiers (host-side naming fixes; scripts are unaffected, they identify errors by `MW.x` code)
+- Auto-evaluation `!` flag now cleared after evaluation of records and lists — avoids needless re-evaluation on every access
+- Corrected English wording in several built-in error messages
 
 ### Future Plans
 
