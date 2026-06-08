@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.9.1] - 2026-06-08
+
+### Added
+
 - **`task.start` primitive** — launches a task without parameters. Complements `task 'name' start with` for tasks that require no input.
 
   ```
@@ -759,7 +767,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.8.2...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.9.1...HEAD
+[8.9.1]: https://github.com/Sydney680928/mogwai/compare/v8.8.2...v8.9.1
 [8.8.2]: https://github.com/Sydney680928/mogwai/compare/v8.8.1...v8.8.2
 [8.8.1]: https://github.com/Sydney680928/mogwai/compare/v8.8.0...v8.8.1
 [8.8.0]: https://github.com/Sydney680928/mogwai/compare/v8.7.0...v8.8.0
