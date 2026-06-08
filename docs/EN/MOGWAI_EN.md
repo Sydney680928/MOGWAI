@@ -998,7 +998,7 @@ Which will give: `"Le nom est DOE JOHN"`
 
 # CONVERSION FUNCTIONS
 
-To convert an object to another (for example a character string to a number or vice versa) **MOGWAI** has conversion functions that start or end with the `->` symbol.
+To convert an object to another (for example a character string to a number or vice versa) **MOGWAI** has conversion functions that start or end with the `->` symbol. The position of the symbol follows a consistent **direction rule**: as a **prefix** it means *produce this type* (e.g. `->num`, `->data`, `->utf8`); as a **suffix** it means *consume this type* (e.g. `hex->`, `base64->`, `utf8->`). This rule holds throughout the chapter.
 
 | Operation                    | Result                                      |
 |------------------------------|-----------------------------------------------|
@@ -1923,7 +1923,7 @@ These primitives take a number from the stack and return the corresponding `DATA
 
 These primitives take a `DATA` from the stack and return the corresponding number, interpreting the bytes in the specified byte order and size.
 
-The naming convention follows the **MOGWAI** direction rule: `->` as a prefix means *produce this type*, `->` as a suffix means *consume this type*. So `dataLE32->` reads a 32-bit Little Endian `DATA` and returns a number.
+Following the **MOGWAI** direction rule (see the CONVERSION FUNCTIONS chapter), `dataLE32->` reads a 32-bit Little Endian `DATA` and returns a number.
 
 ### Little Endian
 
@@ -2057,7 +2057,7 @@ With the `->bin` function, you can create a binary number from a regular number.
 
 For example, the number 112 in binary is written as `1110000`, so the created binary number has a size of 7 bits.
 
-You can also specify the size of the created binary number with the `->bin..` functions as `->bin8`, `->bin16`, `->bin32` and `->bin64`. In this case, the created binary number will be padded with zeros on the left to reach the specified size.
+You can also specify the size of the created binary number with the `->bin..` functions as `->bin8`, `->bin16`, `->bin24`, `->bin32`, `->bin48` and `->bin64`. In this case, the created binary number will be padded with zeros on the left to reach the specified size.
 
 The `up` function allows you to raise a given bit, and the `down` function allows the opposite. You must give these functions the number of the bit to modify (the 1st bit has number 0):
 
@@ -3145,10 +3145,6 @@ It takes as parameter the name of the flag to check: `if ('MY_FLAG' flag.isSet) 
 To check if a flag is deactivated, you must use the `flag.isClear` function which returns `true` if the flag is deactivated, and `false` otherwise
 
 It takes as parameter the name of the flag to check: `if ('MY_FLAG' flag.isClear) then { ... }`
-
-## Listing activated flags
-
-The `flags` function returns the list of all activated flags. Deactivated flags are considered non-existent and therefore do not appear in this list.
 
 # FILE MANAGEMENT
 

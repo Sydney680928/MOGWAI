@@ -998,7 +998,7 @@ Ce qui donnera : `"Le nom est DOE JOHN"`
 
 # FONCTIONS DE CONVERSION
 
-Pour convertir un objet en un autre (par exemple une chaîne de caractères en nombre ou vice versa), **MOGWAI** dispose de fonctions de conversion qui commencent ou se terminent par le symbole `->`.
+Pour convertir un objet en un autre (par exemple une chaîne de caractères en nombre ou vice versa), **MOGWAI** dispose de fonctions de conversion qui commencent ou se terminent par le symbole `->`. La position du symbole suit une **règle directionnelle** constante : en **préfixe**, il signifie *produire ce type* (ex. `->num`, `->data`, `->utf8`) ; en **suffixe**, il signifie *consommer ce type* (ex. `hex->`, `base64->`, `utf8->`). Cette règle s'applique à tout ce chapitre.
 
 | Opération                    | Résultat                                      |
 |------------------------------|-----------------------------------------------|
@@ -1923,7 +1923,7 @@ Ces primitives prennent un nombre sur la pile et retournent le `DATA` correspond
 
 Ces primitives prennent un `DATA` sur la pile et retournent le nombre correspondant, en interprétant les octets dans l'ordre et la taille spécifiés.
 
-La convention de nommage suit la règle directionnelle de **MOGWAI** : `->` en préfixe signifie *produire ce type*, `->` en suffixe signifie *consommer ce type*. Ainsi `dataLE32->` lit un `DATA` Little Endian 32 bits et retourne un nombre.
+Conformément à la règle directionnelle de **MOGWAI** (voir le chapitre FONCTIONS DE CONVERSION), `dataLE32->` lit un `DATA` Little Endian 32 bits et retourne un nombre.
 
 ### Little Endian
 
@@ -2057,7 +2057,7 @@ Avec la fonction `->bin`, vous pouvez créer un nombre binaire à partir d'un no
 
 Par exemple, le nombre 112 en binaire s'écrit `1110000`, donc le nombre binaire créé a une taille de 7 bits.
 
-Vous pouvez également spécifier la taille du nombre binaire créé avec les fonctions `->bin..` comme `->bin8`, `->bin16`, `->bin32` et `->bin64`. Dans ce cas, le nombre binaire créé sera complété par des zéros à gauche pour atteindre la taille spécifiée.
+Vous pouvez également spécifier la taille du nombre binaire créé avec les fonctions `->bin..` comme `->bin8`, `->bin16`, `->bin24`, `->bin32`, `->bin48` et `->bin64`. Dans ce cas, le nombre binaire créé sera complété par des zéros à gauche pour atteindre la taille spécifiée.
 
 La fonction `up` permet de lever un bit donné, et la fonction `down` permet l'opération inverse. Vous devez donner à ces fonctions le numéro du bit à modifier (le 1er bit a le numéro 0) :
 
@@ -3145,10 +3145,6 @@ Elle prend en paramètre le nom du flag à vérifier : `if ('MY_FLAG' flag.isSet
 Pour vérifier si un flag est désactivé, il faut utiliser la fonction `flag.isClear` qui retourne `true` si le flag est désactivé, et `false` sinon.
 
 Elle prend en paramètre le nom du flag à vérifier : `if ('MY_FLAG' flag.isClear) then { ... }`
-
-## Lister les flags activés
-
-La fonction `flags` retourne la liste de tous les flags activés. Les flags désactivés sont considérés comme inexistants et n'apparaissent donc pas dans cette liste.
 
 # GESTION DES FICHIERS
 

@@ -112,7 +112,7 @@ Pattern typique en début de script pour vérifier les prérequis :
 
 ### `mogwai.cclear`
 
-Vide le cache des procédures incluses via la commande `include`.
+Vide le cache des procédures incluses via la commande `mogwai.include`.
 
 Garantit que le code inclus est bien la dernière version.
 
@@ -284,6 +284,17 @@ Pousse la valeur d'une variable dont le nom est passé en paramètre sur la pile
 
 ***
 
+### `rclx`
+
+Forme verbeuse du sigil `&`. Empile une référence directe vers une variable (dont le nom est passé en paramètre), au lieu d'une copie de sa valeur. `'x' rclx` est équivalent à `&x`.
+
+```
+100 -> 'x'
+'x' rclx # Pushes a reference to x, without copying its value
+```
+
+***
+
 ### `purge`
 
 Supprime une variable dont le nom est passé en paramètre.
@@ -328,12 +339,12 @@ Le comportement diffère selon le type d'objet évalué :
 
 ***
 
-### `include`
+### `mogwai.include`
 
 Inclut et exécute immédiatement le code d'un fichier.
 
 ```
-"my code.mog" include
+"my code.mog" mogwai.include
 ```
 
 ***
@@ -1302,6 +1313,16 @@ Convertit un nombre en objet binaire de 16 bits.
 
 ***
 
+### `->bin24`
+
+Convertit un nombre en objet binaire de 24 bits.
+
+```
+278 ->bin24 # Pushes B:000000000000000100010110 onto the stack
+```
+
+***
+
 ### `->bin32`
 
 Convertit un nombre en objet binaire de 32 bits.
@@ -1767,6 +1788,16 @@ Retourne l'angle en radians d'un angle en degrés passé en paramètre.
 ### `abs`
 
 Retourne la valeur absolue du nombre passé en paramètre.
+
+***
+
+### `+/-`
+
+Inverse le signe du nombre passé en paramètre.
+
+```
+2 +/- # Pushes -2 onto the stack
+```
 
 ***
 
@@ -2374,6 +2405,16 @@ Retourne `true` si le timer est en cours d'exécution.
 ### `timer.list`
 
 Retourne la liste de tous les timers déclarés quel que soit leur état (en cours d'exécution ou arrêté).
+
+***
+
+### `timer.state`
+
+Retourne `true` si le timer dont le nom est passé en paramètre est actif, `false` sinon.
+
+```
+'timer1' timer.state # Pushes true if timer1 is active
+```
 
 ***
 

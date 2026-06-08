@@ -112,7 +112,7 @@ Typical use at the start of a script to assert that required skills are availabl
 
 ### `mogwai.cclear`
 
-Clears the cache of procedures included via the `include` command.
+Clears the cache of procedures included via the `mogwai.include` command.
 <br>Ensures that the included code is the latest version.
 
 ***
@@ -282,6 +282,17 @@ Pushes the value of a variable whose name is passed as parameter onto the stack.
 
 ***
 
+### `rclx`
+
+Verbose form of the `&` sigil. Pushes a direct reference to a variable (whose name is passed as parameter) onto the stack, instead of a copy of its value. `'x' rclx` is equivalent to `&x`.
+
+```
+100 -> 'x'
+'x' rclx # Pushes a reference to x, without copying its value
+```
+
+***
+
 ### `purge`
 
 Deletes a variable whose name is passed as parameter.
@@ -326,12 +337,12 @@ The behavior differs depending on the type of object evaluated:
 
 ***
 
-### `include`
+### `mogwai.include`
 
 Includes and immediately executes code from a file.
 
 ```
-"my code.mog" include
+"my code.mog" mogwai.include
 ```
 
 ***
@@ -1295,6 +1306,16 @@ Converts a number to a binary object with 16 bits.
 
 *** 
 
+### `->bin24`
+
+Converts a number to a binary object with 24 bits.
+
+```
+278 ->bin24 # Pushes B:000000000000000100010110 onto the stack
+```
+
+***
+
 ### `->bin32`
 
 Converts a number to a binary object with 32 bits.
@@ -1760,6 +1781,16 @@ Returns the angle in radians of an angle in degrees passed as parameter.
 ### `abs`
 
 Returns the absolute value of the number passed as parameter.
+
+***
+
+### `+/-`
+
+Inverts the sign of the number passed as parameter.
+
+```
+2 +/- # Pushes -2 onto the stack
+```
 
 ***
 
@@ -2365,6 +2396,16 @@ Returns `true` if the timer is running.
 ### `timer.list`
 
 Returns the list of all declared timers regardless of their status (running or stopped).
+
+***
+
+### `timer.state`
+
+Returns `true` if the timer whose name is passed as parameter is active, `false` otherwise.
+
+```
+'timer1' timer.state # Pushes true if timer1 is active
+```
 
 ***
 
