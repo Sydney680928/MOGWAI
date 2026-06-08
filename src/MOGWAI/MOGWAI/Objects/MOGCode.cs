@@ -97,7 +97,7 @@ namespace MOGWAI.Objects
 
                     if (Engine.HaltRequested)
                     {
-                        result = EvalResult.Failure(Engine, Error.HaltEncountedError);
+                        result = EvalResult.Failure(Engine, Error.HaltEncounteredError);
                         break;
                     }
 

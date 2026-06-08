@@ -1408,7 +1408,7 @@ namespace MOGWAI.Engine
                 return EvalResult.Failure(this, Error.NameAlreadyUsedByFunctionError);
 
             if (StrictMode && !VarExists(name))
-                return EvalResult.Failure(this, Error.UnabledToWriteValueInUndeclaredVarError, $"variable '{name}' doesn't exist");
+                return EvalResult.Failure(this, Error.UnableToWriteValueInUndeclaredVarError, $"variable '{name}' doesn't exist");
 
             bool r;
 
@@ -1427,7 +1427,7 @@ namespace MOGWAI.Engine
 
             if (!r)
             {
-                return EvalResult.Failure(this, Error.UnabledToWriteValueError, "certainly bad type error");
+                return EvalResult.Failure(this, Error.UnableToWriteValueError, "certainly bad type error");
             }
             else
             {
@@ -1758,7 +1758,7 @@ namespace MOGWAI.Engine
             }
             catch
             {
-                return EvalResult.Failure(this, Error.UnabledToFireEventError, $"unable to fire event '{name}'.");
+                return EvalResult.Failure(this, Error.UnableToFireEventError, $"unable to fire event '{name}'.");
             }
             finally
             {

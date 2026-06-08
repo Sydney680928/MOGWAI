@@ -39,7 +39,7 @@ namespace MOGWAI.Primitives
                 return Task.FromResult(EvalResult.NoError);
             }
 
-            return Task.FromResult(EvalResult.Failure(Engine, Error.InvalidOutsideOfaTaskError, Name));
+            return Task.FromResult(EvalResult.Failure(Engine, Error.InvalidOutsideOfATaskError, Name));
         }
     }
 }

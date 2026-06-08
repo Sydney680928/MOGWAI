@@ -33,7 +33,7 @@ namespace MOGWAI.Primitives
 
         public override Task<EvalResult> EngineEval()
         {
-            return Task.FromResult(EvalResult.Failure(Engine, Error.HaltEncountedError));
+            return Task.FromResult(EvalResult.Failure(Engine, Error.HaltEncounteredError));
         }
     }
 }

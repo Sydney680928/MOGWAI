@@ -27,6 +27,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Error identifiers — corrected misspelled names.** Several public `Error` constants carried spelling mistakes (`Encounted`, `Unabled`) or a grammatical slip (`DoesNotExists`) in their C# identifiers. They have been renamed for correctness:
+
+  - `HaltEncountedError` → `HaltEncounteredError`
+  - `UnabledToFireEventError` → `UnableToFireEventError`
+  - `UnabledToWriteValueError` → `UnableToWriteValueError`
+  - `UnabledToWriteValueInUndeclaredVarError` → `UnableToWriteValueInUndeclaredVarError`
+  - `UnabledToStartTaskError` → `UnableToStartTaskError`
+  - `PathDoesNotExistsError` → `PathDoesNotExistError`
+
+  **Breaking (C# host code only):** host applications that reference these error constants by name must update to the new identifiers. MOGWAI scripts are unaffected — they identify errors by code (`MW.x`), never by constant name.
+
 ### Fixed
 
 - **Auto-evaluated records and lists — `!` flag incorrectly retained after evaluation.** When a record or list marked with `!` (auto-evaluation) was evaluated, the resulting object kept the auto-evaluation flag set. The final value was correct, but the engine was forced to re-evaluate the object on every subsequent access, incurring unnecessary overhead. The flag is now cleared on the evaluated result for both records and lists.
@@ -35,6 +46,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [ ! x: rand y: rand ]   # → evaluated record, ! flag cleared
   (! now 50 $X)           # → evaluated list, ! flag cleared
   ```
+
+- **Error messages — corrected English wording.** Several built-in error messages contained spelling or grammar mistakes: MW.2 (`encounted` → `encountered`), MW.6 / MW.47 / MW.48 / MW.61 (`unabled` → `unable`), MW.41 (`exits` → `exists`) and MW.71 (`does not exists` → `does not exist`). MW.47 and MW.48 now also end with `error`, consistent with every other message.
 
 ## [8.8.2] - 2026-06-05
 
