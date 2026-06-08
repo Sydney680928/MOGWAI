@@ -3,7 +3,7 @@
 # [MOGWAI](https://www.mogwai.eu.com) - A powerful stack-based RPN scripting engine for .NET
 
 ![GitHub Stars](https://img.shields.io/github/stars/Sydney680928/mogwai?style=social)
-[![Build](https://github.com/Sydney680928/mogwai/actions/workflows/ci.yml/badge.svg)](https://github.com/Sydney680928/mogwai/actions/workflows/ci.yml)
+[![Build](https://github.com/Sydney680928/mogwai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Sydney680928/mogwai/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
 [![NuGet](https://img.shields.io/nuget/v/MOGWAI.svg)](https://www.nuget.org/packages/MOGWAI/)
