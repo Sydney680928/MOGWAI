@@ -1,0 +1,50 @@
+name: Release CLI
+
+on:
+  release:
+    types: [ published ]
+
+permissions:
+  contents: write   # required to create the release and upload assets
+
+jobs:
+  publish-cli:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rid: [ win-x64, linux-x64, linux-arm64, osx-x64, osx-arm64 ]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Publish MOGWAI CLI (${{ matrix.rid }})
+        run: >
+          dotnet publish examples/Console/ConsoleExample/MOGWAI_CLI/MOGWAI_CLI.csproj
+          --configuration Release
+          --runtime ${{ matrix.rid }}
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:DebugType=none
+          --output publish/${{ matrix.rid }}
+
+      - name: Package archive
+        run: |
+          cd publish/${{ matrix.rid }}
+          if [ "${{ matrix.rid }}" = "win-x64" ]; then
+            zip -r "../../mogwai-cli-${{ github.event.release.tag_name }}-${{ matrix.rid }}.zip" .
+          else
+            tar -czf "../../mogwai-cli-${{ github.event.release.tag_name }}-${{ matrix.rid }}.tar.gz" .
+          fi
+          cd ../../
+
+      - name: Attach to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: mogwai-cli-${{ github.event.release.tag_name }}-${{ matrix.rid }}.*

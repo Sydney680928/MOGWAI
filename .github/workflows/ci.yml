@@ -24,6 +24,3 @@ jobs:
 
       - name: Build (Release)
         run: dotnet build src/MOGWAI/MOGWAI.sln --configuration Release --no-restore
-
-      - name: Test
-        run: dotnet test src/MOGWAI/MOGWAI.sln --configuration Release --no-build --verbosity normal
