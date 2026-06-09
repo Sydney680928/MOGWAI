@@ -1,6 +1,6 @@
 <img src="./images/img01.png" title="" alt="MOGWAI" data-align="center">
 
-# [MOGWAI](https://www.mogwai.eu.com) - A powerful stack-based RPN scripting engine for .NET
+# [MOGWAI](https://www.mogwai.eu.com) - An embeddable RPN scripting engine for .NET
 
 ![GitHub Stars](https://img.shields.io/github/stars/Sydney680928/mogwai?style=social)
 [![Build](https://github.com/Sydney680928/mogwai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Sydney680928/mogwai/actions/workflows/ci.yml)
@@ -10,7 +10,7 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/MOGWAI.svg)](https://www.nuget.org/packages/MOGWAI/)
 [![VS Code Extension](https://img.shields.io/badge/VS%20Code-Extension-007ACC?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language)
 
-**Embeddable, extensible, production-ready.** **From IoT automation to desktop scripting, one elegant RPN runtime for your .NET apps.**
+**Embeddable. Extensible. NativeAOT-friendly.** A small stack-based RPN runtime you can drop into any .NET app — desktop, mobile, or IoT.
 
 **▶ Try it now — [run MOGWAI in your browser](https://sydney680928.github.io/MOGWAI/)** — no install, no signup, runs entirely client-side.
 
@@ -20,7 +20,7 @@
 
 ## What is MOGWAI?
 
-MOGWAI is a modern implementation of RPN (Reverse Polish Notation) for the .NET ecosystem. Inspired by the legendary HP calculators (HP 28S, HP 48), it brings the elegance and power of stack-based, concatenative programming to your applications — whether you're scripting complex workflows, embedding a runtime in a desktop or mobile app, designing a custom DSL, or automating IoT pipelines.
+MOGWAI is a lightweight scripting engine you embed in your .NET applications — to script complex workflows, expose safe user-customizable logic, or design your own DSL, all without leaving the .NET runtime (NativeAOT included). Under the hood it's a stack-based, concatenative language in the tradition of the legendary HP calculators (HP 28S, HP 48) — which gives it clean, unambiguous semantics with no operator precedence to reason about.
 
 ### The stack, in 30 seconds
 
@@ -44,9 +44,9 @@ The same calculation on a single line — `3 4 + 2 *` — also leaves `[ 14 ]` o
 - **Plugin System** - Clean plugin contract via `MOGWAI.IPlugin` — official plugins in development
 - **Battle-Tested** - 10+ years of real-world usage
 - **Extensible** - Easy integration with .NET applications
+- **NativeAOT-Ready** - Embed in ahead-of-time compiled .NET apps
 - **Cross-Platform** - Windows, Linux, macOS, Android, iOS
 - **VS Code Extension** - Syntax highlighting, autocompletion, run & debug directly from VS Code ([install](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language))
-- **Visual Debugging** - MOGWAI STUDIO integration (coming soon)
 
 ---
 
@@ -142,14 +142,12 @@ Syntax highlighting, autocompletion, runtime execution, step-by-step debugging, 
 - **Documentation:** [MOGWAI_VSCODE.md](docs/EN/MOGWAI_VSCODE.md)
 - **Status:** Available — v1.0.3
 
-### MOGWAI STUDIO (Coming Soon)
+### MOGWAI STUDIO (in development)
 
-Visual IDE for MOGWAI development with debugging, breakpoints, and code editing.
+MOGWAI STUDIO v2 — a cross-platform visual IDE for MOGWAI 8 (debugging, breakpoints, stack inspection, code editing) — is in early private development. More details will follow on [mogwai.eu.com](https://www.mogwai.eu.com).
 
-- **License:** Proprietary (Freemium model)
+- **License:** Proprietary (freemium)
 - **Status:** Early private development — not yet publicly available
-- **Features:** Visual debugger, syntax highlighting, project management
-- **Release:** TBA
 
 ---
 
@@ -165,7 +163,14 @@ Open source projects powered by the MOGWAI scripting engine:
 
 ## Blog Articles
 
-A curated list of English articles about MOGWAI on [coding4phone.com](https://coding4phone.com):
+New to MOGWAI? **Start with these three:**
+
+- [MOGWAI — The Origin Story](https://coding4phone.com/?p=2066&lang=en) — why MOGWAI exists and where it came from
+- [Anatomy of MOGWAI](https://coding4phone.com/?p=2615&lang=en) — the fundamentals of its concatenative design
+- [Embedding a scripting engine in a .NET MAUI app](https://coding4phone.com/?p=2461&lang=en) — the embedding value prop, end to end
+
+<details>
+<summary>All articles on coding4phone.com</summary>
 
 - [MOGWAI in Production: How a Scripting Language Powers an Industrial Test Bench](https://coding4phone.com/?p=1990&lang=en)
 - [MOGWAI Under the Hood: Syntactic Sugar and the RPN Canonical Form](https://coding4phone.com/?p=2003&lang=en)
@@ -187,7 +192,9 @@ A curated list of English articles about MOGWAI on [coding4phone.com](https://co
 - [MOGWAI meets Avalonia — A cross-platform REPL in a single session](https://coding4phone.com/?p=2561&lang=en)
 - [MOGWAI Language Support for VS Code — v1.0.3](https://coding4phone.com/?p=2597&lang=en)
 - [Anatomy of MOGWAI — the fundamental properties of a modern concatenative language](https://coding4phone.com/?p=2615&lang=en)
-  
+
+</details>
+
 ---
 
 ## Quick Start
@@ -385,33 +392,6 @@ See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
 
 ---
 
-## MOGWAI STUDIO (Coming Soon)
-
-![MOGWAI](./images/img04.png)
-
-MOGWAI STUDIO v2 is a visual IDE for MOGWAI 8, currently in early private development. A previous version of MOGWAI STUDIO exists but targets MOGWAI 6 and is now obsolete.
-
-### Planned Features
-
-- **Visual Debugger** - Set breakpoints, step through code
-- **Syntax Highlighting** - Color-coded MOGWAI syntax
-- **Variable Inspector** - Examine variables in real-time
-- **Stack Visualization** - See the stack state at any point
-- **Project Management** - Organize scripts and modules
-- **Network Debugging** - Debug remote MOGWAI runtimes
-- **Code Completion** - IntelliSense for MOGWAI functions
-
-### Availability
-
-**Status:** Early private development — not yet publicly available  
-**Release Model:** Freemium (Free version + Pro version)  
-**Price:** Pro version planned at €29 (one-time purchase)  
-**Distribution:** Gumroad + installer package  
-
-Stay tuned for updates on [mogwai.eu.com](https://www.mogwai.eu.com)!
-
----
-
 ## Use Cases
 
 ### Blazor WASM Applications
@@ -553,15 +533,6 @@ Found a bug or have a feature request? Please open an issue on GitHub:
 - Follow existing code conventions
 - Add XML documentation comments for public APIs
 - Keep functions focused and well-named
-
-### Testing
-
-MOGWAI includes a `MOGWAI.Tests` project covering core engine behavior. When contributing:
-
-- Run the existing unit tests to verify nothing is broken
-- Add unit tests for new primitives or engine features when possible
-- Ensure your changes compile without warnings
-- Verify existing examples still work correctly
 
 ---
 
