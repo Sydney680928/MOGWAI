@@ -164,10 +164,18 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveMathAcos(this, "acos"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathAtan(this, "atan"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathPI(this, "PI"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathRand(this, "rand"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathAbs(this, "abs"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathSqrt(this, "sqrt"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathLog(this, "log"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathLog10(this, "log10"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathExp(this, "exp"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathE(this, "E"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathGCD(this, "gcd"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathLCM(this, "lcm"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathFloor(this, "floor"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathCeil(this, "ceil"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathRound(this, "round"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathPow(this, "pow"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathModulo(this, "mod"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathAverage(this, "average"), MOGPrimitive.CATEGORY_MATHS);
@@ -346,8 +354,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveWhere(this, "where"));
             RegisterPublicPrimitive(new PrimitiveCreateGUID(this, "guid"));
             RegisterPublicPrimitive(new PrimitiveCreateGUID7(this, "guid7"));
-            RegisterPublicPrimitive(new PrimitiveCreateUnique(this, "unique"));
-            RegisterPublicPrimitive(new PrimitiveMathRand(this, "rand"));
+            RegisterPublicPrimitive(new PrimitiveCreateUnique(this, "unique"));           
             RegisterPublicPrimitive(new PrimitiveExtract(this, "extract"));
             RegisterPublicPrimitive(new PrimitiveButFirst(this, "butfirst"));
             RegisterPublicPrimitive(new PrimitiveButLast(this, "butlast"));
