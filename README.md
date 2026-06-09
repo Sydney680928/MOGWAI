@@ -411,7 +411,35 @@ Stay tuned for updates on [mogwai.eu.com](https://www.mogwai.eu.com)!
 
 ## Use Cases
 
+### Blazor WASM Applications
+
+![MOGWAI](./images/img08.png)
+
+You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
+
+### Avalonia Cross-Platform REPL
+
+![MOGWAI](./images/img16.png)
+
+A full-featured REPL and script editor running natively on Windows, Linux and macOS — with Studio mode for live VS Code debugging.
+
+[**Avalonia REPL Example →**](https://github.com/Sydney680928/mogwai/tree/main/examples/Avalonia/MogwaiRepl)
+
+### Embedded Applications
+
+```mogwai
+# WinForms turtle graphics
+100 turtle.forward
+90 turtle.right
+100 turtle.forward
+"Square complete!" ?
+```
+
+![MOGWAI](./images/img05.png)
+
 ### Industrial IoT Automation
+
+*Illustrative example* — how MOGWAI orchestrates hardware through plugins:
 
 ```mogwai
 # Read sensor via BLE (requires MOGWAI_BLE plugin — coming soon)
@@ -430,32 +458,6 @@ if (temp 25 >) then
 ![MOGWAI](./images/img07.png)
 
 [Use Case #1 — Electronic Board Test Bench](docs/EN/use-cases/use-case-01-test-bench.md)
-
-### Embedded Applications
-
-```mogwai
-# WinForms turtle graphics
-100 turtle.forward
-90 turtle.right
-100 turtle.forward
-"Square complete!" ?
-```
-
-![MOGWAI](./images/img05.png)
-
-### Blazor WASM Applications
-
-![MOGWAI](./images/img08.png)
-
-You can test it live on [Blazor REPL](https://sydney680928.github.io/MOGWAI/)
-
-### Avalonia Cross-Platform REPL
-
-![MOGWAI](./images/img16.png)
-
-A full-featured REPL and script editor running natively on Windows, Linux and macOS — with Studio mode for live VS Code debugging.
-
-[**Avalonia REPL Example →**](https://github.com/Sydney680928/mogwai/tree/main/examples/Avalonia/MogwaiRepl)
 
 ---
 
