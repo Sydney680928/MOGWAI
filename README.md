@@ -51,6 +51,14 @@ The same calculation on a single line — `3 4 + 2 *` — also leaves `[ 14 ]` o
 
 ## Get Started in Seconds
 
+### Download a prebuilt CLI
+
+The quickest way to try MOGWAI — no .NET SDK required. Grab a ready-to-run CLI for your platform from the [**Releases page**](https://github.com/Sydney680928/mogwai/releases). Each release ships self-contained binaries for Windows (x64), Linux (x64 / arm64) and macOS (x64 / arm64): download the archive, extract it, and run the `MOGWAI_CLI` executable.
+
+> **First run on Windows or macOS.** The binaries are not code-signed, so the system will warn about an “unrecognized” app the first time — this is expected, not a problem with the build:
+> - **Windows (SmartScreen):** click **More info** → **Run anyway**, or right-click the downloaded file → **Properties** → **Unblock** before extracting.
+> - **macOS (Gatekeeper):** right-click the binary → **Open** → confirm, or run `xattr -d com.apple.quarantine MOGWAI_CLI` in Terminal.
+
 ### Build MOGWAI CLI from source
 
 Clone the repository and build the CLI for your platform using the .NET SDK:
