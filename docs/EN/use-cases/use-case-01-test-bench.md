@@ -71,7 +71,7 @@ Rather than using an arbitrary delay, MOGWAI performs a real measurement and wai
 
 ```mogwai
 to 'WAIT_FOR_POWER_ON' params [signal: .string] do
-«
+{
     false -> 'showWaitForPower'
 
     forever do
@@ -79,7 +79,7 @@ to 'WAIT_FOR_POWER_ON' params [signal: .string] do
         "AT+MEASURE:{! signal}" eval COM.cwrite
         [COM.mread timeout: 1000 expected: ("*")] -> 'r'
 
-        if (r->state "Success" !=) then
+        if (r->state: "Success" !=) then
         {
             [UI.showModal icon: "error"
                 message: "Communication error with the test fixture!"
@@ -88,7 +88,7 @@ to 'WAIT_FOR_POWER_ON' params [signal: .string] do
         }
         else
         {
-            if (r->answers "Command fail" contains) then
+            if (r->answers: "Command fail" contains) then
             {
                 if (showWaitForPower not) then
                 {
@@ -105,7 +105,7 @@ to 'WAIT_FOR_POWER_ON' params [signal: .string] do
             }
         }
     }
-»
+}
 ```
 
 The loop polls the fixture over USB serial, displays an operator prompt if needed, and exits cleanly once power is detected — no guesswork, no hardcoded sleep.
@@ -118,30 +118,30 @@ MOGWAI drives the JLink probe directly to program the STM32WB55 microcontroller.
 
 ```mogwai
 to 'JLINK_FW_PROGRAMMING' do
-«
-    (! "HOME" $JLINK_FOLDER) dir.enter
+{
+    (! path.home $JLINK_FOLDER $JLINK_SCRIPT_FILE) path.make -> 'jfile'
 
     (
         !
         "Erase 0x08000000 0x080B9FFF"
         "LoadFile {! $JLINK_FW_MASTER_FILE}"
         "Exit"
-    ) "\r\n" eval join ->ascii
+    ) D:0D0A ->ascii join ascii-> -> 'content'
 
-    $JLINK_SCRIPT_FILE file.write
+    jfile content file.data.write
 
     [
         !
         PROCESS.start
         filename: $JLINK_PROGRAM
         arguments: "-AutoConnect 1 -ExitOnError 1 -device STM32WB55RG
-                    -if swd -speed 2000 -CommandFile {! $JLINK_SCRIPT_FILE}"
+                    -if swd -speed 2000 -CommandFile {! jfile}"
         workingDirectory: $JLINK_FOLDER
         wait: true
     ]
 
-    trap { $JLINK_SCRIPT_FILE file.purge }
-»
+    trap { jfile file.purge }
+}
 ```
 
 The same mechanism handles BLE stack programming and option bytes — three independent functions, each generating its own JLink script on the fly from runtime variables.
@@ -157,7 +157,7 @@ to 'GET_LED' params [name: .string timeout: .number save: .boolean
                      rMin: .number rMax: .number
                      gMin: .number gMax: .number
                      bMin: .number bMax: .number] do
-«
+{
     [COM.mwrite command: "AT+LED:?" timeout: 5000
         expected: ("*,*,*,*")] -> 'result'
 
@@ -176,7 +176,7 @@ to 'GET_LED' params [name: .string timeout: .number save: .boolean
         "Non-conformant!" LOG.write
         EXECUTE_ON_ERROR_FUNCTION
     }
-»
+}
 ```
 
 ---
@@ -187,11 +187,10 @@ When the server is unreachable, test results are not lost. MOGWAI serializes the
 
 ```mogwai
 # Server unavailable → queue locally
-content "LB-{! year}{! month}{! day}-{! hour}{! minute}{! second}.mog"
-    eval file.pack
+"LB-{! year}{! month}{! day}-{! hour}{! minute}{! second}.mog" content file.data.write
 
 false -> '$SERVER_LAST_KNOWN_STATE'
-'EVENT_SERVER_ERROR' null event.host.fire
+'EVENT_SERVER_ERROR' null mogwai.sendMessage
 ```
 
 A background sync process drains the queue whenever the server becomes available again.
@@ -204,14 +203,14 @@ For LoRaWAN product tests, MOGWAI manages a local pool of provisioning keys (Dev
 
 ```mogwai
 to 'SERVER_GET_NEXT_KEY' do
-«
+{
     # Load or refresh the local key file
     # Extract the first available key
     # Refill the pool automatically when running low (< 10 keys)
     
     r 0 get -> 'k'
     r 0 purge -> 'r'
-    r "KEYS.DAT" file.pack
+    "KEYS.DAT" r file.data.write
 
     if (r size 10 <) then
     {
@@ -219,7 +218,7 @@ to 'SERVER_GET_NEXT_KEY' do
     }
 
     k   # return the key
-»
+}
 ```
 
 ---
@@ -231,13 +230,13 @@ Each test can define its own error behavior using a callback pattern:
 ```mogwai
 # Register a custom error handler
 ON_ERROR
-«
+{
     false UI.progress.setVisible
     [UI.showModal icon: "Error"
         message: "Board rejected — please remove and retry."
         buttons: ("OK")] drop
     mogwai.reset
-»
+}
 
 # Later in the test: any failing check calls EXECUTE_ON_ERROR_FUNCTION,
 # which dispatches to the registered handler.
