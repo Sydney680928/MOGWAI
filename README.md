@@ -7,6 +7,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![.NET](https://img.shields.io/badge/.NET-9.0-purple.svg)](https://dotnet.microsoft.com/)
 [![NuGet](https://img.shields.io/nuget/v/MOGWAI.svg)](https://www.nuget.org/packages/MOGWAI/)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/MOGWAI.svg)](https://www.nuget.org/packages/MOGWAI/)
 [![VS Code Extension](https://img.shields.io/badge/VS%20Code-Extension-007ACC?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language)
 
 **Embeddable, extensible, production-ready.** **From IoT automation to desktop scripting, one elegant RPN runtime for your .NET apps.**
@@ -113,6 +114,8 @@ The core scripting engine, available as a NuGet package. Embed MOGWAI in your .N
 - **License:** Apache 2.0
 - **Package:** [MOGWAI on NuGet](https://www.nuget.org/packages/MOGWAI/)
 - **Status:** Production ready
+
+> **API stability.** MOGWAI follows Semantic Versioning. The scripting language surface — syntax, primitives, and `MW.x` error codes — aims to remain stable within the 8.x line: scripts written today keep working. The C# embedding API is still maturing and may see occasional breaking changes, always documented in the [CHANGELOG](CHANGELOG.md) (for example, the error-identifier renames in 8.9.1).
 
 ### MOGWAI CLI (Open Source)
 
@@ -571,7 +574,7 @@ Created in 2015 to simulate Bluetooth Low Energy devices for IoT testing. Over 1
 ### Battle-Tested
 
 - **10+ years of real-world usage** - From prototyping to industrial environments
-- **Thousands of scripts** - Executed in field deployments
+- **A documented case** - See how MOGWAI scripts drive an [electronic board test bench in production](docs/EN/use-cases/use-case-01-test-bench.md) ([read the story](https://coding4phone.com/?p=1990&lang=en))
 
 ### HP Calculator Heritage
 
