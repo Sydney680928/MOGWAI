@@ -1834,6 +1834,83 @@ Returns the remainder of integer division of one number by another.
 
 ***
 
+### `E`
+
+Returns Euler's number (*e* = 2.718…). Complements `PI`.
+
+```
+E ?
+# Pushes 2.718281828459045 onto the stack
+```
+
+***
+
+### `round`
+
+Returns the number passed as first parameter rounded to the number of decimal places passed as second parameter. When `n` is `0`, returns a whole number.
+
+```
+5.78934 3 round ?    # Pushes 5.789 onto the stack
+45.324322 0 round ?  # Pushes 45 onto the stack
+```
+
+***
+
+### `log`
+
+Returns the natural logarithm (base *e*) of the number passed as parameter.
+
+```
+40 log ?
+# Pushes 3.6888794541139363 onto the stack
+```
+
+***
+
+### `log10`
+
+Returns the base-10 logarithm of the number passed as parameter.
+
+```
+34 log10 ?
+# Pushes 1.5314789170422551 onto the stack
+```
+
+***
+
+### `exp`
+
+Returns *e* raised to the power passed as parameter.
+
+```
+23 exp ?
+# Pushes 9744803446.248903 onto the stack
+```
+
+***
+
+### `gcd`
+
+Returns the greatest common divisor of two integers, computed via the Euclidean algorithm. Both values are taken as absolute integers before processing.
+
+```
+345 4 gcd ?
+# Pushes 1 onto the stack
+```
+
+***
+
+### `lcm`
+
+Returns the least common multiple of two integers. Both values are taken as absolute integers. Returns `0` if either argument is `0`.
+
+```
+345 4 lcm ?
+# Pushes 1380 onto the stack
+```
+
+***
+
 ### `min`
 
 Returns the smallest number present in a list. 

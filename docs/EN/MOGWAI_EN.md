@@ -872,8 +872,15 @@ do
 | `sum`    | Returns the sum of a list.<br> Only numbers are taken into account.<br> Returns null if the list contains no numbers.                             | `(1 2 3) sum`  |
 | `tan`    | Returns the tangent of an angle in radians.                                                                                                                    | `0.5 tan`      |
 | `PI`     | Returns the number PI.                                                                                                                                        | `PI`           |
+| `E`      | Returns Euler's number (*e* = 2.718…). Complements `PI`.                                                                                                     | `E`            |
 | `floor`  | Returns the largest integral value less than or equal to the specified number.                                                                              | `45.8 floor`   |
+| `round`  | Rounds a number to `n` decimal places. When `n` is `0`, returns a whole number.                                                                             | `5.78934 3 round` |
 | `mod`    | Returns the remainder of the integer division of one number by another.                                                                                            | `100 3 mod`    |
+| `log`    | Returns the natural logarithm (base *e*) of a number.                                                                                                        | `40 log`       |
+| `log10`  | Returns the base-10 logarithm of a number.                                                                                                                   | `34 log10`     |
+| `exp`    | Returns *e* raised to the specified power.                                                                                                                    | `23 exp`       |
+| `gcd`    | Returns the greatest common divisor of two integers (Euclidean algorithm). Both values are taken as absolute integers.                                        | `345 4 gcd`    |
+| `lcm`    | Returns the least common multiple of two integers. Returns `0` if either argument is `0`.                                                                    | `345 4 lcm`    |
 
  
 # STRINGS

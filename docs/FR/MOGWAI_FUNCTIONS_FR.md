@@ -1841,6 +1841,83 @@ Retourne le reste de la division entière d'un nombre par un autre.
 
 ***
 
+### `E`
+
+Retourne le nombre d'Euler (*e* = 2,718…). Complément de `PI`.
+
+```
+E ?
+# Pushes 2.718281828459045 onto the stack
+```
+
+***
+
+### `round`
+
+Retourne le nombre passé en premier paramètre arrondi au nombre de décimales passé en second paramètre. Quand `n` vaut `0`, retourne un entier.
+
+```
+5.78934 3 round ?    # Pushes 5.789 onto the stack
+45.324322 0 round ?  # Pushes 45 onto the stack
+```
+
+***
+
+### `log`
+
+Retourne le logarithme naturel (base *e*) du nombre passé en paramètre.
+
+```
+40 log ?
+# Pushes 3.6888794541139363 onto the stack
+```
+
+***
+
+### `log10`
+
+Retourne le logarithme en base 10 du nombre passé en paramètre.
+
+```
+34 log10 ?
+# Pushes 1.5314789170422551 onto the stack
+```
+
+***
+
+### `exp`
+
+Retourne *e* élevé à la puissance passée en paramètre.
+
+```
+23 exp ?
+# Pushes 9744803446.248903 onto the stack
+```
+
+***
+
+### `gcd`
+
+Retourne le plus grand commun diviseur de deux entiers, calculé via l'algorithme d'Euclide. Les deux valeurs sont prises en valeur absolue avant traitement.
+
+```
+345 4 gcd ?
+# Pushes 1 onto the stack
+```
+
+***
+
+### `lcm`
+
+Retourne le plus petit commun multiple de deux entiers. Les deux valeurs sont prises en valeur absolue. Retourne `0` si l'un des arguments est `0`.
+
+```
+345 4 lcm ?
+# Pushes 1380 onto the stack
+```
+
+***
+
 ### `min`
 
 Retourne le plus petit nombre présent dans une liste.

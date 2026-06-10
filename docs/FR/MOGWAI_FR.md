@@ -872,8 +872,15 @@ do
 | `sum`    | Retourne la somme d'une liste.<br> Seuls les nombres sont pris en compte.<br> Retourne null si la liste ne contient aucun nombre.                             | `(1 2 3) sum`  |
 | `tan`    | Retourne la tangente d'un angle en radians.                                                                                                                   | `0.5 tan`      |
 | `PI`     | Retourne le nombre PI.                                                                                                                                        | `PI`           |
+| `E`      | Retourne le nombre d'Euler (*e* = 2,718…). Complément de `PI`.                                                                                               | `E`            |
 | `floor`  | Retourne la plus grande valeur entière inférieure ou égale au nombre spécifié.                                                                                | `45.8 floor`   |
+| `round`  | Arrondit un nombre à `n` décimales. Quand `n` vaut `0`, retourne un entier.                                                                                  | `5.78934 3 round` |
 | `mod`    | Retourne le reste de la division entière d'un nombre par un autre.                                                                                            | `100 3 mod`    |
+| `log`    | Retourne le logarithme naturel (base *e*) d'un nombre.                                                                                                        | `40 log`       |
+| `log10`  | Retourne le logarithme en base 10 d'un nombre.                                                                                                               | `34 log10`     |
+| `exp`    | Retourne *e* élevé à la puissance spécifiée.                                                                                                                  | `23 exp`       |
+| `gcd`    | Retourne le plus grand commun diviseur de deux entiers (algorithme d'Euclide). Les deux valeurs sont prises en valeur absolue.                                | `345 4 gcd`    |
+| `lcm`    | Retourne le plus petit commun multiple de deux entiers. Les deux valeurs sont prises en valeur absolue. Retourne `0` si l'un des arguments est `0`.           | `345 4 lcm`    |
 
  
 # CHAÎNES DE CARACTÈRES
