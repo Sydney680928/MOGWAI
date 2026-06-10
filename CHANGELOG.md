@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.10.0] - 2026-06-10
+
+### Added
+
 - **`round` primitive** — rounds a decimal number to the specified number of decimal places.
   When `n` is `0`, returns a whole number (no decimal point).
 
@@ -55,10 +63,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
   345 4 lcm ?   # → 1380
   ```
-
-### Changed
-
-### Fixed
 
 ## [8.9.1] - 2026-06-08
 
@@ -814,7 +818,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.9.1...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.10.0...HEAD
+[8.10.0]: https://github.com/Sydney680928/mogwai/compare/v8.9.1...v8.10.0
 [8.9.1]: https://github.com/Sydney680928/mogwai/compare/v8.8.2...v8.9.1
 [8.8.2]: https://github.com/Sydney680928/mogwai/compare/v8.8.1...v8.8.2
 [8.8.1]: https://github.com/Sydney680928/mogwai/compare/v8.8.0...v8.8.1
