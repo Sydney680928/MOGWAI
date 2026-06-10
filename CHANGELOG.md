@@ -9,6 +9,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`round` primitive** — rounds a decimal number to the specified number of decimal places.
+  When `n` is `0`, returns a whole number (no decimal point).
+
+  ```
+  5.78934 3 round ?    # → 5.789
+  45.324322 0 round ?  # → 45
+  ```
+
+- **`log` primitive** — returns the natural logarithm (base *e*) of a number. Mirrors `Math.Log()` in C#.
+
+  ```
+  40 log ?   # → 3.6888794541139363
+  ```
+
+- **`log10` primitive** — returns the base-10 logarithm of a number. Mirrors `Math.Log10()` in C#.
+
+  ```
+  34 log10 ?   # → 1.5314789170422551
+  ```
+
+- **`exp` primitive** — returns *e* raised to the specified power. Mirrors `Math.Exp()` in C#.
+
+  ```
+  23 exp ?   # → 9744803446.248903
+  ```
+
+- **`E` primitive** — pushes the value of Euler's number (*e* = 2.718…) onto the stack.
+  Complements the existing `PI` primitive.
+
+  ```
+  E ?   # → 2.718281828459045
+  ```
+
+- **`gcd` primitive** — returns the greatest common divisor of two integers, computed via
+  the Euclidean algorithm. Both values are taken as absolute integers before processing.
+
+  ```
+  345 4 gcd ?   # → 1
+  ```
+
+- **`lcm` primitive** — returns the least common multiple of two integers. Both values are
+  taken as absolute integers. Returns `0` if either argument is `0`.
+
+  ```
+  345 4 lcm ?   # → 1380
+  ```
+
 ### Changed
 
 ### Fixed
