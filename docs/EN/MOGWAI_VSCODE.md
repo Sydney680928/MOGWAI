@@ -135,6 +135,20 @@ This panel refreshes automatically after each execution, pause, or step. Use the
 
 ---
 
+## Function List
+
+The extension automatically lists all functions declared in the current `.mog` file. Two ways to access it:
+
+**Outline panel** — visible in the Explorer sidebar (`Ctrl+Shift+E`), scroll down to the **OUTLINE** section. All functions are listed with their full signature.
+
+**Go to Symbol** (`Ctrl+Shift+O`) — opens a Quick Pick with all functions. Start typing to filter, press Enter to jump directly to the declaration.
+
+<img src="../../images/vid07.gif" title="" alt="function list and go to symbol">
+
+All three declaration forms are supported and multi-line declarations are also recognized.
+
+---
+
 ## Disconnecting
 
 Click the **`$(debug-disconnect)` Disconnect** button in the editor toolbar, or use `Ctrl+Shift+P` → **MOGWAI: Disconnect**.
@@ -231,5 +245,6 @@ The extension includes snippets for all common MOGWAI structures. Type the prefi
 
 | Version | Changes |
 | ------- | ------- |
+| 1.1.0 | Function list — Outline panel and Go to Symbol for all declared functions |
 | 1.0.3 | Multi-file step-by-step debugging, TRON mode across included files, editor focus fix, unexpected disconnection handling |
 | 1.0.0 | Initial release — syntax highlighting, snippets, runtime connection, execution, debug, Runtime panel, autocompletion |
