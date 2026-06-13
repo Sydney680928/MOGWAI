@@ -33,7 +33,6 @@ namespace MOGWAI.Primitives
 
         public override Task<EvalResult> EngineEval()
         {
-
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)

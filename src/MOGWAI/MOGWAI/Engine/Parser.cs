@@ -1547,7 +1547,7 @@ namespace MOGWAI.Engine
                                     primitive.ExecutionContext = _parsedObjects[index].ExecutionContext;
                                     primitive.Bag = _parsedObjects[index].Bag;
 
-                                    _parsedObjects.RemoveRange(index, 5);
+                                    _parsedObjects.RemoveRange(index, 6);
                                     _parsedObjects.InsertRange(index, [code.ToFunction(), interval, name, primitive]);
 
                                     return true;
