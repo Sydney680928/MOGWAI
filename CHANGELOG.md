@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`timer` syntax sugar — timer body left on the stack after parsing.** When a timer was defined using the `timer 'name' every N do { ... }` syntax, the parser correctly expanded the declaration but left the timer body on the stack as a residual value. This could silently corrupt subsequent stack operations. The residual value is now properly consumed by the parser.
+
 ## [8.10.0] - 2026-06-10
 
 ### Added
