@@ -9,6 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Hyperbolic functions** — six new primitives mirroring the existing trigonometric set (`sin`, `cos`, `tan`, `asin`, `acos`, `atan`). All map directly to their `Math.*` counterparts in .NET.
+
+  | Primitive | Description |
+  |-----------|-------------|
+  | `sinh` | Hyperbolic sine. Mirrors `Math.Sinh()`. |
+  | `cosh` | Hyperbolic cosine. Mirrors `Math.Cosh()`. |
+  | `tanh` | Hyperbolic tangent. Mirrors `Math.Tanh()`. |
+  | `asinh` | Inverse hyperbolic sine. Mirrors `Math.Asinh()`. |
+  | `acosh` | Inverse hyperbolic cosine. Mirrors `Math.Acosh()`. |
+  | `atanh` | Inverse hyperbolic tangent. Mirrors `Math.Atanh()`. |
+
+  ```
+  1.5 sinh ?    # → 2.1292794550948173
+  1.5 cosh ?    # → 2.352409615243247
+  0.9 tanh ?    # → 0.7162978701990245
+  2.0 asinh ?   # → 1.4436354751788103
+  2.0 acosh ?   # → 1.3169578969248166
+  0.9 atanh ?   # → 1.4721842907995872
+  ```
+
 ### Changed
 
 ### Fixed
