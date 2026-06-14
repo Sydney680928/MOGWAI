@@ -149,6 +149,20 @@ All three declaration forms are supported and multi-line declarations are also r
 
 ---
 
+## Locally Declared Functions
+
+Functions you declare in your `.mog` files are automatically recognized by the extension:
+
+- **Colored in golden italic** — visually distinct from language keywords and runtime primitives
+- **Go to Definition** (`F12` or right-click → Go to Definition) — jump directly to a function's declaration from any call site
+- **Insert Function Call** — right-click → **MOGWAI: Insert Function Call**, or `Ctrl+Shift+P` → **MOGWAI: Insert Function Call**, to open a Quick Pick of all declared functions and insert the selected name at the cursor position
+
+If a locally declared function name conflicts with a runtime primitive, the primitive color takes priority — a useful visual signal to spot naming conflicts.
+
+This feature is active even without a connected runtime.
+
+---
+
 ## Disconnecting
 
 Click the **`$(debug-disconnect)` Disconnect** button in the editor toolbar, or use `Ctrl+Shift+P` → **MOGWAI: Disconnect**.
@@ -245,6 +259,8 @@ The extension includes snippets for all common MOGWAI structures. Type the prefi
 
 | Version | Changes |
 | ------- | ------- |
+| 1.3.0 | Insert Function Call command (Quick Pick + right-click context menu) |
+| 1.2.0 | Locally declared function coloring (golden italic), Go to Definition (`F12`) |
 | 1.1.0 | Function list — Outline panel and Go to Symbol for all declared functions |
 | 1.0.3 | Multi-file step-by-step debugging, TRON mode across included files, editor focus fix, unexpected disconnection handling |
 | 1.0.0 | Initial release — syntax highlighting, snippets, runtime connection, execution, debug, Runtime panel, autocompletion |
