@@ -29,6 +29,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   0.9 atanh ?   # → 1.4721842907995872
   ```
 
+- **`str.repeat` primitive** — builds a new string by repeating a source string a given number of times. Takes a string and a non-negative integer count; raises **MW.22** if the count is negative. A count of `0` returns an empty string.
+
+  ```
+  "E" 5 str.repeat ?    # → "EEEEE"
+  "ab" 3 str.repeat ?   # → "ababab"
+  "x" 0 str.repeat ?    # → ""
+  ```
+
 ### Changed
 
 ### Fixed

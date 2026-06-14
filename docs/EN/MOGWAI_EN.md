@@ -856,10 +856,14 @@ do
 | `/`      | Divides 2 numbers.                                                                                                                                             | `5 7 /`        |
 | `abs`    | Returns the absolute value of a number.                                                                                                                       | `-56 abs`      |
 | `acos`   | Returns the arc cosine of an angle in radians.                                                                                                                  | `0.5 acos`     |
+| `acosh`  | Returns the inverse hyperbolic cosine of a number. Mirrors `Math.Acosh()`.                                                                                      | `2.0 acosh`    |
 | `asin`   | Returns the arc sine of an angle in radians.                                                                                                                    | `0.5 asin`     |
+| `asinh`  | Returns the inverse hyperbolic sine of a number. Mirrors `Math.Asinh()`.                                                                                        | `2.0 asinh`    |
 | `atan`   | Returns the arc tangent of an angle in radians.                                                                                                                 | `0.5 atan`     |
+| `atanh`  | Returns the inverse hyperbolic tangent of a number. Mirrors `Math.Atanh()`.                                                                                     | `0.9 atanh`    |
 | `ceil`   | Returns the value of the smallest integer greater than or equal to the specified number.                                                                                 | `56.89 ceil`   |
 | `cos`    | Returns the cosine of an angle in radians.                                                                                                                     | `0.5 cos`      |
+| `cosh`   | Returns the hyperbolic cosine of a number. Mirrors `Math.Cosh()`.                                                                                              | `1.5 cosh`     |
 | `max`    | Returns the maximum value of a list.<br> Only numbers are allowed.| `(1 2 3) max`  |
 | `average`   | Returns the average of a list.<br> Only numbers are allowed.| `(1 2 3) average` |
 | `min`    | Returns the minimum value of a list.<br> Only numbers are allowed.| `(1 2 3) min`  |
@@ -868,9 +872,11 @@ do
 | `>>`  | Performs a bit shift on a specified number.<br>The shift is performed to the right| `100 4 >>`  |
 | `<<`  | Performs a bit shift on a specified number.<br>The shift is performed to the left| `100 4 <<`  |
 | `sin`    | Returns the sine of an angle in radians.                                                                                                                       | `0.5 sin`      |
+| `sinh`   | Returns the hyperbolic sine of a number. Mirrors `Math.Sinh()`.                                                                                                | `1.5 sinh`     |
 | `sqrt`   | Returns the square root of a number.                                                                                                                        | `16 sqrt`      |
 | `sum`    | Returns the sum of a list.<br> Only numbers are taken into account.<br> Returns null if the list contains no numbers.                             | `(1 2 3) sum`  |
 | `tan`    | Returns the tangent of an angle in radians.                                                                                                                    | `0.5 tan`      |
+| `tanh`   | Returns the hyperbolic tangent of a number. Mirrors `Math.Tanh()`.                                                                                             | `0.9 tanh`     |
 | `PI`     | Returns the number PI.                                                                                                                                        | `PI`           |
 | `E`      | Returns Euler's number (*e* = 2.718…). Complements `PI`.                                                                                                     | `E`            |
 | `floor`  | Returns the largest integral value less than or equal to the specified number.                                                                              | `45.8 floor`   |
@@ -946,6 +952,20 @@ To transform a character string you can use the following functions:
 | `"hello world" ->upper`    | "HELLO WORLD"    |
 | `("X" "Y" "Z") ";" join`   | "X;Y;Z"          |
 | `"X;Y;Z" ";" split`        | ("X" "Y" "Z")    |
+
+## Repetition
+
+The `str.repeat` primitive builds a new string by repeating a source string a given number of times.
+
+**Signature:** `string count str.repeat`
+
+The count must be a non-negative integer. A count of `0` returns an empty string. A negative count raises **MW.22** (bad argument value).
+
+| Operation              | Result      |
+|------------------------|-------------|
+| `"E" 5 str.repeat`     | `"EEEEE"`   |
+| `"ab" 3 str.repeat`    | `"ababab"`  |
+| `"x" 0 str.repeat`     | `""`        |
 
 ## Formatting a number
 

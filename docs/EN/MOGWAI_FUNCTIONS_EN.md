@@ -1094,6 +1094,22 @@ Converts an object passed as parameter to a string.
 
 ***
 
+### `str.repeat`
+
+Builds a new string by repeating a source string a given number of times.
+
+**Signature:** `string count str.repeat`
+
+The count must be a non-negative integer. A count of `0` returns an empty string. A negative count raises **MW.22** (bad argument value).
+
+```
+"E" 5 str.repeat ?    # → "EEEEE"
+"ab" 3 str.repeat ?   # → "ababab"
+"x" 0 str.repeat ?    # → ""
+```
+
+***
+
 ### `->format`
 
 Converts a number to a string using a format.
@@ -1749,6 +1765,66 @@ Returns the angle in radians whose cosine is passed as parameter.
 ### `atan`
 
 Returns the angle in radians whose tangent is passed as parameter.
+
+***
+
+### `sinh`
+
+Returns the hyperbolic sine of the number passed as parameter. Mirrors `Math.Sinh()` in .NET.
+
+```
+1.5 sinh ?   # → 2.1292794550948173
+```
+
+***
+
+### `cosh`
+
+Returns the hyperbolic cosine of the number passed as parameter. Mirrors `Math.Cosh()` in .NET.
+
+```
+1.5 cosh ?   # → 2.352409615243247
+```
+
+***
+
+### `tanh`
+
+Returns the hyperbolic tangent of the number passed as parameter. Mirrors `Math.Tanh()` in .NET.
+
+```
+0.9 tanh ?   # → 0.7162978701990245
+```
+
+***
+
+### `asinh`
+
+Returns the inverse hyperbolic sine of the number passed as parameter. Mirrors `Math.Asinh()` in .NET.
+
+```
+2.0 asinh ?   # → 1.4436354751788103
+```
+
+***
+
+### `acosh`
+
+Returns the inverse hyperbolic cosine of the number passed as parameter. Mirrors `Math.Acosh()` in .NET.
+
+```
+2.0 acosh ?   # → 1.3169578969248166
+```
+
+***
+
+### `atanh`
+
+Returns the inverse hyperbolic tangent of the number passed as parameter. Mirrors `Math.Atanh()` in .NET.
+
+```
+0.9 atanh ?   # → 1.4721842907995872
+```
 
 ### `PI`
 

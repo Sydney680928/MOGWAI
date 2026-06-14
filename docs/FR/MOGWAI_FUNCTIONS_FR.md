@@ -1101,6 +1101,22 @@ Convertit un objet passé en paramètre en chaîne.
 
 ***
 
+### `str.repeat`
+
+Construit une nouvelle chaîne en répétant une chaîne source un nombre de fois donné.
+
+**Signature :** `string nombre str.repeat`
+
+Le nombre de répétitions doit être un entier positif ou nul. Une valeur de `0` retourne une chaîne vide. Une valeur négative lève l'erreur **MW.22** (bad argument value).
+
+```
+"E" 5 str.repeat ?    # → "EEEEE"
+"ab" 3 str.repeat ?   # → "ababab"
+"x" 0 str.repeat ?    # → ""
+```
+
+***
+
 ### `->format`
 
 Convertit un nombre en chaîne en utilisant un format.
@@ -1756,6 +1772,66 @@ Retourne l'angle en radians dont le cosinus est passé en paramètre.
 ### `atan`
 
 Retourne l'angle en radians dont la tangente est passée en paramètre.
+
+***
+
+### `sinh`
+
+Retourne le sinus hyperbolique du nombre passé en paramètre. Équivalent de `Math.Sinh()` en .NET.
+
+```
+1.5 sinh ?   # → 2.1292794550948173
+```
+
+***
+
+### `cosh`
+
+Retourne le cosinus hyperbolique du nombre passé en paramètre. Équivalent de `Math.Cosh()` en .NET.
+
+```
+1.5 cosh ?   # → 2.352409615243247
+```
+
+***
+
+### `tanh`
+
+Retourne la tangente hyperbolique du nombre passé en paramètre. Équivalent de `Math.Tanh()` en .NET.
+
+```
+0.9 tanh ?   # → 0.7162978701990245
+```
+
+***
+
+### `asinh`
+
+Retourne le sinus hyperbolique inverse du nombre passé en paramètre. Équivalent de `Math.Asinh()` en .NET.
+
+```
+2.0 asinh ?   # → 1.4436354751788103
+```
+
+***
+
+### `acosh`
+
+Retourne le cosinus hyperbolique inverse du nombre passé en paramètre. Équivalent de `Math.Acosh()` en .NET.
+
+```
+2.0 acosh ?   # → 1.3169578969248166
+```
+
+***
+
+### `atanh`
+
+Retourne la tangente hyperbolique inverse du nombre passé en paramètre. Équivalent de `Math.Atanh()` en .NET.
+
+```
+0.9 atanh ?   # → 1.4721842907995872
+```
 
 ### `PI`
 

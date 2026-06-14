@@ -224,7 +224,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveToHex(this, "->hex"));
             RegisterPublicPrimitive(new PrimitiveFromHexToNumber(this, "hex->"));
             RegisterPublicPrimitive(new PrimitiveToString(this, "->str"));
-            RegisterPublicPrimitive(new PrimitiveMakeString(this, "->string"));
+            RegisterPublicPrimitive(new PrimitiveStrRepeat(this, "str.repeat"));
             RegisterPublicPrimitive(new PrimitiveToUTF8(this, "->utf8"));
             RegisterPublicPrimitive(new PrimitiveUTF8ToString(this, "utf8->"));
             RegisterPublicPrimitive(new PrimitiveToBase64(this, "->base64"));

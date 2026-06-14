@@ -856,10 +856,14 @@ do
 | `/`      | Divise 2 nombres.                                                                                                                                             | `5 7 /`        |
 | `abs`    | Retourne la valeur absolue d'un nombre.                                                                                                                       | `-56 abs`      |
 | `acos`   | Retourne l'arc cosinus d'un angle en radians.                                                                                                                 | `0.5 acos`     |
+| `acosh`  | Retourne le cosinus hyperbolique inverse d'un nombre. Équivalent de `Math.Acosh()` en .NET.                                                                   | `2.0 acosh`    |
 | `asin`   | Retourne l'arc sinus d'un angle en radians.                                                                                                                   | `0.5 asin`     |
+| `asinh`  | Retourne le sinus hyperbolique inverse d'un nombre. Équivalent de `Math.Asinh()` en .NET.                                                                     | `2.0 asinh`    |
 | `atan`   | Retourne l'arc tangente d'un angle en radians.                                                                                                                | `0.5 atan`     |
+| `atanh`  | Retourne la tangente hyperbolique inverse d'un nombre. Équivalent de `Math.Atanh()` en .NET.                                                                  | `0.9 atanh`    |
 | `ceil`   | Retourne la valeur du plus petit entier supérieur ou égal au nombre spécifié.                                                                                 | `56.89 ceil`   |
 | `cos`    | Retourne le cosinus d'un angle en radians.                                                                                                                    | `0.5 cos`      |
+| `cosh`   | Retourne le cosinus hyperbolique d'un nombre. Équivalent de `Math.Cosh()` en .NET.                                                                            | `1.5 cosh`     |
 | `max`    | Retourne la valeur maximale d'une liste.<br> Seuls les nombres sont autorisés.| `(1 2 3) max`  |
 | `average`   | Retourne la moyenne d'une liste.<br> Seuls les nombres sont autorisés.| `(1 2 3) average` |
 | `min`    | Retourne la valeur minimale d'une liste.<br> Seuls les nombres sont autorisés.| `(1 2 3) min`  |
@@ -868,9 +872,11 @@ do
 | `>>`  | Effectue un décalage de bits sur un nombre donné.<br>Le décalage est effectué vers la droite.| `100 4 >>`  |
 | `<<`  | Effectue un décalage de bits sur un nombre donné.<br>Le décalage est effectué vers la gauche.| `100 4 <<`  |
 | `sin`    | Retourne le sinus d'un angle en radians.                                                                                                                      | `0.5 sin`      |
+| `sinh`   | Retourne le sinus hyperbolique d'un nombre. Équivalent de `Math.Sinh()` en .NET.                                                                              | `1.5 sinh`     |
 | `sqrt`   | Retourne la racine carrée d'un nombre.                                                                                                                        | `16 sqrt`      |
 | `sum`    | Retourne la somme d'une liste.<br> Seuls les nombres sont pris en compte.<br> Retourne null si la liste ne contient aucun nombre.                             | `(1 2 3) sum`  |
 | `tan`    | Retourne la tangente d'un angle en radians.                                                                                                                   | `0.5 tan`      |
+| `tanh`   | Retourne la tangente hyperbolique d'un nombre. Équivalent de `Math.Tanh()` en .NET.                                                                           | `0.9 tanh`     |
 | `PI`     | Retourne le nombre PI.                                                                                                                                        | `PI`           |
 | `E`      | Retourne le nombre d'Euler (*e* = 2,718…). Complément de `PI`.                                                                                               | `E`            |
 | `floor`  | Retourne la plus grande valeur entière inférieure ou égale au nombre spécifié.                                                                                | `45.8 floor`   |
@@ -946,6 +952,20 @@ Pour transformer une chaîne de caractères, vous pouvez utiliser les fonctions 
 | `"hello world" ->upper`    | "HELLO WORLD"    |
 | `("X" "Y" "Z") ";" join`   | "X;Y;Z"          |
 | `"X;Y;Z" ";" split`        | ("X" "Y" "Z")    |
+
+## Répétition
+
+La primitive `str.repeat` construit une nouvelle chaîne en répétant une chaîne source un nombre de fois donné.
+
+**Signature :** `string nombre str.repeat`
+
+Le nombre de répétitions doit être un entier positif ou nul. Une valeur de `0` retourne une chaîne vide. Une valeur négative lève l'erreur **MW.22** (bad argument value).
+
+| Opération              | Résultat    |
+|------------------------|-------------|
+| `"E" 5 str.repeat`     | `"EEEEE"`   |
+| `"ab" 3 str.repeat`    | `"ababab"`  |
+| `"x" 0 str.repeat`     | `""`        |
 
 ## Formater un nombre
 

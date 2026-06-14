@@ -18,16 +18,16 @@ using System.Text;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveMakeString : MOGPrimitive
+    internal class PrimitiveStrRepeat : MOGPrimitive
     {
-        public PrimitiveMakeString(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveStrRepeat(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveMakeString(Engine, Name);
+            var obj = new PrimitiveStrRepeat(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
