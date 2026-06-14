@@ -157,12 +157,21 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveMathMultiply(this, "*"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathDevide(this, "/"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathNegate(this, "+/-"), MOGPrimitive.CATEGORY_MATHS);
+
             RegisterPublicPrimitive(new PrimitiveMathSin(this, "sin"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathCos(this, "cos"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathTan(this, "tan"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathAsin(this, "asin"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathAcos(this, "acos"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathAtan(this, "atan"), MOGPrimitive.CATEGORY_MATHS);
+
+            RegisterPublicPrimitive(new PrimitiveMathSinh(this, "sinh"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathCosh(this, "cosh"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathTanh(this, "tanh"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathAsinh(this, "asinh"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathAcosh(this, "acosh"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathAtanh(this, "atanh"), MOGPrimitive.CATEGORY_MATHS);
+
             RegisterPublicPrimitive(new PrimitiveMathPI(this, "PI"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathRand(this, "rand"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathAbs(this, "abs"), MOGPrimitive.CATEGORY_MATHS);
