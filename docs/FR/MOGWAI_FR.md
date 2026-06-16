@@ -967,6 +967,40 @@ Le nombre de répétitions doit être un entier positif ou nul. Une valeur de `0
 | `"ab" 3 str.repeat`    | `"ababab"`  |
 | `"x" 0 str.repeat`     | `""`        |
 
+## Comparaison de versions
+
+MOGWAI fournit sept primitives pour comparer des chaînes de version et valider leur format.
+Les chaînes de version suivent le format `System.Version` : `"major.minor"`, `"major.minor.revision"`,
+ou `"major.minor.revision.build"`. Une chaîne ne comportant que le composant majeur (ex. `"8"`) n'est pas valide.
+
+Le cas d'usage typique est de vérifier que le runtime satisfait une version minimale requise avant
+d'utiliser une fonctionnalité introduite dans une version spécifique.
+
+**Signature :** `"a" "b" ver> → bool` *(et de même pour toutes les primitives de comparaison)*
+
+Si l'un des arguments n'est pas une chaîne de version valide, **MW.22** (bad argument value) est levée.
+
+| Primitive | Description                                                                    |
+|-----------|--------------------------------------------------------------------------------|
+| `ver?`    | Retourne `true` si la chaîne est une version valide. Ne lève jamais d'erreur. |
+| `ver>`    | Retourne `true` si `a > b`.                                                    |
+| `ver<`    | Retourne `true` si `a < b`.                                                    |
+| `ver>=`   | Retourne `true` si `a >= b`.                                                   |
+| `ver<=`   | Retourne `true` si `a <= b`.                                                   |
+| `ver==`   | Retourne `true` si `a == b`.                                                   |
+| `ver!=`   | Retourne `true` si `a != b`.                                                   |
+
+```
+"8.10" ver?                          # → true
+"8" ver?                             # → false  (composant majeur seul non supporté)
+"8.10.0.0" "8.2" ver>               # → true
+"8.10.0.0" "8.10.0.0" ver==         # → true
+
+# Vérification typique de version du runtime
+mogwai.info->version: "8.10" ver>=
+if { ... }
+```
+
 ## Formater un nombre
 
 Il est possible de formater un nombre avec la fonction `->format` qui prend en paramètres le nombre à formater et le format à appliquer.

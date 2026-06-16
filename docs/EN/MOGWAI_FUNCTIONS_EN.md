@@ -3342,3 +3342,55 @@ if ('BLE' hasSkill) then
 ```
 
 ***
+
+### `ver?`
+
+Returns `true` if the string is a valid version, `false` otherwise. A valid version string follows the `System.Version` format: `"major.minor"`, `"major.minor.revision"`, or `"major.minor.revision.build"`. A string with only a major component (e.g. `"8"`) is not valid.
+
+Never raises an error.
+
+**Signature:** `string ver? → bool`
+
+```
+"8.10" ver?       # → true
+"8.10.1" ver?     # → true
+"8.10.1.5" ver?   # → true
+"8" ver?          # → false
+"hello" ver?      # → false
+```
+
+See also: `ver>`, `ver<`, `ver>=`, `ver<=`, `ver==`, `ver!=`.
+
+***
+
+### `ver>` `ver<` `ver>=` `ver<=` `ver==` `ver!=`
+
+Compares two version strings and returns a boolean. Version strings follow the `System.Version` format: `"major.minor"`, `"major.minor.revision"`, or `"major.minor.revision.build"`.
+
+If either argument is not a valid version string, **MW.22** (bad argument value) is raised.
+
+**Signature:** `"a" "b" ver> → bool` *(and similarly for all variants)*
+
+| Primitive | Returns `true` if… |
+|-----------|---------------------|
+| `ver>`    | `a > b`             |
+| `ver<`    | `a < b`             |
+| `ver>=`   | `a >= b`            |
+| `ver<=`   | `a <= b`            |
+| `ver==`   | `a == b`            |
+| `ver!=`   | `a != b`            |
+
+```
+"8.10.0.0" "8.2" ver>               # → true
+"8.2" "8.10.0.0" ver<               # → true
+"8.10.0.0" "8.10.0.0" ver==         # → true
+"8.10.0.0" "8.9" ver!=              # → true
+
+# Typical runtime version check
+mogwai.info->version: "8.10" ver>=
+if { ... }
+```
+
+See also: `ver?`, `mogwai.info`, `hasSkill`.
+
+***

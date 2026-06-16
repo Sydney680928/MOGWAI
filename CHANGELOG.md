@@ -37,6 +37,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   "x" 0 str.repeat ?    # → ""
   ```
 
+- **Version comparison primitives** — seven new primitives for comparing version strings and validating version format. Version strings follow the `System.Version` format: `"major.minor"`, `"major.minor.revision"`, or `"major.minor.revision.build"`. All comparison primitives take two version strings (`a b`) and push a boolean. If either argument is not a valid version string, **MW.22** (bad argument value) is raised.
+
+  | Primitive | Description |
+  |-----------|-------------|
+  | `ver?`  | Returns `true` if the string is a valid version, `false` otherwise. Never raises an error. |
+  | `ver>`  | Returns `true` if `a > b`. |
+  | `ver<`  | Returns `true` if `a < b`. |
+  | `ver>=` | Returns `true` if `a >= b`. |
+  | `ver<=` | Returns `true` if `a <= b`. |
+  | `ver==` | Returns `true` if `a == b`. |
+  | `ver!=` | Returns `true` if `a != b`. |
+
+  ```
+  "8.10" ver?                          # → true
+  "8" ver?                             # → false  (major only not supported)
+  "8.10.0.0" "8.2" ver>               # → true
+  "8.10.0.0" "8.10.0.0" ver==         # → true
+  mogwai.info->version: "8.10" ver>=   # → true  (typical runtime version check)
+  ```
+
 ### Changed
 
 ### Fixed

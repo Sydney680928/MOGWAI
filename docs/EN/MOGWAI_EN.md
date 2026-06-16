@@ -967,6 +967,40 @@ The count must be a non-negative integer. A count of `0` returns an empty string
 | `"ab" 3 str.repeat`    | `"ababab"`  |
 | `"x" 0 str.repeat`     | `""`        |
 
+## Version comparison
+
+MOGWAI provides seven primitives to compare version strings and validate their format.
+Version strings follow the `System.Version` format: `"major.minor"`, `"major.minor.revision"`,
+or `"major.minor.revision.build"`. A string with only a major component (e.g. `"8"`) is not valid.
+
+The typical use case is verifying that the runtime meets a minimum version requirement before
+using a feature introduced in a specific release.
+
+**Signature:** `"a" "b" ver> → bool` *(and similarly for all comparison primitives)*
+
+If either argument is not a valid version string, **MW.22** (bad argument value) is raised.
+
+| Primitive | Description                                                             |
+|-----------|-------------------------------------------------------------------------|
+| `ver?`    | Returns `true` if the string is a valid version. Never raises an error. |
+| `ver>`    | Returns `true` if `a > b`.                                              |
+| `ver<`    | Returns `true` if `a < b`.                                              |
+| `ver>=`   | Returns `true` if `a >= b`.                                             |
+| `ver<=`   | Returns `true` if `a <= b`.                                             |
+| `ver==`   | Returns `true` if `a == b`.                                             |
+| `ver!=`   | Returns `true` if `a != b`.                                             |
+
+```
+"8.10" ver?                          # → true
+"8" ver?                             # → false  (major only not supported)
+"8.10.0.0" "8.2" ver>               # → true
+"8.10.0.0" "8.10.0.0" ver==         # → true
+
+# Typical runtime version check
+mogwai.info->version: "8.10" ver>=
+if { ... }
+```
+
 ## Formatting a number
 
 It is possible to format a number using the `->format` function which takes as parameters the number to format and the format to apply.

@@ -1,4 +1,4 @@
-// Copyright 2015-2026 Stéphane Sibué
+﻿// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,23 +17,23 @@ using MOGWAI.Objects;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveNotEqual : MOGPrimitive
+    internal class PrimitiveIsEqual : MOGPrimitive
     {
-        public PrimitiveNotEqual(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveIsEqual(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveNotEqual(Engine, Name);
+            var obj = new PrimitiveIsEqual(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
 
         public override Task<EvalResult> EngineEval()
         {
-            // xxx yyyy !=
+            // xxx yyyy ==
 
             var s = Engine.StackSign(2);
 
@@ -42,24 +42,44 @@ namespace MOGWAI.Primitives
 
             if (s[0] == typeof(MOGNumber) && s[1] == typeof(MOGNumber))
             {
+                // number number ==
+
                 var n2 = Engine.StackPopNumber();
                 var n1 = Engine.StackPopNumber();
 
-                Engine.StackPush(new MOGBoolean(Engine, n1.Value != n2.Value, 0));
+                var r = new MOGBoolean(Engine, n1.Value == n2.Value, 0);
+                Engine.StackPush(r);
             }
             else if (s[0] == typeof(MOGBoolean) && s[1] == typeof(MOGBoolean))
             {
+                // bool bool ==
+
                 var n2 = Engine.StackPopBoolean();
                 var n1 = Engine.StackPopBoolean();
 
-                Engine.StackPush(new MOGBoolean(Engine, n1.Value != n2.Value, 0));
+                var r = new MOGBoolean(Engine, n1.Value == n2.Value, 0);
+                Engine.StackPush(r);
             }
             else if (s[0].IsSubclassOf(typeof(MOGBaseString)) && s[1].IsSubclassOf(typeof(MOGBaseString)))
             {
+                // string string ==
+                // name name ==
+                // key key ==
+                // word word ==
+                // type type ==
+                // ref ref ==
+
                 var n2 = Engine.StackPopBaseString();
                 var n1 = Engine.StackPopBaseString();
 
-                Engine.StackPush(new MOGBoolean(Engine, n1.Value != n2.Value, 0));
+                if (n1.GetType() != n2.GetType())
+                {
+                    Engine.StackPushBoolean(false);
+                }
+                else
+                {
+                    Engine.StackPushBoolean(n1.Value == n2.Value);
+                }
             }
             else
             {

@@ -415,8 +415,8 @@ namespace MOGWAI.Engine
 
             // Compare functions
 
-            RegisterPublicPrimitive(new PrimitiveEqual(this, "=="));
-            RegisterPublicPrimitive(new PrimitiveNotEqual(this, "!="));
+            RegisterPublicPrimitive(new PrimitiveIsEqual(this, "=="));
+            RegisterPublicPrimitive(new PrimitiveIsNotEqual(this, "!="));
             RegisterPublicPrimitive(new PrimitiveIsSuperior(this, ">"));
             RegisterPublicPrimitive(new PrimitiveIsSuperiorOrEqual(this, ">="));
             RegisterPublicPrimitive(new PrimitiveIsLess(this, "<"));
@@ -426,6 +426,16 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveConditionalOr(this, "or"));
             RegisterPublicPrimitive(new PrimitiveConditionalXor(this, "xor"));
             RegisterPublicPrimitive(new PrimitiveConditionalNot(this, "not"));
+
+            // Version compare functions
+
+            RegisterPublicPrimitive(new PrimitiveVersionIsSuperior(this, "ver>"));
+            RegisterPublicPrimitive(new PrimitiveVersionIsSuperiorOrEqual(this, "ver>="));
+            RegisterPublicPrimitive(new PrimitiveVersionIsLess(this, "ver<"));
+            RegisterPublicPrimitive(new PrimitiveVersionIsLessOrEqual(this, "ver<="));
+            RegisterPublicPrimitive(new PrimitiveVersionIsEqual(this, "ver=="));
+            RegisterPublicPrimitive(new PrimitiveVersionIsNotEqual(this, "ver!="));
+            RegisterPublicPrimitive(new PrimitiveVersionIsVersion(this, "ver?"));
 
             // Timer functions
 
