@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.11.0] - 2026-06-16
+
+### Added
+
 - **Hyperbolic functions** — six new primitives mirroring the existing trigonometric set (`sin`, `cos`, `tan`, `asin`, `acos`, `atan`). All map directly to their `Math.*` counterparts in .NET.
 
   | Primitive | Description |
@@ -99,8 +107,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   "HELLO LE MONDE" 5 3 str.remove ?     # → "HELLO MONDE"
   "Hello%20World" ->urlDecode ?         # → "Hello World"
   ```
-
-### Changed
 
 ### Fixed
 
@@ -911,7 +917,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.10.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.11.0...HEAD
+[8.11.0]: https://github.com/Sydney680928/mogwai/compare/v8.10.1...v8.11.0
 [8.10.0]: https://github.com/Sydney680928/mogwai/compare/v8.9.1...v8.10.0
 [8.9.1]: https://github.com/Sydney680928/mogwai/compare/v8.8.2...v8.9.1
 [8.8.2]: https://github.com/Sydney680928/mogwai/compare/v8.8.1...v8.8.2
