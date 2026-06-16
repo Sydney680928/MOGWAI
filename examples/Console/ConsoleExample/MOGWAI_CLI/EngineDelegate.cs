@@ -317,5 +317,7 @@ namespace MOGWAI_CLI
 
         public Task<EvalResult> DebugClear(MogwaiEngine engine)
             => Task.FromResult(EvalResult.NoError);
+
+        public string[] Skills(MogwaiEngine engine) => ["TERMINAL"];
     }
 }
