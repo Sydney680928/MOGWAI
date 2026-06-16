@@ -1001,6 +1001,94 @@ mogwai.info->version: "8.10" ver>=
 if { ... }
 ```
 
+## Manipulation de chaînes
+
+### Recherche & test
+
+**`str.indexOf`** — retourne l'index (base zéro) de la première occurrence d'une sous-chaîne dans une chaîne. Retourne `-1` si non trouvé. Sensible à la casse.
+
+**Signature :** `string recherche str.indexOf → entier`
+
+```
+"HELLO" "L" str.indexOf ?     # → 2
+"HELLO" "X" str.indexOf ?     # → -1
+```
+
+**`str.startsWith`** — retourne `true` si une chaîne commence par le préfixe donné. Sensible à la casse.
+
+**Signature :** `string préfixe str.startsWith → bool`
+
+```
+"MOGWAI" "MO" str.startsWith ?    # → true
+"MOGWAI" "WAI" str.startsWith ?   # → false
+```
+
+**`str.endsWith`** — retourne `true` si une chaîne se termine par le suffixe donné. Sensible à la casse.
+
+**Signature :** `string suffixe str.endsWith → bool`
+
+```
+"MOGWAI" "WAI" str.endsWith ?    # → true
+"MOGWAI" "MO" str.endsWith ?     # → false
+```
+
+### Transformation
+
+**`str.replace`** — remplace toutes les occurrences d'une sous-chaîne par une autre. Sensible à la casse.
+
+**Signature :** `string ancien nouveau str.replace → string`
+
+```
+"E;Y;5" ";" "--" str.replace ?    # → "E--Y--5"
+```
+
+**`str.trim`** — supprime les caractères blancs en début et fin de chaîne (espaces, tabulations, `\r`, `\n`).
+
+**Signature :** `string str.trim → string`
+
+**`str.trimStart`** — supprime les caractères blancs en début de chaîne uniquement.
+
+**Signature :** `string str.trimStart → string`
+
+**`str.trimEnd`** — supprime les caractères blancs en fin de chaîne uniquement.
+
+**Signature :** `string str.trimEnd → string`
+
+```
+"  MOGWAI " str.trim ?         # → "MOGWAI"
+" MOGWAI " str.trimStart ?     # → "MOGWAI "
+" MOGWAI " str.trimEnd ?       # → " MOGWAI"
+```
+
+**`str.padLeft`** — complète une chaîne à gauche avec des espaces pour atteindre la largeur spécifiée. Retourne la chaîne inchangée si elle est déjà à cette largeur ou au-delà.
+
+**Signature :** `string largeur str.padLeft → string`
+
+**`str.padRight`** — complète une chaîne à droite avec des espaces pour atteindre la largeur spécifiée. Retourne la chaîne inchangée si elle est déjà à cette largeur ou au-delà.
+
+**Signature :** `string largeur str.padRight → string`
+
+```
+"MOGWAI" 10 str.padLeft ?     # → "    MOGWAI"
+"MOGWAI" 10 str.padRight ?    # → "MOGWAI    "
+```
+
+**`str.insert`** — insère une chaîne dans une autre à un index (base zéro). Lève **MW.22** si `index < 0` ou `index > taille de la chaîne`.
+
+**Signature :** `string insertion index str.insert → string`
+
+```
+"HELLO LE MONDE" "-" 5 str.insert ?    # → "HELLO- LE MONDE"
+```
+
+**`str.remove`** — supprime `count` caractères d'une chaîne à partir de l'index (base zéro) `start`. Lève **MW.22** si `start` ou `count` sont invalides.
+
+**Signature :** `string start count str.remove → string`
+
+```
+"HELLO LE MONDE" 5 3 str.remove ?    # → "HELLO MONDE"
+```
+
 ## Formater un nombre
 
 Il est possible de formater un nombre avec la fonction `->format` qui prend en paramètres le nombre à formater et le format à appliquer.

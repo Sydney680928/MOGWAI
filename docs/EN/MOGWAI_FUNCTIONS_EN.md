@@ -2185,6 +2185,20 @@ For example, when the characters < and > are embedded in a block of text to be t
 
 ***
 
+### `->urlDecode`
+
+Decodes a URL-encoded string. Inverse of `->urlEncode`.
+
+**Signature:** `string ->urlDecode → string`
+
+```
+"Hello%20World" ->urlDecode ?    # → "Hello World"
+```
+
+See also: `->urlEncode`.
+
+***
+
 ### `process.start`
 
 Starts a process. 
@@ -3392,5 +3406,159 @@ if { ... }
 ```
 
 See also: `ver?`, `mogwai.info`, `hasSkill`.
+
+***
+
+### `str.indexOf`
+
+Returns the zero-based index of the first occurrence of a substring in a string. Returns `-1` if not found. Case-sensitive.
+
+**Signature:** `string search str.indexOf → integer`
+
+```
+"HELLO" "L" str.indexOf ?     # → 2
+"HELLO" "X" str.indexOf ?     # → -1
+```
+
+See also: `contains`, `str.startsWith`, `str.endsWith`.
+
+***
+
+### `str.startsWith`
+
+Returns `true` if a string starts with the given prefix. Case-sensitive.
+
+**Signature:** `string prefix str.startsWith → bool`
+
+```
+"MOGWAI" "MO" str.startsWith ?    # → true
+"MOGWAI" "WAI" str.startsWith ?   # → false
+```
+
+See also: `str.endsWith`, `str.indexOf`, `contains`.
+
+***
+
+### `str.endsWith`
+
+Returns `true` if a string ends with the given suffix. Case-sensitive.
+
+**Signature:** `string suffix str.endsWith → bool`
+
+```
+"MOGWAI" "WAI" str.endsWith ?    # → true
+"MOGWAI" "MO" str.endsWith ?     # → false
+```
+
+See also: `str.startsWith`, `str.indexOf`, `contains`.
+
+***
+
+### `str.replace`
+
+Replaces all occurrences of a substring with another in a string. Case-sensitive.
+
+**Signature:** `string old new str.replace → string`
+
+```
+"E;Y;5" ";" "--" str.replace ?    # → "E--Y--5"
+"HELLO" "L" "R" str.replace ?     # → "HERRO"
+```
+
+***
+
+### `str.trim`
+
+Removes leading and trailing whitespace characters (spaces, tabs, `\r`, `\n`).
+
+**Signature:** `string str.trim → string`
+
+```
+"  MOGWAI " str.trim ?    # → "MOGWAI"
+```
+
+See also: `str.trimStart`, `str.trimEnd`.
+
+***
+
+### `str.trimStart`
+
+Removes leading whitespace characters (spaces, tabs, `\r`, `\n`).
+
+**Signature:** `string str.trimStart → string`
+
+```
+" MOGWAI " str.trimStart ?    # → "MOGWAI "
+```
+
+See also: `str.trim`, `str.trimEnd`.
+
+***
+
+### `str.trimEnd`
+
+Removes trailing whitespace characters (spaces, tabs, `\r`, `\n`).
+
+**Signature:** `string str.trimEnd → string`
+
+```
+" MOGWAI " str.trimEnd ?    # → " MOGWAI"
+```
+
+See also: `str.trim`, `str.trimStart`.
+
+***
+
+### `str.padLeft`
+
+Pads a string on the left with spaces to reach the specified width. Returns the string unchanged if already at or above `width`.
+
+**Signature:** `string width str.padLeft → string`
+
+```
+"MOGWAI" 10 str.padLeft ?    # → "    MOGWAI"
+"MOGWAI" 3 str.padLeft ?     # → "MOGWAI"  (unchanged, already longer)
+```
+
+See also: `str.padRight`.
+
+***
+
+### `str.padRight`
+
+Pads a string on the right with spaces to reach the specified width. Returns the string unchanged if already at or above `width`.
+
+**Signature:** `string width str.padRight → string`
+
+```
+"MOGWAI" 10 str.padRight ?    # → "MOGWAI    "
+"MOGWAI" 3 str.padRight ?     # → "MOGWAI"  (unchanged, already longer)
+```
+
+See also: `str.padLeft`.
+
+***
+
+### `str.insert`
+
+Inserts a string into another at a zero-based index. Raises **MW.22** if `index < 0` or `index > size of string`.
+
+**Signature:** `string insertion index str.insert → string`
+
+```
+"HELLO LE MONDE" "-" 5 str.insert ?    # → "HELLO- LE MONDE"
+```
+
+***
+
+### `str.remove`
+
+Removes `count` characters from a string starting at zero-based index `start`. Raises **MW.22** if `start` or `count` are invalid.
+
+**Signature:** `string start count str.remove → string`
+
+```
+"HELLO LE MONDE" 5 3 str.remove ?    # → "HELLO MONDE"
+```
 
 ***

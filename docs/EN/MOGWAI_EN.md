@@ -1001,6 +1001,94 @@ mogwai.info->version: "8.10" ver>=
 if { ... }
 ```
 
+## String manipulation
+
+### Search & test
+
+**`str.indexOf`** — returns the zero-based index of the first occurrence of a substring in a string. Returns `-1` if not found. Case-sensitive.
+
+**Signature:** `string search str.indexOf → integer`
+
+```
+"HELLO" "L" str.indexOf ?     # → 2
+"HELLO" "X" str.indexOf ?     # → -1
+```
+
+**`str.startsWith`** — returns `true` if a string starts with the given prefix. Case-sensitive.
+
+**Signature:** `string prefix str.startsWith → bool`
+
+```
+"MOGWAI" "MO" str.startsWith ?    # → true
+"MOGWAI" "WAI" str.startsWith ?   # → false
+```
+
+**`str.endsWith`** — returns `true` if a string ends with the given suffix. Case-sensitive.
+
+**Signature:** `string suffix str.endsWith → bool`
+
+```
+"MOGWAI" "WAI" str.endsWith ?    # → true
+"MOGWAI" "MO" str.endsWith ?     # → false
+```
+
+### Transformation
+
+**`str.replace`** — replaces all occurrences of a substring with another. Case-sensitive.
+
+**Signature:** `string old new str.replace → string`
+
+```
+"E;Y;5" ";" "--" str.replace ?    # → "E--Y--5"
+```
+
+**`str.trim`** — removes leading and trailing whitespace characters (spaces, tabs, `\r`, `\n`).
+
+**Signature:** `string str.trim → string`
+
+**`str.trimStart`** — removes leading whitespace characters only.
+
+**Signature:** `string str.trimStart → string`
+
+**`str.trimEnd`** — removes trailing whitespace characters only.
+
+**Signature:** `string str.trimEnd → string`
+
+```
+"  MOGWAI " str.trim ?         # → "MOGWAI"
+" MOGWAI " str.trimStart ?     # → "MOGWAI "
+" MOGWAI " str.trimEnd ?       # → " MOGWAI"
+```
+
+**`str.padLeft`** — pads a string on the left with spaces to reach the specified width. Returns the string unchanged if already at or above `width`.
+
+**Signature:** `string width str.padLeft → string`
+
+**`str.padRight`** — pads a string on the right with spaces to reach the specified width. Returns the string unchanged if already at or above `width`.
+
+**Signature:** `string width str.padRight → string`
+
+```
+"MOGWAI" 10 str.padLeft ?     # → "    MOGWAI"
+"MOGWAI" 10 str.padRight ?    # → "MOGWAI    "
+```
+
+**`str.insert`** — inserts a string into another at a zero-based index. Raises **MW.22** if `index < 0` or `index > size of string`.
+
+**Signature:** `string insertion index str.insert → string`
+
+```
+"HELLO LE MONDE" "-" 5 str.insert ?    # → "HELLO- LE MONDE"
+```
+
+**`str.remove`** — removes `count` characters from a string starting at zero-based index `start`. Raises **MW.22** if `start` or `count` are invalid.
+
+**Signature:** `string start count str.remove → string`
+
+```
+"HELLO LE MONDE" 5 3 str.remove ?    # → "HELLO MONDE"
+```
+
 ## Formatting a number
 
 It is possible to format a number using the `->format` function which takes as parameters the number to format and the format to apply.

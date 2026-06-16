@@ -57,6 +57,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   mogwai.info->version: "8.10" ver>=   # → true  (typical runtime version check)
   ```
 
+- **String manipulation primitives** — twelve new primitives covering search, transformation, padding, insertion, removal, and URL decoding.
+
+  **Search & test**
+
+  | Primitive | Signature | Description |
+  |-----------|-----------|-------------|
+  | `str.indexOf` | `string search str.indexOf` | Returns the zero-based index of the first occurrence of `search` in `string`, or `-1` if not found. Case-sensitive. |
+  | `str.startsWith` | `string prefix str.startsWith` | Returns `true` if `string` starts with `prefix`. Case-sensitive. |
+  | `str.endsWith` | `string suffix str.endsWith` | Returns `true` if `string` ends with `suffix`. Case-sensitive. |
+
+  **Transformation**
+
+  | Primitive | Signature | Description |
+  |-----------|-----------|-------------|
+  | `str.replace` | `string old new str.replace` | Replaces all occurrences of `old` with `new` in `string`. Case-sensitive. |
+  | `str.trim` | `string str.trim` | Removes leading and trailing whitespace characters (spaces, tabs, `\r`, `\n`). |
+  | `str.trimStart` | `string str.trimStart` | Removes leading whitespace characters only. |
+  | `str.trimEnd` | `string str.trimEnd` | Removes trailing whitespace characters only. |
+  | `str.padLeft` | `string width str.padLeft` | Pads `string` on the left with spaces to reach `width`. Returns `string` unchanged if already at or above `width`. |
+  | `str.padRight` | `string width str.padRight` | Pads `string` on the right with spaces to reach `width`. Returns `string` unchanged if already at or above `width`. |
+  | `str.insert` | `string insertion index str.insert` | Inserts `insertion` into `string` at zero-based `index`. Raises **MW.22** if `index < 0` or `index > size of string`. |
+  | `str.remove` | `string start count str.remove` | Removes `count` characters from `string` starting at zero-based `index` `start`. Raises **MW.22** if `start` or `count` are invalid. |
+
+  **Encoding**
+
+  | Primitive | Signature | Description |
+  |-----------|-----------|-------------|
+  | `->urlDecode` | `string ->urlDecode` | Decodes a URL-encoded string. Inverse of `->urlEncode`. |
+
+  ```
+  "E;Y;5" ";" "--" str.replace ?        # → "E--Y--5"
+  "HELLO" "L" str.indexOf ?             # → 2
+  "MOGWAI" "MO" str.startsWith ?        # → true
+  "MOGWAI" "WAI" str.endsWith ?         # → true
+  "  MOGWAI " str.trim ?                # → "MOGWAI"
+  " MOGWAI " str.trimStart ?            # → "MOGWAI "
+  " MOGWAI " str.trimEnd ?              # → " MOGWAI"
+  "MOGWAI" 10 str.padLeft ?             # → "    MOGWAI"
+  "HELLO LE MONDE" "-" 5 str.insert ?   # → "HELLO- LE MONDE"
+  "HELLO LE MONDE" 5 3 str.remove ?     # → "HELLO MONDE"
+  "Hello%20World" ->urlDecode ?         # → "Hello World"
+  ```
+
 ### Changed
 
 ### Fixed

@@ -2193,6 +2193,20 @@ Par exemple, lorsque les caractères < et > sont intégrés dans un bloc de text
 
 ***
 
+### `->urlDecode`
+
+Décode une chaîne encodée en URL. Inverse de `->urlEncode`.
+
+**Signature :** `string ->urlDecode → string`
+
+```
+"Hello%20World" ->urlDecode ?    # → "Hello World"
+```
+
+Voir aussi : `->urlEncode`.
+
+***
+
 ### `process.start`
 
 Démarre un processus.
@@ -3403,5 +3417,159 @@ if { ... }
 ```
 
 Voir aussi : `ver?`, `mogwai.info`, `hasSkill`.
+
+***
+
+### `str.indexOf`
+
+Retourne l'index (base zéro) de la première occurrence d'une sous-chaîne dans une chaîne. Retourne `-1` si non trouvé. Sensible à la casse.
+
+**Signature :** `string recherche str.indexOf → entier`
+
+```
+"HELLO" "L" str.indexOf ?     # → 2
+"HELLO" "X" str.indexOf ?     # → -1
+```
+
+Voir aussi : `contains`, `str.startsWith`, `str.endsWith`.
+
+***
+
+### `str.startsWith`
+
+Retourne `true` si une chaîne commence par le préfixe donné. Sensible à la casse.
+
+**Signature :** `string préfixe str.startsWith → bool`
+
+```
+"MOGWAI" "MO" str.startsWith ?    # → true
+"MOGWAI" "WAI" str.startsWith ?   # → false
+```
+
+Voir aussi : `str.endsWith`, `str.indexOf`, `contains`.
+
+***
+
+### `str.endsWith`
+
+Retourne `true` si une chaîne se termine par le suffixe donné. Sensible à la casse.
+
+**Signature :** `string suffixe str.endsWith → bool`
+
+```
+"MOGWAI" "WAI" str.endsWith ?    # → true
+"MOGWAI" "MO" str.endsWith ?     # → false
+```
+
+Voir aussi : `str.startsWith`, `str.indexOf`, `contains`.
+
+***
+
+### `str.replace`
+
+Remplace toutes les occurrences d'une sous-chaîne par une autre dans une chaîne. Sensible à la casse.
+
+**Signature :** `string ancien nouveau str.replace → string`
+
+```
+"E;Y;5" ";" "--" str.replace ?    # → "E--Y--5"
+"HELLO" "L" "R" str.replace ?     # → "HERRO"
+```
+
+***
+
+### `str.trim`
+
+Supprime les caractères blancs en début et fin de chaîne (espaces, tabulations, `\r`, `\n`).
+
+**Signature :** `string str.trim → string`
+
+```
+"  MOGWAI " str.trim ?    # → "MOGWAI"
+```
+
+Voir aussi : `str.trimStart`, `str.trimEnd`.
+
+***
+
+### `str.trimStart`
+
+Supprime les caractères blancs en début de chaîne uniquement (espaces, tabulations, `\r`, `\n`).
+
+**Signature :** `string str.trimStart → string`
+
+```
+" MOGWAI " str.trimStart ?    # → "MOGWAI "
+```
+
+Voir aussi : `str.trim`, `str.trimEnd`.
+
+***
+
+### `str.trimEnd`
+
+Supprime les caractères blancs en fin de chaîne uniquement (espaces, tabulations, `\r`, `\n`).
+
+**Signature :** `string str.trimEnd → string`
+
+```
+" MOGWAI " str.trimEnd ?    # → " MOGWAI"
+```
+
+Voir aussi : `str.trim`, `str.trimStart`.
+
+***
+
+### `str.padLeft`
+
+Complète une chaîne à gauche avec des espaces pour atteindre la largeur spécifiée. Retourne la chaîne inchangée si elle est déjà à cette largeur ou au-delà.
+
+**Signature :** `string largeur str.padLeft → string`
+
+```
+"MOGWAI" 10 str.padLeft ?    # → "    MOGWAI"
+"MOGWAI" 3 str.padLeft ?     # → "MOGWAI"  (inchangée, déjà plus longue)
+```
+
+Voir aussi : `str.padRight`.
+
+***
+
+### `str.padRight`
+
+Complète une chaîne à droite avec des espaces pour atteindre la largeur spécifiée. Retourne la chaîne inchangée si elle est déjà à cette largeur ou au-delà.
+
+**Signature :** `string largeur str.padRight → string`
+
+```
+"MOGWAI" 10 str.padRight ?    # → "MOGWAI    "
+"MOGWAI" 3 str.padRight ?     # → "MOGWAI"  (inchangée, déjà plus longue)
+```
+
+Voir aussi : `str.padLeft`.
+
+***
+
+### `str.insert`
+
+Insère une chaîne dans une autre à un index (base zéro). Lève **MW.22** si `index < 0` ou `index > taille de la chaîne`.
+
+**Signature :** `string insertion index str.insert → string`
+
+```
+"HELLO LE MONDE" "-" 5 str.insert ?    # → "HELLO- LE MONDE"
+```
+
+***
+
+### `str.remove`
+
+Supprime `count` caractères d'une chaîne à partir de l'index (base zéro) `start`. Lève **MW.22** si `start` ou `count` sont invalides.
+
+**Signature :** `string start count str.remove → string`
+
+```
+"HELLO LE MONDE" 5 3 str.remove ?    # → "HELLO MONDE"
+```
 
 ***

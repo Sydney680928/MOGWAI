@@ -223,8 +223,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveToNumber(this, "->num"));
             RegisterPublicPrimitive(new PrimitiveToHex(this, "->hex"));
             RegisterPublicPrimitive(new PrimitiveFromHexToNumber(this, "hex->"));
-            RegisterPublicPrimitive(new PrimitiveToString(this, "->str"));
-            RegisterPublicPrimitive(new PrimitiveStrRepeat(this, "str.repeat"));
+            RegisterPublicPrimitive(new PrimitiveToString(this, "->str"));           
             RegisterPublicPrimitive(new PrimitiveToUTF8(this, "->utf8"));
             RegisterPublicPrimitive(new PrimitiveUTF8ToString(this, "utf8->"));
             RegisterPublicPrimitive(new PrimitiveToBase64(this, "->base64"));
@@ -249,6 +248,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveMathToRad(this, "->rad"));
             RegisterPublicPrimitive(new PrimitiveToUri(this, "->uri"));
             RegisterPublicPrimitive(new PrimitiveToUrlEncode(this, "->urlEncode"));
+            RegisterPublicPrimitive(new PrimitiveToUrlDecode(this, "->urlDecode"));
             RegisterPublicPrimitive(new PrimitiveCompress(this, "->compress"));
             RegisterPublicPrimitive(new PrimitiveDecompress(this, "->decompress"));
             RegisterPublicPrimitive(new PrimitivePack(this, "->pack"));
@@ -322,6 +322,21 @@ namespace MOGWAI.Engine
 
             RegisterPublicPrimitive(new PrimitiveToDataFromFloatLE64(this, "->dataLE64F"));
             RegisterPublicPrimitive(new PrimitiveToDataFromFloatBE64(this, "->dataBE64F"));
+
+            // String functions
+
+            RegisterPublicPrimitive(new PrimitiveStrRepeat(this, "str.repeat"));
+            RegisterPublicPrimitive(new PrimitiveStrReplace(this, "str.replace"));
+            RegisterPublicPrimitive(new PrimitiveStrIndexOf(this, "str.indexOf"));
+            RegisterPublicPrimitive(new PrimitiveStrTrim(this, "str.trim"));
+            RegisterPublicPrimitive(new PrimitiveStrTrimStart(this, "str.trimStart"));
+            RegisterPublicPrimitive(new PrimitiveStrTrimEnd(this, "str.trimEnd"));
+            RegisterPublicPrimitive(new PrimitiveStrStartsWith(this, "str.startsWith"));
+            RegisterPublicPrimitive(new PrimitiveStrEndsWith(this, "str.endsWith"));
+            RegisterPublicPrimitive(new PrimitiveStrPadLeft(this, "str.padLeft"));
+            RegisterPublicPrimitive(new PrimitiveStrPadRight(this, "str.padRight"));
+            RegisterPublicPrimitive(new PrimitiveStrInsert(this, "str.insert"));
+            RegisterPublicPrimitive(new PrimitiveStrRemove(this, "str.remove"));
 
             // Output screen functions
 
