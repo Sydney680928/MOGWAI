@@ -36,9 +36,20 @@ MOGWAI reads left to right. Values are pushed onto a stack; operators consume va
 
 The same calculation on a single line — `3 4 + 2 *` — also leaves `[ 14 ]` on the stack. That's the whole idea: small pieces compose, and what you see is exactly what happens.
 
+### Not ready for RPN yet? Use `calc`
+
+New to stack-based thinking? You don't have to convert every formula by hand. The `calc` primitive accepts a regular infix expression as a string — parentheses, operator precedence and all — converts it to RPN under the hood (Dijkstra's Shunting-yard algorithm), and runs it immediately.
+
+```
+"5 * X + (7 + sin(Y))" calc
+```
+
+Write formulas the way you already know them, and grow into RPN at your own pace.
+
 ### Key Features
 
 - **Stack-Based RPN Syntax** - Clean, unambiguous, no operator precedence
+- **Infix Expressions via `calc`** - Write classic math formulas (`"5 * X + 2"`), auto-converted to RPN via Shunting-yard
 - **304 Built-in Functions** - Math, strings, lists, files, HTTP, and more
 - **Async/Await Support** - Modern asynchronous execution
 - **Plugin System** - Clean plugin contract via `MOGWAI.IPlugin` — official plugins in development
