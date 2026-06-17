@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`calc` primitive** — evaluates an infix mathematical expression given as a string and pushes the result onto the stack. Internally uses Dijkstra's Shunting-yard algorithm to convert the infix expression to RPN before execution. Supports the standard arithmetic operators (`+`, `-`, `*`, `/`), parentheses, all MOGWAI primitives and constants (`sin`, `cos`, `sqrt`, `pow`, `PI`, `E`, …), multi-argument functions (`pow(2, 10)`), local and global variables, and all MOGWAI sigils (`@`, `&`, `!`, `$`).
+
+  ```
+  500 -> 'X'
+  3.14 -> 'Y'
+  "5 * X + (7 + sin(Y))" calc ?   # → 2507.001...
+  "sin(PI / 3)" calc ?             # → 0.866...
+  "pow(2, 10)" calc ?              # → 1024
+  ```
+
 ### Changed
 
 ### Fixed
