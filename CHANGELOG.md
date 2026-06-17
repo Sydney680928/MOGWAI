@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.12.0] - 2026-06-17
+
+### Added
+
 - **`calc` primitive** — evaluates an infix mathematical expression given as a string and pushes the result onto the stack. Internally uses Dijkstra's Shunting-yard algorithm to convert the infix expression to RPN before execution. Supports the standard arithmetic operators (`+`, `-`, `*`, `/`), parentheses, all MOGWAI primitives and constants (`sin`, `cos`, `sqrt`, `pow`, `PI`, `E`, …), multi-argument functions (`pow(2, 10)`), local and global variables, and all MOGWAI sigils (`@`, `&`, `!`, `$`).
 
   ```
@@ -18,11 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   "sin(PI / 3)" calc ?             # → 0.866...
   "pow(2, 10)" calc ?              # → 1024
   ```
-
-### Changed
-
-### Fixed
-
+  
 ## [8.11.0] - 2026-06-16
 
 ### Added
@@ -927,7 +931,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.11.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.12.0...HEAD
+[8.12.0]: https://github.com/Sydney680928/mogwai/compare/v8.11.0...v8.12.0
 [8.11.0]: https://github.com/Sydney680928/mogwai/compare/v8.10.1...v8.11.0
 [8.10.0]: https://github.com/Sydney680928/mogwai/compare/v8.9.1...v8.10.0
 [8.9.1]: https://github.com/Sydney680928/mogwai/compare/v8.8.2...v8.9.1
