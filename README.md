@@ -179,6 +179,7 @@ New to MOGWAI? **Start with these three:**
 - [MOGWAI — The Origin Story](https://coding4phone.com/?p=2066&lang=en) — why MOGWAI exists and where it came from
 - [Anatomy of MOGWAI](https://coding4phone.com/?p=2615&lang=en) — the fundamentals of its concatenative design
 - [Embedding a scripting engine in a .NET MAUI app](https://coding4phone.com/?p=2461&lang=en) — the embedding value prop, end to end
+- [MOGWAI Snake — A Complete Game Written in RPN Scripting Language](https://coding4phone.com/?p=2662&lang=en) - a snake game with MOGWAI, it's possible !
 
 <details>
 <summary>All articles on coding4phone.com</summary>
