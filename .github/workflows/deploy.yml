@@ -3,6 +3,8 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'examples/Blazor/MogwaiPlayground/**'
   workflow_dispatch:
 
 permissions:
