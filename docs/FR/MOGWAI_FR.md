@@ -866,6 +866,7 @@ do
 | `cosh`   | Retourne le cosinus hyperbolique d'un nombre. Équivalent de `Math.Cosh()` en .NET.                                                                            | `1.5 cosh`     |
 | `max`    | Retourne la valeur maximale d'une liste.<br> Seuls les nombres sont autorisés.| `(1 2 3) max`  |
 | `average`   | Retourne la moyenne d'une liste.<br> Seuls les nombres sont autorisés.| `(1 2 3) average` |
+| `calc`   | Évalue une expression mathématique écrite en notation infixe classique (convertie en RPN en interne via l'algorithme de Shunting-yard).| `"5*X+(7+sin(Y))" calc` |
 | `min`    | Retourne la valeur minimale d'une liste.<br> Seuls les nombres sont autorisés.| `(1 2 3) min`  |
 | `pow`    | Retourne un nombre donné élevé à la puissance spécifiée.                                                                                                      | `100 2 pow`    |
 | `rand`   | Génère un nombre aléatoire entre 0 et 1.                                                                                                                      | `rand ->'A'`   |
@@ -888,7 +889,30 @@ do
 | `gcd`    | Retourne le plus grand commun diviseur de deux entiers (algorithme d'Euclide). Les deux valeurs sont prises en valeur absolue.                                | `345 4 gcd`    |
 | `lcm`    | Retourne le plus petit commun multiple de deux entiers. Les deux valeurs sont prises en valeur absolue. Retourne `0` si l'un des arguments est `0`.           | `345 4 lcm`    |
 
- 
+## Écrire des expressions en notation infixe avec `calc`
+
+MOGWAI est un langage RPN (notation polonaise inversée) : les opérateurs viennent après leurs opérandes, par exemple `5 3 +` au lieu de `5 + 3`. C'est naturel une fois qu'on y est habitué, mais ça peut représenter un frein pour les nouveaux venus, en particulier pour des expressions plus complexes comportant plusieurs opérations imbriquées.
+
+La primitive `calc` comble cet écart. Elle prend une chaîne de caractères contenant une expression mathématique en notation infixe classique, la convertit en RPN en interne (grâce à l'algorithme de Shunting-yard de Dijkstra), puis l'exécute immédiatement — exactement comme si vous aviez écrit le code RPN équivalent à la main.
+
+```
+500 -> 'X'
+3.14 -> 'Y'
+
+"5 * X + (7 + sin(Y))" calc ?
+# Place 2507.0015926529068 sur la pile — équivalent à :
+# 5 X * Y sin 7 + + ?
+```
+
+`calc` comprend les quatre opérateurs arithmétiques (`+ - * /`), les parenthèses, toutes les primitives et constantes MOGWAI utilisables comme fonction ou constante (`sin`, `cos`, `sqrt`, `pow`, `PI`, `E`…), les fonctions à plusieurs arguments écrites de façon traditionnelle (`pow(2, 10)`), les variables locales et globales, ainsi que les sigils `@`, `&` et `!`.
+
+```
+"pow(2, 10)" calc ?       # Place 1024 sur la pile
+"sin(PI / 3)" calc ?      # Place 0.8660254037844387 sur la pile
+```
+
+> `calc` est une couche de confort par-dessus le moteur RPN, pas un remplacement. Une fois à l'aise avec le RPN, vous écrirez probablement plus vite directement — mais `calc` reste pratique pour reporter une formule telle qu'elle apparaît dans un manuel de maths ou sur une calculatrice.
+
 # CHAÎNES DE CARACTÈRES
 
 **MOGWAI** dispose de nombreuses fonctions de traitement des chaînes de caractères.

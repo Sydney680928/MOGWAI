@@ -2039,6 +2039,29 @@ Returns the average of all numbers present in a list.
 
 ***
 
+### `calc`
+
+Evaluates a mathematical expression written in standard infix notation (e.g. `"5 * X + 2"` instead of RPN) and pushes the result onto the stack. Internally, the expression is converted to RPN using Dijkstra's Shunting-yard algorithm, then executed as regular MOGWAI code.
+
+Supports the four arithmetic operators (`+ - * /`), parentheses, all MOGWAI primitives and constants (`sin`, `cos`, `sqrt`, `pow`, `PI`, `E`, …), multi-argument functions (e.g. `pow(x, y)`), local and global variables, and the `@`, `&` and `!` sigils.
+
+> Useful for newcomers, or whenever an expression is more naturally expressed in infix form than in RPN.
+
+```
+500 -> 'X'
+3.14 -> 'Y'
+"5 * X + (7 + sin(Y))" calc ?
+# Pushes 2507.0015926529068 onto the stack
+
+"pow(2, 10)" calc ?
+# Pushes 1024 onto the stack
+
+"sin(PI / 3)" calc ?
+# Pushes 0.8660254037844387 onto the stack
+```
+
+***
+
 ### `console.locate`
 
 Requests the runtime host to position the cursor at the coordinates passed as parameter. 

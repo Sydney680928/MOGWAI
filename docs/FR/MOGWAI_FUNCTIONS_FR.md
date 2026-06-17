@@ -2046,6 +2046,29 @@ Retourne la moyenne de tous les nombres présents dans une liste.
 
 ***
 
+### `calc`
+
+Évalue une expression mathématique écrite en notation infixe classique (par exemple `"5 * X + 2"` au lieu du RPN) et place le résultat sur la pile. En interne, l'expression est convertie en RPN grâce à l'algorithme de Shunting-yard de Dijkstra, puis exécutée comme du code MOGWAI normal.
+
+Prend en charge les quatre opérateurs arithmétiques (`+ - * /`), les parenthèses, toutes les primitives et constantes MOGWAI (`sin`, `cos`, `sqrt`, `pow`, `PI`, `E`…), les fonctions à plusieurs arguments (par exemple `pow(x, y)`), les variables locales et globales, ainsi que les sigils `@`, `&` et `!`.
+
+> Pratique pour les nouveaux venus, ou chaque fois qu'une expression s'exprime plus naturellement en notation infixe qu'en RPN.
+
+```
+500 -> 'X'
+3.14 -> 'Y'
+"5 * X + (7 + sin(Y))" calc ?
+# Place 2507.0015926529068 sur la pile
+
+"pow(2, 10)" calc ?
+# Place 1024 sur la pile
+
+"sin(PI / 3)" calc ?
+# Place 0.8660254037844387 sur la pile
+```
+
+***
+
 ### `console.locate`
 
 Demande à l'hôte du runtime de positionner le curseur aux coordonnées passées en paramètre.
