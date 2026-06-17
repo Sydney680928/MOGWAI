@@ -151,7 +151,7 @@ Syntax highlighting, autocompletion, runtime execution, step-by-step debugging, 
 - **License:** Proprietary (free to use)
 - **Marketplace:** [mogwai.mogwai-language](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language)
 - **Documentation:** [MOGWAI_VSCODE.md](docs/EN/MOGWAI_VSCODE.md)
-- **Status:** Available — v1.0.3
+- **Status:** Available — v1.3.0
 
 ### MOGWAI STUDIO (in development)
 
