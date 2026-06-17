@@ -1,0 +1,612 @@
+
+# MOGWAI SNAKE GAME
+# TUI GAME
+# USE MOGWAI RUNTIME 8.11+
+# © 2026 - Stéphane SIBUE
+
+mogwai.reset
+
+true mogwai.strict
+
+'black' console.setBackgroundColor
+'white' console.setForegroundColor
+
+console.clear
+
+"MOGWAI SNAKE" ?
+"Developed by Stéphane SIBUE - © 2026" ?
+" " ?
+
+# The host must have the 'TERMINAL' skill
+
+if ('TERMINAL' hasSkill not) then
+{
+    "Unable to run the game." ?
+    "The host must have the 'TERMINAL' skill" ?
+    " " ?
+
+    mogwai.exit
+}
+
+# The runtime must be at least version 8.11
+
+if (mogwai.info->version: "8.11" ver>= not) then
+{
+    "Unable to run the game." ?
+    "The MOGWAI runtime must be at least version 8.11" ?
+    " " ?
+
+    mogwai.exit
+}
+
+# Store the console size for the entire game session
+
+console.width                               => '$WIDTH'
+console.height                              => '$HEIGHT'
+
+if ($WIDTH 100 < $HEIGHT 30 < or) then
+{
+    " " ?
+    "The terminal window is too small." ?
+    "Please resize it (min 100x30) and restart the game." ?
+    " " ?
+
+    mogwai.exit
+}
+
+"Starting game..." ? 1000 wait
+
+37                                          => '$KEY_LEFT'
+38                                          => '$KEY_UP'
+39                                          => '$KEY_RIGHT'
+40                                          => '$KEY_DOWN'
+
+'cyan'                                      => '$SNAKE_COLOR'
+'white'                                     => '$BORDER_COLOR'
+'red'                                       => '$PRIZE_COLOR'
+'green'                                     => '$PITFALL_COLOR'
+'blue'                                      => '$SCORE_COLOR'
+'magenta'                                   => '$HIGH_SCORE_COLOR'
+'green'                                     => '$HEALTH_LEVEL_COLOR'
+
+0                                           => '$HIGH_SCORE'
+10                                          => '$HEALTH_LEVEL_MAX'
+
+$WIDTH $HEIGHT * 100 / ->int                => '$COEF_SCORE'
+
+("1" "2" "3" "4" "5" "6" "7" "8" "9")       => '$PRIZES'
+0                                           => '$PRIZE_VALUE'
+0                                           => '$PX'
+0                                           => '$PY'
+
+0                                           => '$SCORE'
+$HEALTH_LEVEL_MAX                           => '$HEALTH_LEVEL'
+
+D:00                                        => '$SCREEN'
+
+0                                           => '$SX'
+0                                           => '$SY'
+0                                           => '$TX'
+0                                           => '$TY'
+
+# Direction constants
+# 1 = Up    $TO_UP
+# 2 = Right $TO_RIGHT
+# 3 = Down  $TO_DOWN
+# 4 = Left  $TO_LEFT
+
+1                                           => '$TO_UP'
+2                                           => '$TO_RIGHT'
+3                                           => '$TO_DOWN'
+4                                           => '$TO_LEFT'
+
+0                                           => '$CURDIR'
+( )                                         => '$HEADING'
+0                                           => '$WAITING_LOOP'
+
+timer 'HEALTH_TIMER' every 2000 do
+{
+    'HEALTH_CHANGE_FLAG' flag.set
+}
+
+to 'MOGWAI.stop' do
+{
+    console.input
+}
+
+to 'showStartPanel' with [message: .string duration: .number] do
+{
+    $WIDTH message size - 2 / ->int => 'x'
+    $HEIGHT 2 / ->int => 'y'
+
+    " " message size str.repeat => 'v'
+
+    'red' console.setBackgroundColor
+    'white' console.setForegroundColor
+
+    x y console.locate
+    message ??
+
+    x y 1 - console.locate v ??
+    x y 1 + console.locate v ??
+
+    duration wait
+
+    'black' console.setBackgroundColor
+    
+    x y console.locate
+    v ??
+
+    x y 1 - console.locate v ??
+    x y 1 + console.locate v ??
+}
+
+to 'waitForYesOrNoChoice' with [message: .string] do
+{
+    $WIDTH message size - 2 / ->int => 'x'
+    $HEIGHT 2 / ->int => 'y'
+
+    " " message size str.repeat => 'v' 
+
+    'red' console.setBackgroundColor
+    'white' console.setForegroundColor
+
+    x y console.locate
+    message ??
+
+    x y 1 - console.locate v ??
+    x y 1 + console.locate v ??
+
+    0 => 'k'
+
+    forever do
+    {
+        console.getInputKey -> 'k'  
+
+        if (k -1 !=) then 
+        { 
+           switch 
+           {
+                (k 89 ==) then { true break }
+
+                (k 78 ==) then { false break }
+           }
+        }
+    }
+
+    'black' console.setBackgroundColor
+    
+    x y console.locate
+    v ??
+
+    x y 1 - console.locate v ??
+    x y 1 + console.locate v ??
+}
+
+to 'setScreenValue' with [x: .number y: .number v: .number] do
+{
+    v &$SCREEN y $WIDTH * x + set
+}
+
+to 'getScreenValue' with [x: .number y: .number] do
+{
+    &$SCREEN y $WIDTH * x + get
+}
+
+to 'drawGameBorder' do
+{
+    $BORDER_COLOR console.setForegroundColor
+
+    "┌"  "─" $WIDTH 2 - str.repeat + "┐" + => 'h1'
+
+    "│" " " $WIDTH 2 - str.repeat  + "│" + => 'h2'
+
+    "└" "─" $WIDTH 2 - str.repeat + "┘" + => 'h3'
+
+    0 0 console.locate h1 ??
+    
+    0 $HEIGHT 1 - console.locate h3 ??
+
+    1 $HEIGHT 2 - for 'y' do { 0 y console.locate h2 ?? }
+}
+
+to 'drawSnakeHead' do
+{
+    $SX $SY console.locate
+    $SNAKE_COLOR console.setForegroundColor
+    "█" ??
+
+    $SX $SY 1 setScreenValue
+}
+
+to 'hideSnakeTail' do
+{    
+    $TX $TY console.locate
+    " " ??
+
+    $TX $TY 0 setScreenValue
+}
+
+to 'gameOver' do
+{
+    # Stop the health timer
+
+    'HEALTH_TIMER' timer.stop
+
+    # Display the health level so it is up to date
+
+    displayHealthLevel
+
+    # Display GAME OVER
+
+    "    GAME OVER !   " 2000 showStartPanel
+
+    # Ask if the player wants a new game
+
+    if (" NEW GAME (Y/N) ? " waitForYesOrNoChoice) then
+    {
+        # Restart the game
+
+        post { startGame }
+    }
+    else
+    {
+        # The player does not want to play again, exit
+
+        mogwai.exit
+    }
+}
+
+to 'displayScore' do
+{
+    "" => 's'
+
+    $SCORE_COLOR console.setForegroundColor
+    20 0 console.locate
+    $SCORE "00000" ->format -> 's'
+    " SCORE {! s} " eval ?
+
+    $HIGH_SCORE_COLOR console.setForegroundColor
+    36 0 console.locate
+    $HIGH_SCORE "00000" ->format -> 's'
+    " HIGH SCORE {! s} " eval ?
+}
+
+to 'displayHealthLevel' do 
+{
+    $HEALTH_LEVEL_COLOR console.setForegroundColor
+    57 0 console.locate
+    " HEALTH " ??
+    "▓" $HEALTH_LEVEL str.repeat ??
+    'red' console.setForegroundColor
+    "░" $HEALTH_LEVEL_MAX $HEALTH_LEVEL - str.repeat ??
+    " " ??
+}
+
+to 'startGame' do
+{
+    0                                           -> '$PRIZE_VALUE'
+    0                                           -> '$PX'
+    0                                           -> '$PY'
+
+    0                                           -> '$SCORE'
+    $HEALTH_LEVEL_MAX                           -> '$HEALTH_LEVEL'
+
+    'HEALTH_CHANGE_FLAG' flag.clear
+
+    # Draw the game border
+
+    drawGameBorder
+
+    # Display the game title
+
+    'cyan' console.setForegroundColor
+    3 0 console.locate " MOGWAI SNAKE " ??
+
+    # Display the score at zero
+
+    displayScore
+
+    # Create a buffer representing which screen positions are occupied
+
+    $WIDTH $HEIGHT * => 's' 
+    s repeat { 0 } 
+    s ->data -> '$SCREEN'
+
+    # Compute the snake's starting coordinates
+    # $SX and $SY are the head coordinates
+
+    $WIDTH 2 / ->int  -> '$SX'
+    $HEIGHT 2 / ->int -> '$SY'
+
+    # $TX and $TY are the tail coordinates
+    # At the start, the tail has the same coordinates as the head
+
+    $SX -> '$TX'
+    $SY -> '$TY'
+
+    # Border cells are forbidden
+
+    $WIDTH 1 - => 'w'
+    $HEIGHT 1 - => 'h'
+
+    0 w for 'x' do
+    {
+        x 0 2 setScreenValue
+        x h 2 setScreenValue
+    }
+
+    1 h 1 - for 'y' do
+    {
+        0 y 2 setScreenValue
+        w y 2 setScreenValue
+    }
+
+    # Initial snake direction is left
+
+    $TO_LEFT -> '$CURDIR'
+
+    # Direction list for the tail, initialized with the starting direction
+
+    (! $CURDIR) -> '$HEADING'
+
+    # Number of wait cycles before moving the tail
+
+    10 -> '$WAITING_LOOP'
+
+    # Place traps on the play field
+    # At most 10 cells away from the center
+
+    $WIDTH 2 / ->int => 'cx'
+    $HEIGHT 2 / ->int => 'cy'
+
+    $PITFALL_COLOR console.setForegroundColor
+
+    30 repeat
+    {
+        forever do
+        {
+            rand $WIDTH 1 - * ->int -> 'x'
+
+            if (x cx 5 - < x cx 5 + > or) then
+            {
+                rand $HEIGHT 1 - * ->int -> 'y'
+
+                if (y cy 5 - < y cy 5 + > or) then
+                {
+                    if (x y getScreenValue 0 ==) then
+                    {
+                        x y 8 setScreenValue
+
+                        x y console.locate
+                        "■" ??
+
+                        break
+                    }
+                }
+            }
+        }
+    }
+
+    # TODO: Enlever après vidéo
+
+    console.input drop
+
+    # Countdown before start
+
+    3 1 for 'i' step -1 do
+    {
+        "  STARTING GAME... {! i}  " eval 1000 showStartPanel
+    }
+
+    # Initial snake rendering
+
+    drawSnakeHead
+
+    # Start the health timer
+
+    'HEALTH_TIMER' timer.start
+
+    # Boucle du jeu
+
+    0 => 'k'
+    0 => 'heading'
+    0 => 'oldir'
+
+    forever do
+    {
+        # If the health level must decrease, do it now
+
+        if ('HEALTH_CHANGE_FLAG' flag.isSet) then
+        {
+            'HEALTH_CHANGE_FLAG' flag.clear
+            '$HEALTH_LEVEL' --
+
+            # If the health level drops below 1, game over
+
+            if ($HEALTH_LEVEL 1 <) then 
+            { 
+                gameOver
+            }
+        }
+
+        # Display the health level
+
+        displayHealthLevel
+
+        # Compute the new head coordinates
+
+        switch 
+        {
+            ($CURDIR $TO_UP ==) then {'$SY' --}
+
+            ($CURDIR $TO_RIGHT ==) then {'$SX' ++}
+
+            ($CURDIR $TO_DOWN ==) then {'$SY' ++}
+
+            ($CURDIR $TO_LEFT ==) then {'$SX' --}
+        }
+
+        # If the head hits the body, game over!
+
+        if ($SX $SY getScreenValue 0 >) then { gameOver }
+
+        # Render the snake
+
+        drawSnakeHead
+
+        50 wait
+
+        if ($PRIZE_VALUE 0 >) then
+        {
+            # A prize exists
+
+            if ($SX $PX == $SY $PY == and) then
+            {
+                # The head is on the current prize — the snake must grow by prize value × 2
+
+                $PRIZE_VALUE 2 * -> '$WAITING_LOOP'
+
+                # Increase the score
+
+                $PRIZE_VALUE $COEF_SCORE * ->+ '$SCORE'
+
+                # Update high score if beaten
+
+                if ($HIGH_SCORE $SCORE <) then {$SCORE -> '$HIGH_SCORE'}
+
+                # Display the score
+
+                displayScore
+
+                # Reset health to max
+
+                'HEALTH_TIMER' timer.stop
+                $HEALTH_LEVEL_MAX -> '$HEALTH_LEVEL'
+                'HEALTH_CHANGE_FLAG' flag.clear
+                'HEALTH_TIMER' timer.start
+
+                # Display the health level
+
+                displayHealthLevel
+
+                # Consume the prize
+
+                0 -> '$PRIZE_VALUE'
+            }
+        }
+
+        # If a key was pressed, handle a possible direction change
+
+        console.getInputKey -> 'k'
+
+        if (k -1 !=) then
+        {
+            $CURDIR -> 'oldir'
+
+            switch 
+            {
+                (k $KEY_UP ==) then {$TO_UP -> '$CURDIR'}
+
+                (k $KEY_RIGHT ==) then {$TO_RIGHT -> '$CURDIR'}
+
+                (k $KEY_DOWN ==) then {$TO_DOWN -> '$CURDIR'}
+
+                (k $KEY_LEFT ==) then {$TO_LEFT -> '$CURDIR'}
+            }
+
+            if ($CURDIR oldir !=) then
+            {
+                # Direction changed
+                # If the head moves in the opposite direction it hits its own body — game over!
+
+                switch
+                {
+                    ($CURDIR $TO_UP == oldir $TO_DOWN == and) then { gameOver}
+
+                    ($CURDIR $TO_DOWN == oldir $TO_UP == and) then { gameOver}
+
+                    ($CURDIR $TO_LEFT == oldir $TO_RIGHT == and) then { gameOver }
+
+                    ($CURDIR $TO_RIGHT == oldir $TO_LEFT == and) then { gameOver }
+                }
+            }
+        }
+
+        # Store the current direction
+
+        $HEADING $CURDIR + -> '$HEADING'
+
+        # Decrement the wait counter used to grow the snake
+
+        '$WAITING_LOOP' --
+
+        # If the wait is over, move the tail
+
+        if ($WAITING_LOOP 0 <=) then
+        {
+            # Snake does not grow this cycle
+
+            1 -> '$WAITING_LOOP' 
+
+            # Hide the tail
+
+            hideSnakeTail
+
+            # Retrieve the oldest direction
+
+            $HEADING first -> 'heading'
+
+            # Remove it from the direction list
+
+            $HEADING butfirst -> '$HEADING'
+
+            # Compute the next tail coordinates based on that direction
+
+            switch 
+            {
+                (heading $TO_UP ==) then { '$TY' -- }
+
+                (heading $TO_RIGHT ==) then { '$TX' ++ }
+
+                (heading $TO_DOWN ==) then { '$TY' ++ }
+
+                (heading $TO_LEFT ==) then { '$TX' -- }
+            }
+
+            # Handle the prize only when the snake is no longer growing
+            # If no prize is active, generate a new one
+
+            if ($PRIZE_VALUE 0 ==) then
+            {
+                # Pick random coordinates for the prize
+                # Must not overlap the snake body
+
+                forever do
+                {
+                    rand $WIDTH 1 - * 1 + ->int     -> '$PX'
+                    rand $HEIGHT 1 - * 1 + ->int    -> '$PY'
+
+                    if ($PX $PY getScreenValue 0 ==) then { break }
+                }
+
+                # Assign a value to the prize
+
+                rand $PRIZES size * 1 + ->int -> '$PRIZE_VALUE'
+
+                # Display the prize
+
+                $PX $PY console.locate
+                $PRIZE_COLOR console.setForegroundColor
+                $PRIZES $PRIZE_VALUE 1 - get ??
+            }
+        }
+    }
+}
+
+after 500 do { startGame }
+
+forever do 
+{
+
+}
