@@ -399,7 +399,7 @@ Examples are available:
 
 See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
 
-**Latest Release:** [v8.9.1](https://github.com/Sydney680928/mogwai/releases/tag/v8.9.1)
+**Latest Release:** [v8.12.0](https://github.com/Sydney680928/mogwai/releases/tag/v8.12.0)
 
 ---
 
