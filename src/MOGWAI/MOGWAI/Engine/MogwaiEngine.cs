@@ -199,6 +199,8 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveBinaryDown(this, "down"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveTestBitFromBinaryNumber(this, "bit?"), MOGPrimitive.CATEGORY_MATHS);
 
+            RegisterPublicPrimitive(new PrimitiveCalc(this, "calc"));
+
             // Vars functions
 
             RegisterPublicPrimitive(new PrimitiveIncr(this, "++"));
