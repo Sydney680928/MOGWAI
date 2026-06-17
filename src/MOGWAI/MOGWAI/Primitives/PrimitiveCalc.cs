@@ -32,7 +32,7 @@ namespace MOGWAI.Primitives
 
             try
             {
-                rpnTokens = ShuntingYard.Convert(expression, Engine);
+                rpnTokens = ShuntingYard.Convert(expression, Engine, StartPos, EndPos);
             }
             catch (Exception ex)
             {

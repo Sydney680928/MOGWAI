@@ -43,7 +43,9 @@ namespace MOGWAI.Engine
         /// </summary>
         /// <param name="expression">Infix expression, e.g. "5 * X + (7 + sin(Y))"</param>
         /// <param name="engine">MOGWAI engine instance (for GetPrimitive)</param>
-        public static List<MOGObject> Convert(string expression, MogwaiEngine engine)
+        /// <param name="startPos">Start position for popping tokens</param>
+        /// <param name="endPos">End position for popping tokens</param>
+        public static List<MOGObject> Convert(string expression, MogwaiEngine engine, int startPos, int endPos)
         {
             var tokens = InfixLexer.Tokenize(expression);
             var output = new List<MOGObject>();    // RPN output queue
@@ -56,7 +58,7 @@ namespace MOGWAI.Engine
                 {
                     // ── Numeric literal → direct output
                     case InfixTokenKind.Number:
-                        output.Add(ParseNumber(engine, token.Value));
+                        output.Add(ParseNumber(engine, token.Value, startPos, endPos));
                         break;
 
                     // ── Word: function (followed by '(') → stack, otherwise → direct output
@@ -66,13 +68,13 @@ namespace MOGWAI.Engine
                         if (isFunction)
                             opStack.Push(token);             // will be popped at the matching ')'
                         else
-                            PushToOutput(output, token, engine); // PI, E, X, @$X…
+                            PushToOutput(output, token, engine, startPos, endPos); // PI, E, X, @$X…
                         break;
 
                     // ── Comma: end of argument, pop until '('
                     case InfixTokenKind.Comma:
                         while (opStack.Count > 0 && opStack.Peek().Kind != InfixTokenKind.ParenOpen)
-                            PushToOutput(output, opStack.Pop(), engine);
+                            PushToOutput(output, opStack.Pop(), engine, startPos, endPos);
                         if (opStack.Count == 0)
                             throw new InvalidOperationException("Missing parenthesis or misplaced comma.");
                         break;
@@ -86,7 +88,7 @@ namespace MOGWAI.Engine
                             if (top.Kind != InfixTokenKind.Operator) break;
                             var (topPrec, _) = Operators[top.Value];
                             if (rightAssoc ? topPrec > prec : topPrec >= prec)
-                                PushToOutput(output, opStack.Pop(), engine);
+                                PushToOutput(output, opStack.Pop(), engine, startPos, endPos);
                             else
                                 break;
                         }
@@ -101,14 +103,14 @@ namespace MOGWAI.Engine
                     // ── Closing parenthesis
                     case InfixTokenKind.ParenClose:
                         while (opStack.Count > 0 && opStack.Peek().Kind != InfixTokenKind.ParenOpen)
-                            PushToOutput(output, opStack.Pop(), engine);
+                            PushToOutput(output, opStack.Pop(), engine, startPos, endPos);
                         if (opStack.Count == 0)
                             throw new InvalidOperationException("Closing parenthesis without matching opening parenthesis.");
                         opStack.Pop(); // discard '('
 
                         // If a function is on top → pop it to output
                         if (opStack.Count > 0 && opStack.Peek().Kind == InfixTokenKind.Word)
-                            PushToOutput(output, opStack.Pop(), engine);
+                            PushToOutput(output, opStack.Pop(), engine, startPos, endPos);
                         break;
                 }
             }
@@ -117,9 +119,11 @@ namespace MOGWAI.Engine
             while (opStack.Count > 0)
             {
                 var top = opStack.Pop();
+                
                 if (top.Kind == InfixTokenKind.ParenOpen)
                     throw new InvalidOperationException("Opening parenthesis without matching closing parenthesis.");
-                PushToOutput(output, top, engine);
+               
+                PushToOutput(output, top, engine, startPos, endPos);
             }
 
             return output;
@@ -132,17 +136,23 @@ namespace MOGWAI.Engine
         /// Rule: first check with the engine whether it is a primitive.
         /// If yes → MOGPrimitive (copy). Otherwise → MOGVar (@), MOGRef (&), or MOGWord.
         /// </summary>
-        private static void PushToOutput(List<MOGObject> output, InfixToken token, MogwaiEngine engine)
+        private static void PushToOutput(List<MOGObject> output, InfixToken token, MogwaiEngine engine, int startPos, int endPos)
         {
             // Standard operator: +, -, *, /
             if (token.Kind == InfixTokenKind.Operator)
             {
                 var prim = engine.GetPrimitive(token.Value, true);
+                
                 if (prim != null)
+                {
+                    prim.PauseAllowed = false;
                     output.Add(prim);
+                }
                 else
-                    throw new InvalidOperationException(
-                        $"Operator '{token.Value}' not found in the MOGWAI engine.");
+                {
+                    throw new InvalidOperationException($"Operator '{token.Value}' not found in the MOGWAI engine.");
+                }
+
                 return;
             }
 
@@ -152,6 +162,7 @@ namespace MOGWAI.Engine
                 var prim = engine.GetPrimitive(token.Value, true);
                 if (prim != null)
                 {
+                    prim.PauseAllowed = false;
                     output.Add(prim); // Primitive: sin, cos, PI, E, pow…
                     return;
                 }
@@ -161,15 +172,29 @@ namespace MOGWAI.Engine
                 string name = autoEval ? token.Value.Substring(1) : token.Value;
 
                 MOGObject obj;
-                if (name.StartsWith('@'))
-                    obj = new MOGVar(engine, name.Substring(1)); // @X→X, @$X→$X
-                else if (name.StartsWith('&'))
-                    obj = new MOGRef(engine, name.Substring(1)); // &X→X, &$X→$X
-                else
-                    obj = new MOGWord(engine, name);             // X, $X, free word…
 
-                if (autoEval) obj.AutoEval = true;
+                if (name.StartsWith('@'))
+                {
+                    obj = new MOGVar(engine, name.Substring(1)); // @X→X, @$X→$X
+                }
+                else if (name.StartsWith('&'))
+                {
+                    obj = new MOGRef(engine, name.Substring(1)); // &X→X, &$X→$X
+                }
+                else
+                {
+                    obj = new MOGWord(engine, name);             // X, $X, free word… 
+                }
+
+                obj.PauseAllowed = false;
+                obj.StartPos = startPos;
+                obj.EndPos = endPos;
+                
+                if (autoEval) 
+                    obj.AutoEval = true;
+
                 output.Add(obj);
+                
                 return;
             }
 
@@ -179,10 +204,19 @@ namespace MOGWAI.Engine
         /// <summary>
         /// Parses a numeric literal into a <see cref="MOGObject"/>.
         /// </summary>
-        private static MOGObject ParseNumber(MogwaiEngine engine, string value)
+        private static MOGObject ParseNumber(MogwaiEngine engine, string value, int startPos, int endPos)
         {
             if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out double d))
-                return new MOGNumber(engine, d);
+            {
+                var n = new MOGNumber(engine, d);
+                
+                n.StartPos = startPos;
+                n.EndPos = endPos;
+                n.PauseAllowed = false;
+                
+                return n;
+            }
+
             throw new InvalidOperationException($"Cannot parse number '{value}'.");
         }
     }
