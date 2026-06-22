@@ -62,9 +62,6 @@ task 'T1' do
         # Passive wait: avoids consuming CPU unnecessarily
         200 wait
     }
-
-    # Set the initial parameter as the task result
-    message  task.setResult
 }
 
 task 'T1' start with empty

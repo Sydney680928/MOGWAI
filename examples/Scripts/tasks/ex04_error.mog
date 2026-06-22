@@ -80,7 +80,7 @@ task 'T2' do
 
 task 'T1' start with empty
 
-taxk 'T2' start with empty
+task 'T2' start with empty
 
 ('T1' 'T2') task.join
 
