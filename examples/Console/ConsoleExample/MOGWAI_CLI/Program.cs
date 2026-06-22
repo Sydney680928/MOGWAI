@@ -15,6 +15,7 @@
 using MOGWAI.Engine;
 using MOGWAI_CLI;
 using System.Globalization;
+using System.Reflection;
 
 CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-US");
 
@@ -70,7 +71,7 @@ Console.CancelKeyPress += (_, e) =>
     }
 };
 
-Console.WriteLine("Type 'edit' to open the code editor, 'studio' to start network communication, or 'bye' to exit.");
+Console.WriteLine("Type 'help' for usage instructions.");
 Console.WriteLine();
 
 FileAssociationHelper.EnsureFileAssociation();
@@ -154,39 +155,73 @@ while (true)
         } while (editor.PendingRunCode != null);
 
         // PendingRunCode == null → l'utilisateur a quitté l'éditeur (Ctrl+Q / Exit)
-
-        continue;
     }
     else if (cmd == "STUDIO")
     {
         await engine.StartNetworkCommunication();
 
-        while (true)
+        while (engine.IsSocketServerRunning)
             await Task.Delay(250);
-    }
-
-    try
-    {
-        var task = engine.RunAsync(input, true);
-
-        while (task.Status != TaskStatus.RanToCompletion)
-        {
-            if (Console.KeyAvailable)
-            {
-                var k = Console.ReadKey(true);
-
-                if (k.Key == ConsoleKey.F10)
-                    engine.DebugFireNextStepSignal();
-                else if (k.Key == ConsoleKey.F5)
-                    engine.DebugFireResumeSignal();
-            }
-        }
 
         Console.WriteLine();
-        Console.WriteLine(task.Result);
+        Console.WriteLine("Type 'help' for usage instructions.");
+        Console.WriteLine();
     }
-    catch (Exception ex)
+    else if (cmd == "HELP")
     {
-        Console.WriteLine(ex.Message);
+        Console.WriteLine();
+        Console.WriteLine("MOGWAI CLI - Help");
+        Console.WriteLine();
+        Console.WriteLine("Usage:");
+        Console.WriteLine("  mogwai_cli <script.mog>  Run a script from a file.");
+        Console.WriteLine();
+        Console.WriteLine("Commands (in interactive mode):");
+        Console.WriteLine("  edit                    Open the TUI code editor.");
+        Console.WriteLine("  studio                  Start network communication with MOGWAI Studio or VS Code extension.");
+        Console.WriteLine("  <file.mog> run          Run script <file.mog>");
+        Console.WriteLine("  about                   Show information about MOGWAI_CLI.");
+        Console.WriteLine("  help                    Show this help informations.");
+        Console.WriteLine("  bye                     Exit the application.");
+        Console.WriteLine();
+    }
+    else if (cmd == "ABOUT")
+    {
+        var appVersion = Assembly.GetExecutingAssembly()
+          .GetName()
+          .Version?.ToString(3) ?? "0.1.0";
+
+        var mogwaiVersion = MOGWAI.Engine.MogwaiEngine.RuntimeVersion.ToString(4);
+
+        Console.WriteLine();
+        Console.WriteLine($"MOGWAI_CLI v{appVersion}");
+        Console.WriteLine($"Built on MOGWAI v{mogwaiVersion}");
+        Console.WriteLine();
+    }
+    else
+    {
+        try
+        {
+            var task = engine.RunAsync(input, true);
+
+            while (task.Status != TaskStatus.RanToCompletion)
+            {
+                if (Console.KeyAvailable)
+                {
+                    var k = Console.ReadKey(true);
+
+                    if (k.Key == ConsoleKey.F10)
+                        engine.DebugFireNextStepSignal();
+                    else if (k.Key == ConsoleKey.F5)
+                        engine.DebugFireResumeSignal();
+                }
+            }
+
+            Console.WriteLine();
+            Console.WriteLine(task.Result);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
     }
 }
