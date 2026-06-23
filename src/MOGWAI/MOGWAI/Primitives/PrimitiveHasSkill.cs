@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveHasSkill : PrimitiveParamsName
     {
+        public override Version Birth => new(8, 8, 0);
+
         public PrimitiveHasSkill(MogwaiEngine engine, string name) : base(engine, name)
         {
 

@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveMathCosh : PrimitiveParamsNumber
     {
+        public override Version Birth => new(8, 11, 0);
+
         public PrimitiveMathCosh(MogwaiEngine engine, string name) : base(engine, name)
         {
 

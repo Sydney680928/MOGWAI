@@ -20,6 +20,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveStrRepeat : MOGPrimitive
     {
+        public override Version Birth => new(8, 11, 0);
+
         public PrimitiveStrRepeat(MogwaiEngine engine, string name) : base(engine, name)
         {
 

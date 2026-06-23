@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitivePathSetHomeDirectory : PrimitiveParamsString
     {
+        public override Version Birth => new(8, 8, 0);
+
         public PrimitivePathSetHomeDirectory(MogwaiEngine engine, string name) : base(engine, name)
         {
 

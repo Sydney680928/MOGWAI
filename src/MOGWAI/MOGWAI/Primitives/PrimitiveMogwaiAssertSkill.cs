@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveMogwaiAssertSkill : MOGPrimitive
     {
+        public override Version Birth => new(8, 8, 0);
+
         public PrimitiveMogwaiAssertSkill(MogwaiEngine engine, string name) : base(engine, name)
         {
 

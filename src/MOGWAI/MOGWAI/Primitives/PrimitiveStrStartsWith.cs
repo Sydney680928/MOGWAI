@@ -10,6 +10,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveStrStartsWith : MOGPrimitive
     {
+        public override Version Birth => new(8, 11, 0);
+
         public PrimitiveStrStartsWith(MogwaiEngine engine, string name) : base(engine, name)
         {
 

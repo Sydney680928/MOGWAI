@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveMathLog10 : PrimitiveParamsNumber
     {
+        public override Version Birth => new(8, 10, 0);
+
         public PrimitiveMathLog10(MogwaiEngine engine, string name) : base(engine, name)
         {
 

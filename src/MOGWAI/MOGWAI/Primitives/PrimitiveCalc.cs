@@ -10,6 +10,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveCalc : PrimitiveParamsString
     {
+        public override Version Birth => new(8,12,0);
+        
         public PrimitiveCalc(MogwaiEngine engine, string name) : base(engine, name)
         {
 

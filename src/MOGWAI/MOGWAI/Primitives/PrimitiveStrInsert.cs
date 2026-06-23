@@ -20,6 +20,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveStrInsert : MOGPrimitive
     {
+        public override Version Birth => new(8, 11, 0);
+
         public PrimitiveStrInsert(MogwaiEngine engine, string name) : base(engine, name)
         {
 

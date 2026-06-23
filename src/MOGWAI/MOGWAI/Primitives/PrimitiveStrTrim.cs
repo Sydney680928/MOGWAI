@@ -10,6 +10,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveStrTrim : PrimitiveParamsString
     {
+        public override Version Birth => new(8, 11, 0);
+
         public PrimitiveStrTrim(MogwaiEngine engine, string name) : base(engine, name)
         {
 

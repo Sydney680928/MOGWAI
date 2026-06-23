@@ -10,6 +10,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveStrIndexOf : MOGPrimitive
     {
+        public override Version Birth => new(8, 11, 0);
+
         public PrimitiveStrIndexOf(MogwaiEngine engine, string name) : base(engine, name)
         {
 

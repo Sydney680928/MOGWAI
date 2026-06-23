@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveTaskStartWithoutParameter : MOGPrimitive
     {
+        public override Version Birth => new(8, 9, 1);
+
         public PrimitiveTaskStartWithoutParameter(MogwaiEngine engine, string name) : base(engine, name)
         {
 

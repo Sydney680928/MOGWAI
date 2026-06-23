@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveToUrlDecode : PrimitiveParamsString
     {
+        public override Version Birth => new(8, 11, 0);
+
         public PrimitiveToUrlDecode(MogwaiEngine engine, string name) : base(engine, name)
         {
 

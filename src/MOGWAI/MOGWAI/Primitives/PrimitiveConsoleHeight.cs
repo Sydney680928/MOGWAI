@@ -18,6 +18,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveConsoleHeight : MOGPrimitive
     {
+        public override Version Birth => new(8, 8, 0);
+
         public PrimitiveConsoleHeight(MogwaiEngine engine, string name) : base(engine, name)
         {
 

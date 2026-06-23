@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveMathExp : PrimitiveParamsNumber
     {
+        public override Version Birth => new(8, 10, 0);
+
         public PrimitiveMathExp(MogwaiEngine engine, string name) : base(engine, name)
         {
 
