@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveMathSetRandomSeed : MOGPrimitive
     {
+        public override Version Birth => new Version(8, 13, 0);
+
         public PrimitiveMathSetRandomSeed(MogwaiEngine engine, string name) : base(engine, name)
         {
 

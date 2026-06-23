@@ -717,6 +717,9 @@ namespace MOGWAI.Engine
         {
             if (_primitivesByName.TryGetValue(name, out var primitive))
             {
+                if (LastMaxPrimitiveBirth < primitive.Birth)
+                    LastMaxPrimitiveBirth = primitive.Birth;
+
                 if (duplicate)
                     return primitive.Duplicate();
 
@@ -730,6 +733,9 @@ namespace MOGWAI.Engine
         {
             if (_primitivesByType.TryGetValue(type, out var primitive))
             {
+                if (LastMaxPrimitiveBirth < primitive.Birth)
+                    LastMaxPrimitiveBirth = primitive.Birth;
+
                 if (duplicate)
                     return primitive.Duplicate();
 
@@ -854,6 +860,8 @@ namespace MOGWAI.Engine
 
         internal MogwaiExecutionContext? LastParserExecutionContext { get; set; }
 
+        internal Version LastMaxPrimitiveBirth { get; set; } = new Version(8, 0, 0);
+
         internal bool IsSocketServerServiceRunning => _socketServerService != null && _socketServerService.IsRunning;
 
         internal Dictionary<string, MOGClass> Classes { get; } = new();
@@ -953,6 +961,8 @@ namespace MOGWAI.Engine
                 {
                     try
                     {
+                        LastMaxPrimitiveBirth = new Version(8, 0, 0);
+
                         program = new MOGFunction(this, code, 0, null);
 
                         _lastProgram = program;

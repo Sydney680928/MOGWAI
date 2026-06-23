@@ -36,6 +36,8 @@ namespace MOGWAI
 
         public string Category { get; set; } = CATEGORY_GENERAL;
 
+        public virtual Version Birth { get; } = new Version(8,0,0);
+
         public MOGPrimitive(MogwaiEngine engine, string name) : base(engine)
         {
             Engine = engine;
