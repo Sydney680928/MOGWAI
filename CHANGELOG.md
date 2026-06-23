@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`setRandomSeed` primitive** — sets the seed of the random number generator, making subsequent random operations deterministic and reproducible. Takes an integer seed. Passing `null` or `empty` clears the seed, returning the generator to non-deterministic (time-based) behavior.
+
+  ```
+  234 setRandomSeed   # subsequent random calls become deterministic
+  null setRandomSeed  # back to a non-deterministic seed
+  empty setRandomSeed # same effect as null
+  ```
+
 ### Changed
 
 ### Fixed

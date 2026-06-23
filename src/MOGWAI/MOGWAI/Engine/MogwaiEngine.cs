@@ -174,6 +174,7 @@ namespace MOGWAI.Engine
 
             RegisterPublicPrimitive(new PrimitiveMathPI(this, "PI"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathRand(this, "rand"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveMathSetRandomSeed(this, "setRandomSeed"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathAbs(this, "abs"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathSqrt(this, "sqrt"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveMathLog(this, "log"), MOGPrimitive.CATEGORY_MATHS);
@@ -2882,6 +2883,10 @@ namespace MOGWAI.Engine
 
         internal double GetNexRandomValue() => _random.NextDouble();
 
+        internal void SetRandomSeed(int seed) => _random = new Random(seed);
+
+        internal void SetRandomWithDefaultSeed() => _random = new Random();
+
         internal bool IsValidName(string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -3378,6 +3383,10 @@ namespace MOGWAI.Engine
                 // Strict mode OFF
 
                 StrictMode = false;
+
+                // Random seed with default seed
+
+                SetRandomWithDefaultSeed();
 
                 // Close all openin files
 

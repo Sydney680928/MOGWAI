@@ -11,16 +11,16 @@
 		<OutputType>Library</OutputType>
 
 		<!-- Versioning -->
-		<Version>8.12.0</Version>
-		<FileVersion>8.12.0.0</FileVersion>
-		<AssemblyVersion>8.12.0.0</AssemblyVersion>
+		<Version>8.13.0</Version>
+		<FileVersion>8.13.0.0</FileVersion>
+		<AssemblyVersion>8.13.0.0</AssemblyVersion>
 
 		<!-- Métadonnées minimales pour le package local -->
 		<PackageId>MOGWAI</PackageId>
 		<Authors>Stéphane Sibué</Authors>
 		<Company>Stéphane Sibué</Company>
 		<Product>MOGWAI</Product>
-		<Description>MOGWAI - A modern RPN scripting language for industrial IoT automation.</Description>
+		<Description>MOGWAI - A modern RPN scripting language.</Description>
 
 		<!-- Copyright -->
 		<Copyright>Copyright © 2015-2026 Stéphane Sibué</Copyright>
