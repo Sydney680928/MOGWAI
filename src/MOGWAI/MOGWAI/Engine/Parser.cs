@@ -271,7 +271,7 @@ namespace MOGWAI.Engine
                     GetEnclosedItem(engine, '\'', '\'');
                     var name = _currentItem.ToString();
 
-                    if (name.Length == 0 || !engine.IsValidName(name))
+                    if (name.Length == 0 || !engine.IsValidName(name, false))
                     {
                         engine.LastParserStartErrorPosition = _pos;
                         engine.LastParserEndErrorPosition = _pos + _currentItem.Length + 1;

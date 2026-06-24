@@ -46,7 +46,7 @@ namespace MOGWAI.Primitives
             var name = Engine.StackPopName();
             var value = Engine.StackPop();
 
-            if (!Engine.IsValidName(name.Value))
+            if (!Engine.IsValidName(name.Value, true))
                 return Task.FromResult(EvalResult.Failure(Engine, Error.InvalidNameError, Name, name!.ToString()));
 
             return Task.FromResult(Engine.VarWrite(name.Value, value!));

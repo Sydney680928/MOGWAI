@@ -43,7 +43,7 @@ namespace MOGWAI.Primitives
             {
                 var n0 = Engine.StackPop() as MOGBaseString;
 
-                if (!Engine.IsValidName(n0!.Value))
+                if (!Engine.IsValidName(n0!.Value, false))
                     return Task.FromResult(EvalResult.Failure(Engine, Error.InvalidNameError, Name));
 
                 Engine.StackPushName(n0!.Value);

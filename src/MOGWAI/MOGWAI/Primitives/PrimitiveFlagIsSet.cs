@@ -33,7 +33,7 @@ namespace MOGWAI.Primitives
 
         public override Task<EvalResult> PerformOperation(MOGName name)
         {
-            if (Engine.IsValidName(name!.Value))
+            if (Engine.IsValidName(name!.Value, true))
             {
                 var v = Engine.FlagIsSet(name!.Value);
                 Engine.StackPushBoolean(v);
