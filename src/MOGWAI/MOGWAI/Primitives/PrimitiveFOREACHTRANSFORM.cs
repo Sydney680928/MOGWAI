@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveFOREACHTRANSFORM : MOGPrimitive
     {
+        public override Version Birth => new(8, 1, 0);
+
         public PrimitiveFOREACHTRANSFORM(MogwaiEngine engine, string name) : base(engine, name)
         {
 

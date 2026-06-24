@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveToFloatBE32 : PrimitiveParamsData
     {
+        public override Version Birth => new(8, 5, 0);
+
         public PrimitiveToFloatBE32(MogwaiEngine engine, string name) : base(engine, name)
         {
 

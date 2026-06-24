@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveToDataLE32 : PrimitiveParamsNumber
     {
+        public override Version Birth => new(8, 5, 0);
+
         public PrimitiveToDataLE32(MogwaiEngine engine, string name) : base(engine, name)
         {
 

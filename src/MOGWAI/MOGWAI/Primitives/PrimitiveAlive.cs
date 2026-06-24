@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveAlive : MOGPrimitive
     {
+        public override Version Birth => new(8, 7, 0);
+
         public PrimitiveAlive(MogwaiEngine engine, string name) : base(engine, name)
         {
 

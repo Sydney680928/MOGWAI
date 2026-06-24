@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveDEFCLASS : MOGPrimitive
     {
+        public override Version Birth => new(8, 6, 0);
+
         public PrimitiveDEFCLASS(MogwaiEngine engine, string name) : base(engine, name)
         {
 

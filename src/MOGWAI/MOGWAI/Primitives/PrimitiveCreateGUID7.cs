@@ -18,6 +18,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveCreateGUID7 : MOGPrimitive
     {
+        public override Version Birth => new(8, 7, 0);
+
         public PrimitiveCreateGUID7(MogwaiEngine engine, string name) : base(engine, name)
         {
 

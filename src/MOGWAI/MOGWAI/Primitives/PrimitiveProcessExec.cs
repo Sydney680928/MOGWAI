@@ -31,6 +31,8 @@ namespace MOGWAI.Primitives
     /// </summary>
     internal class PrimitiveProcessExec : PrimitiveParamsRecord
     {
+        public override Version Birth => new(8, 7, 0);
+
         public PrimitiveProcessExec(MogwaiEngine engine, string name) : base(engine, name)
         {
         }

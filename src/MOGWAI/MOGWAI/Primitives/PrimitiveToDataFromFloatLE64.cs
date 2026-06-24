@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveToDataFromFloatLE64 : PrimitiveParamsNumber
     {
+        public override Version Birth => new(8, 5, 0);
+
         public PrimitiveToDataFromFloatLE64(MogwaiEngine engine, string name) : base(engine, name)
         {
 

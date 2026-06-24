@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveTestBitFromBinaryNumber : MOGPrimitive
     {
+        public override Version Birth => new(8, 5, 0);
+
         public PrimitiveTestBitFromBinaryNumber(MogwaiEngine engine, string name) : base(engine, name)
         {
 

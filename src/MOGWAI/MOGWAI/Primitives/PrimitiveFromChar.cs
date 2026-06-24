@@ -21,6 +21,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveFromChar : PrimitiveParamsString
     {
+        public override Version Birth => new(8, 3, 0);
+
         public PrimitiveFromChar(MogwaiEngine engine, string name) : base(engine, name)
         {
 

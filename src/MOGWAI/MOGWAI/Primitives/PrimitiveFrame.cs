@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveFrame : PrimitiveParamsName
     {
+        public override Version Birth => new(8, 7, 0);
+
         public PrimitiveFrame(MogwaiEngine engine, string name) : base(engine, name)
         {
 

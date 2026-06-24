@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveMathNegate : PrimitiveParamsNumber
     {
+        public override Version Birth => new(8, 1, 0);
+
         public PrimitiveMathNegate(MogwaiEngine engine, string name) : base(engine, name)
         {
 

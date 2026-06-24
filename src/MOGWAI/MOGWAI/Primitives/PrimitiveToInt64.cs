@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveToInt64 : MOGPrimitive
     {
+        public override Version Birth => new(8, 5, 0);
+
         public PrimitiveToInt64(MogwaiEngine engine, string name) : base(engine, name)
         {
 

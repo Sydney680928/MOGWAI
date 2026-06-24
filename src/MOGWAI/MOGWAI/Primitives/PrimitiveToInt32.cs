@@ -20,6 +20,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveToInt32 : MOGPrimitive
     {
+        public override Version Birth => new(8, 5, 0);
+
         public PrimitiveToInt32(MogwaiEngine engine, string name) : base(engine, name)
         {
 

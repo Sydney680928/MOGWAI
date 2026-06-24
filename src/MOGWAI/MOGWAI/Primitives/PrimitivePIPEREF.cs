@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitivePIPEREF : MOGPrimitive
     {
+        public override Version Birth => new(8, 4, 0);
+
         public PrimitivePIPEREF(MogwaiEngine engine, string name) : base(engine, name)
         {
 
