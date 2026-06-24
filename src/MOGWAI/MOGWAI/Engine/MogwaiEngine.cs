@@ -430,6 +430,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveMogwaiStrict(this, "mogwai.strict"), MOGPrimitive.CATEGORY_RUNTIME);
             RegisterPublicPrimitive(new PrimitiveMogwaiAssert(this, "mogwai.assert"), MOGPrimitive.CATEGORY_RUNTIME);
             RegisterPublicPrimitive(new PrimitiveMogwaiAssertSkill(this, "mogwai.assertSkill"), MOGPrimitive.CATEGORY_RUNTIME);
+            RegisterPublicPrimitive(new PrimitiveMogwaiPrimitiveInfo(this, "mogwai.primitiveInfo"), MOGPrimitive.CATEGORY_RUNTIME);
 
             // Compare functions
 
