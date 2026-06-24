@@ -2908,11 +2908,13 @@ namespace MOGWAI.Engine
             if (!char.IsLetter(c1) && c1 != '_' && c1 != '$' && (c1 != '-' || c2 != '>'))
                 return false;
 
+            /*
             if (_primitivesByName.ContainsKey(name))
                 return false;
 
             if (_hostFunctions.Contains(name))
                 return false;
+            */
 
             var invalid = AllowExtendedNames ? _invalidCharsExtended : _invalidChars;
             return name.IndexOfAny(invalid) == -1;
