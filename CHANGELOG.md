@@ -17,7 +17,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   empty setRandomSeed # same effect as null
   ```
 
+- **`mogwai.primitiveInfo` primitive** — returns a record with information about a given primitive. Takes a `name` and pushes a record containing the primitive's `name:` and its `birth:` (the MOGWAI version it was introduced in, as a string). Raises **MW.22** (bad argument value) if `name` does not match a known primitive.
+
+  ```
+  'calc' mogwai.primitiveInfo ?   # → [name: 'calc' birth: "8.12.0"]
+  ```
+
 ### Changed
+
+- **`MOGPrimitive.Birth` property** — every `MOGPrimitive` now exposes a `Birth` property of type `Version`, recording the MOGWAI version in which it was introduced. Defaults to `8.0.0`. All existing primitives have been updated with their correct `Birth` value.
 
 ### Fixed
 
