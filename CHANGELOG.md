@@ -917,7 +917,7 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 **Stability Improvements**
 
 - Fixed race condition in timer cleanup for long-running scripts
-- Corrected timezone conversion edge cases in astronomical calculations
+- Corrected timezone conversion edge cases in date/time calculations
 - Fixed stack overflow in deeply nested function calls (now limited to safe depth)
 - Improved error handling in async primitives
 
@@ -937,14 +937,14 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 **v6.x - Production Hardening (Internal)**
 
-- Field deployment in astronomical clocks
+- Field deployment in production systems
 - Performance optimizations
 - Bug fixes from production use
 
 **v5.x - Initial Production Deployment (Internal)**
 
-- First deployment in astronomical clocks controlling street lighting
-- GPS integration for sunrise/sunset calculations
+- First production deployment in the field
+- GPS-based time and location integration
 - Proven in 24/7 operation
 
 **v1-4.x - Development and Prototyping (Internal)**
