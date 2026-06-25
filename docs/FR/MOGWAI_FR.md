@@ -1169,6 +1169,33 @@ Ce qui donnera : `"Le nom est DOE JOHN"`
 # This will display "DOE John is 50 years old"
 ```
 
+## Séquences d'échappement
+
+À l'intérieur d'une chaîne littérale, un antislash suivi de certains caractères est interprété comme une séquence d'échappement plutôt que comme deux caractères littéraux. Cela permet d'inclure directement dans une chaîne un guillemet, un antislash, ou un caractère non imprimable comme un retour à la ligne.
+
+| Séquence | Caractère              |
+|----------|------------------------|
+| `\"`     | Guillemet              |
+| `\\`     | Antislash              |
+| `\0`     | Caractère nul          |
+| `\a`     | Alerte (bip)           |
+| `\b`     | Retour arrière         |
+| `\f`     | Saut de page           |
+| `\n`     | Retour à la ligne      |
+| `\r`     | Retour chariot         |
+| `\t`     | Tabulation horizontale |
+| `\v`     | Tabulation verticale   |
+
+Les séquences d'échappement sont résolues de gauche à droite en une seule passe, ce qui garantit un traitement correct des antislashs consécutifs : `\\n` produit un antislash littéral suivi de la lettre `n`, et non un retour à la ligne.
+
+Une séquence d'échappement non reconnue (par exemple `\q`) lève **MW.22** (valeur d'argument invalide).
+
+```
+"Hello, \"World\" !" eval ?    # → "Hello, "World" !"
+"Line1\nLine2" eval ?          # → une chaîne contenant un retour à la ligne entre Line1 et Line2
+"C:\\Users\\test" eval ?       # → "C:\Users\test"
+```
+
 # FONCTIONS DE CONVERSION
 
 Pour convertir un objet en un autre (par exemple une chaîne de caractères en nombre ou vice versa), **MOGWAI** dispose de fonctions de conversion qui commencent ou se terminent par le symbole `->`. La position du symbole suit une **règle directionnelle** constante : en **préfixe**, il signifie *produire ce type* (ex. `->num`, `->data`, `->utf8`) ; en **suffixe**, il signifie *consommer ce type* (ex. `hex->`, `base64->`, `utf8->`). Cette règle s'applique à tout ce chapitre.

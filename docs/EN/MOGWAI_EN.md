@@ -1169,6 +1169,33 @@ Which will give: `"Le nom est DOE JOHN"`
 # This will display "DOE John is 50 years old"
 ```
 
+## Escape sequences
+
+Inside a string literal, a backslash followed by certain characters is interpreted as an escape sequence rather than two literal characters. This lets you embed a double quote, a backslash, or a non-printable character such as a newline directly in a string.
+
+| Sequence | Character        |
+|----------|-------------------|
+| `\"`     | Double quote      |
+| `\\`     | Backslash         |
+| `\0`     | Null              |
+| `\a`     | Alert (bell)      |
+| `\b`     | Backspace         |
+| `\f`     | Form feed         |
+| `\n`     | Newline           |
+| `\r`     | Carriage return   |
+| `\t`     | Horizontal tab    |
+| `\v`     | Vertical tab      |
+
+Escape sequences are resolved left to right in a single pass, so consecutive backslashes are handled correctly: `\\n` produces a literal backslash followed by the letter `n`, not a newline.
+
+An unrecognized escape sequence (for example `\q`) raises **MW.22** (bad argument value).
+
+```
+"Hello, \"World\" !" eval ?    # → "Hello, "World" !"
+"Line1\nLine2" eval ?          # → a string containing a newline between Line1 and Line2
+"C:\\Users\\test" eval ?       # → "C:\Users\test"
+```
+
 # CONVERSION FUNCTIONS
 
 To convert an object to another (for example a character string to a number or vice versa) **MOGWAI** has conversion functions that start or end with the `->` symbol. The position of the symbol follows a consistent **direction rule**: as a **prefix** it means *produce this type* (e.g. `->num`, `->data`, `->utf8`); as a **suffix** it means *consume this type* (e.g. `hex->`, `base64->`, `utf8->`). This rule holds throughout the chapter.

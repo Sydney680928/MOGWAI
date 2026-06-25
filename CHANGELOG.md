@@ -41,6 +41,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (1 10 2 5) sort ?    # → (1 2 5 10)
   ```
 
+- **Escape sequences in string literals** — string literals now support escape sequences, which were previously taken literally (a `\n` inside a string produced the two characters `\` and `n`, not a newline). Supported sequences:
+
+  | Sequence | Character |
+  |----------|-----------|
+  | `\"` | Double quote |
+  | `\\` | Backslash |
+  | `\0` | Null |
+  | `\a` | Alert (bell) |
+  | `\b` | Backspace |
+  | `\f` | Form feed |
+  | `\n` | Newline |
+  | `\r` | Carriage return |
+  | `\t` | Horizontal tab |
+  | `\v` | Vertical tab |
+
+  Escaping is resolved in a single left-to-right pass, so consecutive backslashes are handled correctly (`\\n` produces a literal backslash followed by `n`, not a newline). An unrecognized escape sequence (e.g. `\q`) raises **MW.22** (bad argument value).
+
+  ```
+  "Hello, \"World\" !" eval ?     # → "Hello, "World" !"
+  "Line1\nLine2" eval ?           # → "Line1
+                                  #    Line2"
+  "C:\\Users\\test" eval ?        # → "C:\Users\test"
+  ```
+
 ### Changed
 
 - **`MOGPrimitive.Birth` property** — every `MOGPrimitive` now exposes a `Birth` property of type `Version`, recording the MOGWAI version in which it was introduced. Defaults to `8.0.0`. All existing primitives have been updated with their correct `Birth` value.
