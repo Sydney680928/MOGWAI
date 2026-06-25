@@ -67,6 +67,17 @@ namespace MOGWAI.Objects
             // age = 57 (number)
             // "Hello {! name} you are {! age}" ---> "Hello Stéphane you are 57"
 
+            var r = UnescapeString(Engine, Value);    
+
+            if (r.result.IsError)
+            {
+                Engine.LastParserStartErrorPosition = StartPos;
+                Engine.LastParserEndErrorPosition = EndPos;
+                return r.result;
+            }
+
+            Value = r.unescaped ?? Value;
+
             var items = ParseStringFormat();
 
             if (items != null)
@@ -216,6 +227,87 @@ namespace MOGWAI.Objects
             }
 
             return items;
+        }
+
+        private static (EvalResult result, string? unescaped) UnescapeString(MogwaiEngine engine, string input)
+        {
+            if (input.IndexOf('\\') < 0)
+                return (EvalResult.NoError, input);
+
+            var sb = new StringBuilder(input.Length);
+            int i = 0;
+            int len = input.Length;
+
+            while (i < len)
+            {
+                char c = input[i];
+
+                if (c == '\\')
+                {
+                    if (i + 1 >= len)
+                    {
+                        // backslash en fin de string sans caractère suivant
+
+                        return (EvalResult.Failure(engine, Error.BadArgumentValueError, $"Unterminated escape sequence at position {i}"), null) ;
+                    }
+
+                    char next = input[i + 1];
+                    switch (next)
+                    {
+                        case 'r': 
+                            sb.Append('\r'); 
+                            break;
+                        
+                        case 'n': 
+                            sb.Append('\n'); 
+                            break;
+
+                        case 't': 
+                            sb.Append('\t'); 
+                            break;
+
+                        case 'b': 
+                            sb.Append('\b'); 
+                            break;
+
+                        case 'f': 
+                            sb.Append('\f'); 
+                            break;
+
+                        case 'v': 
+                            sb.Append('\v'); 
+                            break;
+
+                        case 'a': 
+                            sb.Append('\a'); 
+                            break;
+
+                        case '0': 
+                            sb.Append('\0'); 
+                            break;
+
+                        case '\\': 
+                            sb.Append('\\'); 
+                            break;
+
+                        case '"': 
+                            sb.Append('"'); 
+                            break;
+                        
+                        default:
+                            return (EvalResult.Failure(engine, Error.BadArgumentValueError, $"Unknown escape sequence '\\{next}' at position {i}"), null);            
+                    }
+
+                    i += 2; // on consomme \ ET le caractère échappé, jamais réexaminés
+                }
+                else
+                {
+                    sb.Append(c);
+                    i++;
+                }
+            }
+
+            return (EvalResult.NoError, sb.ToString());
         }
     }
 }
