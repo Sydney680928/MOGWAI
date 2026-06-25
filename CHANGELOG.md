@@ -23,6 +23,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   'calc' mogwai.primitiveInfo ?   # → [name: 'calc' birth: "8.12.0"]
   ```
 
+- **`insert` primitive** — inserts an element at a given position in a `list` or a `data`. Takes the value to insert, the target `list`/`data`, and a zero-based index; an index equal to the collection's size appends at the end. Also works on references (`&var`) to a `list` or `data` variable, mutating it in place.
+
+  For `list`, any value can be inserted. For `data`, the inserted value must be a byte (`0`–`255`); raises **MW.22** if it isn't. In both cases, raises **MW.22** if the index is out of range (negative or greater than the collection's size).
+
+  ```
+  "EEE" (1 2 3) 1 insert ?       # → (1 "EEE" 2 3)
+  0xAA D:FFFFFFFF 1 insert ?     # → D:FFAAFFFFFF
+
+  (1 2 3) -> 'L'
+  "EEE" &L 1 insert             # L is now (1 "EEE" 2 3)
+  ```
+
 ### Changed
 
 - **`MOGPrimitive.Birth` property** — every `MOGPrimitive` now exposes a `Birth` property of type `Version`, recording the MOGWAI version in which it was introduced. Defaults to `8.0.0`. All existing primitives have been updated with their correct `Birth` value.

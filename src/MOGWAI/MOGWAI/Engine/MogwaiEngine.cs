@@ -366,6 +366,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitivePurge(this, "purge"));
             RegisterPublicPrimitive(new PrimitiveGet(this, "get"));
             RegisterPublicPrimitive(new PrimitiveSet(this, "set"));
+            RegisterPublicPrimitive(new PrimitiveInsert(this, "insert"));
             RegisterPublicPrimitive(new PrimitiveKeys(this, "keys"));
             RegisterPublicPrimitive(new PrimitiveSize(this, "size"));
             RegisterPublicPrimitive(new PrimitiveLeft(this, "left"));

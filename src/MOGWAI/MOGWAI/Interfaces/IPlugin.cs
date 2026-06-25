@@ -32,6 +32,8 @@ namespace MOGWAI.Interfaces
 
         string Namespace { get; }
 
+        // Version MinimumRuntimeVersion { get; }
+
         Dictionary<string, Func<MogwaiEngine, string, Task<EvalResult>>> Keywords { get; }
 
         Task<bool> Initialize(MogwaiEngine engine);
