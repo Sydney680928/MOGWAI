@@ -1264,6 +1264,50 @@ The + function allows you to add an element to a list.
 
 # This instruction will place the list (10 20 30 (100 200)) on the stack
 ```
+
+## Inserting an element at a given position
+
+The `insert` function inserts an element at a given position in a `list` or a `data`. An index equal to the collection's size appends at the end. Raises **MW.22** if the index is out of range (negative or greater than the collection's size).
+
+**Signature:** `value collection index insert → collection`
+
+```
+"EEE" (1 2 3) 1 insert ?       # → (1 "EEE" 2 3)
+```
+
+For a `data`, the inserted value must be a byte (`0`–`255`); **MW.22** is raised otherwise.
+
+```
+0xAA D:FFFFFFFF 1 insert ?     # → D:FFAAFFFFFF
+```
+
+`insert` also works on a reference (`&var`) to a `list` or `data` variable, mutating it in place instead of returning a new collection:
+
+```
+(1 2 3) -> 'L'
+"EEE" &L 1 insert
+
+# L is now (1 "EEE" 2 3)
+```
+
+## Sorting a list
+
+The `sort` function sorts a list in ascending order. Sorting only occurs if all elements of the list share the same type, and that type is one of `.string`, `.number`, `.name`, `.key` or `.word`. If the list contains elements of mixed types, it is returned unchanged.
+
+**Signature:** `list sort → list`
+
+```
+(1 10 2 5) sort ?    # → (1 2 5 10)
+```
+
+`sort` also works on a reference (`&var`) to a list variable, sorting it in place:
+
+```
+(3 1 2) -> 'L'
+&L sort
+
+# L is now (1 2 3)
+```
  
 ## Retrieving the size (number of elements) of a list
 
@@ -4537,6 +4581,18 @@ The skills available in the current context are also accessible via the `skills:
 mogwai.info -> '$info'
 $info skills: get ?   # → ('APP_GIZMO' 'TUI')
 ```
+
+## Getting information about a primitive
+
+The `mogwai.primitiveInfo` function returns a record with information about a given primitive: its `name:` and its `birth:`, the MOGWAI version in which it was introduced (as a string). Raises **MW.22** (bad argument value) if `name` does not match a known primitive.
+
+**Signature:** `name mogwai.primitiveInfo → record`
+
+```
+'calc' mogwai.primitiveInfo ?   # → [name: 'calc' birth: "8.12.0"]
+```
+
+This is typically used to check whether a primitive is available before relying on it, or to build tooling (such as editor or Studio integrations) that needs to know which MOGWAI version introduced a given primitive.
 
 
 

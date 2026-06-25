@@ -1264,6 +1264,50 @@ La fonction `+` permet d'ajouter un élément à une liste.
 
 # This instruction will place the list (10 20 30 (100 200)) on the stack
 ```
+
+## Insérer un élément à une position donnée
+
+La fonction `insert` insère un élément à une position donnée dans une `list` ou un `data`. Un index égal à la taille de la collection insère en fin de collection. Lève **MW.22** si l'index est hors limites (négatif ou supérieur à la taille de la collection).
+
+**Signature :** `value collection index insert → collection`
+
+```
+"EEE" (1 2 3) 1 insert ?       # → (1 "EEE" 2 3)
+```
+
+Pour un `data`, la valeur insérée doit être un byte (`0`–`255`) ; **MW.22** est levée sinon.
+
+```
+0xAA D:FFFFFFFF 1 insert ?     # → D:FFAAFFFFFF
+```
+
+`insert` fonctionne également sur une référence (`&var`) vers une variable de type `list` ou `data`, en la modifiant directement plutôt qu'en retournant une nouvelle collection :
+
+```
+(1 2 3) -> 'L'
+"EEE" &L 1 insert
+
+# L vaut maintenant (1 "EEE" 2 3)
+```
+
+## Trier une liste
+
+La fonction `sort` trie une liste par ordre croissant. Le tri n'est effectué que si tous les éléments de la liste partagent le même type, et que ce type est l'un des suivants : `.string`, `.number`, `.name`, `.key` ou `.word`. Si la liste contient des éléments de types différents, elle est retournée sans modification.
+
+**Signature :** `list sort → list`
+
+```
+(1 10 2 5) sort ?    # → (1 2 5 10)
+```
+
+`sort` fonctionne également sur une référence (`&var`) vers une variable de type liste, en la triant directement :
+
+```
+(3 1 2) -> 'L'
+&L sort
+
+# L vaut maintenant (1 2 3)
+```
  
 ## Récupérer la taille (le nombre d'éléments) d'une liste
 
@@ -4551,6 +4595,18 @@ Les skills disponibles dans le contexte courant sont également accessibles via 
 mogwai.info -> '$info'
 $info skills: get ?   # → ('APP_GIZMO' 'TUI')
 ```
+
+## Obtenir des informations sur une primitive
+
+La fonction `mogwai.primitiveInfo` retourne un enregistrement contenant des informations sur une primitive donnée : son `name:` et son `birth:`, la version de MOGWAI dans laquelle elle a été introduite (sous forme de chaîne). Lève **MW.22** (valeur d'argument incorrecte) si `name` ne correspond à aucune primitive connue.
+
+**Signature :** `name mogwai.primitiveInfo → record`
+
+```
+'calc' mogwai.primitiveInfo ?   # → [name: 'calc' birth: "8.12.0"]
+```
+
+Cette fonction est typiquement utilisée pour vérifier la disponibilité d'une primitive avant de s'appuyer sur elle, ou pour construire des outils (intégrations éditeur ou Studio par exemple) ayant besoin de connaître la version de MOGWAI ayant introduit une primitive donnée.
 
 
 

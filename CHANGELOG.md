@@ -35,6 +35,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   "EEE" &L 1 insert             # L is now (1 "EEE" 2 3)
   ```
 
+- **`sort` primitive** — sorts a list in ascending order. Sorting only occurs if all elements of the list share the same type, and that type is one of `.string`, `.number`, `.name`, `.key` or `.word`. Otherwise, the list is returned unchanged. Also works on a reference (`&var`) to a list variable, sorting it in place.
+
+  ```
+  (1 10 2 5) sort ?    # → (1 2 5 10)
+  ```
+
 ### Changed
 
 - **`MOGPrimitive.Birth` property** — every `MOGPrimitive` now exposes a `Birth` property of type `Version`, recording the MOGWAI version in which it was introduced. Defaults to `8.0.0`. All existing primitives have been updated with their correct `Birth` value.

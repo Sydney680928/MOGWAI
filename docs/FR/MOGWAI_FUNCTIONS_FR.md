@@ -138,6 +138,23 @@ Retourne `true` si le runtime est une tâche enfant (voir la gestion des tâches
 
 ***
 
+### `mogwai.primitiveInfo`
+
+Retourne un enregistrement contenant des informations sur une primitive donnée. Lève **MW.22** (valeur d'argument incorrecte) si `name` ne correspond à aucune primitive connue.
+
+**Signature :** `name mogwai.primitiveInfo → record`
+
+| Clé | Type | Description |
+|---|---|---|
+| `name:` | Name | Le nom de la primitive. |
+| `birth:` | String | La version de MOGWAI dans laquelle la primitive a été introduite. |
+
+```
+'calc' mogwai.primitiveInfo ?   # → [name: 'calc' birth: "8.12.0"]
+```
+
+***
+
 ### `mogwai.sendMessage`
 
 Envoie un message à l'hôte. Le message est un enregistrement contenant au minimum la clé `type:`.
@@ -3593,6 +3610,36 @@ Supprime `count` caractères d'une chaîne à partir de l'index (base zéro) `st
 
 ```
 "HELLO LE MONDE" 5 3 str.remove ?    # → "HELLO MONDE"
+```
+
+***
+
+### `insert`
+
+Insère un élément à une position donnée dans une `list` ou un `data`. Un index égal à la taille de la collection insère en fin de collection. Fonctionne également sur des références (`&var`) vers une variable de type `list` ou `data`, en la modifiant directement.
+
+Pour une `list`, n'importe quelle valeur peut être insérée. Pour un `data`, la valeur insérée doit être un byte (`0`–`255`) ; lève **MW.22** si ce n'est pas le cas. Dans les deux cas, lève **MW.22** si l'index est hors limites (négatif ou supérieur à la taille de la collection).
+
+**Signature :** `value collection index insert → collection`
+
+```
+"EEE" (1 2 3) 1 insert ?       # → (1 "EEE" 2 3)
+0xAA D:FFFFFFFF 1 insert ?     # → D:FFAAFFFFFF
+
+(1 2 3) -> 'L'
+"EEE" &L 1 insert             # L vaut maintenant (1 "EEE" 2 3)
+```
+
+***
+
+### `sort`
+
+Trie une liste par ordre croissant. Le tri n'est effectué que si tous les éléments de la liste partagent le même type, et que ce type est l'un des suivants : `.string`, `.number`, `.name`, `.key` ou `.word`. Si la liste contient des éléments de types différents, elle est retournée sans modification. Fonctionne également sur une référence (`&var`) vers une variable de type liste, en la triant directement.
+
+**Signature :** `list sort → list`
+
+```
+(1 10 2 5) sort ?    # → (1 2 5 10)
 ```
 
 ***

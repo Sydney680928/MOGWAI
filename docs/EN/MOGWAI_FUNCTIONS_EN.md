@@ -136,6 +136,23 @@ Returns `true` if the runtime is a child task (see task management).
 
 ***
 
+### `mogwai.primitiveInfo`
+
+Returns a record with information about a given primitive. Raises **MW.22** (bad argument value) if `name` does not match a known primitive.
+
+**Signature:** `name mogwai.primitiveInfo → record`
+
+| Key | Type | Description |
+|---|---|---|
+| `name:` | Name | The primitive's name. |
+| `birth:` | String | The MOGWAI version in which the primitive was introduced. |
+
+```
+'calc' mogwai.primitiveInfo ?   # → [name: 'calc' birth: "8.12.0"]
+```
+
+***
+
 ### `mogwai.sendMessage`
 
 Sends a message to the host. The message is a record containing at least the `type:` key.
@@ -3582,6 +3599,36 @@ Removes `count` characters from a string starting at zero-based index `start`. R
 
 ```
 "HELLO LE MONDE" 5 3 str.remove ?    # → "HELLO MONDE"
+```
+
+***
+
+### `insert`
+
+Inserts an element at a given position in a `list` or a `data`. An index equal to the collection's size appends at the end. Also works on references (`&var`) to a `list` or `data` variable, mutating it in place.
+
+For `list`, any value can be inserted. For `data`, the inserted value must be a byte (`0`–`255`); raises **MW.22** if it isn't. In both cases, raises **MW.22** if the index is out of range (negative or greater than the collection's size).
+
+**Signature:** `value collection index insert → collection`
+
+```
+"EEE" (1 2 3) 1 insert ?       # → (1 "EEE" 2 3)
+0xAA D:FFFFFFFF 1 insert ?     # → D:FFAAFFFFFF
+
+(1 2 3) -> 'L'
+"EEE" &L 1 insert             # L is now (1 "EEE" 2 3)
+```
+
+***
+
+### `sort`
+
+Sorts a list in ascending order. Sorting only occurs if all elements of the list share the same type, and that type is one of `.string`, `.number`, `.name`, `.key` or `.word`. If the list contains elements of mixed types, it is returned unchanged. Also works on a reference (`&var`) to a list variable, sorting it in place.
+
+**Signature:** `list sort → list`
+
+```
+(1 10 2 5) sort ?    # → (1 2 5 10)
 ```
 
 ***

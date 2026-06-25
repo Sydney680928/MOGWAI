@@ -117,7 +117,7 @@ namespace MOGWAI.Primitives
                 }
                 else
                 {
-                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, reference.ToString(), $"var type .{value.Type.Value} not allowed");
+                    return EvalResult.Failure(Engine, Error.BadArgumentTypeError, Name, reference.ToString(), $"var type .{v.Type.Value} not allowed");
                 }
             }
 

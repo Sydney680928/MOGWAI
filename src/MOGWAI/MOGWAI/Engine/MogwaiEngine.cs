@@ -200,7 +200,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveBinaryDown(this, "down"), MOGPrimitive.CATEGORY_MATHS);
             RegisterPublicPrimitive(new PrimitiveTestBitFromBinaryNumber(this, "bit?"), MOGPrimitive.CATEGORY_MATHS);
 
-            RegisterPublicPrimitive(new PrimitiveCalc(this, "calc"));
+            RegisterPublicPrimitive(new PrimitiveCalc(this, "calc"), MOGPrimitive.CATEGORY_MATHS);
 
             // Vars functions
 
@@ -371,6 +371,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveSize(this, "size"));
             RegisterPublicPrimitive(new PrimitiveLeft(this, "left"));
             RegisterPublicPrimitive(new PrimitiveRight(this, "right"));
+            RegisterPublicPrimitive(new PrimitiveSort(this, "sort"));
             RegisterPublicPrimitive(new PrimitiveContains(this, "contains"));
             RegisterPublicPrimitive(new PrimitiveSub(this, "sub"));
             RegisterPublicPrimitive(new PrimitiveFirst(this, "first"));
