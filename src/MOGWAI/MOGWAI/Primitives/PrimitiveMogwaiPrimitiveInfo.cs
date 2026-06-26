@@ -19,7 +19,7 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveMogwaiPrimitiveInfo : PrimitiveParamsName
     {
-        public override Version Birth => new(8,13,0);
+        public override Version Birth => new(8, 13, 0);
 
         public PrimitiveMogwaiPrimitiveInfo(MogwaiEngine engine, string name) : base(engine, name)
         {
@@ -43,6 +43,7 @@ namespace MOGWAI.Primitives
             var record = new MOGRecord(Engine);
             record.SetName("name", primitive.Name); 
             record.SetString("birth", primitive.Birth.ToString());
+            record.SetBoolean("isPublic", !primitive.IsPrivate);
             
             Engine.StackPush(record);   
 
