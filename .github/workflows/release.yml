@@ -34,15 +34,10 @@ jobs:
           -p:DebugType=none
           --output publish/${{ matrix.rid }}
 
-      - name: Detect binary name
+      - name: Set binary name
         id: bin
         run: |
-          cd publish/${{ matrix.rid }}
-          BIN_NAME=$(basename "$(find . -maxdepth 1 -name '*.runtimeconfig.json')" .runtimeconfig.json)
-          if [ -z "$BIN_NAME" ]; then
-            echo "Could not determine binary name from .runtimeconfig.json" >&2
-            exit 1
-          fi
+          BIN_NAME="MOGWAI_CLI"
           if [ "${{ matrix.rid }}" = "win-x64" ]; then
             BIN_NAME="${BIN_NAME}.exe"
           fi
