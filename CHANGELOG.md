@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.13.0] - 2026-06-26
+
+### Added
+
 - **`setRandomSeed` primitive** — sets the seed of the random number generator, making subsequent random operations deterministic and reproducible. Takes an integer seed. Passing `null` or `empty` clears the seed, returning the generator to non-deterministic (time-based) behavior.
 
   ```
@@ -68,8 +76,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **`MOGPrimitive.Birth` property** — every `MOGPrimitive` now exposes a `Birth` property of type `Version`, recording the MOGWAI version in which it was introduced. Defaults to `8.0.0`. All existing primitives have been updated with their correct `Birth` value.
-
-### Fixed
 
 ## [8.12.0] - 2026-06-17
 
@@ -989,7 +995,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.12.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.13.0...HEAD
+[8.13.0]: https://github.com/Sydney680928/mogwai/compare/v8.12.0...v8.13.0
 [8.12.0]: https://github.com/Sydney680928/mogwai/compare/v8.11.0...v8.12.0
 [8.11.0]: https://github.com/Sydney680928/mogwai/compare/v8.10.1...v8.11.0
 [8.10.0]: https://github.com/Sydney680928/mogwai/compare/v8.9.1...v8.10.0
