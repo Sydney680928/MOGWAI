@@ -1,8 +1,53 @@
-# MOGWAI - Modern RPN Scripting Language
+# MOGWAI - An Embeddable RPN Scripting Engine for .NET
 
-A powerful stack-based RPN (Reverse Polish Notation) scripting language for industrial IoT automation, embedded systems, and creative programming.
+**Embeddable. Extensible. NativeAOT-friendly.** A small stack-based RPN runtime you can drop into any .NET app — desktop, mobile, or IoT.
 
-**10 years of development** | **200+ built-in functions** | **Industrial-grade** | **Open Source (Apache 2.0)**
+**10+ years of development** | **304 built-in functions** | **NativeAOT-ready** | **Open Source (Apache 2.0)**
+
+---
+
+## What is MOGWAI?
+
+MOGWAI is a lightweight scripting engine you embed in your .NET applications — to script complex workflows, expose safe user-customizable logic, or design your own DSL, all without leaving the .NET runtime (NativeAOT included). Under the hood it's a stack-based, concatenative language in the tradition of the legendary HP calculators (HP 28S, HP 48) — which gives it clean, unambiguous semantics with no operator precedence to reason about.
+
+### The stack, in 30 seconds
+
+MOGWAI reads left to right. Values are pushed onto a stack; operators consume values from it and push the result back. There's no operator precedence and no parentheses — the order on the stack *is* the program.
+
+```
+3            →  [ 3 ]
+4            →  [ 3 4 ]
++            →  [ 7 ]
+2            →  [ 7 2 ]
+*            →  [ 14 ]
+```
+
+The same calculation on a single line — `3 4 + 2 *` — also leaves `[ 14 ]` on the stack. That's the whole idea: small pieces compose, and what you see is exactly what happens.
+
+### Not ready for RPN yet? Use `calc`
+
+New to stack-based thinking? You don't have to convert every formula by hand. The `calc` primitive accepts a regular infix expression as a string — parentheses, operator precedence and all — converts it to RPN under the hood (Dijkstra's Shunting-yard algorithm), and runs it immediately.
+
+```
+"5 * X + (7 + sin(Y))" calc
+```
+
+Write formulas the way you already know them, and grow into RPN at your own pace.
+
+---
+
+## Key Features
+
+- **Stack-Based RPN Syntax** - Clean, unambiguous, no operator precedence
+- **Infix Expressions via `calc`** - Write classic math formulas (`"5 * X + 2"`), auto-converted to RPN via Shunting-yard
+- **304 Built-in Functions** - Math, strings, lists, files, HTTP, and more
+- **Async/Await Support** - Modern asynchronous execution
+- **Plugin System** - Clean plugin contract via `MOGWAI.IPlugin` — official plugins in development
+- **Battle-Tested** - 10+ years of real-world usage
+- **Extensible** - Easy integration with .NET applications
+- **NativeAOT-Ready** - Embed in ahead-of-time compiled .NET apps
+- **Cross-Platform** - Windows, Linux, macOS, Android, iOS
+- **VS Code Extension** - Syntax highlighting, autocompletion, run & debug directly from VS Code ([install](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language))
 
 ---
 
@@ -38,20 +83,6 @@ if (result.IsError)
 ```
 
 **Note:** This creates a folder structure in `Documents/MOGWAI/` for scripts and data files.
-
----
-
-## Key Features
-
-- **Stack-Based RPN Syntax** - Inspired by HP calculators (HP 28S, HP 48)
-- **200+ Built-in Functions** - Math, strings, lists, dates, HTTP, file I/O, and more
-- **Async/Await Support** - Modern asynchronous execution
-- **IoT & BLE Functions** - Bluetooth Low Energy, serial communication
-- **Industrial Automation** - Designed for embedded systems and real-time control
-- **Extensible** - Add your own custom functions easily
-- **Cross-Platform** - Runs on Windows, Linux, macOS (.NET 9.0+)
-- **Thread-Safe** - Built-in task management
-- **MOGWAI STUDIO Integration** - Visual debugging with breakpoints
 
 ---
 
@@ -110,11 +141,11 @@ doubled ?  # Prints: (2 4 6 8 10)
 
 ```mogwai
 # Create a record
-[name: "MOGWAI", version: 8.0, author: "Stéphane Sibué"] -> 'info'
+[name: "MOGWAI" version: "8.13.0" author: "Stéphane Sibué"] -> 'info'
 
 # Access fields
 info->name ?      # Prints: MOGWAI
-info->version ?   # Prints: 8.0
+info->version ?   # Prints: 8.13.0
 ```
 
 ### Conditional Logic
@@ -406,41 +437,41 @@ string usingsPath = engine.UsingsDirectory;
 
 ---
 
-## MOGWAI STUDIO Integration
+## Remote Debugging Protocol
+
+MOGWAI ships with a built-in discovery and debug protocol that powers tools like the [VS Code extension](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language) today, and will power **MOGWAI STUDIO** (a visual IDE, currently in early private development) once it's released.
 
 ### Enabling Remote Debugging
-
-Connect your runtime to MOGWAI STUDIO for visual debugging:
 
 ```csharp
 var engine = new MogwaiEngine("MyApp");
 engine.Delegate = this;
 
-// Start network server for STUDIO
+// Start network server for remote tooling (VS Code, future STUDIO)
 await engine.StartNetworkCommunication();
 
-// Keep running while STUDIO is connected
+// Keep running while a debugger is connected
 while (true)
 {
     await Task.Delay(250);
 }
 ```
 
-### MOGWAI CLI Studio Mode
+### MOGWAI CLI Debug Mode
 
-In MOGWAI CLI, type **`studio`** to enable STUDIO connection:
+In MOGWAI CLI, type **`studio`** to enable the network connection:
 
 ```
 MOGWAI > studio
 Starting network communication on port 1968...
-Waiting for MOGWAI STUDIO connection...
+Waiting for connection...
 ```
 
 ### Discovery Protocol
 
-**STUDIO uses UDP broadcast** (port 1968) to discover runtimes:
+Tooling uses **UDP broadcast** (port 1968) to discover running MOGWAI instances:
 
-**STUDIO sends:**
+**Tool sends:**
 
 ```json
 {"Source": "MOGWAI STUDIO", "Function": "WHO IS HERE"}
@@ -452,15 +483,15 @@ Waiting for MOGWAI STUDIO connection...
 {
   "Source": "MOGWAI RUNTIME",
   "Function": "I AM HERE",
-  "Parameters": ["MyApp", "63542", "8.0.0", "Windows", ...]
+  "Parameters": ["MyApp", "63542", "8.13.0", "Windows", ...]
 }
 ```
 
-**TCP debug connection** established on auto-assigned port (63000-65000).
+**TCP debug connection** is then established on an auto-assigned port (63000–65000).
 
-### Features in STUDIO
+### What This Enables
 
-Once connected, STUDIO provides:
+Once connected, a debugger can provide:
 
 - Visual breakpoints
 - Step-by-step execution (step over, step into, step out)
@@ -482,27 +513,22 @@ await engine.StartNetworkCommunication(address: "127.0.0.1", port: 1968);
 
 ### Security
 
-**Important:** The STUDIO connection allows full script control.
+**Important:** A connected debugger has full script control.
 Only enable on trusted networks (localhost, private LAN).
 
 ---
 
 ## Use Cases
 
-### Industrial IoT Automation
+### Is MOGWAI a Good Fit for You?
 
-```mogwai
-# Read sensor via BLE
-"AA:BB:CC:DD:EE:FF" ble.connect -> 'device'
-device "temperature" ble.read -> 'temp'
+MOGWAI is a focused tool, not a general-purpose language. It shines when:
 
-# Control based on value
-if (temp 25 >) then
-{
-    "fan" gpio.on
-    "Temperature too high: {temp}°C" eval ?
-}
-```
+- You want **zero operator precedence ambiguity** — the stack is the single source of truth
+- You're embedding a scripting runtime in a **.NET** application, including **NativeAOT** builds
+- You appreciate the **concatenative programming** model in the tradition of Forth, Factor, PostScript and HP RPL
+- You need a **lightweight, extensible runtime** with a clean plugin contract
+- You want to offer safe, hot-swappable scripting to your users — update logic without recompiling or redeploying your app
 
 ### HTTP API Calls
 
@@ -516,6 +542,10 @@ if (response->state) then
     data->items size "Found {!} items" eval ?
 }
 ```
+
+### A Documented Real-World Case
+
+MOGWAI scripts drive an electronic board test bench in production — see the [full use case](https://github.com/Sydney680928/mogwai/blob/main/docs/EN/use-cases/use-case-01-test-bench.md) and the [behind-the-scenes story](https://coding4phone.com/?p=1990&lang=en).
 
 ---
 
@@ -581,7 +611,7 @@ if (result.IsError)
 
 ### Born from Real Needs
 
-MOGWAI was created to simulate Bluetooth Low Energy devices for IoT testing. Over 10 years, it evolved into a full-featured scripting language used in industrial automation and embedded systems.
+Created in 2015 to simulate Bluetooth Low Energy devices for IoT testing. Over 10 years, MOGWAI evolved into a full-featured, general-purpose embeddable scripting engine for .NET applications.
 
 ### Inspired by HP Calculators
 
@@ -589,16 +619,15 @@ The syntax is inspired by the legendary HP 28S and HP 48 calculators, bringing t
 
 ### Battle-Tested
 
-- **3 years in production** in industrial environments
-- **Real-world IoT applications** (astronomical clocks, public lighting)
-- **Thousands of scripts** executed in field deployments
+- **10+ years of real-world usage** - From prototyping to production environments
+- **A documented case** - See how MOGWAI scripts drive an [electronic board test bench in production](https://github.com/Sydney680928/mogwai/blob/main/docs/EN/use-cases/use-case-01-test-bench.md) ([read the story](https://coding4phone.com/?p=1990&lang=en))
 
 ### Unique Features
 
 - **Stack-based** with modern conveniences (variables, functions, records)
 - **RPN syntax** for clarity and consistency
-- **IoT-focused** with BLE, HTTP, serial communication built-in
-- **Extensible** - easily add domain-specific functions
+- **`calc` primitive** for infix-to-RPN conversion when you're not ready to go full RPN
+- **Extensible** - easily add domain-specific functions, or build a plugin via `MOGWAI.IPlugin`
 
 ---
 
@@ -608,24 +637,31 @@ The syntax is inspired by the legendary HP 28S and HP 48 calculators, bringing t
 
 - **[Integration Guide](https://github.com/Sydney680928/mogwai/blob/main/docs/EN/MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI in your .NET application
 - **[Language Reference](https://github.com/Sydney680928/mogwai/blob/main/docs/EN/MOGWAI_EN.md)** - Complete MOGWAI language guide
-- **[Function Reference](https://github.com/Sydney680928/mogwai/blob/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 200+ built-in functions documented
+- **[Function Reference](https://github.com/Sydney680928/mogwai/blob/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 304 built-in functions documented
+- **[VS Code Extension Guide](https://github.com/Sydney680928/mogwai/blob/main/docs/EN/MOGWAI_VSCODE.md)** - How to use VS Code with the MOGWAI runtime
 
 ### Examples
 
-  - **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinFormsMogwai)** - Turtle graphics and more with MOGWAI
-- **[Console Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MOGWAI_CLI)** - Console integration (MOGWAI CLI source code)
-- **[IoT Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MOGWAI_RUNTIME)** - .NET MAUI program example
+- **[MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/Console)** - Command-line interface and REPL
+- **[Avalonia Example](https://github.com/Sydney680928/mogwai/tree/main/examples/Avalonia)** - Cross-platform REPL with debug mode (Windows, Linux, macOS)
+- **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinForms)** - Turtle graphics with MOGWAI
+- **[MAUI Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MAUI)** - Cross-platform mobile app
+- **[Blazor Example](https://github.com/Sydney680928/mogwai/tree/main/examples/Blazor)** - Try MOGWAI directly in your browser
+
+### Blog Articles
+
+New to MOGWAI? Start with [The Origin Story](https://coding4phone.com/?p=2066&lang=en), [Anatomy of MOGWAI](https://coding4phone.com/?p=2615&lang=en), or see more on [coding4phone.com](https://www.coding4phone.com).
 
 ---
 
 ## What's Included
 
 - **MOGWAI.dll** - The complete runtime (.NET 9.0+)
-- **200+ Functions** - Math, strings, lists, I/O, HTTP, BLE, dates, and more
+- **304 Functions** - Math, strings, lists, I/O, HTTP, dates, and more
 - **Type System** - Numbers, strings, booleans, lists, records, data, code
 - **Async Support** - Modern task-based execution
 - **Thread-Safe** - Built-in concurrency management
-- **STUDIO Protocol** - Network debugging support
+- **Remote Debug Protocol** - Powers the VS Code extension today, MOGWAI STUDIO tomorrow
 
 ---
 

@@ -388,10 +388,6 @@ to 'startGame' do
         }
     }
 
-    # TODO: Enlever après vidéo
-
-    console.input drop
-
     # Countdown before start
 
     3 1 for 'i' step -1 do
