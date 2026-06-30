@@ -17,28 +17,28 @@ using MOGWAI.Objects;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveHttpGet : PrimitiveParamsRecord
+    internal class PrimitiveHttpDelete : PrimitiveParamsRecord
     {
-        public PrimitiveHttpGet(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveHttpDelete(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveHttpGet(Engine, Name);
+            var obj = new PrimitiveHttpDelete(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
 
         public override async Task<EvalResult> PerformOperation(MOGRecord record)
         {
-            // record http.get
+            // record http.delete
             //
             // record input
             // [
-            // uri: "https://api.github.com/orgs/dotnet/repos"
-            // requestHeaders: [User-Agent: ".NET Foundation Repository Reporter" token: "XXXXX"]
+            // uri: "https://api.github.com/repos/dotnet/runtime/issues/1"
+            // requestHeaders: [ ]
             // ]
             //
             // record output
@@ -50,7 +50,7 @@ namespace MOGWAI.Primitives
             // ]
 
             if (record.GetItem("uri") is not MOGString uri)
-                return EvalResult.Failure(Engine, Error.BadArgumentValueError, "uri: key is mandatory");
+                return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "uri: key is mandatory");
 
             // TODO (sandbox profile B): validate/filter uri.Value against a host whitelist
             // before performing the request, to prevent SSRF in non-trusted mode.
@@ -59,7 +59,7 @@ namespace MOGWAI.Primitives
 
             try
             {
-                using var request = new HttpRequestMessage(HttpMethod.Get, uri.Value);
+                using var request = new HttpRequestMessage(HttpMethod.Delete, uri.Value);
 
                 // Headers are built on the HttpRequestMessage rather than on
                 // DefaultRequestHeaders, to remain thread-safe with a shared client
@@ -80,6 +80,8 @@ namespace MOGWAI.Primitives
 
                 // We always read the body, even on HTTP error (4xx/5xx),
                 // since it often contains useful info (JSON error message, etc.)
+                // Note: many DELETE endpoints return an empty body (204 No Content),
+                // in which case this simply yields an empty MOGData.
 
                 var body = await response.Content.ReadAsByteArrayAsync();
 

@@ -2159,7 +2159,7 @@ console.height ?   # → 30
 
 ### `http.get`
 
-Performs an http get on a uri by specifying the necessary header values. 
+Performs an http get on a uri by specifying the necessary header values.
 
 Parameters are passed via a record:
 
@@ -2170,13 +2170,36 @@ Parameters are passed via a record:
 ] http.get
 ```
 
+| Key              | Mandatory | Usage                                                          |
+| ---------------- | --------- | --------------------------------------------------------------- |
+| `uri:`           | Yes       | A string, the target URI.                                       |
+| `requestHeaders:`| No        | A record mapping header names to string values.                 |
+
 The response is a record containing the following keys:
 
-| Key           | Usage                                                                                           |
-| ------------- | ----------------------------------------------------------------------------------------------- |
-| `state:`      | `true` if everything went well.                                                                 |
-| `statusCode:` | The status code actually returned (e.g. 200).                                                   |
-| `response:`   | A data containing the response.<br>If an error occurs, this key is not present in the response. |
+| Key               | Usage                                                                                                        |
+| ----------------- | -------------------------------------------------------------------------------------------------------------- |
+| `state:`          | `true` if the request completed and the HTTP status code is a success code (2xx), `false` otherwise.            |
+| `statusCode:`     | The status code actually returned (e.g. 200). May be absent for some network-level failures (e.g. DNS, TLS).    |
+| `response:`       | A data containing the response body. Present whenever a response was actually received, success or HTTP error. |
+| `responseHeaders:`| A record mapping each response header name to a list of values (always a list, even for a single value).        |
+| `error:`          | A string describing the failure. Only present when `state:` is `false`.                                         |
+
+```
+[
+    uri: "https://api.github.com/orgs/dotnet/repos" 
+    requestHeaders: [User-Agent: ".NET Foundation Repository Reporter"]
+] http.get -> 'result'
+
+if (result->state:) then
+{
+    "OK - {! result->statusCode:}" eval ?
+}
+else
+{
+    "Failed - {! result->error:}" eval ?
+}
+```
 
 ### `http.post`
 
@@ -2190,12 +2213,56 @@ All parameters are defined in a record passed as parameter:
     requestHeaders: [ ]
     contentHeaders: [ ]
     content: DATA
-]
+] http.post
 ```
 
-The content is of type data.
+| Key               | Mandatory | Usage                                                          |
+| ----------------- | --------- | --------------------------------------------------------------- |
+| `uri:`            | Yes       | A string, the target URI.                                       |
+| `content:`        | Yes       | A data, the request body.                                       |
+| `requestHeaders:` | No        | A record mapping header names to string values.                 |
+| `contentHeaders:` | No        | A record mapping content header names (e.g. `Content-Type`) to string values. |
 
 The response, a record, is formatted exactly like that of the `http.get` function.
+
+### `http.put`
+
+Performs an http put on a uri by specifying request headers, content headers and content. Same parameters and response format as `http.post`.
+
+```
+[
+    uri: "https://api.example.com/items/42" 
+    contentHeaders: [Content-Type: "application/json"]
+    content: {! "{\"name\":\"updated\"}" ->utf8 }
+] http.put
+```
+
+### `http.patch`
+
+Performs an http patch on a uri by specifying request headers, content headers and content. Same parameters and response format as `http.post`. Unlike `http.put`, which replaces a resource entirely, `http.patch` is meant for partial updates (only the fields to change need to be sent).
+
+```
+[
+    uri: "https://api.example.com/items/42" 
+    contentHeaders: [Content-Type: "application/json"]
+    content: {! "{\"name\":\"updated\"}" ->utf8 }
+] http.patch
+```
+
+### `http.delete`
+
+Performs an http delete on a uri by specifying the necessary header values. No request body is sent.
+
+| Key               | Mandatory | Usage                                                          |
+| ----------------- | --------- | --------------------------------------------------------------- |
+| `uri:`            | Yes       | A string, the target URI.                                       |
+| `requestHeaders:` | No        | A record mapping header names to string values.                 |
+
+The response, a record, is formatted exactly like that of the `http.get` function. A successful deletion often returns an empty `response:` (HTTP 204 No Content), which is a valid empty data, not an error.
+
+```
+[ uri: "https://api.example.com/items/42" ] http.delete
+```
 
 ***
 

@@ -17,28 +17,30 @@ using MOGWAI.Objects;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveHttpGet : PrimitiveParamsRecord
+    internal class PrimitiveHttpPut : PrimitiveParamsRecord
     {
-        public PrimitiveHttpGet(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveHttpPut(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveHttpGet(Engine, Name);
+            var obj = new PrimitiveHttpPut(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
 
         public override async Task<EvalResult> PerformOperation(MOGRecord record)
         {
-            // record http.get
+            // record http.put
             //
             // record input
             // [
             // uri: "https://api.github.com/orgs/dotnet/repos"
-            // requestHeaders: [User-Agent: ".NET Foundation Repository Reporter" token: "XXXXX"]
+            // requestHeaders: [ ]
+            // contentHeaders: [ ]
+            // content: data
             // ]
             //
             // record output
@@ -50,7 +52,10 @@ namespace MOGWAI.Primitives
             // ]
 
             if (record.GetItem("uri") is not MOGString uri)
-                return EvalResult.Failure(Engine, Error.BadArgumentValueError, "uri: key is mandatory");
+                return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "uri: key is mandatory");
+
+            if (record.GetItem("content") is not MOGData content)
+                return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "content: key is mandatory");
 
             // TODO (sandbox profile B): validate/filter uri.Value against a host whitelist
             // before performing the request, to prevent SSRF in non-trusted mode.
@@ -59,7 +64,7 @@ namespace MOGWAI.Primitives
 
             try
             {
-                using var request = new HttpRequestMessage(HttpMethod.Get, uri.Value);
+                using var request = new HttpRequestMessage(HttpMethod.Put, uri.Value);
 
                 // Headers are built on the HttpRequestMessage rather than on
                 // DefaultRequestHeaders, to remain thread-safe with a shared client
@@ -72,6 +77,22 @@ namespace MOGWAI.Primitives
                             request.Headers.TryAddWithoutValidation(key, ms.Value);
                     }
                 }
+
+                var httpContent = new ByteArrayContent(content.Items.ToArray());
+
+                // Content headers (Content-Type, etc.) live on HttpContent.Headers,
+                // separate from the request's own headers above
+
+                if (record.GetItem("contentHeaders") is MOGRecord contentHeaders)
+                {
+                    foreach (var key in contentHeaders.Items.Keys)
+                    {
+                        if (contentHeaders.Items[key] is MOGString ms)
+                            httpContent.Headers.TryAddWithoutValidation(key, ms.Value);
+                    }
+                }
+
+                request.Content = httpContent;
 
                 // TODO: propagate a CancellationToken tied to the watchdog (time counter)
                 // once it's in place, in addition to the HttpClient's Timeout.

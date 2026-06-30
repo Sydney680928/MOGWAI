@@ -2177,14 +2177,36 @@ Les paramètres sont passés via un enregistrement :
 ] http.get
 ```
 
+| Clé               | Obligatoire | Usage                                                         |
+| ----------------- | ----------- | --------------------------------------------------------------- |
+| `uri:`            | Oui         | Une string, l'URI cible.                                        |
+| `requestHeaders:` | Non         | Un enregistrement associant les noms d'en-tête à leur valeur (string). |
+
 La réponse est un enregistrement contenant les clés suivantes :
 
-| Clé           | Usage                                                                                             |
-| ------------- | ------------------------------------------------------------------------------------------------- |
-| `state:`      | `true` si tout s'est bien passé.                                                                  |
-| `statusCode:` | Le code de statut réellement retourné (ex. 200).                                                  |
-| `response:`   | Un data contenant la réponse.
-En cas d'erreur, cette clé n'est pas présente dans la réponse.   |
+| Clé                | Usage                                                                                                            |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `state:`           | `true` si la requête a abouti et que le code de statut HTTP est un succès (2xx), `false` sinon.                       |
+| `statusCode:`      | Le code de statut réellement retourné (ex. 200). Peut être absent pour certains échecs réseau (DNS, TLS).            |
+| `response:`        | Un data contenant le corps de la réponse. Présent dès qu'une réponse a effectivement été reçue, succès ou erreur HTTP. |
+| `responseHeaders:` | Un enregistrement associant chaque en-tête de réponse à une liste de valeurs (toujours une liste, même pour une seule valeur). |
+| `error:`           | Une string décrivant l'échec. Présente uniquement quand `state:` vaut `false`.                                       |
+
+```
+[
+    uri: "https://api.github.com/orgs/dotnet/repos" 
+    requestHeaders: [User-Agent: ".NET Foundation Repository Reporter"]
+] http.get -> 'result'
+
+if (result->state:) then
+{
+    "OK - {! result->statusCode:}" eval ?
+}
+else
+{
+    "Failed - {! result->error:}" eval ?
+}
+```
 
 ### `http.post`
 
@@ -2198,12 +2220,56 @@ Tous les paramètres sont définis dans un enregistrement passé en paramètre :
     requestHeaders: [ ]
     contentHeaders: [ ]
     content: DATA
-]
+] http.post
 ```
 
-Le contenu est de type data.
+| Clé                | Obligatoire | Usage                                                         |
+| ------------------ | ----------- | --------------------------------------------------------------- |
+| `uri:`             | Oui         | Une string, l'URI cible.                                        |
+| `content:`         | Oui         | Un data, le corps de la requête.                                 |
+| `requestHeaders:`  | Non         | Un enregistrement associant les noms d'en-tête à leur valeur (string). |
+| `contentHeaders:`  | Non         | Un enregistrement associant les en-têtes de contenu (ex. `Content-Type`) à leur valeur (string). |
 
 La réponse, un enregistrement, est formatée exactement comme celle de la fonction `http.get`.
+
+### `http.put`
+
+Effectue un http put sur une uri en spécifiant les en-têtes de requête, les en-têtes de contenu et le contenu. Mêmes paramètres et même format de réponse que `http.post`.
+
+```
+[
+    uri: "https://api.example.com/items/42" 
+    contentHeaders: [Content-Type: "application/json"]
+    content: {! "{\"name\":\"updated\"}" ->utf8 }
+] http.put
+```
+
+### `http.patch`
+
+Effectue un http patch sur une uri en spécifiant les en-têtes de requête, les en-têtes de contenu et le contenu. Mêmes paramètres et même format de réponse que `http.post`. Contrairement à `http.put`, qui remplace entièrement une ressource, `http.patch` est destiné aux mises à jour partielles (seuls les champs à modifier doivent être envoyés).
+
+```
+[
+    uri: "https://api.example.com/items/42" 
+    contentHeaders: [Content-Type: "application/json"]
+    content: {! "{\"name\":\"updated\"}" ->utf8 }
+] http.patch
+```
+
+### `http.delete`
+
+Effectue un http delete sur une uri en spécifiant les valeurs d'en-tête nécessaires. Aucun corps de requête n'est envoyé.
+
+| Clé                | Obligatoire | Usage                                                         |
+| ------------------ | ----------- | --------------------------------------------------------------- |
+| `uri:`             | Oui         | Une string, l'URI cible.                                        |
+| `requestHeaders:`  | Non         | Un enregistrement associant les noms d'en-tête à leur valeur (string). |
+
+La réponse, un enregistrement, est formatée exactement comme celle de la fonction `http.get`. Une suppression réussie retourne souvent un `response:` vide (HTTP 204 No Content), ce qui est un data vide valide, pas une erreur.
+
+```
+[ uri: "https://api.example.com/items/42" ] http.delete
+```
 
 ***
 

@@ -9,9 +9,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`http.put` primitive** — sends an HTTP PUT request. Takes a record with `uri:` (mandatory), `content:` (mandatory, a `data`), `requestHeaders:` (optional record) and `contentHeaders:` (optional record). Returns a record with `state:`, `statusCode:`, `response:` (the response body as `data`), `responseHeaders:` (a record mapping each header name to a list of values) and, on failure, `error:`.
+
+  ```
+  [ !
+      uri: "https://api.example.com/items/42"
+
+      contentHeaders:
+      [
+          Content-Type: "application/json"
+      ]
+
+      content: {! "{\"name\":\"updated\"}" ->utf8 }
+
+  ] http.put -> 'result'
+
+  if (result->state:) then
+  {
+      "OK - {! result->statusCode:}" eval ?
+  }
+  else
+  {
+      "Failed - {! result->error:}" eval ?
+  }
+  ```
+
+- **`http.patch` primitive** — sends an HTTP PATCH request. Same parameters and response shape as `http.post`/`http.put`. Unlike `http.put`, which replaces a resource entirely, `http.patch` is meant for partial updates (only the fields to change need to be sent).
+
+  ```
+  [
+      uri: "https://api.example.com/items/42"
+      contentHeaders: [Content-Type: "application/json"]
+      content: {! "{\"name\":\"updated\"}" ->utf8 }
+  ] http.patch -> 'result'
+  ```
+
+- **`http.delete` primitive** — sends an HTTP DELETE request. Takes a record with `uri:` (mandatory) and `requestHeaders:` (optional record). No request body is sent. Returns the same output record shape as `http.put`/`http.get`/`http.post`. A successful deletion often yields an empty `response:` (HTTP 204 No Content), which is a valid empty `data`, not an error.
+
+  ```
+  [ uri: "https://api.example.com/items/42" ] http.delete -> 'result'
+  ```
+
 ### Changed
 
+- **`http.get` / `http.post` internals** — both primitives now share their `HttpClient` instance with `http.put`, `http.patch` and `http.delete` at the runtime level (one instance per MOGWAI runtime, created lazily on first use), instead of instantiating a new `HttpClient` per call. This avoids socket exhaustion under sustained use. Request headers are now attached per-request (`HttpRequestMessage.Headers`) rather than on the shared client's default headers, keeping concurrent/successive calls isolated from each other.
+- **HTTP response record** — `http.get` and `http.post` now always read the response body and populate `responseHeaders:`, even on HTTP error status codes (4xx/5xx), so scripts can inspect server-provided error details (e.g. a JSON error payload) instead of only `state: false`. `responseHeaders:` maps each header name to a list of values (never a bare string), since a header may legitimately appear multiple times.
+- **HTTP error reporting** — network failures now distinguish a request timeout (`error: "Request timed out"`) from other network errors (DNS, connection refused, TLS...) and from generic failures, instead of being collapsed into a single unspecific error.
+
 ### Fixed
+
+- **`http.get`** — a malformed `HttpRequestException` with a `null` `StatusCode` (frequent on DNS/connection failures) could previously cause a `NullReferenceException` that masked the original error. `statusCode:` is now only populated when actually available.
 
 ## [8.13.0] - 2026-06-26
 

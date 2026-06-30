@@ -78,6 +78,7 @@ namespace MOGWAI.Engine
         private Dictionary<int, MogwaiExecutionContext> _includes = [];
         private Dictionary<string, PluginInformations> _plugins = [];
         private List<string> _varsInAutoEval = new();
+        private HttpClient? _httpClient;
 
         // MOX Signature = [STX][M ][O ][G ][W ][A ][I ][28][09][19][68][ETX]
         //               = 00   01  02  03  04  05  06  07  08  09  10  11
@@ -582,6 +583,9 @@ namespace MOGWAI.Engine
 
             RegisterPublicPrimitive(new PrimitiveHttpGet(this, "http.get"));
             RegisterPublicPrimitive(new PrimitiveHttpPost(this, "http.post"));
+            RegisterPublicPrimitive(new PrimitiveHttpDelete(this, "http.delete"));
+            RegisterPublicPrimitive(new PrimitiveHttpPut(this, "http.put"));
+            RegisterPublicPrimitive(new PrimitiveHttpPatch(this, "http.patch"));
 
             // Private primitives (not accessible from MOGWAI code, but can be used in plugins)
 
@@ -872,6 +876,11 @@ namespace MOGWAI.Engine
         internal int CurrentInstance { get; set; } = 0;
 
         internal Dictionary<int, MOGInstance> ObjectReferences { get; } = new();
+
+        internal HttpClient HttpClient => _httpClient ??= new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(30)
+        };
 
         public bool IsHostConsole
         {
