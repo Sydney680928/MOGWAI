@@ -2034,7 +2034,7 @@ Returns the largest number present in a list.
 
 Returns the sum of all numbers present in a list.
 
-> Only numbers are allowed.
+> Only numbers are allowed. An empty list `()` returns `0`.
 
 ```
 (1 56 34 9 27) sum

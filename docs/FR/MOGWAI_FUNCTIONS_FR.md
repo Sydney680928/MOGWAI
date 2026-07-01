@@ -2041,7 +2041,7 @@ Retourne le plus grand nombre présent dans une liste.
 
 Retourne la somme de tous les nombres présents dans une liste.
 
-> Seuls les nombres sont autorisés.
+> Seuls les nombres sont autorisés. Une liste vide `()` retourne `0`.
 
 ```
 (1 56 34 9 27) sum

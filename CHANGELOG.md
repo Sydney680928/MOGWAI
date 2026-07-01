@@ -116,6 +116,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **`http.get`** — a malformed `HttpRequestException` with a `null` `StatusCode` (frequent on DNS/connection failures) could previously cause a `NullReferenceException` that masked the original error. `statusCode:` is now only populated when actually available.
+- **`sum`** — calling `sum` on an empty list `()` previously raised MW.22 (bad argument value) instead of returning `0`. This broke natural aggregation patterns where a filtered or empty collection should sum to zero (e.g. summing download counts across a release's assets when a release has none). `sum` on `()` now returns `0`. A list containing non-number elements (e.g. `(1 2 "E")`) still raises MW.22, unchanged.
 
 ## [8.13.0] - 2026-06-26
 

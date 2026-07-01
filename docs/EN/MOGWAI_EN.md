@@ -875,7 +875,7 @@ do
 | `sin`    | Returns the sine of an angle in radians.                                                                                                                       | `0.5 sin`      |
 | `sinh`   | Returns the hyperbolic sine of a number. Mirrors `Math.Sinh()`.                                                                                                | `1.5 sinh`     |
 | `sqrt`   | Returns the square root of a number.                                                                                                                        | `16 sqrt`      |
-| `sum`    | Returns the sum of a list.<br> Only numbers are taken into account.<br> Returns null if the list contains no numbers.                             | `(1 2 3) sum`  |
+| `sum`    | Returns the sum of a list.<br> Only numbers are allowed.<br> An empty list `()` returns `0`.                             | `(1 2 3) sum`  |
 | `tan`    | Returns the tangent of an angle in radians.                                                                                                                    | `0.5 tan`      |
 | `tanh`   | Returns the hyperbolic tangent of a number. Mirrors `Math.Tanh()`.                                                                                             | `0.9 tanh`     |
 | `PI`     | Returns the number PI.                                                                                                                                        | `PI`           |

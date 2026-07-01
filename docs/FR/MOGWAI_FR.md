@@ -875,7 +875,7 @@ do
 | `sin`    | Retourne le sinus d'un angle en radians.                                                                                                                      | `0.5 sin`      |
 | `sinh`   | Retourne le sinus hyperbolique d'un nombre. Équivalent de `Math.Sinh()` en .NET.                                                                              | `1.5 sinh`     |
 | `sqrt`   | Retourne la racine carrée d'un nombre.                                                                                                                        | `16 sqrt`      |
-| `sum`    | Retourne la somme d'une liste.<br> Seuls les nombres sont pris en compte.<br> Retourne null si la liste ne contient aucun nombre.                             | `(1 2 3) sum`  |
+| `sum`    | Retourne la somme d'une liste.<br> Seuls les nombres sont autorisés.<br> Une liste vide `()` retourne `0`.                             | `(1 2 3) sum`  |
 | `tan`    | Retourne la tangente d'un angle en radians.                                                                                                                   | `0.5 tan`      |
 | `tanh`   | Retourne la tangente hyperbolique d'un nombre. Équivalent de `Math.Tanh()` en .NET.                                                                           | `0.9 tanh`     |
 | `PI`     | Retourne le nombre PI.                                                                                                                                        | `PI`           |

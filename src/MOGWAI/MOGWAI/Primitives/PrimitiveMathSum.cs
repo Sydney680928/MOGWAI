@@ -33,23 +33,23 @@ namespace MOGWAI.Primitives
 
         public override Task<EvalResult> PerformOperation(MOGList list)
         {
-            if (list.Items.Count == 0)
-                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
-
-            if (list.Items[0] is not MOGNumber)
-                return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
-
             double sum = 0;
 
-            for (int i = 0; i < list.Items.Count; i++)
+            if (list.Items.Count > 0)
             {
-                if (list.Items[i] is MOGNumber number)
-                {
-                    sum += number.Value;
-                }
-                else
-                {
+                if (list.Items[0] is not MOGNumber)
                     return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
+
+                for (int i = 0; i < list.Items.Count; i++)
+                {
+                    if (list.Items[i] is MOGNumber number)
+                    {
+                        sum += number.Value;
+                    }
+                    else
+                    {
+                        return Task.FromResult(EvalResult.Failure(Engine, Error.BadArgumentValueError, Name));
+                    }
                 }
             }
 
