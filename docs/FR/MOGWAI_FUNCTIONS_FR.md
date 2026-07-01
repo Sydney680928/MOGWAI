@@ -2208,6 +2208,42 @@ else
 }
 ```
 
+### `http.head`
+
+Effectue une requête HTTP HEAD sur une uri. Identique à `http.get` mais aucun corps de réponse n'est jamais retourné — uniquement les en-têtes. Utile pour vérifier qu'une ressource existe ou récupérer ses métadonnées (taille, type, date de modification) sans télécharger son contenu.
+
+| Clé               | Obligatoire | Usage                                                         |
+| ----------------- | ----------- | --------------------------------------------------------------- |
+| `uri:`            | Oui         | Une string, l'URI cible.                                        |
+| `requestHeaders:` | Non         | Un enregistrement associant les noms d'en-tête à leur valeur (string). |
+
+La réponse est un enregistrement contenant les clés suivantes :
+
+| Clé                | Usage                                                                                                            |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `state:`           | `true` si la requête a abouti et que le code de statut HTTP est un succès (2xx), `false` sinon.                       |
+| `statusCode:`      | Le code de statut réellement retourné. Peut être absent pour certains échecs réseau (DNS, TLS).                      |
+| `responseHeaders:` | Un enregistrement associant chaque en-tête de réponse à une liste de valeurs (toujours une liste, même pour une seule valeur). |
+| `error:`           | Une string décrivant l'échec. Présente uniquement quand `state:` vaut `false`.                                       |
+
+Note : `response:` est intentionnellement absent — HEAD ne retourne jamais de corps par définition.
+
+```
+[
+    uri: "https://api.example.com/resource"
+    requestHeaders: [User-Agent: "MOGWAI"]
+] http.head -> 'result'
+
+if (result->state:) then
+{
+    "Exists - statusCode: {! result->statusCode:}" eval ?
+}
+else
+{
+    "Failed - {! result->error:}" eval ?
+}
+```
+
 ### `http.post`
 
 Effectue un http post sur une uri en spécifiant les en-têtes de requête, les en-têtes de contenu et le contenu.
@@ -2272,6 +2308,114 @@ La réponse, un enregistrement, est formatée exactement comme celle de la fonct
 ```
 
 ***
+
+***
+
+### `udp.send`
+
+Envoie un datagramme UDP à un hôte/port. Aucune réponse n'est attendue (fire and forget).
+
+| Clé           | Obligatoire | Usage                                                         |
+| ------------- | ----------- | --------------------------------------------------------------- |
+| `host:`       | Oui         | Une string, l'adresse IP ou le nom d'hôte cible.               |
+| `port:`       | Oui         | Un nombre, le port cible.                                       |
+| `data:`       | Oui         | Un data, le contenu du datagramme.                              |
+| `localPort:`  | Non         | Un nombre, le port local à utiliser. Un port éphémère est utilisé si absent. |
+
+```
+[
+    host: "127.0.0.1"
+    port: 5000
+    data: {! "Hello from MOGWAI" ->utf8 }
+] udp.send -> 'result'
+
+if (result->state:) then
+{
+    "udp.send OK" ?
+}
+else
+{
+    "Failed - {! result->error:}" eval ?
+}
+```
+
+La réponse est un enregistrement contenant les clés suivantes :
+
+| Clé       | Usage                                                                                       |
+| --------- | ------------------------------------------------------------------------------------------- |
+| `state:`  | `true` si le datagramme a été envoyé avec succès.                                           |
+| `error:`  | Une string décrivant l'échec. Présente uniquement quand `state:` vaut `false`.              |
+
+***
+
+### `udp.receive`
+
+Écoute sur un port UDP local et attend un datagramme entrant.
+
+| Clé           | Obligatoire | Usage                                                         |
+| ------------- | ----------- | --------------------------------------------------------------- |
+| `localPort:`  | Oui         | Un nombre, le port local sur lequel écouter.                    |
+| `timeout:`    | Oui         | Un nombre, le temps d'attente maximum en ms.                    |
+
+```
+[
+    localPort: 5001
+    timeout: 3000
+] udp.receive -> 'result'
+
+if (result->state:) then
+{
+    result->data: ->utf8str ?
+}
+else
+{
+    "Failed - {! result->error:}" eval ?
+}
+```
+
+La réponse est un enregistrement contenant les clés suivantes :
+
+| Clé            | Usage                                                                                                          |
+| -------------- | --------------------------------------------------------------------------------------------------------------- |
+| `state:`       | `true` si un datagramme a été reçu dans le délai imparti.                                                       |
+| `data:`        | Un data contenant le contenu du datagramme reçu.                                                                |
+| `remoteHost:`  | Une string, l'adresse IP de l'émetteur.                                                                         |
+| `remotePort:`  | Un nombre, le port de l'émetteur.                                                                               |
+| `error:`       | Une string décrivant l'échec (`"timeout"` si aucun datagramme n'a été reçu à temps). Présente uniquement quand `state:` vaut `false`. |
+
+***
+
+### `udp.sendReceive`
+
+Envoie un datagramme UDP et attend une réponse en une seule opération. C'est le schéma le plus courant pour les protocoles requête/réponse sur UDP.
+
+| Clé           | Obligatoire | Usage                                                         |
+| ------------- | ----------- | --------------------------------------------------------------- |
+| `host:`       | Oui         | Une string, l'adresse IP ou le nom d'hôte cible.               |
+| `port:`       | Oui         | Un nombre, le port cible.                                       |
+| `data:`       | Oui         | Un data, le contenu du datagramme.                              |
+| `timeout:`    | Oui         | Un nombre, le temps d'attente maximum pour la réponse en ms.    |
+| `localPort:`  | Non         | Un nombre, le port local à utiliser. Un port éphémère est utilisé si absent. |
+
+La réponse, un enregistrement, est formatée exactement comme celle de la fonction `udp.receive`.
+
+```
+[
+    host: "127.0.0.1"
+    port: 5000
+    data: {! "Hello" ->utf8 }
+    timeout: 3000
+] udp.sendReceive -> 'result'
+
+if (result->state:) then
+{
+    result->data: ->utf8str ?
+}
+else
+{
+    "Failed - {! result->error:}" eval ?
+}
+```
 
 ### `->uri`
 

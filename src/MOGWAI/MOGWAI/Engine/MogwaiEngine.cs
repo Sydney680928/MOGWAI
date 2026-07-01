@@ -586,7 +586,12 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveHttpDelete(this, "http.delete"));
             RegisterPublicPrimitive(new PrimitiveHttpPut(this, "http.put"));
             RegisterPublicPrimitive(new PrimitiveHttpPatch(this, "http.patch"));
+            RegisterPublicPrimitive(new PrimitiveHttpHead(this, "http.head"));
 
+            RegisterPublicPrimitive(new PrimitiveUdpSend(this, "udp.send"));
+            RegisterPublicPrimitive(new PrimitiveUdpReceive(this, "udp.receive"));
+            RegisterPublicPrimitive(new PrimitiveUdpSendReceive(this, "udp.sendReceive"));
+            
             // Private primitives (not accessible from MOGWAI code, but can be used in plugins)
 
             RegisterPrivatePrimitive(new PrimitiveSTO(this, "STO"), "->");

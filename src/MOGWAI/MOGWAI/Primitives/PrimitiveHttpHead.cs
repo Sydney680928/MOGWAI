@@ -17,46 +17,39 @@ using MOGWAI.Objects;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveHttpPut : PrimitiveParamsRecord
+    internal class PrimitiveHttpHead : PrimitiveParamsRecord
     {
-        public override Version Birth => new(8, 14, 0);
-        public PrimitiveHttpPut(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveHttpHead(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveHttpPut(Engine, Name);
+            var obj = new PrimitiveHttpHead(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
 
         public override async Task<EvalResult> PerformOperation(MOGRecord record)
         {
-            // record http.put
+            // record http.head
             //
             // record input
             // [
-            // uri: "https://api.github.com/orgs/dotnet/repos"
+            // uri: "https://api.example.com/resource"
             // requestHeaders: [ ]
-            // contentHeaders: [ ]
-            // content: data
             // ]
             //
             // record output
             // [
             // state: true
             // statusCode: 200
-            // response: data
             // responseHeaders: (...)
             // ]
 
             if (record.GetItem("uri") is not MOGString uri)
                 return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "uri: key is mandatory");
-
-            if (record.GetItem("content") is not MOGData content)
-                return EvalResult.Failure(Engine, Error.BadArgumentValueError, Name, "content: key is mandatory");
 
             // TODO (sandbox profile B): validate/filter uri.Value against a host whitelist
             // before performing the request, to prevent SSRF in non-trusted mode.
@@ -65,7 +58,7 @@ namespace MOGWAI.Primitives
 
             try
             {
-                using var request = new HttpRequestMessage(HttpMethod.Put, uri.Value);
+                using var request = new HttpRequestMessage(HttpMethod.Head, uri.Value);
 
                 // Headers are built on the HttpRequestMessage rather than on
                 // DefaultRequestHeaders, to remain thread-safe with a shared client
@@ -79,31 +72,13 @@ namespace MOGWAI.Primitives
                     }
                 }
 
-                var httpContent = new ByteArrayContent(content.Items.ToArray());
-
-                // Content headers (Content-Type, etc.) live on HttpContent.Headers,
-                // separate from the request's own headers above
-
-                if (record.GetItem("contentHeaders") is MOGRecord contentHeaders)
-                {
-                    foreach (var key in contentHeaders.Items.Keys)
-                    {
-                        if (contentHeaders.Items[key] is MOGString ms)
-                            httpContent.Headers.TryAddWithoutValidation(key, ms.Value);
-                    }
-                }
-
-                request.Content = httpContent;
-
                 // TODO: propagate a CancellationToken tied to the watchdog (time counter)
                 // once it's in place, in addition to the HttpClient's Timeout.
 
-                using var response = await Engine.HttpClient.SendAsync(request);
+                // ResponseHeadersRead: we only need the headers, not the body (HEAD by definition
+                // returns no body). This avoids waiting for content that will never arrive.
 
-                // We always read the body, even on HTTP error (4xx/5xx),
-                // since it often contains useful info (JSON error message, etc.)
-
-                var body = await response.Content.ReadAsByteArrayAsync();
+                using var response = await Engine.HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
 
                 // Building the response headers record
                 // We merge the "protocol" headers (response.Headers) and the "content"
@@ -123,36 +98,35 @@ namespace MOGWAI.Primitives
                     responseHeaders.Items[header.Key] = values;
                 }
 
-                responseRecord.Items["state"] = new MOGBoolean(Engine, response.IsSuccessStatusCode);
-                responseRecord.Items["statusCode"] = new MOGNumber(Engine, (int)response.StatusCode);
-                responseRecord.Items["response"] = new MOGData(Engine, body);
-                responseRecord.Items["responseHeaders"] = responseHeaders;
+                responseRecord.SetBoolean("state", response.IsSuccessStatusCode);
+                responseRecord.SetNumber("statusCode", (int)response.StatusCode);
+                responseRecord.SetItem("responseHeaders", responseHeaders);
 
                 if (!response.IsSuccessStatusCode)
-                    responseRecord.Items["error"] = new MOGString(Engine, $"HTTP {(int)response.StatusCode} {response.ReasonPhrase}");
+                    responseRecord.SetString("error", $"HTTP {(int)response.StatusCode} {response.ReasonPhrase}");
             }
             catch (TaskCanceledException ex) when (!ex.CancellationToken.IsCancellationRequested)
             {
                 // SendAsync timed out (HttpClient's Timeout), distinct from a real cancellation
 
-                responseRecord.Items["state"] = new MOGBoolean(Engine, false);
-                responseRecord.Items["error"] = new MOGString(Engine, "Request timed out");
+                responseRecord.SetBoolean("state", false);
+                responseRecord.SetString("error", "Request timed out");
             }
             catch (HttpRequestException ex)
             {
                 // Network error (DNS, connection refused, SSL...): StatusCode is often null here
 
-                responseRecord.Items["state"] = new MOGBoolean(Engine, false);
+                responseRecord.SetBoolean("state", false);
 
                 if (ex.StatusCode.HasValue)
-                    responseRecord.Items["statusCode"] = new MOGNumber(Engine, (int)ex.StatusCode.Value);
+                    responseRecord.SetNumber("statusCode", (int)ex.StatusCode.Value);
 
-                responseRecord.Items["error"] = new MOGString(Engine, ex.Message);
+                responseRecord.SetString("error", ex.Message);
             }
             catch (Exception ex)
             {
-                responseRecord.Items["state"] = new MOGBoolean(Engine, false);
-                responseRecord.Items["error"] = new MOGString(Engine, ex.Message);
+                responseRecord.SetBoolean("state", false);
+                responseRecord.SetString("error", ex.Message);
             }
 
             Engine.StackPush(responseRecord);

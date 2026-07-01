@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`http.head` primitive** — sends an HTTP HEAD request. Identical to `http.get` but no response body is returned by definition — only the headers. Useful for checking whether a resource exists or retrieving its metadata (size, type, last modified) without downloading its content. Takes a record with `uri:` (mandatory) and `requestHeaders:` (optional). Returns `state:`, `statusCode:`, `responseHeaders:` and, on failure, `error:`. The `response:` key is intentionally absent (HEAD never returns a body).
+
+  ```
+  [
+      uri: "https://api.example.com/resource"
+      requestHeaders: [User-Agent: "MOGWAI"]
+  ] http.head -> 'result'
+
+  if (result->state:) then
+  {
+      "Content-Type: {! result->responseHeaders: Content-Type: get 0 get}" eval ?
+  }
+  else
+  {
+      "Failed - {! result->error:}" eval ?
+  }
+  ```
+
 - **`http.put` primitive** — sends an HTTP PUT request. Takes a record with `uri:` (mandatory), `content:` (mandatory, a `data`), `requestHeaders:` (optional record) and `contentHeaders:` (optional record). Returns a record with `state:`, `statusCode:`, `response:` (the response body as `data`), `responseHeaders:` (a record mapping each header name to a list of values) and, on failure, `error:`.
 
   ```
@@ -48,6 +66,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   ```
   [ uri: "https://api.example.com/items/42" ] http.delete -> 'result'
+  ```
+
+- **`udp.send` primitive** — sends a UDP datagram to a host/port. Takes a record with `host:` (mandatory), `port:` (mandatory), `data:` (mandatory) and `localPort:` (optional, ephemeral port if absent). Returns `state: true` on success, or `state: false` with `error:` on failure.
+
+  ```
+  [
+      host: "127.0.0.1"
+      port: 5000
+      data: {! "Hello from MOGWAI" ->utf8 }
+  ] udp.send -> 'result'
+  ```
+
+- **`udp.receive` primitive** — listens on a local UDP port and waits for an incoming datagram. Takes a record with `localPort:` (mandatory) and `timeout:` (mandatory, in ms). Returns `state: true` with `data:`, `remoteHost:` and `remotePort:` on success, or `state: false` with `error: "timeout"` if no datagram was received within the timeout.
+
+  ```
+  [
+      localPort: 5001
+      timeout: 3000
+  ] udp.receive -> 'result'
+  ```
+
+- **`udp.sendReceive` primitive** — sends a UDP datagram and waits for a response in a single operation. Takes a record with `host:` (mandatory), `port:` (mandatory), `data:` (mandatory), `timeout:` (mandatory, in ms) and `localPort:` (optional, ephemeral port if absent). Returns the same output shape as `udp.receive`.
+
+  ```
+  [
+      host: "127.0.0.1"
+      port: 5000
+      data: {! "Hello" ->utf8 }
+      timeout: 3000
+  ] udp.sendReceive -> 'result'
+
+  if (result->state:) then
+  {
+      result->data: ->utf8str ?
+  }
+  else
+  {
+      "Failed - {! result->error:}" eval ?
+  }
   ```
 
 ### Changed

@@ -2201,6 +2201,42 @@ else
 }
 ```
 
+### `http.head`
+
+Performs an HTTP HEAD request on a uri. Identical to `http.get` but no response body is ever returned — only the headers. Useful for checking whether a resource exists or retrieving its metadata (size, content type, last modified date) without downloading its content.
+
+| Key               | Mandatory | Usage                                                          |
+| ----------------- | --------- | --------------------------------------------------------------- |
+| `uri:`            | Yes       | A string, the target URI.                                       |
+| `requestHeaders:` | No        | A record mapping header names to string values.                 |
+
+The response is a record containing the following keys:
+
+| Key               | Usage                                                                                                          |
+| ----------------- | --------------------------------------------------------------------------------------------------------------- |
+| `state:`          | `true` if the request completed and the HTTP status code is a success code (2xx), `false` otherwise.            |
+| `statusCode:`     | The status code actually returned. May be absent for some network-level failures (e.g. DNS, TLS).               |
+| `responseHeaders:`| A record mapping each response header name to a list of values (always a list, even for a single value).        |
+| `error:`          | A string describing the failure. Only present when `state:` is `false`.                                         |
+
+Note: `response:` is intentionally absent — HEAD never returns a body by definition.
+
+```
+[
+    uri: "https://api.example.com/resource"
+    requestHeaders: [User-Agent: "MOGWAI"]
+] http.head -> 'result'
+
+if (result->state:) then
+{
+    "Exists - statusCode: {! result->statusCode:}" eval ?
+}
+else
+{
+    "Failed - {! result->error:}" eval ?
+}
+```
+
 ### `http.post`
 
 Performs an http post on a uri by specifying request headers, content headers and content.
@@ -2265,6 +2301,114 @@ The response, a record, is formatted exactly like that of the `http.get` functio
 ```
 
 ***
+
+***
+
+### `udp.send`
+
+Sends a UDP datagram to a host/port. No response is expected (fire and forget).
+
+| Key          | Mandatory | Usage                                              |
+| ------------ | --------- | -------------------------------------------------- |
+| `host:`      | Yes       | A string, the target IP address or hostname.       |
+| `port:`      | Yes       | A number, the target port.                         |
+| `data:`      | Yes       | A data, the datagram payload.                      |
+| `localPort:` | No        | A number, the local port to bind to. An ephemeral port is used if absent. |
+
+```
+[
+    host: "127.0.0.1"
+    port: 5000
+    data: {! "Hello from MOGWAI" ->utf8 }
+] udp.send -> 'result'
+
+if (result->state:) then
+{
+    "udp.send OK" ?
+}
+else
+{
+    "Failed - {! result->error:}" eval ?
+}
+```
+
+The response is a record containing the following keys:
+
+| Key      | Usage                                                     |
+| -------- | --------------------------------------------------------- |
+| `state:` | `true` if the datagram was sent successfully.             |
+| `error:` | A string describing the failure. Only present when `state:` is `false`. |
+
+***
+
+### `udp.receive`
+
+Listens on a local UDP port and waits for an incoming datagram.
+
+| Key          | Mandatory | Usage                                              |
+| ------------ | --------- | -------------------------------------------------- |
+| `localPort:` | Yes       | A number, the local port to listen on.             |
+| `timeout:`   | Yes       | A number, the maximum wait time in ms.             |
+
+```
+[
+    localPort: 5001
+    timeout: 3000
+] udp.receive -> 'result'
+
+if (result->state:) then
+{
+    result->data: ->utf8str ?
+}
+else
+{
+    "Failed - {! result->error:}" eval ?
+}
+```
+
+The response is a record containing the following keys:
+
+| Key           | Usage                                                                                      |
+| ------------- | ------------------------------------------------------------------------------------------ |
+| `state:`      | `true` if a datagram was received within the timeout.                                      |
+| `data:`       | A data containing the received datagram payload.                                           |
+| `remoteHost:` | A string, the IP address of the sender.                                                    |
+| `remotePort:` | A number, the port of the sender.                                                          |
+| `error:`      | A string describing the failure (`"timeout"` if no datagram was received in time). Only present when `state:` is `false`. |
+
+***
+
+### `udp.sendReceive`
+
+Sends a UDP datagram and waits for a response in a single operation. This is the most common pattern for request/response protocols over UDP.
+
+| Key          | Mandatory | Usage                                              |
+| ------------ | --------- | -------------------------------------------------- |
+| `host:`      | Yes       | A string, the target IP address or hostname.       |
+| `port:`      | Yes       | A number, the target port.                         |
+| `data:`      | Yes       | A data, the datagram payload.                      |
+| `timeout:`   | Yes       | A number, the maximum wait time for a response in ms. |
+| `localPort:` | No        | A number, the local port to bind to. An ephemeral port is used if absent. |
+
+The response, a record, is formatted exactly like that of the `udp.receive` function.
+
+```
+[
+    host: "127.0.0.1"
+    port: 5000
+    data: {! "Hello" ->utf8 }
+    timeout: 3000
+] udp.sendReceive -> 'result'
+
+if (result->state:) then
+{
+    result->data: ->utf8str ?
+}
+else
+{
+    "Failed - {! result->error:}" eval ?
+}
+```
 
 ### `->uri`
 

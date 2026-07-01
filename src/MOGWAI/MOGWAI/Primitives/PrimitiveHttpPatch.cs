@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveHttpPatch : PrimitiveParamsRecord
     {
+        public override Version Birth => new(8, 14, 0);
+
         public PrimitiveHttpPatch(MogwaiEngine engine, string name) : base(engine, name)
         {
 

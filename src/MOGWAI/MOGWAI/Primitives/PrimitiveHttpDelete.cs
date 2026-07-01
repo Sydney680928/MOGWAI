@@ -19,6 +19,8 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveHttpDelete : PrimitiveParamsRecord
     {
+        public override Version Birth => new(8, 14, 0);
+
         public PrimitiveHttpDelete(MogwaiEngine engine, string name) : base(engine, name)
         {
 
