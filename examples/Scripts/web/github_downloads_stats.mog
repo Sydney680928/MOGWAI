@@ -1,0 +1,76 @@
+mogwai.reset
+
+console.clear
+
+# The host must have the 'TERMINAL' or 'GIZMO' skill
+
+if ('TERMINAL' hasSkill not 'GIZMO' hasSkill not and) then
+{
+    "Unable to run the script." ?
+    "The host must have the 'TERMINAL' or 'GIZMO' skill" ?
+    " " ?
+
+    mogwai.exit
+}
+
+# The runtime must be at least version 8.14
+
+if (mogwai.info->version: "8.14" ver>= not) then
+{
+    "Unable to run the script." ?
+    "The MOGWAI runtime must be at least version 8.14" ?
+    " " ?
+
+    mogwai.exit
+}
+
+"GITHUB - Downloads per release" ?
+"==============================" ?
+"" ?
+
+"GitHub owner/organization : " console.prompt -> 'owner'
+"Repository name           : " console.prompt -> 'repo'
+
+"" ?
+
+"https://api.github.com/repos/{! owner}/{! repo}/releases" eval -> 'apiUrl'
+
+[!
+    uri: apiUrl
+    requestHeaders: [User-Agent: "MOGWAI-DownloadStats"]
+] http.get -> 'result'
+
+if (result->state:) then
+{
+    result->response: utf8-> json-> -> 'releases'
+
+    0 -> 'grandTotal'
+
+    releases foreach 'rel' transform
+    {
+        rel->tag_name: -> 'tag'
+        rel->assets: -> 'assets'
+
+        tag ?
+
+        assets foreach 'a' transform
+        {
+            a->name: 32 str.padRight ?? " : " ?? a->download_count: ?
+            a->download_count:
+        } -> 'counts'
+
+        counts sum -> 'releaseTotal'
+        grandTotal releaseTotal + -> 'grandTotal'
+
+        "-> Release total : " ?? releaseTotal ?
+        "" ?
+
+        0
+    }
+
+    "TOTAL (assets only, excludes GitHub's auto-generated source zip) : " ?? grandTotal ?
+}
+else
+{
+    "Request failed - " ?? result->error: ?
+}
