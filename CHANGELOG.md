@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.14.0] - 2026-07-01
+
+### Added
+
 - **`http.head` primitive** — sends an HTTP HEAD request. Identical to `http.get` but no response body is returned by definition — only the headers. Useful for checking whether a resource exists or retrieving its metadata (size, type, last modified) without downloading its content. Takes a record with `uri:` (mandatory) and `requestHeaders:` (optional). Returns `state:`, `statusCode:`, `responseHeaders:` and, on failure, `error:`. The `response:` key is intentionally absent (HEAD never returns a body).
 
   ```
@@ -1100,7 +1108,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.13.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.14.0...HEAD
+[8.14.0]: https://github.com/Sydney680928/mogwai/compare/v8.13.0...v8.14.0
 [8.13.0]: https://github.com/Sydney680928/mogwai/compare/v8.12.0...v8.13.0
 [8.12.0]: https://github.com/Sydney680928/mogwai/compare/v8.11.0...v8.12.0
 [8.11.0]: https://github.com/Sydney680928/mogwai/compare/v8.10.1...v8.11.0
