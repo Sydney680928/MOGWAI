@@ -472,6 +472,27 @@ if (temp 25 >) then
 - .NET 9.0 support
 - Complete documentation
 
+### Version 8.1
+
+- `+/-` primitive to negate a number
+- New error code: `OperationNotSupportedError` (MW.7)
+- Convenience typed-object helpers on `MOGBaseItems` (`AddString`, `AddNumber`, `AddBoolean`, …) and `MOGRecord` (`SetString`, `SetNumber`, `SetBoolean`, …) — no explicit `Engine` reference required
+- `foreach ... transform` — transform items while iterating a list
+
+### Version 8.2
+
+- Classic-style call syntax as alternatives to RPN: `foo[x: 50 y: 20]` (named parameters) and `foo(2 3 4)` (parameter list)
+- Parser now reports the source position on error (used by MOGWAI STUDIO)
+- Fixed UI freezes and timer/event issues in the Blazor WebAssembly playground under long-running scripts
+
+### Version 8.3
+
+- Variable references with `&varname` — mutate variable content in place instead of pushing a copy (`+`, `set`, `get`, `butfirst`, `butlast`, `last`, `first`, `sub`, `size`)
+- Explicit variable access with the `@` sigil — significant performance gain on frequent variable access
+- `char->` primitive — ASCII code from a single character
+- `foreach` loop over string characters
+- Performance work: host function detection at parse time, faster dictionary lookups, removed systematic primitive cloning during execution
+
 ### Version 8.4
 
 - Plugin contract via `MOGWAI.IPlugin` interface
