@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,27 +15,47 @@
 using MOGWAI.Engine;
 using MOGWAI.Objects;
 using System.Text.RegularExpressions;
-using System.Threading;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveRegexIsMatch : MOGPrimitive
+    internal class PrimitiveRegexSplit : MOGPrimitive
     {
         public override Version Birth => new(8, 15, 0);
 
-        public PrimitiveRegexIsMatch(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveRegexSplit(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
-        private Task<EvalResult> RegexIsMatch(string input, string pattern, int timeout)
+        private Task<EvalResult> RegexSplit(string input, string pattern, int timeout)
         {
             try
             {
-                var regex = new Regex(pattern, RegexOptions.None, timeout == 0 ? Regex.InfiniteMatchTimeout : TimeSpan.FromMilliseconds(timeout));
+                var regexTimeout = timeout == 0 ? Regex.InfiniteMatchTimeout : TimeSpan.FromMilliseconds(timeout);
+                var regex = new Regex(pattern, RegexOptions.None, regexTimeout);
+
+                var pieces = new MOGList(Engine);
+                var lastEnd = 0;
+
                 var match = regex.Match(input);
 
-                Engine.StackPushBoolean(match.Success);
+                while (match.Success)
+                {
+                    // Piece between the end of the previous match and the start of this one
+                    // Captured groups are intentionally ignored, only the split pieces are kept
+
+                    pieces.AddString(input.Substring(lastEnd, match.Index - lastEnd));
+
+                    lastEnd = match.Index + match.Length;
+
+                    match = match.NextMatch();
+                }
+
+                // Trailing piece after the last match
+
+                pieces.AddString(input.Substring(lastEnd));
+
+                Engine.StackPush(pieces);
 
                 return Task.FromResult(EvalResult.NoError);
             }
@@ -51,7 +71,7 @@ namespace MOGWAI.Primitives
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveRegexIsMatch(Engine, Name);
+            var obj = new PrimitiveRegexSplit(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
@@ -59,8 +79,8 @@ namespace MOGWAI.Primitives
         public override Task<EvalResult> EngineEval()
         {
             // 2 possible signatures
-            // "input" "pattern" regex.isMatch
-            // "input" "pattern" timeout regex.isMatch
+            // "input" "pattern" regex.split
+            // "input" "pattern" timeout regex.split
 
             // At least 2 arguments are required on the stack
 
@@ -83,14 +103,14 @@ namespace MOGWAI.Primitives
                         var pattern = Engine.StackPopString();
                         var input = Engine.StackPopString();
 
-                        // Call regex.isMatch with the user-defined timeout
+                        // Call regex.split with the user-defined timeout
 
-                        return RegexIsMatch(input.Value, pattern.Value, timeout.IntValue);
+                        return RegexSplit(input.Value, pattern.Value, timeout.IntValue);
                     }
                 }
 
                 // Drop the 3-argument handling
-                // Fall through to 2 arguments      
+                // Fall through to 2 arguments
             }
 
             // Check the 2-argument signature
@@ -106,9 +126,9 @@ namespace MOGWAI.Primitives
                     var pattern = Engine.StackPopString();
                     var input = Engine.StackPopString();
 
-                    // Call regex.isMatch without a user-defined timeout = 1000ms
+                    // Call regex.split without a user-defined timeout = 1000ms
 
-                    return RegexIsMatch(input.Value, pattern.Value, 1000);
+                    return RegexSplit(input.Value, pattern.Value, 1000);
                 }
             }
 

@@ -1196,6 +1196,80 @@ An unrecognized escape sequence (for example `\q`) raises **MW.22** (bad argumen
 "C:\\Users\\test" eval ?       # → "C:\Users\test"
 ```
 
+## Regular expressions
+
+Regular expressions (**regex**) describe text patterns rather than exact substrings. They are more powerful than the `str.*` functions above for validating formats (emails, dates...), extracting structured information from text, or performing complex search-and-replace. MOGWAI uses the standard .NET regular expression engine, so any pattern written for .NET, C#, or most other regex-capable languages works as-is.
+
+A full regex tutorial is out of scope here — countless resources cover the syntax (character classes, quantifiers, anchors, capture groups...). What follows focuses on how regex is exposed in MOGWAI.
+
+### Inline options
+
+Case sensitivity and other matching options are not passed as separate parameters — they're embedded directly in the pattern itself, .NET style:
+
+| Option | Meaning |
+|---|---|
+| `(?i)` | Case-insensitive matching |
+| `(?m)` | Multiline mode (`^`/`$` match at line boundaries, not just string boundaries) |
+| `(?s)` | Singleline mode (`.` also matches newlines) |
+| `(?x)` | Ignore whitespace in the pattern (for more readable patterns) |
+
+```
+"CAT" "(?i)cat" regex.isMatch ?   # → true, case-insensitive
+```
+
+### Protecting against runaway patterns
+
+Some regex patterns can take an extremely long time to evaluate on certain inputs — a phenomenon known as *catastrophic backtracking* (or ReDoS). To protect the runtime, every `regex.*` primitive accepts an optional `timeout` (in milliseconds, defaults to `1000`). If matching takes longer, **MW.101** is raised instead of freezing the runtime. Passing `0` disables the timeout entirely — only do this if you trust the pattern.
+
+### Testing a pattern — `regex.isMatch`
+
+Returns `true`/`false` depending on whether a string matches a pattern:
+
+```
+"stephane@coding4phone.com" "^[\w.-]+@[\w.-]+\.\w+$" regex.isMatch ?   # → true
+```
+
+### Finding a match — `regex.match`
+
+Finds the first match and returns details about it: the matched text, its position, and any capture groups. Named groups (`(?<name>...)`) are especially useful for extracting structured data:
+
+```
+"2026-07-02" "^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})$" regex.match -> 'result'
+
+result->groups: year: get ?    # → "2026"
+```
+
+### Finding all matches — `regex.matches`
+
+Same idea as `regex.match`, but returns every match found in the string, up to an optional `maxResults` limit (defaults to `1000`, guards against building huge result lists on permissive patterns):
+
+```
+"2026-01-15 2026-03-22" "\d{4}-\d{2}-\d{2}" regex.matches -> 'result'
+
+result->matches: count ?    # → 2
+```
+
+### Replacing matches — `regex.replace`
+
+Replaces every match with a replacement string. Captured groups can be reinjected in the replacement using .NET's native backreference syntax (`$1`, `${name}`):
+
+```
+"2026-07-02" "(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})" "${day}/${month}/${year}" regex.replace ?
+# → "02/07/2026"
+```
+
+### Splitting on a pattern — `regex.split`
+
+Splits a string into a list wherever the pattern matches:
+
+```
+"2026-07-02" "-" regex.split ?    # → ("2026" "07" "02")
+```
+
+### Error handling
+
+All `regex.*` primitives raise **MW.100** if the pattern itself is invalid (e.g. an unclosed bracket), and **MW.101** if matching exceeds `timeout`. `regex.matches` additionally raises **MW.22** if an explicit `maxResults` is `0` or negative.
+
 # CONVERSION FUNCTIONS
 
 To convert an object to another (for example a character string to a number or vice versa) **MOGWAI** has conversion functions that start or end with the `->` symbol. The position of the symbol follows a consistent **direction rule**: as a **prefix** it means *produce this type* (e.g. `->num`, `->data`, `->utf8`); as a **suffix** it means *consume this type* (e.g. `hex->`, `base64->`, `utf8->`). This rule holds throughout the chapter.

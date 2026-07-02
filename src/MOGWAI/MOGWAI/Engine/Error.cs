@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading;
+
 namespace MOGWAI.Engine
 {
     public class Error
@@ -72,6 +74,9 @@ namespace MOGWAI.Engine
         public static readonly Error UnknownInstanceError = RegisterError("MW.93", "unknown instance error");
         public static readonly Error UnknownPropertyError = RegisterError("MW.94", "unknown property error");
         public static readonly Error ReservedPropertyError = RegisterError("MW.95", "reserved property error");
+
+        public static readonly Error InvalidRegexPattern = RegisterError("MW.100", "invalid regex pattern error");
+        public static readonly Error RegexTimeoutExceeded = RegisterError("MW.101", "regex timeout exceeded error");
 
         public static readonly Error FatalError = RegisterError("MW.!!!", "fatal error");
 

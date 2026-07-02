@@ -2525,6 +2525,133 @@ else
 
 ***
 
+### `regex.isMatch`
+
+Teste si une chaîne correspond à un pattern regex en utilisant la syntaxe des expressions régulières .NET. Des options inline (`(?i)` insensible à la casse, `(?m)` multiligne, `(?s)` singleline, `(?x)` ignorer les espaces du pattern) peuvent être intégrées directement dans le pattern.
+
+**Signature :** `input pattern regex.isMatch → bool`
+**Signature (timeout personnalisé) :** `input pattern timeout regex.isMatch → bool`
+
+| Paramètre | Obligatoire | Usage |
+| --- | --- | --- |
+| `input` | Oui | Une string, le texte à tester. |
+| `pattern` | Oui | Une string, le pattern regex. |
+| `timeout` | Non | Un nombre, le temps de matching maximum en ms. Vaut `1000` par défaut. `0` signifie aucun timeout. |
+
+Lève **MW.100** (pattern regex invalide) si `pattern` n'est pas une expression régulière valide. Lève **MW.101** (timeout regex dépassé) si le matching prend plus de temps que `timeout`.
+
+```
+"CAT" "(?i)cat" regex.isMatch ?    # → true
+"dog" "cat" regex.isMatch ?        # → false
+```
+
+***
+
+### `regex.match`
+
+Trouve la première correspondance d'un pattern regex dans une chaîne. Mêmes paramètres que `regex.isMatch`.
+
+**Signature :** `input pattern regex.match → record`
+**Signature (timeout personnalisé) :** `input pattern timeout regex.match → record`
+
+Retourne un enregistrement :
+
+| Clé | Usage |
+| --- | --- |
+| `success:` | `true` si une correspondance a été trouvée. |
+| `value:` | La sous-chaîne correspondante. Présente uniquement si `success:` vaut `true`. |
+| `index:` | Index (base zéro) de la correspondance. Présent uniquement si `success:` vaut `true`. |
+| `length:` | Longueur de la correspondance. Présente uniquement si `success:` vaut `true`. |
+| `groups:` | Un enregistrement associant les noms des groupes capturants nommés à leur valeur capturée. Présent uniquement si `success:` vaut `true`. |
+| `groupsByIndex:` | Une liste de tous les groupes capturés par position (position `0` = correspondance complète). Présente uniquement si `success:` vaut `true`. |
+
+Lève **MW.100**/**MW.101** comme décrit pour `regex.isMatch`.
+
+```
+"2026-07-02" "^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})$" regex.match -> 'result'
+
+result->groups: year: get ?    # → "2026"
+```
+
+***
+
+### `regex.matches`
+
+Trouve toutes les correspondances d'un pattern regex dans une chaîne. La recherche s'arrête dès que `maxResults` correspondances ont été trouvées, ce qui borne le temps d'exécution et la mémoire utilisée sur de gros textes ou des patterns permissifs.
+
+**Signature :** `input pattern regex.matches → record`
+**Signature (timeout personnalisé) :** `input pattern timeout regex.matches → record`
+**Signature (timeout et maxResults personnalisés) :** `input pattern timeout maxResults regex.matches → record`
+
+| Paramètre | Obligatoire | Usage |
+| --- | --- | --- |
+| `input` | Oui | Une string, le texte à parcourir. |
+| `pattern` | Oui | Une string, le pattern regex. |
+| `timeout` | Non | Un nombre, le temps de matching maximum en ms. Vaut `1000` par défaut. `0` signifie aucun timeout. |
+| `maxResults` | Non | Un nombre, le nombre maximum de correspondances à retourner. Vaut `1000` par défaut. Doit être supérieur à `0`. |
+
+Retourne un enregistrement :
+
+| Clé | Usage |
+| --- | --- |
+| `matches:` | Une liste d'enregistrements, chacun ayant la même forme que la sortie de `regex.match` (sans `success:`, puisque seules les vraies correspondances sont listées). |
+| `truncated:` | `true` si `maxResults` a été atteint avant que toutes les correspondances de `input` aient été trouvées. |
+
+Lève **MW.100**/**MW.101** comme décrit pour `regex.isMatch`. Lève **MW.22** (valeur d'argument invalide) si `maxResults` est fourni et n'est pas supérieur à `0`.
+
+```
+"cat dog cat" "cat" regex.matches -> 'result'
+
+result->matches: count ?     # → 2
+result->truncated: ?         # → false
+```
+
+***
+
+### `regex.replace`
+
+Remplace toutes les correspondances d'un pattern regex dans une chaîne. `replacement` prend en charge la syntaxe native de back-références .NET (`$1`, `${name}`) pour réinjecter les groupes capturés. Toutes les correspondances sont remplacées ; il n'y a aucune limite sur le nombre de remplacements.
+
+**Signature :** `input pattern replacement regex.replace → string`
+**Signature (timeout personnalisé) :** `input pattern replacement timeout regex.replace → string`
+
+| Paramètre | Obligatoire | Usage |
+| --- | --- | --- |
+| `input` | Oui | Une string, le texte à transformer. |
+| `pattern` | Oui | Une string, le pattern regex. |
+| `replacement` | Oui | Une string, le texte de remplacement. Peut référencer les groupes capturés via `$1`, `${name}`, etc. |
+| `timeout` | Non | Un nombre, le temps de matching maximum en ms. Vaut `1000` par défaut. `0` signifie aucun timeout. |
+
+Lève **MW.100**/**MW.101** comme décrit pour `regex.isMatch`.
+
+```
+"2026-07-02" "(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})" "${day}/${month}/${year}" regex.replace ?
+# → "02/07/2026"
+```
+
+***
+
+### `regex.split`
+
+Découpe une chaîne à chaque correspondance d'un pattern regex, en retournant une liste des morceaux entre les correspondances. Contrairement à `Regex.Split` natif de .NET, les groupes capturés ne sont jamais inclus dans le résultat — seuls les morceaux découpés le sont.
+
+**Signature :** `input pattern regex.split → list`
+**Signature (timeout personnalisé) :** `input pattern timeout regex.split → list`
+
+| Paramètre | Obligatoire | Usage |
+| --- | --- | --- |
+| `input` | Oui | Une string, le texte à découper. |
+| `pattern` | Oui | Une string, le pattern regex utilisé comme séparateur. |
+| `timeout` | Non | Un nombre, le temps de matching maximum en ms. Vaut `1000` par défaut. `0` signifie aucun timeout. |
+
+Lève **MW.100**/**MW.101** comme décrit pour `regex.isMatch`.
+
+```
+"2026-07-02" "-" regex.split ?    # → ("2026" "07" "02")
+```
+
+***
+
 ## FONCTIONS DE DÉBOGAGE (utilisées avec MOGWAI STUDIO)
 
 ### `debug.write`

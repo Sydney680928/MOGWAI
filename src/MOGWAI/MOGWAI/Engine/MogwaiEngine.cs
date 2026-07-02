@@ -341,6 +341,14 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveStrPadRight(this, "str.padRight"));
             RegisterPublicPrimitive(new PrimitiveStrInsert(this, "str.insert"));
             RegisterPublicPrimitive(new PrimitiveStrRemove(this, "str.remove"));
+                
+            // Regex functions
+
+            RegisterPublicPrimitive(new PrimitiveRegexIsMatch(this, "regex.isMatch"));
+            RegisterPublicPrimitive(new PrimitiveRegexMatch(this, "regex.match"));
+            RegisterPublicPrimitive(new PrimitiveRegexMatches(this, "regex.matches"));
+            RegisterPublicPrimitive(new PrimitiveRegexReplace(this, "regex.replace"));
+            RegisterPublicPrimitive(new PrimitiveRegexSplit(this, "regex.split"));
 
             // Output screen functions
 

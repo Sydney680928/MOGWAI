@@ -1196,6 +1196,80 @@ Une séquence d'échappement non reconnue (par exemple `\q`) lève **MW.22** (va
 "C:\\Users\\test" eval ?       # → "C:\Users\test"
 ```
 
+## Expressions régulières
+
+Les expressions régulières (**regex**) décrivent des motifs de texte plutôt que des sous-chaînes exactes. Elles sont plus puissantes que les fonctions `str.*` vues plus haut pour valider des formats (emails, dates...), extraire des informations structurées d'un texte, ou effectuer des recherches-remplacements complexes. MOGWAI utilise le moteur d'expressions régulières standard de .NET, donc tout pattern écrit pour .NET, C#, ou la plupart des autres langages supportant les regex fonctionne tel quel.
+
+Un tutoriel complet sur les regex sort du cadre de ce document — de nombreuses ressources couvrent la syntaxe (classes de caractères, quantificateurs, ancres, groupes capturants...). Ce qui suit se concentre sur la façon dont les regex sont exposées dans MOGWAI.
+
+### Options inline
+
+La sensibilité à la casse et les autres options de matching ne sont pas passées comme paramètres séparés — elles sont intégrées directement dans le pattern lui-même, à la façon .NET :
+
+| Option | Signification |
+|---|---|
+| `(?i)` | Matching insensible à la casse |
+| `(?m)` | Mode multiligne (`^`/`$` correspondent aux limites de ligne, pas seulement aux limites de la chaîne) |
+| `(?s)` | Mode singleline (`.` correspond aussi aux retours à la ligne) |
+| `(?x)` | Ignore les espaces dans le pattern (pour des patterns plus lisibles) |
+
+```
+"CAT" "(?i)cat" regex.isMatch ?   # → true, insensible à la casse
+```
+
+### Se protéger des patterns incontrôlables
+
+Certains patterns regex peuvent prendre un temps extrêmement long à évaluer sur certaines entrées — un phénomène appelé *catastrophic backtracking* (ou ReDoS). Pour protéger le runtime, chaque primitive `regex.*` accepte un `timeout` optionnel (en millisecondes, `1000` par défaut). Si le matching prend plus de temps, **MW.101** est levée plutôt que de figer le runtime. Passer `0` désactive complètement le timeout — à ne faire que si vous faites confiance au pattern.
+
+### Tester un pattern — `regex.isMatch`
+
+Retourne `true`/`false` selon qu'une chaîne correspond ou non à un pattern :
+
+```
+"stephane@coding4phone.com" "^[\w.-]+@[\w.-]+\.\w+$" regex.isMatch ?   # → true
+```
+
+### Trouver une correspondance — `regex.match`
+
+Trouve la première correspondance et retourne des détails à son sujet : le texte trouvé, sa position, et les groupes capturés éventuels. Les groupes nommés (`(?<name>...)`) sont particulièrement utiles pour extraire des données structurées :
+
+```
+"2026-07-02" "^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})$" regex.match -> 'result'
+
+result->groups: year: get ?    # → "2026"
+```
+
+### Trouver toutes les correspondances — `regex.matches`
+
+Même principe que `regex.match`, mais retourne toutes les correspondances trouvées dans la chaîne, jusqu'à une limite `maxResults` optionnelle (`1000` par défaut, pour éviter de construire une liste de résultats énorme avec un pattern trop permissif) :
+
+```
+"2026-01-15 2026-03-22" "\d{4}-\d{2}-\d{2}" regex.matches -> 'result'
+
+result->matches: count ?    # → 2
+```
+
+### Remplacer des correspondances — `regex.replace`
+
+Remplace chaque correspondance par une chaîne de remplacement. Les groupes capturés peuvent être réinjectés dans le remplacement via la syntaxe native de back-références .NET (`$1`, `${name}`) :
+
+```
+"2026-07-02" "(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})" "${day}/${month}/${year}" regex.replace ?
+# → "02/07/2026"
+```
+
+### Découper selon un pattern — `regex.split`
+
+Découpe une chaîne en une liste à chaque endroit où le pattern trouve une correspondance :
+
+```
+"2026-07-02" "-" regex.split ?    # → ("2026" "07" "02")
+```
+
+### Gestion des erreurs
+
+Toutes les primitives `regex.*` lèvent **MW.100** si le pattern lui-même est invalide (ex. un crochet non fermé), et **MW.101** si le matching dépasse `timeout`. `regex.matches` lève en plus **MW.22** si un `maxResults` explicite vaut `0` ou est négatif.
+
 # FONCTIONS DE CONVERSION
 
 Pour convertir un objet en un autre (par exemple une chaîne de caractères en nombre ou vice versa), **MOGWAI** dispose de fonctions de conversion qui commencent ou se terminent par le symbole `->`. La position du symbole suit une **règle directionnelle** constante : en **préfixe**, il signifie *produire ce type* (ex. `->num`, `->data`, `->utf8`) ; en **suffixe**, il signifie *consommer ce type* (ex. `hex->`, `base64->`, `utf8->`). Cette règle s'applique à tout ce chapitre.

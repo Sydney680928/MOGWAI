@@ -2518,6 +2518,133 @@ else
 
 ***
 
+### `regex.isMatch`
+
+Tests whether a string matches a regex pattern using .NET regular expression syntax. Inline options (`(?i)` case-insensitive, `(?m)` multiline, `(?s)` singleline, `(?x)` ignore pattern whitespace) can be embedded directly in the pattern.
+
+**Signature:** `input pattern regex.isMatch → bool`
+**Signature (custom timeout):** `input pattern timeout regex.isMatch → bool`
+
+| Parameter | Mandatory | Usage |
+| --- | --- | --- |
+| `input` | Yes | A string, the text to test. |
+| `pattern` | Yes | A string, the regex pattern. |
+| `timeout` | No | A number, maximum matching time in ms. Defaults to `1000`. `0` means no timeout. |
+
+Raises **MW.100** (invalid regex pattern) if `pattern` is not a valid regular expression. Raises **MW.101** (regex timeout exceeded) if matching takes longer than `timeout`.
+
+```
+"CAT" "(?i)cat" regex.isMatch ?    # → true
+"dog" "cat" regex.isMatch ?        # → false
+```
+
+***
+
+### `regex.match`
+
+Finds the first match of a regex pattern in a string. Same parameters as `regex.isMatch`.
+
+**Signature:** `input pattern regex.match → record`
+**Signature (custom timeout):** `input pattern timeout regex.match → record`
+
+Returns a record:
+
+| Key | Usage |
+| --- | --- |
+| `success:` | `true` if a match was found. |
+| `value:` | The matched substring. Present only if `success:` is `true`. |
+| `index:` | Zero-based index of the match. Present only if `success:` is `true`. |
+| `length:` | Length of the match. Present only if `success:` is `true`. |
+| `groups:` | A record mapping named capture group names to their captured value. Present only if `success:` is `true`. |
+| `groupsByIndex:` | A list of all captured groups by position (position `0` = full match). Present only if `success:` is `true`. |
+
+Raises **MW.100**/**MW.101** as described for `regex.isMatch`.
+
+```
+"2026-07-02" "^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})$" regex.match -> 'result'
+
+result->groups: year: get ?    # → "2026"
+```
+
+***
+
+### `regex.matches`
+
+Finds all matches of a regex pattern in a string. Matching stops early once `maxResults` matches have been found, keeping execution time and memory bounded on large inputs or permissive patterns.
+
+**Signature:** `input pattern regex.matches → record`
+**Signature (custom timeout):** `input pattern timeout regex.matches → record`
+**Signature (custom timeout and maxResults):** `input pattern timeout maxResults regex.matches → record`
+
+| Parameter | Mandatory | Usage |
+| --- | --- | --- |
+| `input` | Yes | A string, the text to search. |
+| `pattern` | Yes | A string, the regex pattern. |
+| `timeout` | No | A number, maximum matching time in ms. Defaults to `1000`. `0` means no timeout. |
+| `maxResults` | No | A number, maximum number of matches to return. Defaults to `1000`. Must be greater than `0`. |
+
+Returns a record:
+
+| Key | Usage |
+| --- | --- |
+| `matches:` | A list of records, each shaped like `regex.match`'s output (without `success:`, since only actual matches are listed). |
+| `truncated:` | `true` if `maxResults` was reached before all matches in `input` were found. |
+
+Raises **MW.100**/**MW.101** as described for `regex.isMatch`. Raises **MW.22** (bad argument value) if `maxResults` is provided and is not greater than `0`.
+
+```
+"cat dog cat" "cat" regex.matches -> 'result'
+
+result->matches: count ?     # → 2
+result->truncated: ?         # → false
+```
+
+***
+
+### `regex.replace`
+
+Replaces all matches of a regex pattern in a string. `replacement` supports native .NET backreference syntax (`$1`, `${name}`) to reinject captured groups. All matches are replaced; there is no limit on the number of replacements.
+
+**Signature:** `input pattern replacement regex.replace → string`
+**Signature (custom timeout):** `input pattern replacement timeout regex.replace → string`
+
+| Parameter | Mandatory | Usage |
+| --- | --- | --- |
+| `input` | Yes | A string, the text to transform. |
+| `pattern` | Yes | A string, the regex pattern. |
+| `replacement` | Yes | A string, the replacement text. May reference captured groups via `$1`, `${name}`, etc. |
+| `timeout` | No | A number, maximum matching time in ms. Defaults to `1000`. `0` means no timeout. |
+
+Raises **MW.100**/**MW.101** as described for `regex.isMatch`.
+
+```
+"2026-07-02" "(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})" "${day}/${month}/${year}" regex.replace ?
+# → "02/07/2026"
+```
+
+***
+
+### `regex.split`
+
+Splits a string on every match of a regex pattern, returning a list of the pieces between matches. Unlike .NET's native `Regex.Split`, captured groups are never included in the result — only the split pieces themselves.
+
+**Signature:** `input pattern regex.split → list`
+**Signature (custom timeout):** `input pattern timeout regex.split → list`
+
+| Parameter | Mandatory | Usage |
+| --- | --- | --- |
+| `input` | Yes | A string, the text to split. |
+| `pattern` | Yes | A string, the regex pattern used as separator. |
+| `timeout` | No | A number, maximum matching time in ms. Defaults to `1000`. `0` means no timeout. |
+
+Raises **MW.100**/**MW.101** as described for `regex.isMatch`.
+
+```
+"2026-07-02" "-" regex.split ?    # → ("2026" "07" "02")
+```
+
+***
+
 ## DEBUGGING FUNCTIONS (used with MOGWAI STUDIO)
 
 ### `debug.write`

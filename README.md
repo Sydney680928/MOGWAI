@@ -50,7 +50,7 @@ Write formulas the way you already know them, and grow into RPN at your own pace
 
 - **Stack-Based RPN Syntax** - Clean, unambiguous, no operator precedence
 - **Infix Expressions via `calc`** - Write classic math formulas (`"5 * X + 2"`), auto-converted to RPN via Shunting-yard
-- **304 Built-in Functions** - Math, strings, lists, files, HTTP, and more
+- **354 Built-in Functions** - Math, strings, lists, files, HTTP, and more
 - **Async/Await Support** - Modern asynchronous execution
 - **Plugin System** - Clean plugin contract via `MOGWAI.IPlugin` — official plugins in development
 - **Battle-Tested** - 10+ years of real-world usage
@@ -151,7 +151,7 @@ Syntax highlighting, autocompletion, runtime execution, step-by-step debugging, 
 - **License:** Proprietary (free to use)
 - **Marketplace:** [mogwai.mogwai-language](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language)
 - **Documentation:** [MOGWAI_VSCODE.md](docs/EN/MOGWAI_VSCODE.md)
-- **Status:** Available — v1.3.0
+- **Status:** Available — v1.3.4
 
 ### MOGWAI STUDIO (in development)
 
@@ -268,8 +268,8 @@ $result ?                   # → (1 4 9 16 25)
 
 ```mogwai
 # 5 — Structured data with records  (space-delimited — no commas)
-[name: "MOGWAI" version: "8.9.1"] -> 'info'
-info ?                      # → [name: "MOGWAI" version: "8.9.1"]
+[name: "MOGWAI" version: "8.14.0"] -> 'info'
+info ?                      # → [name: "MOGWAI" version: "8.14.0"]
 ```
 
 ```mogwai
@@ -356,6 +356,7 @@ mogwai/
 │   │       └── MOGWAI_CLI/         # Command-line interface and REPL
 │   ├── MAUI/
 │   │   └── MauiExample/            # Cross-platform mobile app
+│   ├── Scripts/                    # Standalone .mog example scripts (games, tasks, web)
 │   └── WinForms/
 │       └── WinFormsExample/        # Turtle graphics demo
 ├── images/                         # Screenshots and media
@@ -365,13 +366,14 @@ mogwai/
 │       ├── MOGWAI/
 │       │   ├── Engine/             # Core runtime engine
 │       │   ├── Objects/            # MOGWAI object types
-│       │   ├── Primitives/         # Built-in functions (304 primitives)
+│       │   ├── Primitives/         # Built-in functions (354 primitives)
 │       │   ├── Interfaces/         # Public interfaces (IDelegate, IPlugin)
 │       │   └── Exceptions/         # Exception types
 │       ├── MOGWAI.Tests/           # Unit tests
 │       └── MOGWAI_TEST/            # Lightweight CLI runner for in-solution testing
 ├── LICENSE                         # Apache 2.0 license
 ├── NOTICE                          # Copyright notice
+├── CONTRIBUTING.md                 # Contribution guidelines
 └── README.md                       # This file
 ```
 
@@ -382,7 +384,7 @@ mogwai/
 ### Complete Guides
 
 - **[Language Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_EN.md)** - Complete MOGWAI language guide
-- **[Function Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 304 built-in functions
+- **[Function Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 354 built-in functions
 - **[Integration Guide](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI in your .NET apps
 - **[VS Code Extension Guide](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_VSCODE.md)** - How to use VS Code with the MOGWAI runtime
 
@@ -395,6 +397,9 @@ Examples are available:
 - **[WinForms Example](https://github.com/Sydney680928/mogwai/tree/main/examples/WinForms)** - Turtle graphics with MOGWAI
 - **[MAUI Example](https://github.com/Sydney680928/mogwai/tree/main/examples/MAUI)** - Cross-platform mobile app
 - **[Blazor Example](https://github.com/Sydney680928/mogwai/tree/main/examples/Blazor)** - Blazor WASM app
+- **[Scripts](https://github.com/Sydney680928/mogwai/tree/main/examples/Scripts)** - Standalone `.mog` scripts (games, task patterns, a GitHub API example)
+
+  ![MOGWAI Snake](./images/snake.gif)
 
 ### Changelog
 
@@ -503,12 +508,41 @@ if (temp 25 >) then
 - `path.home` / `path.setHome` primitives and `HomeDirectory` property on `MogwaiEngine`
 - `mogwai.info` now includes a `skills:` key
 
-### Version 8.9.1 (Latest)
+### Version 8.9.1
 
 - `task.start` primitive — launch a parameterless task cleanly, without passing and discarding a dummy value
 - Corrected public error identifiers (host-side naming fixes; scripts are unaffected, they identify errors by `MW.x` code)
 - Auto-evaluation `!` flag now cleared after evaluation of records and lists — avoids needless re-evaluation on every access
 - Corrected English wording in several built-in error messages
+
+### Version 8.10
+
+- Additional math primitives: `round`, `log`, `log10`, `exp`, `E` (Euler's number), `gcd`, `lcm`
+
+### Version 8.11
+
+- Hyperbolic trig functions: `sinh`, `cosh`, `tanh`, `asinh`, `acosh`, `atanh`
+- `str.repeat` primitive
+- Version comparison primitives (`ver?`, `ver>`, `ver<`, `ver>=`, `ver<=`, `ver==`, `ver!=`) for validating and comparing version strings
+- Twelve new string manipulation primitives: search & test (`str.indexOf`, `str.startsWith`, `str.endsWith`), transformation (`str.replace`, `str.trim`/`trimStart`/`trimEnd`, `str.padLeft`/`padRight`, `str.insert`, `str.remove`), and `->urlDecode`
+
+### Version 8.12
+
+- `calc` primitive — write classic infix math expressions (`"5 * X + (7 + sin(Y))"`), auto-converted to RPN via Dijkstra's Shunting-yard algorithm and executed immediately
+
+### Version 8.13
+
+- `setRandomSeed` primitive — deterministic, reproducible random number generation
+- `mogwai.primitiveInfo` primitive — introspection on a primitive's name and introducing version
+- `insert` / `sort` primitives for lists and `data`
+- Escape sequences in string literals (`\n`, `\t`, `\"`, `\\`, …)
+
+### Version 8.14 (Latest)
+
+- Full HTTP verb coverage: `http.head`, `http.put`, `http.patch`, `http.delete` (joining the existing `http.get`/`http.post`)
+- `udp.send`, `udp.receive`, `udp.sendReceive` primitives for UDP datagram communication
+- HTTP internals hardened: shared `HttpClient` instance across all HTTP primitives, response body and headers always read (including on 4xx/5xx), distinct error reporting for timeouts vs. network failures
+- `sum` on an empty list `()` now returns `0` instead of raising an error
 
 ### Future Plans
 

@@ -19,25 +19,63 @@ using System.Threading;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveRegexIsMatch : MOGPrimitive
+    internal class PrimitiveRegexMatch : MOGPrimitive
     {
         public override Version Birth => new(8, 15, 0);
 
-        public PrimitiveRegexIsMatch(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveRegexMatch(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
-        private Task<EvalResult> RegexIsMatch(string input, string pattern, int timeout)
+        private Task<EvalResult> RegexMatch(string input, string pattern, int timeout)
         {
+            var record = new MOGRecord(Engine);
+
             try
             {
                 var regex = new Regex(pattern, RegexOptions.None, timeout == 0 ? Regex.InfiniteMatchTimeout : TimeSpan.FromMilliseconds(timeout));
                 var match = regex.Match(input);
 
-                Engine.StackPushBoolean(match.Success);
+                record.SetBoolean("success", match.Success);
 
-                return Task.FromResult(EvalResult.NoError);
+                if (match.Success)
+                {
+                    record.SetString("value", match.Value);
+                    record.SetNumber("index", match.Index);
+                    record.SetNumber("length", match.Length);
+
+                    // groups: (names only)
+
+                    var namedGroups = new MOGRecord(Engine);
+
+                    foreach (var groupName in regex.GetGroupNames())
+                    {
+                        // GetGroupNames() also includes numeric groups ("0", "1"...)
+                        // We only keep actual names (non-numeric)
+
+                        if (!int.TryParse(groupName, out _))
+                        {
+                            var g = match.Groups[groupName];
+
+                            if (g.Success)
+                                namedGroups.SetString(groupName, g.Value);
+                        }
+                    }
+
+                    record.SetItem("groups", namedGroups);
+
+                    // groupsByIndex: (position 0 = full match)
+
+                    var byIndex = new MOGList(Engine);
+
+                    foreach (Group g in match.Groups)
+                        byIndex.AddString(g.Success ? g.Value : "");
+
+                    record.SetItem("groupsByIndex", byIndex);
+                }
+
+                Engine.StackPush(record);
             }
             catch (ArgumentException ex)
             {
@@ -47,11 +85,13 @@ namespace MOGWAI.Primitives
             {
                 return Task.FromResult(EvalResult.Failure(Engine, Error.RegexTimeoutExceeded, Name, $"Regex timeout exceeded ({timeout}ms)"));
             }
+
+            return Task.FromResult(EvalResult.NoError);
         }
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveRegexIsMatch(Engine, Name);
+            var obj = new PrimitiveRegexMatch(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
@@ -59,8 +99,8 @@ namespace MOGWAI.Primitives
         public override Task<EvalResult> EngineEval()
         {
             // 2 possible signatures
-            // "input" "pattern" regex.isMatch
-            // "input" "pattern" timeout regex.isMatch
+            // "input" "pattern" regex.match
+            // "input" "pattern" timeout regex.match
 
             // At least 2 arguments are required on the stack
 
@@ -83,9 +123,9 @@ namespace MOGWAI.Primitives
                         var pattern = Engine.StackPopString();
                         var input = Engine.StackPopString();
 
-                        // Call regex.isMatch with the user-defined timeout
+                        // Call regex.match with the user-defined timeout
 
-                        return RegexIsMatch(input.Value, pattern.Value, timeout.IntValue);
+                        return RegexMatch(input.Value, pattern.Value, timeout.IntValue);
                     }
                 }
 
@@ -106,9 +146,9 @@ namespace MOGWAI.Primitives
                     var pattern = Engine.StackPopString();
                     var input = Engine.StackPopString();
 
-                    // Call regex.isMatch without a user-defined timeout = 1000ms
+                    // Call regex.match without a user-defined timeout = 1000ms
 
-                    return RegexIsMatch(input.Value, pattern.Value, 1000);
+                    return RegexMatch(input.Value, pattern.Value, 1000);
                 }
             }
 

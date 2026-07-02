@@ -1,4 +1,4 @@
-﻿// Copyright 2015-2026 Stéphane Sibué
+// Copyright 2015-2026 Stéphane Sibué
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,27 +15,28 @@
 using MOGWAI.Engine;
 using MOGWAI.Objects;
 using System.Text.RegularExpressions;
-using System.Threading;
 
 namespace MOGWAI.Primitives
 {
-    internal class PrimitiveRegexIsMatch : MOGPrimitive
+    internal class PrimitiveRegexReplace : MOGPrimitive
     {
         public override Version Birth => new(8, 15, 0);
 
-        public PrimitiveRegexIsMatch(MogwaiEngine engine, string name) : base(engine, name)
+        public PrimitiveRegexReplace(MogwaiEngine engine, string name) : base(engine, name)
         {
 
         }
 
-        private Task<EvalResult> RegexIsMatch(string input, string pattern, int timeout)
+        private Task<EvalResult> RegexReplace(string input, string pattern, string replacement, int timeout)
         {
             try
             {
-                var regex = new Regex(pattern, RegexOptions.None, timeout == 0 ? Regex.InfiniteMatchTimeout : TimeSpan.FromMilliseconds(timeout));
-                var match = regex.Match(input);
+                var regexTimeout = timeout == 0 ? Regex.InfiniteMatchTimeout : TimeSpan.FromMilliseconds(timeout);
+                var regex = new Regex(pattern, RegexOptions.None, regexTimeout);
 
-                Engine.StackPushBoolean(match.Success);
+                var result = regex.Replace(input, replacement);
+
+                Engine.StackPushString(result);
 
                 return Task.FromResult(EvalResult.NoError);
             }
@@ -51,7 +52,7 @@ namespace MOGWAI.Primitives
 
         public override MOGPrimitive Duplicate()
         {
-            var obj = new PrimitiveRegexIsMatch(Engine, Name);
+            var obj = new PrimitiveRegexReplace(Engine, Name);
             obj.UpdateFromOther(this);
             return obj;
         }
@@ -59,56 +60,58 @@ namespace MOGWAI.Primitives
         public override Task<EvalResult> EngineEval()
         {
             // 2 possible signatures
-            // "input" "pattern" regex.isMatch
-            // "input" "pattern" timeout regex.isMatch
+            // "input" "pattern" "replacement" regex.replace
+            // "input" "pattern" "replacement" timeout regex.replace
 
-            // At least 2 arguments are required on the stack
+            // At least 3 arguments are required on the stack
 
-            if (Engine.StackSize < 2)
+            if (Engine.StackSize < 3)
                 return Task.FromResult(EvalResult.Failure(Engine, Error.TooFewArgumentsError, Name));
 
-            // Check the 3-argument signature first if enough arguments are on the stack
+            // Check the 4-argument signature first if enough arguments are on the stack
 
-            if (Engine.StackSize >= 3)
+            if (Engine.StackSize >= 4)
             {
-                var s3 = Engine.StackSign(3);
+                var s4 = Engine.StackSign(4);
 
-                if (s3.Count == 3)
+                if (s4.Count == 4)
                 {
-                    // We expect a number, a string, a string
+                    // We expect a number, a string, a string, a string
 
-                    if (s3[0] == typeof(MOGNumber) && s3[1] == typeof(MOGString) && s3[2] == typeof(MOGString))
+                    if (s4[0] == typeof(MOGNumber) && s4[1] == typeof(MOGString) && s4[2] == typeof(MOGString) && s4[3] == typeof(MOGString))
                     {
                         var timeout = Engine.StackPopNumber();
+                        var replacement = Engine.StackPopString();
                         var pattern = Engine.StackPopString();
                         var input = Engine.StackPopString();
 
-                        // Call regex.isMatch with the user-defined timeout
+                        // Call regex.replace with the user-defined timeout
 
-                        return RegexIsMatch(input.Value, pattern.Value, timeout.IntValue);
+                        return RegexReplace(input.Value, pattern.Value, replacement.Value, timeout.IntValue);
                     }
                 }
 
-                // Drop the 3-argument handling
-                // Fall through to 2 arguments      
+                // Drop the 4-argument handling
+                // Fall through to 3 arguments
             }
 
-            // Check the 2-argument signature
+            // Check the 3-argument signature
 
-            var s2 = Engine.StackSign(2);
+            var s3 = Engine.StackSign(3);
 
-            if (s2.Count == 2)
+            if (s3.Count == 3)
             {
-                // We expect a string, a string
+                // We expect a string, a string, a string
 
-                if (s2[0] == typeof(MOGString) && s2[1] == typeof(MOGString))
+                if (s3[0] == typeof(MOGString) && s3[1] == typeof(MOGString) && s3[2] == typeof(MOGString))
                 {
+                    var replacement = Engine.StackPopString();
                     var pattern = Engine.StackPopString();
                     var input = Engine.StackPopString();
 
-                    // Call regex.isMatch without a user-defined timeout = 1000ms
+                    // Call regex.replace without a user-defined timeout = 1000ms
 
-                    return RegexIsMatch(input.Value, pattern.Value, 1000);
+                    return RegexReplace(input.Value, pattern.Value, replacement.Value, 1000);
                 }
             }
 
