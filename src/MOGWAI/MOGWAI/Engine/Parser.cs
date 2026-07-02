@@ -784,31 +784,42 @@ namespace MOGWAI.Engine
         {
             int level = 0;
             char currentChar = '\0';
+            bool inString = false;
 
             while (_currentIndex < _code.Length)
             {
                 currentChar = _code[_currentIndex++];
 
-                if (currentChar == lastChar)
+                if (currentChar == '"' && firstChar != '"' && lastChar != '"')
                 {
-                    if (_currentIndex > 1 && _code[_currentIndex - 2] == '\\')
-                    {
-                        // Caractère d'échappement, on n'augmente pas le niveau
-                    }
-                    else if (level == 0 || --level < 0)
-                    {
-                        return;
-                    }
+                    inString = !inString;
                 }
-                else if (currentChar == firstChar)
+                else
                 {
-                    if (_currentIndex > 1 && _code[_currentIndex - 2] == '\\')
+                    if (!inString)
                     {
-                        // Caractère d'échappement, on n'augmente pas le niveau
-                    }
-                    else
-                    {
-                        level++;
+                        if (currentChar == lastChar)
+                        {
+                            if (_currentIndex > 1 && _code[_currentIndex - 2] == '\\')
+                            {
+                                // Caractère d'échappement, on n'augmente pas le niveau
+                            }
+                            else if (level == 0 || --level < 0)
+                            {
+                                return;
+                            }
+                        }
+                        else if (currentChar == firstChar)
+                        {
+                            if (_currentIndex > 1 && _code[_currentIndex - 2] == '\\')
+                            {
+                                // Caractère d'échappement, on n'augmente pas le niveau
+                            }
+                            else
+                            {
+                                level++;
+                            }
+                        }
                     }
                 }
 
