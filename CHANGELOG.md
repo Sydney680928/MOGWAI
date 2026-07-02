@@ -53,8 +53,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   ```
   ( "eee(ttt" )       # list containing a string with an unbalanced "("
-  [ "aaa[bbb" ]       # record containing a string with an unbalanced "["
+  [ x: "aaa[bbb" ]    # record containing a string with an unbalanced "["
   { "xxx{yyy" }       # block containing a string with an unbalanced "{"
+  « "xxx{yyy" »       # function containing a string with an unbalanced "«"
   # all now parse correctly
   ```
 
