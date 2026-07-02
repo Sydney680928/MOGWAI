@@ -463,7 +463,7 @@ if (temp 25 >) then
 
 ## Roadmap
 
-### Version 8.0 (Released)
+### Version 8.0
 
 - Complete rewrite with namespace organization
 - 240+ primitives
