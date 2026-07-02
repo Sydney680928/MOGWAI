@@ -9,9 +9,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`regex.isMatch` primitive** — tests whether a string matches a regex pattern. Takes `input`, `pattern` and an optional `timeout` (in ms, defaults to 1000, `0` = no timeout). Returns a plain boolean. Inline .NET options (`(?i)`, `(?m)`, `(?s)`, `(?x)`) are supported directly in the pattern. Raises **MW.100** (invalid regex pattern) or **MW.101** (timeout exceeded).
+
+  ```
+  "CAT" "(?i)cat" regex.isMatch ?    # → true
+  "dog" "cat" regex.isMatch ?        # → false
+  ```
+
+- **`regex.match` primitive** — finds the first match of a regex pattern in a string. Same parameters as `regex.isMatch`. Returns a record with `success:`, and on success `value:`, `index:`, `length:`, `groups:` (named capture groups, as a record) and `groupsByIndex:` (all groups by position, position 0 = full match). Raises **MW.100**/**MW.101** on error.
+
+  ```
+  "2026-07-02" "^(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})$" regex.match -> 'result'
+  result->groups: -> year:  # → "2026"
+  ```
+
+- **`regex.matches` primitive** — finds all matches of a regex pattern in a string. Takes `input`, `pattern`, an optional `timeout` (defaults to 1000ms) and an optional `maxResults` (defaults to 1000, must be greater than 0 if provided). Returns a record with `matches:` (a list of records, each shaped like `regex.match`'s output) and `truncated:` (`true` if `maxResults` was reached before exhausting all matches). Raises **MW.100**/**MW.101**, or **MW.22** (bad argument value) if `maxResults` is not greater than 0.
+
+  ```
+  "cat dog cat" "cat" regex.matches -> 'result'
+  result->matches: count ?    # → 2
+  ```
+
+- **`regex.replace` primitive** — replaces all matches of a regex pattern in a string. Takes `input`, `pattern`, `replacement` and an optional `timeout` (defaults to 1000ms). Supports native .NET backreference syntax in `replacement` (`$1`, `${name}`). Returns the resulting string. All matches are replaced, with no built-in limit on count. Raises **MW.100**/**MW.101**.
+
+  ```
+  "2026-07-02" "(?<year>\d{4})-(?<month>\d{2})-(?<day>\d{2})" "${day}/${month}/${year}" regex.replace ?
+  # → "02/07/2026"
+  ```
+
+- **`regex.split` primitive** — splits a string on every match of a regex pattern. Takes `input`, `pattern` and an optional `timeout` (defaults to 1000ms). Returns a list of the pieces between matches. Unlike .NET's native `Regex.Split`, captured groups are never included in the result — only the split pieces themselves. Raises **MW.100**/**MW.101**.
+
+  ```
+  "2026-07-02" "(-)" regex.split ?    # → ("2026" "07" "02")
+  ```
+
+- **New error codes MW.100 and MW.101** — reserved for the `regex.*` primitive family: **MW.100** (invalid regex pattern) and **MW.101** (regex timeout exceeded). Invalid `maxResults` values in `regex.matches` reuse the existing **MW.22** (bad argument value).
+
 ### Changed
 
 ### Fixed
+
+- **Parser** — fixed a tokenizing bug where a string literal containing the *same opening delimiter* as the block currently being parsed (`(` inside a list `( ... )`, `[` inside a record `[ ... ]`, `{` inside a block `{ ... }`, `«` inside `« ... »`) confused the parser's delimiter counting, causing it to expect an extra closing delimiter and fail to parse otherwise valid code. Characters inside string literals are no longer taken into account when matching delimiters.
+
+  ```
+  ( "eee(ttt" )       # list containing a string with an unbalanced "("
+  [ "aaa[bbb" ]       # record containing a string with an unbalanced "["
+  { "xxx{yyy" }       # block containing a string with an unbalanced "{"
+  # all now parse correctly
+  ```
 
 ## [8.14.0] - 2026-07-01
 
