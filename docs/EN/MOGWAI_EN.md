@@ -1,12 +1,13 @@
 # MOGWAI BASICS
 
-Curious where MOGWAI comes from — HP calculators, a BLE simulator, ten years of evolution? Read [**the full origin story**](MOGWAI_ORIGIN_EN.md).
+Curious where MOGWAI comes from — HP calculators, a BLE simulator, ten years of evolution? Read [**the full origin story**](MOGWAI_ORIGIN.md).
 
 > **Translating this document?** Please leave code blocks (` ```mogwai `) untranslated. Keywords like `for`, `do`, `if`, `then`, `else` are MOGWAI syntax, not English prose — translating them (e.g. `for` → `pour`) breaks the code.
 
 ## Table of Contents
 
 - [GETTING OFF TO A GOOD START](#getting-off-to-a-good-start)
+- [CLASSIC-STYLE CALLS OR NATIVE RPN — YOUR CHOICE](#classic-style-calls-or-native-rpn--your-choice)
 - [DISPLAYING VALUES](#displaying-values)
 - [SCREEN INPUT](#screen-input)
 - [VARIABLES](#variables)
@@ -49,7 +50,62 @@ It ensures you have an absolutely clean execution engine, no variables, no timer
 For example, the **MOGWAI CLI** application that allows you to "play" with **MOGWAI** never resets the execution context, which means that everything you create as you type lines is kept, which allows you to chain commands to perform operations step by step to test.
 
 So don't forget, to reset everything, use the `mogwai.reset` function.
- 
+
+# CLASSIC-STYLE CALLS OR NATIVE RPN — YOUR CHOICE
+
+**MOGWAI** is a stack-based (RPN) engine under the hood: arguments come first, the function name comes last — `5 7 +` instead of `5 + 7`. This is the native form the engine actually executes, and it is what most examples in this document use, for compactness.
+
+But you don't have to write it that way. Every function or primitive call in **MOGWAI** can also be written **classic-style**, with the function name first and its arguments between parentheses — the way it's done in C#, Java, JavaScript, and most mainstream languages:
+
+```
+5 7 +          # native RPN
++(5 7)         # classic-style — strictly equivalent
+
+"HELLO" size          # native RPN
+size("HELLO")         # classic-style
+```
+
+> **Space-separated, not comma-separated.** This is the one detail that trips up newcomers translating from C#, Java, or JavaScript by reflex: `+(5 7)` is correct, `+(5, 7)` is **not** — MOGWAI parameters are separated by spaces, never commas. There's no comma operator in the language at all.
+
+Both forms produce exactly the same result. The translation happens at parse time, before the engine even runs — there is zero performance difference between the two, and you can freely mix styles in the same script.
+
+## Named parameters
+
+Functions declared with named parameters (see [FUNCTION DECLARATION](#function-declaration)) have their own classic-style sugar, using square brackets instead of parentheses:
+
+```
+[a: 5 b: 9 x: 156] fx     # native RPN — a record passed to fx
+fx[a: 5 b: 9 x: 156]      # classic-style — same call
+```
+
+Same rule applies here: `a: 5 b: 9 x: 156`, no commas between the key/value pairs.
+
+## The one thing to watch: functions that expect a single list
+
+Classic-style call syntax simply moves whatever is between the parentheses onto the stack before making the call — it doesn't group values into a list for you. So for a function that expects **one list** as its whole argument (like `max`, `min`, `sum`, `average`, `sort`), the list needs its own parentheses *inside* the call:
+
+```
+max((1 2 3))        # correct — the inner (1 2 3) is the list, the outer () is the call
+max(1 2 3)           # wrong — this pushes 3 separate values, not a list
+```
+
+This is exactly how you'd pass an array literal to a function in C# (`Foo(new[]{1, 2, 3})`) — nothing MOGWAI-specific about it.
+
+## When RPN reads better
+
+For simple function and primitive calls, classic-style is usually the more familiar read. But for **comparisons and boolean logic**, nesting them classic-style tends to read worse, not better:
+
+```
+if (A 10 > B 100 < and) then { ... }              # native RPN — reads left to right
+if (and(>(A 10) <(B 100))) then { ... }           # classic-style — reads inside-out
+```
+
+For this reason, this document keeps comparisons and conditions in their native RPN form throughout, even where function calls elsewhere are shown classic-style.
+
+---
+
+From here on, most examples in this document are written in native RPN for compactness. Whenever you see a function or primitive call, remember you can always rewrite it classic-style using the rule above.
+
 # DISPLAYING VALUES
 
 There are mainly 2 functions for displaying values on the screen.
