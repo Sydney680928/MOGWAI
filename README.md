@@ -25,7 +25,7 @@ MOGWAI is a lightweight scripting engine you embed in your .NET applications —
 ### Looks familiar? It should.
 
 ```mogwai
-foo(45 "TOTO" 17)      # classic-style call — reads like foo(45, "TOTO", 17)
+foo(45 "TOTO" 17)       # classic-style call — reads like foo(45, "TOTO", 17)
 foo[x: 10 y: 20]        # named parameters, C#-style
 45 "TOTO" 17 foo        # the exact same call, written in MOGWAI's native RPN form
 ```
@@ -271,7 +271,7 @@ to 'square' with [n: .number] do
 }
 
 square(5) ?                  # → 25   (classic-style call)
-5 square ?                  # → 25   (same call, native RPN form)
+5 square ?                   # → 25   (same call, native RPN form)
 ```
 
 ```mogwai
