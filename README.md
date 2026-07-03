@@ -25,10 +25,12 @@ MOGWAI is a lightweight scripting engine you embed in your .NET applications —
 ### Looks familiar? It should.
 
 ```mogwai
-foo(45 "TOTO" 17)       # classic-style call — reads like foo(45, "TOTO", 17)
+foo(45 "TOTO" 17)      # classic-style call — reads like foo(45, "TOTO", 17)
 foo[x: 10 y: 20]        # named parameters, C#-style
 45 "TOTO" 17 foo        # the exact same call, written in MOGWAI's native RPN form
 ```
+
+> **Note the spaces, not commas.** MOGWAI parameters are space-separated — `foo(45 "TOTO" 17)`, not `foo(45, "TOTO", 17)`. It reads like a familiar function call, but there's no comma operator in the language.
 
 Under the hood, MOGWAI is a stack-based, concatenative engine — which is what gives it clean, unambiguous semantics with no operator precedence to reason about. But day to day, you can write and read code in the classic-style syntax above; the stack form is always there when you want it (better performance, more composable), never a requirement.
 
@@ -271,7 +273,7 @@ to 'square' with [n: .number] do
 }
 
 square(5) ?                  # → 25   (classic-style call)
-5 square ?                   # → 25   (same call, native RPN form)
+5 square ?                  # → 25   (same call, native RPN form)
 ```
 
 ```mogwai
