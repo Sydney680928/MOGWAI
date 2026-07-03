@@ -1,6 +1,6 @@
 <img src="./images/img01.png" title="" alt="MOGWAI" data-align="center">
 
-# [MOGWAI](https://www.mogwai.eu.com) - An embeddable RPN scripting engine for .NET
+# [MOGWAI](https://www.mogwai.eu.com) - Embeddable Scripting for .NET
 
 ![GitHub Stars](https://img.shields.io/github/stars/Sydney680928/mogwai?style=social)
 [![Build](https://github.com/Sydney680928/mogwai/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Sydney680928/mogwai/actions/workflows/ci.yml)
@@ -10,7 +10,7 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/MOGWAI.svg)](https://www.nuget.org/packages/MOGWAI/)
 [![VS Code Extension](https://img.shields.io/badge/VS%20Code-Extension-007ACC?logo=visualstudiocode)](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language)
 
-**Embeddable. Extensible. NativeAOT-friendly.** A small stack-based RPN runtime you can drop into any .NET app — desktop, mobile, or IoT.
+**Give your .NET app a scripting engine in 4 lines of code.** Embeddable, extensible, NativeAOT-friendly — small enough to drop into desktop, mobile, or IoT apps, to script workflows or expose safe, hot-swappable logic to your users.
 
 **▶ Try it now — [run MOGWAI in your browser](https://sydney680928.github.io/MOGWAI/)** — no install, no signup, runs entirely client-side.
 
@@ -20,9 +20,21 @@
 
 ## What is MOGWAI?
 
-MOGWAI is a lightweight scripting engine you embed in your .NET applications — to script complex workflows, expose safe user-customizable logic, or design your own DSL, all without leaving the .NET runtime (NativeAOT included). Under the hood it's a stack-based, concatenative language in the tradition of the legendary HP calculators (HP 28S, HP 48) — which gives it clean, unambiguous semantics with no operator precedence to reason about.
+MOGWAI is a lightweight scripting engine you embed in your .NET applications — to script complex workflows, expose safe user-customizable logic, or design your own DSL, all without leaving the .NET runtime (NativeAOT included).
+
+### Looks familiar? It should.
+
+```mogwai
+foo(45 "TOTO" 17)      # classic-style call — reads like foo(45, "TOTO", 17)
+foo[x: 10 y: 20]        # named parameters, C#-style
+45 "TOTO" 17 foo        # the exact same call, written in MOGWAI's native RPN form
+```
+
+Under the hood, MOGWAI is a stack-based, concatenative engine — which is what gives it clean, unambiguous semantics with no operator precedence to reason about. But day to day, you can write and read code in the classic-style syntax above; the stack form is always there when you want it (better performance, more composable), never a requirement.
 
 ### The stack, in 30 seconds
+
+*For the curious — here's what's actually happening under the hood.*
 
 MOGWAI reads left to right. Values are pushed onto a stack; operators consume values from it and push the result back. There's no operator precedence and no parentheses — the order on the stack *is* the program.
 
@@ -48,8 +60,7 @@ Write formulas the way you already know them, and grow into RPN at your own pace
 
 ### Key Features
 
-- **Stack-Based RPN Syntax** - Clean, unambiguous, no operator precedence
-- **Infix Expressions via `calc`** - Write classic math formulas (`"5 * X + 2"`), auto-converted to RPN via Shunting-yard
+- **Classic-Style Syntax** - Write `foo(45 "TOTO" 17)` or `foo[x: 10 y: 20]` — reads like C#/Java, no RPN required to get started
 - **354 Built-in Functions** - Math, strings, lists, files, HTTP, and more
 - **Async/Await Support** - Modern asynchronous execution
 - **Plugin System** - Clean plugin contract via `MOGWAI.IPlugin` — official plugins in development
@@ -58,6 +69,7 @@ Write formulas the way you already know them, and grow into RPN at your own pace
 - **NativeAOT-Ready** - Embed in ahead-of-time compiled .NET apps
 - **Cross-Platform** - Windows, Linux, macOS, Android, iOS
 - **VS Code Extension** - Syntax highlighting, autocompletion, run & debug directly from VS Code ([install](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language))
+- **Stack-Based RPN Core** - Clean, unambiguous engine underneath, with `calc` for classic infix math formulas when you want them (`"5 * X + 2"`, via Shunting-yard)
 
 ---
 
@@ -77,7 +89,7 @@ Clone the repository and build the CLI for your platform using the .NET SDK:
 
 ```bash
 git clone https://github.com/Sydney680928/mogwai.git
-cd mogwai/examples/Console/ConsoleExample
+cd mogwai/examples/Console/ConsoleExample/MOGWAI_CLI
 dotnet run
 ```
 
@@ -126,21 +138,21 @@ The core scripting engine, available as a NuGet package. Embed MOGWAI in your .N
 - **Package:** [MOGWAI on NuGet](https://www.nuget.org/packages/MOGWAI/)
 - **Status:** Production ready
 
-> **API stability.** MOGWAI follows Semantic Versioning. The scripting language surface — syntax, primitives, and `MW.x` error codes — aims to remain stable within the 8.x line: scripts written today keep working. The C# embedding API is still maturing and may see occasional breaking changes, always documented in the [CHANGELOG](CHANGELOG.md) (for example, the error-identifier renames in 8.9.1).
+> **API stability.** MOGWAI follows Semantic Versioning. Scripts written today keep working — the language surface (syntax, primitives, `MW.x` error codes) stays stable within the 8.x line. The C# embedding API is still maturing; occasional breaking changes there are documented in the [CHANGELOG](CHANGELOG.md).
 
 ### MOGWAI CLI (Open Source)
 
 Command-line interface for running MOGWAI scripts and interactive REPL sessions.
 
 - **License:** Apache 2.0
-- **Repository:** [MOGWAI CLI](https://github.com/Sydney680928/mogwai/tree/main/examples/Console/ConsoleExample)
+- **Source:** built from the [`examples/Console`](https://github.com/Sydney680928/mogwai/tree/main/examples/Console/ConsoleExample/MOGWAI_CLI) example, in this same repository
 - **Status:** Functional
 
 **Build from source** — requires the .NET SDK:
 
 ```bash
 git clone https://github.com/Sydney680928/mogwai.git
-cd mogwai/examples/Console/ConsoleExample
+cd mogwai/examples/Console/ConsoleExample/MOGWAI_CLI
 dotnet run
 ```
 
@@ -148,17 +160,17 @@ dotnet run
 
 Syntax highlighting, autocompletion, runtime execution, step-by-step debugging, and live variable inspection — all directly inside VS Code.
 
-- **License:** Proprietary (free to use)
+- **License:** Apache 2.0
+- **Repository:** [Sydney680928/mogwai-vscode](https://github.com/Sydney680928/mogwai-vscode)
 - **Marketplace:** [mogwai.mogwai-language](https://marketplace.visualstudio.com/items?itemName=mogwai.mogwai-language)
 - **Documentation:** [MOGWAI_VSCODE.md](docs/EN/MOGWAI_VSCODE.md)
 - **Status:** Available — v1.3.4
 
-### MOGWAI STUDIO (in development)
+### MOGWAI STUDIO
 
-MOGWAI STUDIO v2 — a cross-platform visual IDE for MOGWAI 8 (debugging, breakpoints, stack inspection, code editing) — is in early private development. More details will follow on [mogwai.eu.com](https://www.mogwai.eu.com).
+A visual IDE for MOGWAI 8 (debugging, breakpoints, stack inspection, code editing), currently built with WinForms (Windows only). Details will follow on [mogwai.eu.com](https://www.mogwai.eu.com) when available.
 
 - **License:** Proprietary (freemium)
-- **Status:** Early private development — not yet publicly available
 
 ---
 
@@ -204,6 +216,7 @@ New to MOGWAI? **Start with these three:**
 - [MOGWAI meets Avalonia — A cross-platform REPL in a single session](https://coding4phone.com/?p=2561&lang=en)
 - [MOGWAI Language Support for VS Code — v1.0.3](https://coding4phone.com/?p=2597&lang=en)
 - [Anatomy of MOGWAI — the fundamental properties of a modern concatenative language](https://coding4phone.com/?p=2615&lang=en)
+- [Counting GitHub release downloads… in MOGWAI](https://coding4phone.com/?p=2703&lang=en)
 
 </details>
 
@@ -257,7 +270,8 @@ to 'square' with [n: .number] do
     n n *
 }
 
-5 square ?                  # → 25
+square(5) ?                  # → 25   (classic-style call)
+5 square ?                  # → 25   (same call, native RPN form)
 ```
 
 ```mogwai
@@ -283,7 +297,7 @@ if ($answer 40 >) then
 > **Note on variables:** Variables prefixed with `$` are **global**. When the engine is instantiated with `keepAlive: true`, global variables persist across multiple script executions — making them the natural choice for interactive sessions like the REPL or the [Blazor playground](https://sydney680928.github.io/MOGWAI/). Local variables (without `$`) are scoped to a single execution and are the recommended approach for one-shot embedding scenarios.
 > ```csharp
 > // Global variables persist across executions
-> var engine = new MogwaiEngine("MyApp", keepAlive: true, useDefaultFolders: false);
+> var engine = new MogwaiEngine("MyApp", keepAlive: true);
 >
 > // Global variables are reset on each execution (default)
 > var engine = new MogwaiEngine("MyApp");
@@ -295,11 +309,12 @@ if ($answer 40 >) then
 
 MOGWAI is a focused tool, not a general-purpose language. It shines when:
 
-- You want **zero operator precedence ambiguity** — the stack is the single source of truth
+- You want **354 built-in functions** (math, strings, lists, files, HTTP, and more) without pulling in a heavier language runtime
 - You're embedding a scripting runtime in a **.NET** application, including **NativeAOT** builds
-- You appreciate the **concatenative programming** model in the tradition of Forth, Factor, PostScript and HP RPL
 - You need a **lightweight, extensible runtime** with a clean plugin contract
 - You want to offer safe, hot-swappable scripting to your users — update logic without recompiling or redeploying your app
+- You appreciate the **concatenative programming** model in the tradition of Forth, Factor, PostScript and HP RPL
+- You want **zero operator precedence ambiguity** — the stack is the single source of truth
 
 ---
 
@@ -428,7 +443,15 @@ A full-featured REPL and script editor running natively on Windows, Linux and ma
 ### Embedded Applications
 
 ```mogwai
-# WinForms turtle graphics
+# WinForms turtle graphics — classic-style
+turtle.forward(100)
+turtle.right(90)
+turtle.forward(100)
+"Square complete!" ?
+```
+
+```mogwai
+# same script, native RPN form
 100 turtle.forward
 90 turtle.right
 100 turtle.forward
@@ -442,14 +465,14 @@ A full-featured REPL and script editor running natively on Windows, Linux and ma
 *Illustrative example* — how MOGWAI orchestrates hardware through plugins:
 
 ```mogwai
-# Read sensor via BLE (requires MOGWAI_BLE plugin — coming soon)
-"AA:BB:CC:DD:EE:FF" ble.connect -> 'device'
-device "temperature" ble.read -> 'temp'
+# Read sensor via BLE (requires MOGWAI_BLE plugin — coming soon) — classic-style calls
+ble.connect("AA:BB:CC:DD:EE:FF") -> 'device'
+ble.read(device "temperature") -> 'temp'
 
-# Control based on value
+# Control based on value — comparisons stay in RPN, they read best that way
 if (temp 25 >) then
 {
-    "fan" gpio.on
+    gpio.on("fan")
 }
 ```
 
@@ -462,6 +485,17 @@ if (temp 25 >) then
 ---
 
 ## Roadmap
+
+Full version history lives in [CHANGELOG.md](CHANGELOG.md). Highlights of the latest release, **v8.14.0**:
+
+- Full HTTP verb coverage (`http.head/put/patch/delete`) and UDP primitives (`udp.send/receive/sendReceive`)
+- Hardened HTTP internals (shared `HttpClient`, consistent error reporting)
+- `sum` on an empty list `()` now returns `0` instead of raising an error
+
+**Next up:** a community plugins marketplace, additional language integrations, and an extended function library.
+
+<details>
+<summary>Older milestones (8.0 → 8.6)</summary>
 
 ### Version 8.0
 
@@ -514,187 +548,39 @@ if (temp 25 >) then
 - OOP support (classes, instances, properties, methods, lifecycle hooks)
 - MOGWAI STUDIO v2 (early private development — rebuilt from scratch for MOGWAI 8)
 
-### Version 8.7
+*(8.7 through 8.14 — skill system, OOP introspection, math/string primitive families, `calc`, HTTP/UDP support — see [CHANGELOG.md](CHANGELOG.md) for full detail.)*
 
-- Sorted identifiers
-- OOP introspection
-- External processes support
-
-### Version 8.8
-
-- Skill system — scripts can verify at startup that they run in the right host environment (`skills`, `hasSkill`, `mogwai.assertSkill`)
-- `IDelegate` default implementations — MOGWAI is now embeddable with zero delegate code for simple use cases
-- `console.width` / `console.height` primitives
-- `post` primitive — deferred block execution after pending events and timers
-- `path.home` / `path.setHome` primitives and `HomeDirectory` property on `MogwaiEngine`
-- `mogwai.info` now includes a `skills:` key
-
-### Version 8.9.1
-
-- `task.start` primitive — launch a parameterless task cleanly, without passing and discarding a dummy value
-- Corrected public error identifiers (host-side naming fixes; scripts are unaffected, they identify errors by `MW.x` code)
-- Auto-evaluation `!` flag now cleared after evaluation of records and lists — avoids needless re-evaluation on every access
-- Corrected English wording in several built-in error messages
-
-### Version 8.10
-
-- Additional math primitives: `round`, `log`, `log10`, `exp`, `E` (Euler's number), `gcd`, `lcm`
-
-### Version 8.11
-
-- Hyperbolic trig functions: `sinh`, `cosh`, `tanh`, `asinh`, `acosh`, `atanh`
-- `str.repeat` primitive
-- Version comparison primitives (`ver?`, `ver>`, `ver<`, `ver>=`, `ver<=`, `ver==`, `ver!=`) for validating and comparing version strings
-- Twelve new string manipulation primitives: search & test (`str.indexOf`, `str.startsWith`, `str.endsWith`), transformation (`str.replace`, `str.trim`/`trimStart`/`trimEnd`, `str.padLeft`/`padRight`, `str.insert`, `str.remove`), and `->urlDecode`
-
-### Version 8.12
-
-- `calc` primitive — write classic infix math expressions (`"5 * X + (7 + sin(Y))"`), auto-converted to RPN via Dijkstra's Shunting-yard algorithm and executed immediately
-
-### Version 8.13
-
-- `setRandomSeed` primitive — deterministic, reproducible random number generation
-- `mogwai.primitiveInfo` primitive — introspection on a primitive's name and introducing version
-- `insert` / `sort` primitives for lists and `data`
-- Escape sequences in string literals (`\n`, `\t`, `\"`, `\\`, …)
-
-### Version 8.14 (Latest)
-
-- Full HTTP verb coverage: `http.head`, `http.put`, `http.patch`, `http.delete` (joining the existing `http.get`/`http.post`)
-- `udp.send`, `udp.receive`, `udp.sendReceive` primitives for UDP datagram communication
-- HTTP internals hardened: shared `HttpClient` instance across all HTTP primitives, response body and headers always read (including on 4xx/5xx), distinct error reporting for timeouts vs. network failures
-- `sum` on an empty list `()` now returns `0` instead of raising an error
-
-### Future Plans
-
-- MOGWAI STUDIO v2 public release
-- Community plugins marketplace
-- Additional language integrations
-- Extended function library
+</details>
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Here's how you can help:
-
-### Reporting Issues
-
-Found a bug or have a feature request? Please open an issue on GitHub:
-
-- **Bug Reports:** Use the bug report template
-- **Feature Requests:** Describe the use case and expected behavior
-- **Questions:** Use GitHub Discussions
-
-### Contributing Code
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Commit with clear messages (`git commit -m 'Add amazing feature'`)
-5. Push to your fork (`git push origin feature/amazing-feature`)
-6. Open a Pull Request
-
-### Code Style
-
-- Follow existing code conventions
-- Add XML documentation comments for public APIs
-- Keep functions focused and well-named
+Contributions are welcome! Bug reports, feature requests, and pull requests all start the same way — see [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide (issue templates, branch/PR workflow, code style).
 
 ---
 
 ## Why MOGWAI?
 
-### Born from Real Needs
+Created in 2015 to simulate Bluetooth Low Energy devices for IoT testing, MOGWAI evolved over 10+ years into a full-featured scripting language now used in industrial automation — see how it drives an [electronic board test bench in production](docs/EN/use-cases/use-case-01-test-bench.md) ([read the story](https://coding4phone.com/?p=1990&lang=en)).
 
-Created in 2015 to simulate Bluetooth Low Energy devices for IoT testing. Over 10 years, MOGWAI evolved into a full-featured scripting language used in industrial automation.
-
-### Battle-Tested
-
-- **10+ years of real-world usage** - From prototyping to industrial environments
-- **A documented case** - See how MOGWAI scripts drive an [electronic board test bench in production](docs/EN/use-cases/use-case-01-test-bench.md) ([read the story](https://coding4phone.com/?p=1990&lang=en))
-
-### HP Calculator Heritage
-
-Inspired by the legendary HP 28S and HP 48 calculators, MOGWAI brings RPN elegance to modern software:
-
-- **Clear semantics** - No operator precedence confusion
-- **Stack-based** - Natural for complex calculations
-- **Composable** - Build complex operations from simple parts
+> If you grew up on an HP 28S or HP 48, the stack engine underneath will feel like home — that's the lineage MOGWAI's RPN core comes from. Everyone else can just use the classic-style syntax shown above and never think about it.
 
 ---
 
 ## License
 
-### MOGWAI Runtime & CLI
-
-**Apache License 2.0**
-
-```
-Copyright 2015-2026 Stéphane Sibué
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
-
-See [LICENSE](LICENSE) and [NOTICE](NOTICE) for details.
-
-### MOGWAI STUDIO
-
-**Proprietary License** - Freemium model (Free + Pro versions)
-
-MOGWAI STUDIO is not open source and will be distributed under a proprietary license. More details will be announced upon release.
+- **MOGWAI Runtime & CLI:** Apache License 2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE)
+- **MOGWAI STUDIO:** Proprietary, freemium (Free + Pro) — not open source; details to follow on [mogwai.eu.com](https://www.mogwai.eu.com)
 
 ---
 
-## Links
+## Links & Community
 
-- **Website:** [mogwai.eu.com](https://www.mogwai.eu.com)
-- **NuGet Package:** [MOGWAI](https://www.nuget.org/packages/MOGWAI/)
-- **Author:** [Stéphane Sibué](https://www.coding4phone.com)
-- **GitHub:** [Sydney680928/mogwai](https://github.com/Sydney680928/mogwai)
-- **Issues:** [Report a bug](https://github.com/Sydney680928/mogwai/issues)
-
----
-
-## Community & Support
-
-- **GitHub Issues:** For bug reports and feature requests
-- **GitHub Discussions:** For questions and community support
-- **Email:** Contact via [coding4phone.com](https://www.coding4phone.com)
-
----
-
-## Acknowledgments
-
-- **HP Calculators** - For inspiring the RPN approach
-- **Open Source Community** - For .NET and supporting tools
-- **Early Adopters** - For feedback and real-world testing
-
----
-
-## Have Questions or Feedback?
-
-We'd love to hear from you!
-
-- **Found a bug?** [Open an issue](https://github.com/Sydney680928/mogwai/issues/new)
-- **Have an idea?** [Start a discussion](https://github.com/Sydney680928/mogwai/discussions/new)
-- **Like MOGWAI?** Star the repo to show your support!
-- **Using MOGWAI in production?** We'd love to hear your story!
-
-Even a simple "I tried it and it works!" is valuable feedback!
+- **Website:** [mogwai.eu.com](https://www.mogwai.eu.com) · **NuGet:** [MOGWAI](https://www.nuget.org/packages/MOGWAI/) · **Author:** [Stéphane Sibué](https://www.coding4phone.com)
+- **Found a bug or have an idea?** [Open an issue](https://github.com/Sydney680928/mogwai/issues/new) or [start a discussion](https://github.com/Sydney680928/mogwai/discussions/new)
+- **Using MOGWAI in production?** We'd love to hear your story — even a simple "I tried it and it works!" helps.
 
 ---
 
 **Made with ❤️ by [Stéphane Sibué](https://www.coding4phone.com)**
-
-*MOGWAI - Where stack-based elegance meets modern .NET power* ✨
