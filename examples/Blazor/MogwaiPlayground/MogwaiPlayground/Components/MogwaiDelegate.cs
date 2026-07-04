@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Net;
+using System.Runtime.InteropServices;
 using MOGWAI.Engine;
 using MOGWAI.Interfaces;
 using MOGWAI.Objects;
@@ -42,24 +43,27 @@ public class MogwaiDelegate : IDelegate
     public Task ProgramEnd(MogwaiEngine engine, EvalResult result)
         => Task.CompletedTask;
 
-    public Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message)
+    public async Task<EvalResult> ConsolePrintLn(MogwaiEngine engine, string message)
     {
         OnOutput?.Invoke(new TerminalLine(message, LineKind.Output));
-        return Task.FromResult(EvalResult.NoError);
+        await Task.Delay(1);
+        return EvalResult.NoError;
     }
 
-    public Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message)
+    public async Task<EvalResult> ConsolePrint(MogwaiEngine engine, string message)
     {
         // ConsolePrint sans saut de ligne — on l'ajoute quand même comme ligne
         // pour simplifier l'affichage (le terminal est ligne par ligne)
         OnOutput?.Invoke(new TerminalLine(message, LineKind.Output));
-        return Task.FromResult(EvalResult.NoError);
+        await Task.Delay(1);
+        return EvalResult.NoError;
     }
 
-    public Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine)
+    public async Task<EvalResult> ConsoleClearScreen(MogwaiEngine engine)
     {
         OnOutput?.Invoke(new TerminalLine(string.Empty, LineKind.Clear));
-        return Task.FromResult(EvalResult.NoError);
+        await Task.Delay(1);
+        return EvalResult.NoError;
     }
 
     public async Task<(EvalResult result, string? value)> Prompt(MogwaiEngine engine, string message)
@@ -67,6 +71,7 @@ public class MogwaiDelegate : IDelegate
         if (PromptHandler is not null)
         {
             var value = await PromptHandler(message);
+            await Task.Delay(1);
             return (EvalResult.NoError, value);
         }
 
