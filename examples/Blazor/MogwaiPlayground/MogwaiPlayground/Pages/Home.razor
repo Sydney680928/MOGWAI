@@ -530,20 +530,16 @@
     {
         var lines = new[]
         {
-            "╔══════════════════════════════════╗",
-            "║        MOGWAI PLAYGROUND         ║",
-            "║ Stack-based scripting for .NET   ║",
-            "╚══════════════════════════════════╝",
-            "",
-            "  Type MOGWAI code and press Enter.",
-            "  Use ↑ ↓ to navigate through history.",
-            "  Click an example to run it.",
-            "  Type 'edit' or click ✎ Edit to open the multi-line editor.",
-            "",
-            "  💡 Variables prefixed with $ are global and",
-            "     persist between commands (e.g. 42 -> '$x').",
-            "     Local variables are reset after each execution.",
-            "",
+            "- Type MOGWAI code and press Enter.",
+            "- Use ↑ ↓ to navigate through history.",
+            "- Click an example to run it.",
+            "- Type 'edit' or click ✎ Edit to open the multi-line editor.",
+            " ",
+            "💡 Variables prefixed with $ are global and persist between commands (e.g. 42 -> '$x').",
+            "   Local variables are reset after each execution.",
+            " ",
+            "Enjoy !",
+            " "
         };
         foreach (var l in lines)
             _lines.Add(new TerminalLine(l, LineKind.System));
