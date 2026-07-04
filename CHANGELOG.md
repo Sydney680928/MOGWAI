@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.15.0] - 2026-07-04
+
+### Added
+
 - **`regex.isMatch` primitive** — tests whether a string matches a regex pattern. Takes `input`, `pattern` and an optional `timeout` (in ms, defaults to 1000, `0` = no timeout). Returns a plain boolean. Inline .NET options (`(?i)`, `(?m)`, `(?s)`, `(?x)`) are supported directly in the pattern. Raises **MW.100** (invalid regex pattern) or **MW.101** (timeout exceeded).
 
   ```
@@ -44,8 +52,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ```
 
 - **New error codes MW.100 and MW.101** — reserved for the `regex.*` primitive family: **MW.100** (invalid regex pattern) and **MW.101** (regex timeout exceeded). Invalid `maxResults` values in `regex.matches` reuse the existing **MW.22** (bad argument value).
-
-### Changed
 
 ### Fixed
 
@@ -1154,7 +1160,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.14.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.15.0...HEAD
+[8.15.0]: https://github.com/Sydney680928/mogwai/compare/v8.14.0...v8.15.0
 [8.14.0]: https://github.com/Sydney680928/mogwai/compare/v8.13.0...v8.14.0
 [8.13.0]: https://github.com/Sydney680928/mogwai/compare/v8.12.0...v8.13.0
 [8.12.0]: https://github.com/Sydney680928/mogwai/compare/v8.11.0...v8.12.0
