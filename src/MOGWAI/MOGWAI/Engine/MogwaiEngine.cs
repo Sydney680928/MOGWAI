@@ -1605,7 +1605,6 @@ namespace MOGWAI.Engine
         {
             _currentLocalVarsContext = new VarContext(name);
             _varsContext.Add(_currentLocalVarsContext);
-
         }
 
         public void VarPopContext()

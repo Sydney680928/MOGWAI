@@ -35,7 +35,6 @@ namespace MOGWAI.Primitives
         {
             // name timer.start
 
-
             var s = Engine.StackSign(1);
 
             if (s.Count == 0)
