@@ -1457,7 +1457,7 @@ The get function allows you to retrieve an element from a list. As with `set`, y
 # This instruction will place the value 60 on the stack
 ```
 
-If the specified index is not in the possible range (from 0 to size-1), the function returns `null` and does not raise an error.
+If the specified index is not in the possible range (from 0 to size-1), the function raises an error (**MW.22**, bad argument value).
  
 ## Retrieving an element "buried" in a list
 
@@ -1767,7 +1767,15 @@ The `extract` function allows you to extract only certain keys from a record in 
 # This instruction will place the record [x: 100 y: 200] on the stack
 ```
 
-If you request a key that doesn't exist, an error is raised.
+If you request a key that doesn't exist, no error is raised — it's simply included in the resulting record with the value `null`.
+
+```
+# If we request a key that doesn't exist (t:)
+
+[x: 20 y: 20 z: 100] (x: t:) extract
+
+# This instruction places [x: 20 t: null] on the stack
+```
 
 ## Checking that a key is present in a record
 
