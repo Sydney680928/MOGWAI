@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`SugarBehavior` property on `MogwaiEngine`** — exposes ~30 boolean flags to selectively enable or disable individual syntactic sugar constructs at parse time: loops (`AllowForeverDo`, `AllowWhileDo`, `AllowDoWhile`, `AllowRepeat`, `AllowForDo`, `AllowForStepDo`, `AllowForeachDo`/`AllowForeachTransformDo`/`AllowForeachFilterDo`), conditionals (`AllowIfThen`, `AllowIfThenElse`, `AllowSwitch`, `AllowGuardElse`, `AllowTrap`), function definitions (`AllowToDo` and its `WithDo`/`ParamsDo`/`ReturnsDo` variants), store operators (`AllowSto`, `AllowStoPlus`, `AllowStoSubstract`, `AllowStoMultiply`, `AllowStoDivide`), and misc sugar (`AllowTask`, `AllowClassDo`, `AllowAfterDo`, `AllowPost`, `AllowDeclare`, `AllowPipeRef`, `AllowOnEventDo`, `AllowTimerDo`). All flags default to `true`, preserving existing behavior. When a flag is disabled, the parser raises a `MogwaiParseErrorException` if the corresponding construct is used.
+
+  ```
+  engine.SugarBehavior.AllowDuringDo = false;
+  # Parsing "during 1000 do { ... }" now throws:
+  # MogwaiParseErrorException: "Sugar DURING-DO is not allowed."
+  ```
+
 ### Changed
 
 ### Fixed
