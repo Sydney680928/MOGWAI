@@ -914,6 +914,8 @@ namespace MOGWAI.Engine
             }
         }
 
+        public SyntacticSugarBehavior SugarBehavior { get; private set; } = new();
+
         #endregion
 
         #region PRIVATE FUNCTIONS   

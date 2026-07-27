@@ -966,6 +966,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index >= 4)
             {
+                if (!engine.SugarBehavior.AllowTask) 
+                    throw new MogwaiParseErrorException("Sugar TASK is not allowed.");
+
                 var name = _parsedObjects[index + 1];
 
                 var doOrStartOrSendWord = _parsedObjects[index + 2] as MOGWord;
@@ -1060,6 +1063,8 @@ namespace MOGWAI.Engine
                 // 2 do
                 // 3 code
 
+                if (!engine.SugarBehavior.AllowClassDo) throw new MogwaiParseErrorException("Sugar CLASS-DO is not allowed.");
+
                 var name = _parsedObjects[index + 1];
 
                 var code = _parsedObjects[index + 3] as MOGCode;
@@ -1118,6 +1123,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index >= 1)
             {
+                if (!engine.SugarBehavior.AllowSwitch) 
+                    throw new MogwaiParseErrorException("Sugar SWITCH is not allowed.");
+
                 var globalCode = _parsedObjects[index + 1] as MOGCode;
 
                 if (globalCode != null)
@@ -1185,6 +1193,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index >= 4)
             {
+                if (!engine.SugarBehavior.AllowAfterDo) 
+                    throw new MogwaiParseErrorException("Sugar AFTER DO is not allowed.");
+
                 var interval = _parsedObjects[index + 1];
 
                 var doWord = _parsedObjects[index + 2] as MOGWord;
@@ -1223,6 +1234,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index >= 2)
             {
+                if (!engine.SugarBehavior.AllowPost) 
+                    throw new MogwaiParseErrorException("Sugar POST is not allowed.");
+
                 var code = _parsedObjects[index + 1] as MOGCode;
 
                 if (code != null)
@@ -1260,22 +1274,27 @@ namespace MOGWAI.Engine
                 switch (word)
                 {
                     case "->":
+                        if (!engine.SugarBehavior.AllowSto) throw new MogwaiParseErrorException("Sugar STO is not allowed.");
                         primitive = engine.GetPrimitive(typeof(PrimitiveSTO), true);
                         break;
 
                     case "->+":
+                        if (!engine.SugarBehavior.AllowStoPlus) throw new MogwaiParseErrorException("Sugar STOPLUS is not allowed.");
                         primitive = engine.GetPrimitive(typeof(PrimitiveSTOPLUS), true);
                         break;
 
                     case "->-":
+                        if (!engine.SugarBehavior.AllowStoSubstract) throw new MogwaiParseErrorException("Sugar STOSUBSTRACT is not allowed.");
                         primitive = engine.GetPrimitive(typeof(PrimitiveSTOSUBSTRACT), true );
                         break;
 
                     case "->*":
+                        if (!engine.SugarBehavior.AllowStoMultiply) throw new MogwaiParseErrorException("Sugar STOMULTIPLY is not allowed.");   
                         primitive = engine.GetPrimitive(typeof(PrimitiveSTOMULTIPLY), true);
                         break;
 
                     case "->/":
+                        if (!engine.SugarBehavior.AllowStoDivide) throw new MogwaiParseErrorException("Sugar STODIVIDE is not allowed.");
                         primitive = engine.GetPrimitive(typeof(PrimitiveSTODIVIDE),true);
                         break;
 
@@ -1308,6 +1327,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index >= 2)
             {
+                if (!engine.SugarBehavior.AllowDeclare)
+                    throw new MogwaiParseErrorException("Sugar DECLARE is not allowed.");
+
                 var name = _parsedObjects[index + 1];
 
                 MOGPrimitive? primitive = engine.GetPrimitive(typeof(PrimitiveDECLARE), true);
@@ -1339,6 +1361,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index >= 2)
             {
+                if (!engine.SugarBehavior.AllowPipeRef)
+                    throw new MogwaiParseErrorException("Sugar PIPEREF is not allowed.");
+
                 var primitive = engine.GetPrimitive(typeof(PrimitivePIPEREF), true);
 
                 if (primitive != null)
@@ -1370,6 +1395,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index > 3)
             {
+                if (!engine.SugarBehavior.AllowGuardElse)
+                    throw new MogwaiParseErrorException("Sugar GUARD-ELSE is not allowed.");
+
                 var code = _parsedObjects[index + 1];
 
                 var elseWord = _parsedObjects[index + 2] as MOGWord;
@@ -1405,6 +1433,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index > 1)
             {
+                if (!engine.SugarBehavior.AllowTrap)
+                    throw new MogwaiParseErrorException("Sugar TRAP is not allowed.");
+
                 var code = _parsedObjects[index + 1];
 
                 var primitive = engine.GetPrimitive(typeof(PrimitiveErrorTrap), true);
@@ -1435,6 +1466,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index > 3)
             {
+                if (!engine.SugarBehavior.AllowDuringDo)
+                    throw new MogwaiParseErrorException("Sugar DURING-DO is not allowed.");
+
                 var number = _parsedObjects[index + 1];
 
                 if (number != null)
@@ -1478,6 +1512,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index > 3)
             {
+                if (!engine.SugarBehavior.AllowOnEventDo)
+                    throw new MogwaiParseErrorException("Sugar ONEVENT-DO is not allowed.");
+
                 var name = _parsedObjects[index + 1];
 
                 var doWord = _parsedObjects[index + 2] as MOGWord;
@@ -1520,6 +1557,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index > 5)
             {
+                if (!engine.SugarBehavior.AllowTimerDo)
+                    throw new MogwaiParseErrorException("Sugar TIMER-DO is not allowed.");
+
                 var name = _parsedObjects[index + 1];
 
                 var afterOrEveryWord = _parsedObjects[index + 2] as MOGWord;
@@ -1580,6 +1620,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index > 2)
             {
+                if (!engine.SugarBehavior.AllowForeverDo)
+                    throw new MogwaiParseErrorException("Sugar FOREVER-DO is not allowed.");
+
                 var doWord = _parsedObjects[index + 1] as MOGWord;
 
                 if (doWord != null && doWord.Value == "do")
@@ -1625,6 +1668,9 @@ namespace MOGWAI.Engine
                 // 2 do
                 // 3 code
 
+                if (!engine.SugarBehavior.AllowToDo)
+                    throw new MogwaiParseErrorException("Sugar TO-DO is not allowed.");
+
                 var name = _parsedObjects[index + 1] as MOGName;
 
                 if (name != null)
@@ -1659,6 +1705,9 @@ namespace MOGWAI.Engine
                 // 3 record
                 // 4 do
                 // 5 code
+
+                if (!engine.SugarBehavior.AllowToWithDo)
+                    throw new MogwaiParseErrorException("Sugar TO-WITH-DO is not allowed.");
 
                 var name = _parsedObjects[index + 1] as MOGName;
 
@@ -1713,6 +1762,9 @@ namespace MOGWAI.Engine
                 // 4 do
                 // 5 code
 
+                if (!engine.SugarBehavior.AllowToParamsDo)
+                    throw new MogwaiParseErrorException("Sugar TO-PARAMS-DO is not allowed.");
+
                 var name = _parsedObjects[index + 1] as MOGName;
 
                 if (name != null)
@@ -1765,6 +1817,9 @@ namespace MOGWAI.Engine
                 // 3 list
                 // 4 do
                 // 5 code
+
+                if (!engine.SugarBehavior.AllowToReturnsDo)
+                    throw new MogwaiParseErrorException("Sugar TO-RETURNS-DO is not allowed.");
 
                 var name = _parsedObjects[index + 1] as MOGName;
 
@@ -1822,6 +1877,9 @@ namespace MOGWAI.Engine
                 // 5 list
                 // 6 do
                 // 7 code
+
+                if (!engine.SugarBehavior.AllowToWithReturnsDo)
+                    throw new MogwaiParseErrorException("Sugar TO-WITH-RETURNS-DO is not allowed.");
 
                 var name = _parsedObjects[index + 1] as MOGName;
 
@@ -1895,6 +1953,9 @@ namespace MOGWAI.Engine
                 // 6 do
                 // 7 code
 
+                if (!engine.SugarBehavior.AllowToParamsReturnsDo)
+                    throw new MogwaiParseErrorException("Sugar TO-PARAMS-RETURNS-DO is not allowed.");
+
                 var name = _parsedObjects[index + 1] as MOGName;
 
                 if (name != null)
@@ -1967,6 +2028,9 @@ namespace MOGWAI.Engine
 
             if (index >= 1 && _parsedObjects.Count - index >= 3)
             {
+                if (!engine.SugarBehavior.AllowDoWhile)
+                    throw new MogwaiParseErrorException("Sugar DO-WHILE is not allowed.");
+
                 var code = _parsedObjects[index + 1] as MOGCode;
 
                 if (code != null)
@@ -2010,6 +2074,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index >= 4)
             {
+                if (!engine.SugarBehavior.AllowWhileDo)
+                    throw new MogwaiParseErrorException("Sugar WHILE-DO is not allowed.");
+
                 var condition = _parsedObjects[index + 1] as MOGList;
 
                 if (condition != null)
@@ -2051,6 +2118,9 @@ namespace MOGWAI.Engine
 
             if (_parsedObjects.Count - index >= 1)
             {
+                if (!engine.SugarBehavior.AllowRepeat)
+                    throw new MogwaiParseErrorException("Sugar REPEAT is not allowed.");
+
                 var code = _parsedObjects[index + 1] as MOGCode;
 
                 if (code != null)
@@ -2086,6 +2156,9 @@ namespace MOGWAI.Engine
 
             if (engine.CheckCodeFootprint(_parsedObjects, index, "foreach", null, "do", null))
             {
+                if (!engine.SugarBehavior.AllowForeachDo)
+                    throw new MogwaiParseErrorException("Sugar FOREACH-DO is not allowed.");
+
                 var name = _parsedObjects[index + 1] as MOGName;
 
                 if (name != null)
@@ -2114,6 +2187,9 @@ namespace MOGWAI.Engine
             }
             else if (engine.CheckCodeFootprint(_parsedObjects, index, "foreach", null, "transform", null))
             {
+                if (!engine.SugarBehavior.AllowForeachTransformDo)
+                    throw new MogwaiParseErrorException("Sugar FOREACH-TRANSFORM-DO is not allowed.");
+
                 var name = _parsedObjects[index + 1] as MOGName;
 
                 if (name != null)
@@ -2141,6 +2217,9 @@ namespace MOGWAI.Engine
             }
             else if (engine.CheckCodeFootprint(_parsedObjects, index, "foreach", null, "filter", null))
             {
+                if (!engine.SugarBehavior.AllowForeachFilterDo)
+                    throw new MogwaiParseErrorException("Sugar FOREACH-FILTER-DO is not allowed.");
+
                 var name = _parsedObjects[index + 1] as MOGName;
 
                 if (name != null)
@@ -2210,6 +2289,9 @@ namespace MOGWAI.Engine
                             {
                                 // IFELSE
 
+                                if (!engine.SugarBehavior.AllowIfThenElse)
+                                    throw new MogwaiParseErrorException("Sugar IF-THEN-ELSE is not allowed.");
+
                                 var codeFalse = _parsedObjects[index + 5] as MOGCode;
 
                                 if (codeFalse != null)
@@ -2253,6 +2335,9 @@ namespace MOGWAI.Engine
                             else
                             {
                                 // IF
+
+                                if (!engine.SugarBehavior.AllowIfThen)
+                                    throw new MogwaiParseErrorException("Sugar IF-THEN is not allowed.");
 
                                 var code = _parsedObjects[index + 3] as MOGCode;
 
@@ -2325,6 +2410,9 @@ namespace MOGWAI.Engine
                 {
                     // FOR 
 
+                    if (!engine.SugarBehavior.AllowForDo)
+                        throw new MogwaiParseErrorException("Sugar FOR-DO is not allowed.");
+
                     var code = _parsedObjects[index + 3] as MOGCode;
 
                     if (code != null)
@@ -2356,6 +2444,9 @@ namespace MOGWAI.Engine
                 else
                 {
                     // FORSTEP
+
+                    if (!engine.SugarBehavior.AllowForStepDo)
+                        throw new MogwaiParseErrorException("Sugar FOR-STEP-DO is not allowed.");
 
                     var stepValue = _parsedObjects[index + 3];
 
