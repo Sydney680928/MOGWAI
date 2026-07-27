@@ -1,8 +1,7 @@
 MOGWAI Runtime
-Copyright 2015-2025 Stéphane Sibué
+Copyright 2015-2026 Stéphane Sibué
 
-This product includes software developed by Stéphane Sibué
-for industrial IoT automation and embedded systems.
+This product includes software developed by Stéphane Sibué.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,24 +19,24 @@ limitations under the License.
 
 Project Information:
 - Name: MOGWAI
-- Version: 8.0
+- Version: 8.15.0
 - Author: Stéphane Sibué
 - Website: https://coding4phone.com
 - Repository: https://github.com/Sydney680928/mogwai
 - Package: https://www.nuget.org/packages/MOGWAI
 
 Description:
-MOGWAI is a stack-based RPN (Reverse Polish Notation) scripting language
-designed for industrial IoT automation, embedded systems, and creative
-programming. Inspired by HP calculators (HP 28S, HP 48), MOGWAI brings
-the elegance of RPN to modern .NET applications.
+MOGWAI is an embeddable, stack-based RPN (Reverse Polish Notation) scripting
+engine for .NET, with 354 built-in primitives (math, strings, lists, files,
+HTTP, and more). Inspired by HP calculators (HP 28S, HP 48), it brings the
+elegance of RPN to modern .NET applications.
 
 History:
-Originally created in 2015 to simulate Bluetooth Low Energy devices for
-IoT testing, MOGWAI evolved over 10 years into a full-featured scripting
-language with 200+ built-in functions. The language has been battle-tested
-in production environments for industrial automation and public lighting
-systems.
+Originally created in 2015 as a Bluetooth Low Energy peripheral simulator for
+mobile app testing, MOGWAI evolved over the following decade into a
+general-purpose embeddable scripting language with an extensive library of
+built-in primitives covering strings, regular expressions, math, HTTP, UDP,
+object-oriented programming, and more.
 
 Third-Party Components:
 This software does not currently include any third-party Apache 2.0 licensed
