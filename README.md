@@ -296,6 +296,8 @@ if ($answer 40 >) then
 }
 ```
 
+> **Want the slower, fully guided version?** The [Step-by-Step Tutorial](docs/EN/MOGWAI_TUTORIAL_EN.md) walks through everything above — and everything after it (functions, sigils, OOP, tasks) — one idea at a time, with nothing assumed except that you already know how to program.
+
 > **Note on variables:** Variables prefixed with `$` are **global**. When the engine is instantiated with `keepAlive: true`, global variables persist across multiple script executions — making them the natural choice for interactive sessions like the REPL or the [Blazor playground](https://sydney680928.github.io/MOGWAI/). Local variables (without `$`) are scoped to a single execution and are the recommended approach for one-shot embedding scenarios.
 > ```csharp
 > // Global variables persist across executions
@@ -400,6 +402,7 @@ mogwai/
 
 ### Complete Guides
 
+- **[Step-by-Step Tutorial](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_TUTORIAL_EN.md)** - New to MOGWAI? Start here — a guided walkthrough from the stack model to OOP and tasks
 - **[Language Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_EN.md)** - Complete MOGWAI language guide
 - **[Function Reference](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_FUNCTIONS_EN.md)** - All 354 built-in functions
 - **[Integration Guide](https://github.com/Sydney680928/mogwai/tree/main/docs/EN/MOGWAI_INTEGRATION_GUIDE_EN.md)** - How to integrate MOGWAI in your .NET apps

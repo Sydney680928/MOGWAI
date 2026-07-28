@@ -1446,7 +1446,7 @@ La fonction `get` permet de récupérer un élément d'une liste. Comme pour `se
 # This instruction will place the value 60 on the stack
 ```
 
-Si l'index spécifié n'est pas dans la plage possible (de 0 à taille-1), la fonction retourne `null` et ne lève pas d'erreur.
+Si l'index spécifié n'est pas dans la plage possible (de 0 à taille-1), la fonction lève une erreur (**MW.22**, bad argument value).
  
 ## Récupérer un élément « enfoui » dans une liste
 
@@ -1756,7 +1756,15 @@ La fonction `extract` permet d'extraire uniquement certaines clés d'un enregist
 # This instruction will place the record [x: 100 y: 200] on the stack
 ```
 
-Si vous demandez une clé qui n'existe pas, une erreur est levée.
+Si vous demandez une clé qui n'existe pas, aucune erreur n'est levée — elle est simplement incluse dans l'enregistrement résultant avec la valeur `null`.
+
+```
+# If we request a key that doesn't exist (t:)
+
+[x: 20 y: 20 z: 100] (x: t:) extract
+
+# This instruction places [x: 20 t: null] on the stack
+```
 
 ## Vérifier qu'une clé est présente dans un enregistrement
 
