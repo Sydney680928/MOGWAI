@@ -202,6 +202,7 @@ namespace MOGWAI.Engine
             RegisterPublicPrimitive(new PrimitiveTestBitFromBinaryNumber(this, "bit?"), MOGPrimitive.CATEGORY_MATHS);
 
             RegisterPublicPrimitive(new PrimitiveCalc(this, "calc"), MOGPrimitive.CATEGORY_MATHS);
+            RegisterPublicPrimitive(new PrimitiveCond(this, "cond"), MOGPrimitive.CATEGORY_MATHS);
 
             // Vars functions
 
@@ -3323,6 +3324,12 @@ namespace MOGWAI.Engine
             });
 
             return result;
+        }
+
+        public string? GetCanonicalForm(string code)
+        {
+            var program = new MOGFunction(this, code, 0, null);
+            return program.ToStringCode();
         }
 
         public (CodeOrigin origin, string? code) GetCodeFormBytes(byte[] bytes)
