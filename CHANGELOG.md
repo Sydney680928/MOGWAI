@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`cond` primitive** — evaluates a boolean expression written in standard infix notation and pushes a boolean result onto the stack, ready for use with `if/then/else`. Internally uses Dijkstra's Shunting-yard algorithm (via `BoolLexer` and `BoolShuntingYard` in `MOGWAI.Engine`). Supports arithmetic and comparison operators (`+ - * / < > <= >= == !=`), boolean keywords (`and`, `or`, `xor`), unary `not(...)`, all MOGWAI sigils (`@`, `&`, `!`, `$`), primitives, constants, and variables.
+
+  ```
+  10 -> 'A'
+  25 -> 'B'
+  if ("A < 20 and B > 10" cond) then { "yes" ? } else { "no" ? }
+  # → yes
+
+  if ("A * 2 < B + 10" cond) then { "yes" ? } else { "no" ? }
+  # → yes  (20 < 35)
+  ```
+
 - **`SugarBehavior` property on `MogwaiEngine`** — exposes ~30 boolean flags to selectively enable or disable individual syntactic sugar constructs at parse time: loops (`AllowForeverDo`, `AllowWhileDo`, `AllowDoWhile`, `AllowRepeat`, `AllowForDo`, `AllowForStepDo`, `AllowForeachDo`/`AllowForeachTransformDo`/`AllowForeachFilterDo`), conditionals (`AllowIfThen`, `AllowIfThenElse`, `AllowSwitch`, `AllowGuardElse`, `AllowTrap`), function definitions (`AllowToDo` and its `WithDo`/`ParamsDo`/`ReturnsDo` variants), store operators (`AllowSto`, `AllowStoPlus`, `AllowStoSubstract`, `AllowStoMultiply`, `AllowStoDivide`), and misc sugar (`AllowTask`, `AllowClassDo`, `AllowAfterDo`, `AllowPost`, `AllowDeclare`, `AllowPipeRef`, `AllowOnEventDo`, `AllowTimerDo`). All flags default to `true`, preserving existing behavior. When a flag is disabled, the parser raises a `MogwaiParseErrorException` if the corresponding construct is used.
 
   ```
