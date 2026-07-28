@@ -10,7 +10,7 @@ namespace MOGWAI.Primitives
 {
     internal class PrimitiveCond : PrimitiveParamsString
     {
-        public override Version Birth => new(8,12,0);
+        public override Version Birth => new(8,16,0);
         
         public PrimitiveCond(MogwaiEngine engine, string name) : base(engine, name)
         {
