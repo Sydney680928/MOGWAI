@@ -206,7 +206,7 @@ A ?                    # → Hello!
 
 ### Local vs. global
 
-That's a **local** variable — it only exists for the duration of the current script execution (or the current function call, as we'll see later). If you prefix the name with `$`, it becomes **global** instead:
+Every variable you've used so far in this tutorial — `A`, `B`, `C`... — has been a **local** variable: it only exists for the duration of the current script execution (or the current function call, as we'll see later). Prefix the name with `$` instead, and it becomes **global**:
 
 ```
 mogwai.reset
@@ -215,7 +215,7 @@ mogwai.reset
 $R ?             # → 500
 ```
 
-The practical difference: when the host engine is set up with `keepAlive: true` (typically for interactive use — a REPL, the online playground), global variables survive across multiple separate script executions, while locals are scoped to a single run. For a one-shot embedding scenario, this distinction matters less — but it's worth knowing the `$` prefix is what it means, since you'll see it throughout MOGWAI code and examples.
+The `$` prefix shows up constantly in real MOGWAI code — reach for a look at any non-trivial script, and you'll find globals used simply as a matter of everyday style, not just for some special case. There's also one concrete technical difference worth knowing: when the host engine is set up with `keepAlive: true` (typically for interactive use — a REPL, the online playground), global variables survive across multiple separate script executions, while locals are scoped to a single run. That's a real distinction, but a narrower one than the sheer frequency of `$` you'll see in practice — get comfortable reading and writing it now, rather than treating it as an edge case for later.
 
 ### Using a variable in a calculation
 

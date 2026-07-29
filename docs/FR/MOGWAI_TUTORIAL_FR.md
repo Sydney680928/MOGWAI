@@ -206,7 +206,7 @@ A ?                    # → Hello!
 
 ### Locale vs. globale
 
-Ça, c'est une variable **locale** — elle n'existe que pour la durée de l'exécution du script en cours (ou de l'appel de fonction en cours, comme on le verra plus tard). Si tu préfixes le nom par `$`, elle devient **globale** à la place :
+Chaque variable que tu as utilisée jusqu'ici dans ce tutoriel — `A`, `B`, `C`... — était une variable **locale** : elle n'existe que pour la durée de l'exécution du script en cours (ou de l'appel de fonction en cours, comme on le verra plus tard). Préfixe le nom par `$` à la place, et elle devient **globale** :
 
 ```
 mogwai.reset
@@ -215,7 +215,7 @@ mogwai.reset
 $R ?             # → 500
 ```
 
-La différence pratique : quand le moteur hôte est configuré avec `keepAlive: true` (typiquement pour un usage interactif — un REPL, le playground en ligne), les variables globales survivent à travers plusieurs exécutions de script séparées, tandis que les locales sont limitées à une seule exécution. Pour un scénario d'intégration en une seule exécution, cette distinction compte moins — mais ça vaut le coup de savoir ce que signifie le préfixe `$`, puisque tu le verras partout dans le code et les exemples MOGWAI.
+Le préfixe `$` apparaît constamment dans du vrai code MOGWAI — regarde n'importe quel script un peu conséquent, et tu trouveras des variables globales utilisées tout simplement par habitude d'écriture quotidienne, pas juste pour un cas particulier. Il y a aussi une vraie différence technique concrète à connaître : quand le moteur hôte est configuré avec `keepAlive: true` (typiquement pour un usage interactif — un REPL, le playground en ligne), les variables globales survivent à travers plusieurs exécutions de script séparées, tandis que les locales sont limitées à une seule exécution. C'est une distinction réelle, mais plus étroite que la simple fréquence à laquelle tu croiseras `$` en pratique — mets-toi à l'aise avec la notation dès maintenant, plutôt que de la traiter comme un cas particulier pour plus tard.
 
 ### Utiliser une variable dans un calcul
 
