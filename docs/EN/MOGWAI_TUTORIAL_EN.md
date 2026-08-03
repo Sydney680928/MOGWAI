@@ -2,87 +2,78 @@
 
 A hands-on introduction to the MOGWAI scripting language, one small idea at a time.
 
-> This guide assumes you already know how to program — variables, loops, functions, basic data types. What it does **not** assume is any familiarity with stack-based (RPN) languages. That's the one real learning curve here, and we'll take it slow.
+> This guide assumes you already know how to program — variables, loops, functions, basic data types. What it does **not** assume is any familiarity with stack-based ([RPN](https://en.wikipedia.org/wiki/Reverse_Polish_notation)) languages. That's the one real learning curve here, and we'll take it slow.
 
 ---
 
 ## 1. What is MOGWAI?
 
-MOGWAI is a lightweight, embeddable scripting engine for .NET. You drop it into an application — desktop, mobile, server, IoT device — and it gives that application a small, safe, extensible language of its own.
+MOGWAI is a lightweight, embeddable scripting engine for .NET — drop it into any application and it gets its own small, safe, extensible language. It's genuinely general-purpose: automation, games, user-facing customization, IoT, internal tooling — whatever the host app needs.
 
-That's a deliberately broad description, because MOGWAI itself is deliberately general-purpose. It's not tied to any particular kind of application or industry. People use it for things like:
+Under the hood, it's a **stack-based ([RPN](https://en.wikipedia.org/wiki/Reverse_Polish_notation)) language** — same family as Forth or classic RPN calculators. That's an implementation choice, not a limitation: it's what makes the language so simple, with zero operator precedence to memorize and no parsing ambiguity.
 
-- letting end users customize behavior in an app without shipping a new build
-- driving small automation workflows or scripted sequences
-- scripting game logic or simple games (there's a complete Snake implementation written entirely in MOGWAI)
-- building small interactive tools — calculators, TUI apps, REPLs
-- exposing a safe, sandboxable scripting surface inside a larger .NET codebase
+Here's a taste of what that looks like:
 
-Under the hood, MOGWAI is a **stack-based, concatenative language** — the same family as Forth, Factor, PostScript, and the RPN calculators some of us grew up with. That heritage is where the "RPN" in its description comes from, but don't let it narrow your idea of what MOGWAI is *for*. The stack-based design is an implementation choice that happens to make the language extremely simple and unambiguous — there's no operator precedence to memorize, no parsing ambiguity. It's a means, not the point.
+```
+mogwai.reset
 
-A few practical facts before we start:
+"Hello, MOGWAI!" ?
+3 4 + ?          # → 7
+```
 
-- MOGWAI runs inside a **host application** written in C# / .NET. The host embeds a `MogwaiEngine` and runs scripts through it.
-- Every MOGWAI script is plain text. Comments start with `#`.
-- MOGWAI ships with **over 300 built-in primitives** covering math, strings, lists, records, files, HTTP, regular expressions, dates, binary data, and more. This tutorial only needs a handful of them to get you comfortable; the rest is reference material for later.
-
-You can try everything in this tutorial without installing anything, using the [online playground](https://sydney680928.github.io/MOGWAI/), or by running the MOGWAI CLI locally.
+That's really all the setup you need. Let's dig in — the [online playground](https://sydney680928.github.io/MOGWAI/) and the MOGWAI CLI both let you try everything below without installing anything.
 
 ---
 
 ## 2. Thinking in a Stack
 
-This is the one concept worth genuinely pausing on. Once it clicks, everything else in MOGWAI follows naturally.
+This is the one concept worth pausing on — once it clicks, everything else in MOGWAI follows naturally.
 
-### Forget "function(arguments)" for a moment
+Forget nested calls like `add(multiply(3, 4), 2)`, where you read from the inside out. MOGWAI has a single **stack** — think of a pile of plates, you can only touch the top. A script is read strictly left to right:
 
-In most languages you write, you nest calls inside one another: `add(multiply(3, 4), 2)`. To read that, you work from the inside out, and the order of evaluation isn't the order you read the text in.
-
-MOGWAI does away with that entirely. There's a single **stack** — think of it as a pile of plates. You can only ever look at, add to, or remove from the top. A MOGWAI script is a sequence of instructions read strictly left to right:
-
-- a **value** (a number, a string, ...) gets **pushed** onto the top of the stack
-- an **operator or function** **pops** however many values it needs off the top, does its work, and **pushes the result** back
+- a **value** gets **pushed** onto the stack
+- an **operator or function** **pops** what it needs, does its work, and **pushes the result** back
 
 That's the entire execution model. No exceptions, no precedence rules.
 
 ### A first calculation, step by step
 
-Let's trace `3 4 + 2 *` one token at a time:
+Let's trace `3 4 + 2 *`:
 
-```
-3            # push 3           → stack: [ 3 ]
-4            # push 4           → stack: [ 3 4 ]
-+            # pop 4 and 3, push 3+4    → stack: [ 7 ]
-2            # push 2           → stack: [ 7 2 ]
-*            # pop 2 and 7, push 7*2    → stack: [ 14 ]
-```
+| Instruction | What happens | Stack after |
+|---|---|---|
+| `3` | push 3 | `[ 3 ]` |
+| `4` | push 4 | `[ 3 4 ]` |
+| `+` | pop 4 and 3, push their sum | `[ 7 ]` |
+| `2` | push 2 | `[ 7 2 ]` |
+| `*` | pop 2 and 7, push their product | `[ 14 ]` |
 
-At the end, `14` sits on top of the stack. Written as a one-liner, that's:
+Written as one line, that's `3 4 + 2 * ?` — the trailing `?` prints the top of the stack. This displays `14`.
 
-```
-3 4 + 2 * ?
-```
+This is **Reverse Polish Notation (RPN)**: the operator comes *after* its operands. `3 4 +` reads "3, 4, add" instead of "3 + 4" — same result, but the tokens on the page are, quite literally, the order of execution. Nothing is ever evaluated out of order.
 
-The trailing `?` is MOGWAI's "print the top of the stack" instruction — we'll use it constantly in this tutorial to see results. This line displays `14`.
+Two concrete benefits fall out of this:
 
-This is called **Reverse Polish Notation (RPN)**: the operator comes *after* its operands, instead of between them. `3 4 +` reads as "3, 4, add" rather than "3 + 4" — but it produces exactly the same result. The tokens on the page are, quite literally, the order of execution. What you see is what happens — nothing is evaluated out of order, nothing needs a mental "inside-out" pass.
-
-### Why bother?
-
-Two very concrete benefits fall out of this:
-
-- **Zero ambiguity.** There is no operator precedence to remember, because there's no precedence at all — just left-to-right execution. `3 4 + 2 *` can only ever mean one thing.
-- **Composability.** Small pieces chain together naturally. Any sequence of instructions that leaves one clean value on the stack can be dropped into a larger sequence, exactly like plugging one pipe into another.
+- **Zero ambiguity** — no operator precedence to remember, just left-to-right execution. `3 4 + 2 *` can only ever mean one thing.
+- **Composability** — any sequence leaving one clean value on the stack drops into a larger one, exactly like plugging one pipe into another.
 
 ### Try a few more
 
 ```
 5 3 - ?          # → 2      (5, 3, subtract)
-10 2 /  ?        # → 5      (10, 2, divide)
+10 2 / ?         # → 5      (10, 2, divide)
 2 3 4 + * ?      # → 14     (2, then 3+4=7, then 2*7=14)
 ```
 
-That last one is worth tracing by hand: push `2`, push `3`, push `4`, `+` pops `4` and `3` and pushes `7` — stack is now `[ 2 7 ]` — then `*` pops `7` and `2` and pushes `14`.
+That last one is worth tracing, since it has two operators:
+
+| Instruction | What happens | Stack after |
+|---|---|---|
+| `2` | push 2 | `[ 2 ]` |
+| `3` | push 3 | `[ 2 3 ]` |
+| `4` | push 4 | `[ 2 3 4 ]` |
+| `+` | pop 4 and 3, push 7 | `[ 2 7 ]` |
+| `*` | pop 7 and 2, push 14 | `[ 14 ]` |
 
 ### Not ready to convert every formula by hand? You don't have to.
 
@@ -92,7 +83,7 @@ MOGWAI includes a `calc` primitive that accepts a classic infix expression — p
 "5 * 3 + (7 + 2)" calc ?      # → 24
 ```
 
-This is a genuinely useful bridge while you're still building RPN intuition, and plenty of real MOGWAI code leans on it for anything formula-heavy. We'll come back to it in more detail later. For the rest of this tutorial, though, we'll stick to native RPN — it's worth building the habit early, and once you've traced a few of these by hand, it stops feeling unusual very quickly.
+It's a genuinely useful bridge while you're building RPN intuition, and plenty of real MOGWAI code leans on it for anything formula-heavy — more on it later. For the rest of this tutorial, though, we'll stick to native RPN: it stops feeling unusual very quickly once you've traced a few by hand.
 
 ---
 
@@ -146,7 +137,7 @@ This prints:
 Result: 5
 ```
 
-> **Note if you're using the online playground.** The [Blazor-based playground](https://sydney680928.github.io/MOGWAI/) renders its output a line at a time, so `??` behaves the same as `?` there — every print ends up on its own line, regardless of which one you used. The distinction is real and matters in most host environments (console apps, the CLI, embedded apps); just don't be surprised if you don't see it in the playground specifically.
+> **Using the online playground?** It renders output a line at a time, so `??` behaves the same as `?` there — the distinction still matters in most other host environments.
 
 ### A slightly bigger first program
 
@@ -233,25 +224,21 @@ C ?              # → 50
 
 ### Locking a type, requiring declarations
 
-Two things are worth knowing about even if we won't dwell on them here — you'll run into both in real MOGWAI code:
+Two optional safety nets you'll run into in real MOGWAI code, without needing either from day one:
 
-A variable can be locked to a single type from the start, using `=>` instead of `->`:
+`=>` instead of `->` locks a variable to its first type — assigning it a different type later raises an error instead of silently changing it:
 
 ```
 500 => 'A'
 ```
 
-From that point on, `A` only ever accepts numbers — assigning it a string would raise an error instead of silently changing its type.
-
-Separately, an engine can be told to *require* that every variable be declared before it's used, with `mogwai.strict`:
+`mogwai.strict` requires every variable to be declared before use — reading an undeclared one raises an error instead of silently creating it:
 
 ```
 true mogwai.strict
 100 => 'A'
 A ?
 ```
-
-Once strict mode is on, using a variable that was never declared raises an error rather than silently creating it. Both of these are optional safety nets rather than something you need from day one — we're only naming them here so the notation doesn't look unfamiliar later.
 
 ### Deleting a variable
 
@@ -604,7 +591,7 @@ mogwai.reset
 # → (2 4 6 8 10)
 ```
 
-`foreach...do` runs on the main stack, exactly like the rest of your script — nothing surprising there. `foreach...transform` and `foreach...filter` are a bit more particular: each iteration runs on its **own isolated stack** rather than the main one, so it can freely read local and global variables but can't reach into or leave anything on the stack outside the block. What it does leave behind — the transformed value, or the boolean deciding inclusion — is what the loop collects into the resulting list. We'll come back to lists properly in the next section; this is just enough to make these loops make sense when you see them.
+`foreach...do` runs on the main stack, same as the rest of your script. `foreach...transform` and `foreach...filter` each run on their **own isolated stack** per iteration — whatever they leave behind (the transformed value, or the inclusion boolean) is what gets collected into the resulting list. More on lists next.
 
 ---
 
@@ -739,8 +726,8 @@ mogwai.reset
 ```
 mogwai.reset
 
-[x: 100 y: 200] z: 300 set ?      # → [x: 100 y: 200 z: 300]
-[x: 100 y: 200] y: 2000 set ?     # → [x: 100 y: 2000]
+300 [x: 100 y: 200] z: set ?      # → [x: 100 y: 200 z: 300]
+2000 [x: 100 y: 200] y: set ?     # → [x: 100 y: 2000]
 ```
 
 ### A gentler `get` than lists
@@ -957,7 +944,7 @@ to 'foo' params [id: .number name: .string save: (.boolean true)] do
 
 ### One gotcha to remember: functions expecting a single list
 
-This one applies to any call written classic-style, built-in or user-defined: the parentheses just move whatever's inside onto the stack — they don't group values into a list. A function whose *whole* parameter is one list (`max`, `min`, `sum`, `sort`, or one you write yourself that way) needs that list wrapped in its own parentheses inside the call:
+Classic-style parentheses just move whatever's inside onto the stack — they don't group values into a list. A function expecting one whole list as its parameter (`max`, `min`, `sum`, `sort`...) needs that list wrapped in its own parentheses:
 
 ```
 mogwai.reset
@@ -1329,15 +1316,26 @@ A property is initialized to `empty` regardless of its declared type — you can
 
 ### `new` and `free` — the instance lifecycle
 
-Two special method names are called automatically if you define them: `onInit:` when an instance is created, `onFree:` right before it's destroyed. Creation takes a named-parameter record — exactly the record syntax from the functions section — followed by the class name and `new`:
+Two special method names are called automatically if you define them: `onInit:` when an instance is created, `onFree:` right before it's destroyed. `new` itself takes only one required piece: the class name. Whatever is already on the stack when you call it — a record, or nothing at all — simply becomes `onInit:`'s parameter, exactly like calling any other method:
 
 ```
 mogwai.reset
 
-[id: 10 name: "SIBUE"] 'User' new -> '$U1'    # onInit: runs automatically
-
-$U1 free                                       # onFree: runs automatically
+'User' new -> '$U1'    # nothing pushed beforehand — onInit: runs with an empty stack
 ```
+
+If `onInit:` expects a record (typically unpacked with `->params`, as in the `Counter` example above), you push that record right before calling `new`:
+
+```
+mogwai.reset
+
+[id: 10 name: "SIBUE"]
+'User' new -> '$U1'    # onInit: runs automatically, with the record above on its stack
+
+$U1 free                # onFree: runs automatically
+```
+
+`onInit:` is just an ordinary method, though — nothing unpacks that record for you. It's on you to call `->params` (or `->vars` / `->safeVars`) inside it, the same way you would in a plain function.
 
 Each instance gets a unique handle, displayed as `§` followed by a number (`§453`) — never reused for the lifetime of the engine. If several variables reference the same instance and it gets freed, all of them become invalid at once. Rather than risk using a stale reference, check first with `isAlive`:
 
@@ -1362,11 +1360,11 @@ $U1->name: ?                 # read a property — equivalent to: $U1 name: get 
 $U1->display:                # call a method — equivalent to: $U1 display: get
 ```
 
-Trying to reach a `private:` member from outside the class raises an error — that's the whole point of the two sections. Every instance also has a read-only `className:` property, provided automatically, telling you which class it was built from.
+Reaching a `private:` member from outside the class raises an error — that's the whole point of the two sections. Every instance also has a read-only `className:` property, telling you which class it was built from.
 
 ### `self` — referring to the current instance
 
-Inside any method, `self` is automatically available and refers to the instance the method was called on — use it to read or write the instance's own properties, or call its other methods:
+`self` is automatically available inside any method, referring to the instance it was called on:
 
 ```
 show:
@@ -1378,7 +1376,7 @@ show:
 
 ### Validating what a method receives
 
-The same three levels of rigor from the functions section apply to methods too — `->vars` (no checking), `->safeVars` (checks count and type from the stack), `->params` (checks a named-parameter record, the natural fit for `onInit:`, since instances are always created with one):
+The same three rigor levels from the functions section apply to methods: `->vars` (no checking), `->safeVars` (checks count/type from the stack), `->params` (checks a named-parameter record). None of this is automatic — you call whichever one you want yourself, as the first line of the method. Full details on all three live in the language reference; this tutorial only shows `->params` in action, since it's the natural fit whenever `onInit:` expects a record — as in the examples above:
 
 ```
 onInit:
@@ -1430,7 +1428,8 @@ class 'User' do
     }
 }
 
-[id: 10 name: "SIBUE"] 'User' new -> '$U1'
+[id: 10 name: "SIBUE"]
+'User' new -> '$U1'
 $U1->display:
 $U1 free
 ```
@@ -1463,9 +1462,9 @@ mogwai.reset
 
 ## 14. Tasks
 
-A **task** is a child unit of execution — its own isolated stack, running in parallel with the code that launched it (the **parent**). The parent can keep doing other things while a task runs; a task can itself launch further child tasks, with no limit besides available memory.
+A **task** is a child unit of execution — its own isolated stack, running in parallel with the code that launched it (the **parent**). The one rule that shapes everything else here: **tasks never talk to each other directly** — a child only knows its parent exists, and all communication happens through **events**.
 
-The one rule that shapes everything else here: **tasks never talk to each other directly**. A child task only knows its parent exists — not its siblings — and all communication, in both directions, happens through **events**.
+> **Using the online playground?** Tasks don't run there — its Blazor/WASM environment doesn't support them. Use the MOGWAI CLI (or your own host application) for anything in this section.
 
 ### Events, briefly
 

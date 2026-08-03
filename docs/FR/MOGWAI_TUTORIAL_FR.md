@@ -2,87 +2,78 @@
 
 Une découverte concrète du langage de script MOGWAI, une idée à la fois.
 
-> Ce guide part du principe que tu sais déjà programmer — variables, boucles, fonctions, types de données de base. Ce qu'il ne suppose **pas**, en revanche, c'est une quelconque familiarité avec les langages à pile (RPN). C'est la seule vraie courbe d'apprentissage ici, et on va la prendre en douceur.
+> Ce guide part du principe que tu sais déjà programmer — variables, boucles, fonctions, types de données de base. Ce qu'il ne suppose **pas**, en revanche, c'est une quelconque familiarité avec les langages à pile ([RPN](https://fr.wikipedia.org/wiki/Notation_polonaise_inverse)). C'est la seule vraie courbe d'apprentissage ici, et on va la prendre en douceur.
 
 ---
 
 ## 1. Qu'est-ce que MOGWAI ?
 
-MOGWAI est un moteur de script léger et embarquable pour .NET. On l'intègre dans une application — desktop, mobile, serveur, objet connecté — et il lui donne un petit langage de script à elle, sûr et extensible.
+MOGWAI est un moteur de script léger et embarquable pour .NET — on l'intègre dans n'importe quelle application et elle obtient son propre petit langage, sûr et extensible. C'est vraiment généraliste : automatisation, jeux, personnalisation côté utilisateur, objets connectés, outillage interne — tout ce dont l'application hôte a besoin.
 
-C'est une description volontairement large, parce que MOGWAI lui-même est volontairement généraliste. Il n'est lié à aucun type d'application ou secteur d'activité en particulier. On l'utilise par exemple pour :
+Sous le capot, c'est un **langage à pile ([RPN](https://fr.wikipedia.org/wiki/Notation_polonaise_inverse))** — la même famille que Forth ou les calculatrices RPN classiques. C'est un choix d'implémentation, pas une limite : c'est ce qui rend le langage aussi simple, avec zéro priorité d'opérateur à mémoriser et aucune ambiguïté d'analyse syntaxique.
 
-- laisser les utilisateurs finaux personnaliser le comportement d'une application sans nouvelle publication
-- piloter de petits workflows d'automatisation ou des séquences scriptées
-- scripter la logique d'un jeu ou de petits jeux entiers (il existe une implémentation complète de Snake écrite en MOGWAI)
-- construire de petits outils interactifs — calculatrices, applications TUI, REPL
-- exposer une surface de script sûre et sandboxable au sein d'une base de code .NET plus large
+Un avant-goût de ce que ça donne :
 
-Sous le capot, MOGWAI est un **langage concaténatif à pile** — la même famille que Forth, Factor, PostScript, et les calculatrices RPN que certains d'entre nous ont connues. C'est de cet héritage que vient le "RPN" dans sa description, mais ne le laisse pas restreindre ta vision de ce à quoi MOGWAI sert *réellement*. Le fonctionnement à pile est un choix d'implémentation qui rend le langage extrêmement simple et non ambigu — pas de priorité d'opérateurs à mémoriser, pas d'ambiguïté d'analyse syntaxique. C'est un moyen, pas une fin.
+```
+mogwai.reset
 
-Quelques faits pratiques avant de commencer :
+"Hello, MOGWAI!" ?
+3 4 + ?          # → 7
+```
 
-- MOGWAI s'exécute au sein d'une **application hôte** écrite en C# / .NET. L'hôte embarque un `MogwaiEngine` et exécute les scripts au travers de lui.
-- Chaque script MOGWAI est du texte brut. Les commentaires commencent par `#`.
-- MOGWAI embarque **plus de 300 primitives natives** couvrant les mathématiques, les chaînes, les listes, les records, les fichiers, HTTP, les expressions régulières, les dates, les données binaires, et plus encore. Ce tutoriel n'a besoin que d'une poignée d'entre elles pour te mettre à l'aise ; le reste est de la matière de référence pour plus tard.
-
-Tu peux essayer tout ce qui est dans ce tutoriel sans rien installer, en utilisant le [playground en ligne](https://sydney680928.github.io/MOGWAI/), ou en exécutant le CLI MOGWAI en local.
+C'est vraiment toute la mise en contexte nécessaire. Allons-y — le [playground en ligne](https://sydney680928.github.io/MOGWAI/) et le CLI MOGWAI te permettent tous les deux d'essayer tout ce qui suit sans rien installer.
 
 ---
 
 ## 2. Penser en pile
 
-C'est le seul concept qui mérite qu'on s'y arrête vraiment. Une fois qu'il fait "clic", tout le reste dans MOGWAI vient naturellement.
+C'est le seul concept qui mérite qu'on s'y arrête — une fois qu'il fait "clic", tout le reste dans MOGWAI vient naturellement.
 
-### Oublie "fonction(arguments)" un instant
+Oublie les appels imbriqués du genre `add(multiply(3, 4), 2)`, où tu lis de l'intérieur vers l'extérieur. MOGWAI a une seule **pile** — pense à une pile d'assiettes, tu ne peux toucher que le sommet. Un script se lit strictement de gauche à droite :
 
-Dans la plupart des langages que tu écris, tu imbriques les appels les uns dans les autres : `add(multiply(3, 4), 2)`. Pour lire ça, tu dois travailler de l'intérieur vers l'extérieur, et l'ordre d'évaluation n'est pas l'ordre dans lequel tu lis le texte.
-
-MOGWAI se débarrasse entièrement de ça. Il y a une seule **pile** — pense à une pile d'assiettes. Tu ne peux regarder, ajouter, ou retirer qu'au sommet. Un script MOGWAI est une séquence d'instructions lue strictement de gauche à droite :
-
-- une **valeur** (un nombre, une chaîne, ...) est **empilée** au sommet de la pile
-- un **opérateur ou une fonction** **dépile** autant de valeurs que nécessaire, fait son travail, et **empile le résultat**
+- une **valeur** est **empilée** au sommet de la pile
+- un **opérateur ou une fonction** **dépile** ce dont il a besoin, fait son travail, et **empile le résultat**
 
 C'est tout le modèle d'exécution. Aucune exception, aucune règle de priorité.
 
 ### Un premier calcul, pas à pas
 
-Traçons `3 4 + 2 *` un jeton à la fois :
+Traçons `3 4 + 2 *` :
 
-```
-3            # push 3           → stack: [ 3 ]
-4            # push 4           → stack: [ 3 4 ]
-+            # pop 4 and 3, push 3+4    → stack: [ 7 ]
-2            # push 2           → stack: [ 7 2 ]
-*            # pop 2 and 7, push 7*2    → stack: [ 14 ]
-```
+| Instruction | Ce qui se passe | Pile après |
+|---|---|---|
+| `3` | empile 3 | `[ 3 ]` |
+| `4` | empile 4 | `[ 3 4 ]` |
+| `+` | dépile 4 et 3, empile leur somme | `[ 7 ]` |
+| `2` | empile 2 | `[ 7 2 ]` |
+| `*` | dépile 2 et 7, empile leur produit | `[ 14 ]` |
 
-À la fin, `14` se trouve au sommet de la pile. Écrit sur une seule ligne, ça donne :
+Écrit sur une seule ligne, ça donne `3 4 + 2 * ?` — le `?` final affiche le sommet de la pile. Ça affiche `14`.
 
-```
-3 4 + 2 * ?
-```
+C'est ce qu'on appelle la **notation polonaise inversée (RPN)** : l'opérateur vient *après* ses opérandes. `3 4 +` se lit "3, 4, additionne" plutôt que "3 + 4" — même résultat, mais les jetons sur la page sont, littéralement, l'ordre d'exécution. Rien n'est jamais évalué dans le désordre.
 
-Le `?` final est l'instruction MOGWAI "affiche le sommet de la pile" — on l'utilisera constamment dans ce tutoriel pour voir les résultats. Cette ligne affiche `14`.
+Deux bénéfices concrets en découlent :
 
-C'est ce qu'on appelle la **notation polonaise inversée (RPN)** : l'opérateur vient *après* ses opérandes, au lieu d'être entre eux. `3 4 +` se lit "3, 4, additionne" plutôt que "3 + 4" — mais ça produit exactement le même résultat. Les jetons sur la page sont, littéralement, l'ordre d'exécution. Ce que tu vois est ce qui se passe — rien n'est évalué dans le désordre, rien n'a besoin d'une lecture mentale "de l'intérieur vers l'extérieur".
-
-### Pourquoi s'embêter avec ça ?
-
-Deux bénéfices très concrets découlent de tout ça :
-
-- **Zéro ambiguïté.** Il n'y a aucune priorité d'opérateur à retenir, parce qu'il n'y a aucune priorité du tout — juste une exécution de gauche à droite. `3 4 + 2 *` ne peut avoir qu'un seul sens possible.
-- **Composabilité.** De petits morceaux s'enchaînent naturellement. Toute séquence d'instructions qui laisse une seule valeur propre sur la pile peut être insérée dans une séquence plus large, exactement comme on branche un tuyau dans un autre.
+- **Zéro ambiguïté** — aucune priorité d'opérateur à retenir, juste une exécution de gauche à droite. `3 4 + 2 *` ne peut avoir qu'un seul sens possible.
+- **Composabilité** — toute séquence laissant une valeur propre sur la pile s'insère dans une séquence plus large, exactement comme on branche un tuyau dans un autre.
 
 ### Quelques exemples de plus
 
 ```
 5 3 - ?          # → 2      (5, 3, subtract)
-10 2 /  ?        # → 5      (10, 2, divide)
+10 2 / ?         # → 5      (10, 2, divide)
 2 3 4 + * ?      # → 14     (2, then 3+4=7, then 2*7=14)
 ```
 
-Ce dernier vaut la peine d'être tracé à la main : empile `2`, empile `3`, empile `4`, `+` dépile `4` et `3` et empile `7` — la pile est maintenant `[ 2 7 ]` — puis `*` dépile `7` et `2` et empile `14`.
+Ce dernier vaut la peine d'être tracé, puisqu'il a deux opérateurs :
+
+| Instruction | Ce qui se passe | Pile après |
+|---|---|---|
+| `2` | empile 2 | `[ 2 ]` |
+| `3` | empile 3 | `[ 2 3 ]` |
+| `4` | empile 4 | `[ 2 3 4 ]` |
+| `+` | dépile 4 et 3, empile 7 | `[ 2 7 ]` |
+| `*` | dépile 7 et 2, empile 14 | `[ 14 ]` |
 
 ### Pas encore prêt à convertir chaque formule à la main ? Pas besoin.
 
@@ -92,7 +83,7 @@ MOGWAI inclut une primitive `calc` qui accepte une expression infixe classique �
 "5 * 3 + (7 + 2)" calc ?      # → 24
 ```
 
-C'est un pont vraiment utile pendant que tu construis encore ton intuition RPN, et pas mal de code MOGWAI réel s'appuie dessus pour tout ce qui est calculatoire. On y reviendra plus en détail plus tard. Pour le reste de ce tutoriel, cependant, on va s'en tenir au RPN natif — ça vaut le coup de construire cette habitude tôt, et une fois que tu en as tracé quelques-uns à la main, ça cesse très vite de paraître inhabituel.
+C'est un pont vraiment utile pendant que tu construis ton intuition RPN, et pas mal de code MOGWAI réel s'appuie dessus pour tout ce qui est calculatoire — on y revient plus tard. Pour le reste de ce tutoriel, cependant, on va s'en tenir au RPN natif : ça cesse très vite de paraître inhabituel une fois que tu en as tracé quelques-uns à la main.
 
 ---
 
@@ -146,7 +137,7 @@ mogwai.reset
 Result: 5
 ```
 
-> **Remarque si tu utilises le playground en ligne.** Le [playground basé sur Blazor](https://sydney680928.github.io/MOGWAI/) affiche sa sortie ligne par ligne, donc `??` s'y comporte comme `?` — chaque affichage finit sur sa propre ligne, quel que soit celui que tu as utilisé. La distinction est réelle et compte dans la plupart des environnements hôtes (applications console, le CLI, applications embarquées) ; ne sois simplement pas surpris de ne pas la voir spécifiquement dans le playground.
+> **Tu utilises le playground en ligne ?** Il affiche sa sortie ligne par ligne, donc `??` s'y comporte comme `?` — la distinction compte quand même dans la plupart des autres environnements hôtes.
 
 ### Un premier programme un peu plus étoffé
 
@@ -233,25 +224,21 @@ C ?              # → 50
 
 ### Verrouiller un type, exiger des déclarations
 
-Deux choses valent la peine d'être connues même si on ne va pas s'y attarder ici — tu croiseras les deux dans du vrai code MOGWAI :
+Deux filets de sécurité optionnels que tu croiseras dans du vrai code MOGWAI, sans en avoir besoin dès le premier jour :
 
-Une variable peut être verrouillée à un seul type dès le départ, avec `=>` à la place de `->` :
+`=>` à la place de `->` verrouille une variable à son premier type — lui assigner un autre type plus tard lève une erreur au lieu de le changer silencieusement :
 
 ```
 500 => 'A'
 ```
 
-À partir de là, `A` n'accepte plus que des nombres — lui assigner une chaîne lèverait une erreur au lieu de changer silencieusement son type.
-
-Séparément, on peut demander à un moteur d'*exiger* que chaque variable soit déclarée avant d'être utilisée, avec `mogwai.strict` :
+`mogwai.strict` exige que chaque variable soit déclarée avant d'être utilisée — lire une variable non déclarée lève une erreur au lieu de la créer silencieusement :
 
 ```
 true mogwai.strict
 100 => 'A'
 A ?
 ```
-
-Une fois le mode strict activé, utiliser une variable qui n'a jamais été déclarée lève une erreur au lieu de la créer silencieusement. Les deux sont des filets de sécurité optionnels plutôt que quelque chose dont tu as besoin dès le premier jour — on ne les nomme ici que pour que la notation ne paraisse pas inconnue plus tard.
 
 ### Supprimer une variable
 
@@ -604,7 +591,7 @@ mogwai.reset
 # → (2 4 6 8 10)
 ```
 
-`foreach...do` s'exécute sur la pile principale, exactement comme le reste de ton script — rien de surprenant là-dedans. `foreach...transform` et `foreach...filter` sont un peu plus particuliers : chaque itération s'exécute sur **sa propre pile isolée** plutôt que sur la principale, donc elle peut librement lire les variables locales et globales mais ne peut ni piocher dans, ni laisser quoi que ce soit sur la pile en dehors du bloc. Ce qu'elle laisse derrière elle — la valeur transformée, ou le booléen décidant de l'inclusion — c'est ce que la boucle rassemble dans la liste résultante. On reviendra sur les listes en bonne et due forme dans la section suivante ; ceci suffit juste à donner du sens à ces boucles quand tu les rencontres.
+`foreach...do` s'exécute sur la pile principale, comme le reste de ton script. `foreach...transform` et `foreach...filter` s'exécutent chacun sur **leur propre pile isolée** par itération — ce qu'ils laissent derrière eux (la valeur transformée, ou le booléen d'inclusion) est ce qui est rassemblé dans la liste résultante. Plus sur les listes juste après.
 
 ---
 
@@ -739,8 +726,8 @@ mogwai.reset
 ```
 mogwai.reset
 
-[x: 100 y: 200] z: 300 set ?      # → [x: 100 y: 200 z: 300]
-[x: 100 y: 200] y: 2000 set ?     # → [x: 100 y: 2000]
+300 [x: 100 y: 200] z: set ?      # → [x: 100 y: 200 z: 300]
+2000 [x: 100 y: 200] y: set ?     # → [x: 100 y: 2000]
 ```
 
 ### Un `get` plus indulgent que celui des listes
@@ -957,7 +944,7 @@ to 'foo' params [id: .number name: .string save: (.boolean true)] do
 
 ### Un piège à retenir : les fonctions attendant une seule liste
 
-Celui-ci s'applique à tout appel écrit en style classique, natif ou déclaré par toi : les parenthèses se contentent de déplacer ce qu'il y a à l'intérieur sur la pile — elles ne groupent pas les valeurs en une liste. Une fonction dont le paramètre *entier* est une seule liste (`max`, `min`, `sum`, `sort`, ou une que tu écris toi-même de cette façon) a besoin que cette liste soit entourée de ses propres parenthèses à l'intérieur de l'appel :
+Les parenthèses en style classique se contentent de déplacer ce qu'il y a à l'intérieur sur la pile — elles ne groupent pas les valeurs en une liste. Une fonction attendant une seule liste entière comme paramètre (`max`, `min`, `sum`, `sort`...) a besoin que cette liste soit entourée de ses propres parenthèses :
 
 ```
 mogwai.reset
@@ -1329,15 +1316,26 @@ Une propriété est initialisée à `empty` quel que soit son type déclaré —
 
 ### `new` et `free` — le cycle de vie d'une instance
 
-Deux noms de méthode spéciaux sont appelés automatiquement si tu les définis : `onInit:` à la création d'une instance, `onFree:` juste avant sa destruction. La création prend un record à paramètres nommés — exactement la syntaxe de record de la section sur les fonctions — suivi du nom de la classe et de `new` :
+Deux noms de méthode spéciaux sont appelés automatiquement si tu les définis : `onInit:` à la création d'une instance, `onFree:` juste avant sa destruction. `new` lui-même ne prend qu'une seule chose obligatoire : le nom de la classe. Ce qui se trouve déjà sur la pile quand tu l'appelles — un record, ou rien du tout — devient simplement le paramètre de `onInit:`, exactement comme pour l'appel de n'importe quelle autre méthode :
 
 ```
 mogwai.reset
 
-[id: 10 name: "SIBUE"] 'User' new -> '$U1'    # onInit: runs automatically
-
-$U1 free                                       # onFree: runs automatically
+'User' new -> '$U1'    # nothing pushed beforehand — onInit: runs with an empty stack
 ```
+
+Si `onInit:` attend un record (typiquement déballé avec `->params`, comme dans l'exemple `Counter` plus haut), tu pousses ce record juste avant d'appeler `new` :
+
+```
+mogwai.reset
+
+[id: 10 name: "SIBUE"]
+'User' new -> '$U1'    # onInit: runs automatically, with the record above on its stack
+
+$U1 free                # onFree: runs automatically
+```
+
+`onInit:` reste une méthode ordinaire, cela dit — rien ne déballe ce record pour toi. C'est à toi d'appeler `->params` (ou `->vars` / `->safeVars`) à l'intérieur, de la même façon que tu le ferais dans une fonction classique.
 
 Chaque instance obtient un identifiant unique, affiché sous forme de `§` suivi d'un numéro (`§453`) — jamais réutilisé pendant toute la durée de vie du moteur. Si plusieurs variables référencent la même instance et qu'elle est détruite, elles deviennent toutes invalides en même temps. Plutôt que de risquer d'utiliser une référence périmée, vérifie d'abord avec `isAlive` :
 
@@ -1362,11 +1360,11 @@ $U1->name: ?                 # read a property — equivalent to: $U1 name: get 
 $U1->display:                # call a method — equivalent to: $U1 display: get
 ```
 
-Essayer d'atteindre un membre `private:` depuis l'extérieur lève une erreur — c'est tout l'intérêt des deux sections. Chaque instance a aussi une propriété `className:` en lecture seule, fournie automatiquement, indiquant de quelle classe elle a été construite.
+Atteindre un membre `private:` depuis l'extérieur lève une erreur — c'est tout l'intérêt des deux sections. Chaque instance a aussi une propriété `className:` en lecture seule, indiquant de quelle classe elle a été construite.
 
 ### `self` — se référer à l'instance courante
 
-À l'intérieur de n'importe quelle méthode, `self` est automatiquement disponible et fait référence à l'instance sur laquelle la méthode a été appelée — utilise-le pour lire ou écrire les propres propriétés de l'instance, ou appeler ses autres méthodes :
+`self` est automatiquement disponible à l'intérieur de n'importe quelle méthode, et fait référence à l'instance sur laquelle elle a été appelée :
 
 ```
 show:
@@ -1378,7 +1376,7 @@ show:
 
 ### Valider ce que reçoit une méthode
 
-Les trois mêmes niveaux de rigueur de la section sur les fonctions s'appliquent aussi aux méthodes — `->vars` (aucune vérification), `->safeVars` (vérifie le nombre et le type depuis la pile), `->params` (vérifie un record à paramètres nommés, l'ajustement naturel pour `onInit:`, puisque les instances sont toujours créées avec un) :
+Les trois mêmes niveaux de rigueur de la section sur les fonctions s'appliquent aux méthodes : `->vars` (aucune vérification), `->safeVars` (vérifie nombre/type depuis la pile), `->params` (vérifie un record à paramètres nommés). Rien de tout ça n'est automatique — tu appelles celui que tu veux toi-même, en première ligne de la méthode. Les détails complets des trois se trouvent dans la référence du langage ; ce tutoriel ne montre en action que `->params`, celui qui convient naturellement chaque fois que `onInit:` attend un record — comme dans les exemples ci-dessus :
 
 ```
 onInit:
@@ -1430,7 +1428,8 @@ class 'User' do
     }
 }
 
-[id: 10 name: "SIBUE"] 'User' new -> '$U1'
+[id: 10 name: "SIBUE"]
+'User' new -> '$U1'
 $U1->display:
 $U1 free
 ```
@@ -1463,9 +1462,9 @@ mogwai.reset
 
 ## 14. Tâches
 
-Une **tâche** est une unité d'exécution enfant — sa propre pile isolée, s'exécutant en parallèle du code qui l'a lancée (le **parent**). Le parent peut continuer à faire autre chose pendant qu'une tâche s'exécute ; une tâche peut elle-même lancer d'autres tâches enfants, sans autre limite que la mémoire disponible.
+Une **tâche** est une unité d'exécution enfant — sa propre pile isolée, s'exécutant en parallèle du code qui l'a lancée (le **parent**). La règle unique qui façonne tout le reste ici : **les tâches ne se parlent jamais directement entre elles** — un enfant ne connaît que l'existence de son parent, et toute communication passe par des **événements**.
 
-La règle unique qui façonne tout le reste ici : **les tâches ne se parlent jamais directement entre elles**. Une tâche enfant ne connaît que l'existence de son parent — pas celle de ses frères et sœurs — et toute communication, dans les deux sens, passe par des **événements**.
+> **Tu utilises le playground en ligne ?** Les tâches n'y fonctionnent pas — son environnement Blazor/WASM ne les prend pas en charge. Utilise le CLI MOGWAI (ou ta propre application hôte) pour tout ce qui concerne cette section.
 
 ### Les événements, brièvement
 
