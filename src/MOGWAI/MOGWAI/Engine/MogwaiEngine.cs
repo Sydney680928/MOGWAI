@@ -1752,6 +1752,8 @@ namespace MOGWAI.Engine
 
         internal bool HasWaitingFireObjects => !_disableInterrupts && _fireObjectsQueue.Count > 0;
 
+        public Task<EvalResult> Yield() => ExecuteWaitingFireObjects();
+
         internal async Task<EvalResult> ExecuteWaitingFireObjects()
         {
             var result = EvalResult.NoError;
