@@ -466,8 +466,8 @@ Les principaux types manipulés par **MOGWAI** sont les suivants :
 | `.function` | Fonction | «2 2 + ?» |
 | `.name` | Nom symbolique | 'A' |
 | `.key` | Clé utilisée dans un ENREGISTREMENT | latitude: |
-| `.data` | Tableau d'octets | DATA:FF3456ED23 |
-| `.binary` | Nombre binaire | BIN:110011110011 |
+| `.data` | Tableau d'octets | D:FF3456ED23 |
+| `.binary` | Nombre binaire | B:110011110011 |
 | `.record` | ENREGISTREMENT (dictionnaire) | [x: 50 y: 200] |
 | `.null` | Valeur nulle | null -> 'A' |
 | `.ref` | Référence à une variable | &A |
