@@ -477,8 +477,8 @@ The main types manipulated by **MOGWAI** are as follows:
 | `.function` | Function | «2 2 + ?» |
 | `.name` | Symbolic name | 'A' |
 | `.key` | Key used in a RECORD | latitude: |
-| `.data` | Byte array | DATA:FF3456ED23 |
-| `.binary` | Binary number | BIN:110011110011 |
+| `.data` | Byte array | D:FF3456ED23 |
+| `.binary` | Binary number | B:110011110011 |
 | `.record` | RECORD (dictionary) | [x: 50 y: 200] |
 | `.null` | Null value | null -> 'A' |
 | `.ref` | Reference to a variable | &A |
