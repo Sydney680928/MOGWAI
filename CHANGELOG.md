@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Fixed
+
+## [8.16.0] - 2026-08-14
+
+### Added
+
 - **`cond` primitive** — evaluates a boolean expression written in standard infix notation and pushes a boolean result onto the stack, ready for use with `if/then/else`. Internally uses Dijkstra's Shunting-yard algorithm (via `BoolLexer` and `BoolShuntingYard` in `MOGWAI.Engine`). Supports arithmetic and comparison operators (`+ - * / < > <= >= == !=`), boolean keywords (`and`, `or`, `xor`), unary `not(...)`, all MOGWAI sigils (`@`, `&`, `!`, `$`), primitives, constants, and variables.
 
   ```
@@ -28,10 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   # Parsing "during 1000 do { ... }" now throws:
   # MogwaiParseErrorException: "Sugar DURING-DO is not allowed."
   ```
-
-### Changed
-
-### Fixed
 
 ## [8.15.0] - 2026-07-04
 
@@ -1180,7 +1184,8 @@ Supported sizes: 8, 16, 24, 32, 48, 64 bits. Overflow is silently truncated (con
 
 ---
 
-[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.15.0...HEAD
+[Unreleased]: https://github.com/Sydney680928/mogwai/compare/v8.16.0...HEAD
+[8.16.0]: https://github.com/Sydney680928/mogwai/compare/v8.15.0...v8.16.0
 [8.15.0]: https://github.com/Sydney680928/mogwai/compare/v8.14.0...v8.15.0
 [8.14.0]: https://github.com/Sydney680928/mogwai/compare/v8.13.0...v8.14.0
 [8.13.0]: https://github.com/Sydney680928/mogwai/compare/v8.12.0...v8.13.0
