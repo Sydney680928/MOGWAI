@@ -11,9 +11,9 @@
 		<OutputType>Library</OutputType>
 
 		<!-- Versioning -->
-		<Version>8.15.0</Version>
-		<FileVersion>8.15.0.0</FileVersion>
-		<AssemblyVersion>8.15.0.0</AssemblyVersion>
+		<Version>8.16.0</Version>
+		<FileVersion>8.16.0.0</FileVersion>
+		<AssemblyVersion>8.16.0.0</AssemblyVersion>
 
 		<!-- Métadonnées minimales pour le package local -->
 		<PackageId>MOGWAI</PackageId>
@@ -44,7 +44,7 @@
 
 		<!-- Release notes -->
 		<PackageReleaseNotes>
-			v8.15.0
+			v8.16.0
 			Full changelog: https://github.com/Sydney680928/mogwai/blob/main/CHANGELOG.md
 		</PackageReleaseNotes>
 			
