@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MOGWAI" Version="8.15.0" />
+    <PackageReference Include="MOGWAI" Version="8.16.0" />
     <PackageReference Include="Terminal.Gui" Version="1.19.0" />
   </ItemGroup>
 
